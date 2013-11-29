@@ -28,6 +28,7 @@ if (project.hasProperty('buildnum')) {
 
 group = "net.bdew"
 archivesBaseName = "bdlib"
+ext.versuffix = "mc164"
 
 minecraft {
     version = "1.6.4-9.11.1.964"
@@ -86,7 +87,7 @@ task deobfJar(type: Jar) {
 }
 
 jar {
-    appendix = 'universal'
+    appendix = project.versuffix
 }
 
 artifacts {
