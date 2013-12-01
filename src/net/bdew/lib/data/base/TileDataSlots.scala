@@ -18,7 +18,7 @@ trait TileDataSlots extends TileExtended {
   val dataSlots = mutable.HashMap.empty[String, DataSlot]
   var lastChange = 0L
 
-  final val TRACE = true
+  final val TRACE = false
 
   def doSave(kind: UpdateKind.Value, t: NBTTagCompound) {
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
