@@ -14,3 +14,12 @@ class Point(val x: Int, val y: Int) {
   def +(that: Point) = new Point(this.x + that.x, this.y + that.y)
   def -(that: Point) = new Point(this.x - that.x, this.y - that.y)
 }
+
+object Point {
+
+  import language.implicitConversions
+
+  implicit def awt2point(p: java.awt.Point): Point = new Point(p.x, p.y)
+  implicit def point2awt(p: Point): java.awt.Point = new java.awt.Point(p.x, p.y)
+  implicit def tuple2point(p: (Int, Int)): Point = new Point(p._1, p._2)
+}

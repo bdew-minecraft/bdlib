@@ -13,4 +13,6 @@ class Rect(val x: Int, val y: Int, val w: Int, val h: Int) {
   def this(p: Point, w: Int, h: Int) = this(p.x, p.y, w, h)
   def contains(p: Point) = p.x >= x && p.y >= y && p.x <= x + w && p.y <= y + h
   def origin = new Point(x, y)
+  def +(p: Point) = new Rect(origin + p, w, h)
+  def -(p: Point) = new Rect(origin - p, w, h)
 }
