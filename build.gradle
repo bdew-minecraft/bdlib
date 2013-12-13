@@ -2,10 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            name = "bdew"
-            url = "http://jenkins.bdew.net/maven"
-        }
-        maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
@@ -32,11 +28,11 @@ ext.versuffix = "mc164"
 
 minecraft {
     version = "1.6.4-9.11.1.964"
+    replace("BDLIB_VER", project.version)
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
-def myTokens = [BdLibVer: project.version]
 
 sourceSets {
     main {
@@ -47,30 +43,13 @@ sourceSets {
             srcDir 'resources'
         }
     }
-    processed {
-        scala {
-            srcDir 'build/stage'
-        }
-    }
-}
-
-task stage(type: Sync) {
-    inputs.property "tokens", myTokens
-    from sourceSets.main.scala
-    into 'build/stage'
-    filter(ReplaceTokens, tokens: myTokens)
-}
-
-compileScala {
-    source = sourceSets.processed.scala
-    dependsOn stage
 }
 
 processResources {
-    inputs.property "tokens", myTokens
+    inputs.property "tokens", minecraft.replacements
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        filter(ReplaceTokens, tokens: myTokens)
+        filter(ReplaceTokens, tokens: minecraft.replacements)
     }
 
     from(sourceSets.main.resources.srcDirs) {
