@@ -21,6 +21,8 @@ object Misc {
   def iterNbtList[X](list: NBTTagList) =
     for (i <- 0 until list.tagCount()) yield list.tagAt(i).asInstanceOf[X]
 
+  def getActiveModId = Loader.instance().activeModContainer().getModId
+
   def toLocal(s: String) = StatCollector.translateToLocal(s)
   def toLocalF(s: String, params: Any*) = StatCollector.translateToLocal(s).format(params: _*)
 
@@ -44,7 +46,7 @@ object Misc {
   def min[T](vals: T*)(implicit o: Ordering[T]): T = vals.min(o)
   def max[T](vals: T*)(implicit o: Ordering[T]): T = vals.max(o)
 
-  def clamp[T](value: T, min: T, max: T)(implicit o: Ordering[T]): T = if (o.gt(value,max)) max else if (o.lt(value,min)) min else value
+  def clamp[T](value: T, min: T, max: T)(implicit o: Ordering[T]): T = if (o.gt(value, max)) max else if (o.lt(value, min)) min else value
 
   def iterSome[T](list: Seq[T], indexes: Iterable[Int]): Iterable[T] = for (i <- indexes) yield list(i)
   def iterSomeEnum[T](list: Seq[T], indexes: Iterable[Int]): Iterable[(Int, T)] = for (i <- indexes) yield i -> list(i)

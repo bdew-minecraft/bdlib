@@ -25,7 +25,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
       tip += dslot.getFluid.getFluid.getLocalizedName
       tip += "%s/%s mB".format(formater.format(dslot.getFluidAmount), formater.format(dslot.getCapacity))
     } else {
-      tip += Misc.toLocal("gendustry.label.empty")
+      tip += Misc.toLocal("bdlib.label.empty")
     }
   }
 

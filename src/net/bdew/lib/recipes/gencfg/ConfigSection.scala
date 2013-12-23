@@ -16,10 +16,10 @@ case class EntryDouble(v: Double) extends CfgEntry
 case class EntryStr(v: String) extends CfgEntry
 
 case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(String, CfgEntry)] {
-  var raw = Map.empty[String, CfgEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx,x)))
+  var raw = Map.empty[String, CfgEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx, x)))
 
   def iterator: Iterator[(String, CfgEntry)] = raw.iterator
-  def filterType[T<:CfgEntry](cls: Class[T]): Iterable[(String,T)] = raw.filter(x=>cls.isInstance(x._2)).map(x=>x.asInstanceOf[(String,T)])
+  def filterType[T <: CfgEntry](cls: Class[T]): Iterable[(String, T)] = raw.filter(x => cls.isInstance(x._2)).map(x => x.asInstanceOf[(String, T)])
 
   def rawget[T](id: String, t: Class[T]): T = {
     val v = raw(id)
@@ -34,7 +34,6 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
   def getDouble(id: String) = rawget(id, classOf[EntryDouble]).v
   def getString(id: String) = rawget(id, classOf[EntryStr]).v
   def getSection(id: String) = rawget(id, classOf[ConfigSection])
-
 
   final val trueVals = Set("y", "true", "yes", "on")
   def getBoolean(id: String) = trueVals.contains(getString(id).toLowerCase)
