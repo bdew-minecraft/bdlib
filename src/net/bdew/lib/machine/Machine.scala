@@ -20,6 +20,7 @@ import net.bdew.lib.Misc
 abstract class Machine[T <: Block](val name: String, val blockConstruct: (Int) => T) {
   var block: T = null.asInstanceOf[T]
   var tuning: ConfigSection = null
+  var enabled = false
   val modId = Misc.getActiveModId
 
   def regBlock(ids: IdManager) {

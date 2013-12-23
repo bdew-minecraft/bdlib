@@ -17,6 +17,7 @@ class MachineManager(ids: IdManager, val tuning: ConfigSection, guiHandler: GuiH
   def registerMachine[R <: Machine[_]](machine: R): R = {
     machine.tuning = tuning.getSection(machine.name)
     if (machine.tuning.getBoolean("Enabled")) {
+      machine.enabled = true
       machine.regBlock(ids)
       if (machine.isInstanceOf[GuiProvider])
         guiHandler.register(machine.asInstanceOf[GuiProvider])
