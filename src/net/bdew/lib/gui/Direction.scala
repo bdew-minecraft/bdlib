@@ -12,7 +12,7 @@ package net.bdew.lib.gui
 object Direction extends Enumeration {
   type Direction = Value
   val UP = Value("UP")
-  val DOWN = Value("UP")
-  val LEFT = Value("UP")
-  val RIGHT = Value("UP")
+  val DOWN = Value("DOWN")
+  val LEFT = Value("LEFT")
+  val RIGHT = Value("RIGHT")
 }

@@ -11,12 +11,16 @@ package net.bdew.lib.config
 
 import net.bdew.lib.recipes.gencfg.ConfigSection
 import net.bdew.lib.machine.Machine
+import net.bdew.lib.gui.{GuiProvider, GuiHandler}
 
-class MachineManager(ids: IdManager, val tuning: ConfigSection) {
+class MachineManager(ids: IdManager, val tuning: ConfigSection, guiHandler: GuiHandler) {
   def registerMachine[R <: Machine[_]](machine: R): R = {
     machine.tuning = tuning.getSection(machine.name)
-    if (machine.tuning.getBoolean("Enabled"))
+    if (machine.tuning.getBoolean("Enabled")) {
       machine.regBlock(ids)
+      if (machine.isInstanceOf[GuiProvider])
+        guiHandler.register(machine.asInstanceOf[GuiProvider])
+    }
     return machine
   }
   def load() {}
