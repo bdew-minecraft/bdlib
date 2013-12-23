@@ -40,17 +40,22 @@ class RecipeLoader {
   /**
    * Current map of recipe characters to parser item references
    */
-  val currCharMap = collection.mutable.Map.empty[Char, StackRef].withDefault(x => error("Undefined recipe character '%s'", x))
+  var currCharMap = Map.empty[Char, StackRef].withDefault(x => error("Undefined recipe character '%s'", x))
 
   /**
    * Current map of class macros
    */
-  val currClassMacros = collection.mutable.Map.empty[String, String].withDefault(x => error("Undefined class macro '%s'", x))
+  var currClassMacros = Map.empty[String, String].withDefault(x => error("Undefined class macro '%s'", x))
 
   /**
    * Triggers an error with formatted string
    */
   def error(msg: String, params: Any*) = throw new StatementError(msg.format(params: _*))
+
+  /**
+   * List of unprocessed delayed statements
+   */
+  var delayedStatements = List.empty[DelayedStatement]
 
   /**
    * Looks up a recipe component
@@ -209,14 +214,6 @@ class RecipeLoader {
    * @param s The statement
    */
   def processStatement(s: Statement): Unit = s match {
-    case StCharAssign(c, r) =>
-      currCharMap(c) = r
-      log.info("Added %s = %s".format(c, r))
-
-    case StClassMacro(id, cls) =>
-      currClassMacros(id) = cls
-      log.info("Added def %s = %s".format(id, cls))
-
     case StIfHaveMod(mod, thn, els) =>
       if (Misc.haveModVersion(mod)) {
         log.info("ifMod: %s found".format(mod))
@@ -234,6 +231,38 @@ class RecipeLoader {
         log.info("ifOreDict: %s not found".format(od))
         processStatementsSafe(els)
       }
+
+    case StClearRecipes(res) =>
+      log.info("Clearing recipes that produce %s".format(res))
+      delayedStatements = delayedStatements.filter({
+        x =>
+          if (x.isInstanceOf[CraftingStatement])
+            if (x.asInstanceOf[CraftingStatement].result == res) {
+              log.info("Removing recipe %s".format(x))
+              false
+            } else true
+          else true
+      })
+
+    case x: DelayedStatement =>
+      delayedStatements :+= x
+
+    case x =>
+      log.severe("Can't process %s - this is a programing bug!".format(x))
+  }
+
+  /**
+   * Process a single delayed statement
+   * @param st The statement
+   */
+  def processDelayedStatement(st: DelayedStatement) = st match {
+    case StCharAssign(c, r) =>
+      currCharMap += (c -> r)
+      log.info("Added %s = %s".format(c, r))
+
+    case StClassMacro(id, cls) =>
+      currClassMacros += (id -> cls)
+      log.info("Added def %s = %s".format(id, cls))
 
     case StRecipeShaped(rec, res, cnt) =>
       log.info("Adding shaped recipe %s => %s * %d".format(rec, res, cnt))
@@ -289,6 +318,25 @@ class RecipeLoader {
 
     case x =>
       log.severe("Can't process %s - this is a programing bug!".format(x))
+  }
+
+  /**
+   * Process delayed statements, clear the list afterwards
+   */
+  def processDelayedStatements() {
+    log.info("Processing %d delayed statements".format(delayedStatements.size))
+    for (s <- delayedStatements) {
+      try {
+        processDelayedStatement(s)
+      } catch {
+        case e: StatementError =>
+          log.severe("Error while processing %s: %s".format(s, e.getMessage))
+        case e: Throwable =>
+          log.severe("Error while processing %s: %s".format(s, e))
+          e.printStackTrace()
+      }
+    }
+    delayedStatements = List.empty
   }
 
   /**

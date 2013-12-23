@@ -102,6 +102,8 @@ class RecipeParser extends JavaTokenParsers {
     case in ~ (out ~ n) ~ xp => StSmeltRecipe(in, out, n.getOrElse(1), xp.getOrElse("0").toFloat)
   }
 
+  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp => StClearRecipes(sp) }
+
   def statement: Parser[Statement] = (
     charSpec
       | classMacro
@@ -111,6 +113,7 @@ class RecipeParser extends JavaTokenParsers {
       | recipeShaped9
       | recipeShapeless
       | recipeSmelting
+      | clearRecipes
     )
 
   def statements = statement.*

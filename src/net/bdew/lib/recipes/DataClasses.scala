@@ -90,13 +90,19 @@ case class StackMacro(id: Char) extends StackRef
 abstract class Statement
 
 /**
+ * Base class for delayed statements (executed after everything is parsed)
+ * Actual processing is in [[net.bdew.lib.recipes.RecipeLoader.processDelayedStatements]]
+ */
+abstract class DelayedStatement extends Statement
+
+/**
  * Character assignment
  * Syntax: {char} = {ref}
  * Parser: [[net.bdew.lib.recipes.RecipeParser.charSpec]]
  * @param char Character to assign
  * @param spec ItemStack Reference
  */
-case class StCharAssign(char: Char, spec: StackRef) extends Statement
+case class StCharAssign(char: Char, spec: StackRef) extends DelayedStatement
 
 /**
  * Define class macro
@@ -105,7 +111,7 @@ case class StCharAssign(char: Char, spec: StackRef) extends Statement
  * @param id Macro identifier
  * @param cls Class name
  */
-case class StClassMacro(id: String, cls: String) extends Statement
+case class StClassMacro(id: String, cls: String) extends DelayedStatement
 
 /**
  * Conditional block - checks if mod is loaded
@@ -128,6 +134,19 @@ case class StIfHaveMod(mod: String, thn: List[Statement], els: List[Statement]) 
 case class StIfHaveOD(id: String, thn: List[Statement], els: List[Statement]) extends Statement
 
 /**
+ * Removes previously defined recieps for a specific result
+ * @param res Recipes that produce this result will be cleared
+ */
+case class StClearRecipes(res: StackRef) extends Statement
+
+/**
+ * Base class for staments that represent a crafting recipe
+ */
+abstract class CraftingStatement extends DelayedStatement {
+  def result: StackRef
+}
+
+/**
  * Shaped recipe definition
  *
  * Syntax:
@@ -147,10 +166,10 @@ case class StIfHaveOD(id: String, thn: List[Statement], els: List[Statement]) ex
  * Parser: [[net.bdew.lib.recipes.RecipeParser.recipeShaped9]]
  *
  * @param rec Recipe pattern
- * @param res Result reference
+ * @param result Result reference
  * @param cnt Number of output items
  */
-case class StRecipeShaped(rec: Seq[String], res: StackRef, cnt: Int) extends Statement
+case class StRecipeShaped(rec: Seq[String], result: StackRef, cnt: Int) extends CraftingStatement
 
 /**
  * Shapeless recipe definition
@@ -158,10 +177,10 @@ case class StRecipeShaped(rec: Seq[String], res: StackRef, cnt: Int) extends Sta
  * Parser: [[net.bdew.lib.recipes.RecipeParser.recipeShapeless]]
  *
  * @param rec Recipe pattehrn
- * @param res Result reference
+ * @param result Result reference
  * @param cnt Number of output items
  */
-case class StRecipeShapeless(rec: String, res: StackRef, cnt: Int) extends Statement
+case class StRecipeShapeless(rec: String, result: StackRef, cnt: Int) extends CraftingStatement
 
 /**
  * Smelting recipe definition
@@ -169,11 +188,11 @@ case class StRecipeShapeless(rec: String, res: StackRef, cnt: Int) extends State
  * Parser [[net.bdew.lib.recipes.RecipeParser.recipeSmelting]]
  *
  * @param in Input Stack
- * @param out Output Stack
+ * @param result Output Stack
  * @param cnt Output Count
  * @param xp XP for smelting
  */
-case class StSmeltRecipe(in: StackRef, out: StackRef, cnt: Int, xp: Float) extends Statement
+case class StSmeltRecipe(in: StackRef, result: StackRef, cnt: Int, xp: Float) extends CraftingStatement
 
 /**
  * Used in statement processing to abort the current statement and show an error without a stack trace
