@@ -11,8 +11,6 @@ package net.bdew.lib.gui
 
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.inventory.Container
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 
 trait GuiProvider {
@@ -21,10 +19,10 @@ trait GuiProvider {
   type TEClass
 
   @SideOnly(Side.CLIENT)
-  def getGui(te: TEClass, player: EntityPlayer): GuiContainer
-  def getContainer(te: TEClass, player: EntityPlayer): Container
+  def getGui(te: TEClass, player: EntityPlayer): AnyRef
+  def getContainer(te: TEClass, player: EntityPlayer): AnyRef
 
   @SideOnly(Side.CLIENT)
-  def getGui(te: TileEntity, player: EntityPlayer): GuiContainer = getGui(te.asInstanceOf[TEClass], player)
-  def getContainer(te: TileEntity, player: EntityPlayer): Container = getContainer(te.asInstanceOf[TEClass], player)
+  def getGui(te: TileEntity, player: EntityPlayer): AnyRef = getGui(te.asInstanceOf[TEClass], player)
+  def getContainer(te: TileEntity, player: EntityPlayer): AnyRef = getContainer(te.asInstanceOf[TEClass], player)
 }
