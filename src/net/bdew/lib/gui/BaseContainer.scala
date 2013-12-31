@@ -29,6 +29,15 @@ abstract class BaseContainer(te: IInventory) extends Container {
       addSlotToContainer(new Slot(inv, i, xOffs + i * 18, yOffsHotbar))
   }
 
+  override def slotClick(slotnum: Int, button: Int, modifiers: Int, player: EntityPlayer): ItemStack = {
+    if (inventorySlots.isDefinedAt(slotnum)) {
+      val slot = getSlot(slotnum)
+      if (slot != null && slot.isInstanceOf[SlotClickable])
+        return slot.asInstanceOf[SlotClickable].onClick(button, modifiers, player)
+    }
+    return super.slotClick(slotnum, button, modifiers, player)
+  }
+
   override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = {
     var stack = getSlot(slot).getStack
     if (getSlot(slot).inventory == player.inventory) {
