@@ -108,6 +108,7 @@ class RecipeParser extends JavaTokenParsers {
     charSpec
       | classMacro
       | ifMod
+      | ifOreDict
       | recipeShaped3x3
       | recipeShaped2x2
       | recipeShaped9
