@@ -31,6 +31,8 @@ trait TileDataSlots extends TileExtended {
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
       if (TRACE) printf("%s: %s L<= %s\n".format(kind, n, t.getTag(n)))
       s.load(t, kind)
+      if (kind == UpdateKind.WORLD && s.updateKind.contains(UpdateKind.RENDER))
+        worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord)
     }
   }
 

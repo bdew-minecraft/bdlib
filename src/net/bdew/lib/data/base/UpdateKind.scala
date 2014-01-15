@@ -13,4 +13,5 @@ object UpdateKind extends Enumeration {
   val WORLD = Value("WORLD")
   val GUI = Value("GUI")
   val SAVE = Value("SAVE")
+  val RENDER = Value("RENDER")
 }
