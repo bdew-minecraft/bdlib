@@ -15,7 +15,6 @@ import net.bdew.lib.data.base.{UpdateKind, TileDataSlots, DataSlot}
 
 abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlot {
   var oldStack: FluidStack = null
-  var size: Int
 
   parent.serverTick.listen(checkUpdate)
 
@@ -38,7 +37,7 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
     val tag = new NBTTagCompound()
     writeToNBT(tag)
     if (k == UpdateKind.GUI)
-      tag.setInteger("size", size)
+      tag.setInteger("size", getCapacity)
     t.setCompoundTag(name, tag)
   }
 
@@ -46,11 +45,11 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
     val tag = t.getCompoundTag(name)
     readFromNBT(tag)
     if (k == UpdateKind.GUI)
-      size = tag.getInteger("size")
+      setCapacity(tag.getInteger("size"))
   }
 }
 
-case class DataSlotTank(name: String, parent: TileDataSlots, var size: Int) extends DataSlotTankBase(size)
+case class DataSlotTank(name: String, parent: TileDataSlots, size: Int) extends DataSlotTankBase(size)
 
 case class DataSlotTankRestricted(name: String, parent: TileDataSlots, var size: Int, fluidID: Int) extends DataSlotTankBase(size) {
   def fill(amount: Int, doFill: Boolean) = super.fill(new FluidStack(fluidID, amount), doFill)

@@ -37,7 +37,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
     if (fstack != null && fstack.getFluid.getStillIcon != null) {
       val icon = fstack.getFluid.getStillIcon
       bindTexture(TextureMap.locationBlocksTexture)
-      var fillHeight: Int = (rect.h * fstack.amount / dslot.getCapacity).round
+      var fillHeight: Int = if (dslot.getCapacity > 0) (rect.h * fstack.amount / dslot.getCapacity).round else 0
       var yStart: Int = 0
 
       while (fillHeight > 0) {
