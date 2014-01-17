@@ -10,10 +10,10 @@
 package net.bdew.lib.data.base
 
 import net.minecraft.entity.player.EntityPlayerMP
-import net.bdew.lib.gui.BaseContainer
+import net.bdew.lib.gui.NoInvContainer
 import net.minecraft.inventory.ICrafting
 
-trait ContainerDataSlots extends BaseContainer {
+trait ContainerDataSlots extends NoInvContainer {
   val dataSource: TileDataSlots
   var lastSentChange = dataSource.lastChange
 
