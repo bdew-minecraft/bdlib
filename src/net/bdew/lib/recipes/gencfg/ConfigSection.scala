@@ -38,6 +38,8 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
   final val trueVals = Set("y", "true", "yes", "on")
   def getBoolean(id: String) = trueVals.contains(getString(id).toLowerCase)
 
+  def hasValue(id: String) = raw.isDefinedAt(id)
+
   def getOrAddSection(id: String) = {
     if (raw.isDefinedAt(id)) {
       rawget(id, classOf[ConfigSection])
