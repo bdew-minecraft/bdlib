@@ -42,10 +42,10 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
 
       while (fillHeight > 0) {
         if (fillHeight > 16) {
-          parent.drawTexturedModelRectFromIcon(rect.x, rect.y + rect.h - 16 - yStart, icon, 16, 16)
+          parent.drawTexturedModelRectFromIcon(rect.x, rect.y + rect.h - 16 - yStart, icon, rect.w, 16)
           fillHeight -= 16
         } else {
-          parent.drawTexturedModelRectFromIcon(rect.x, rect.y + rect.h - fillHeight - yStart, icon, 16, fillHeight)
+          parent.drawTexturedModelRectFromIcon(rect.x, rect.y + rect.h - fillHeight - yStart, icon, rect.w, fillHeight)
           fillHeight = 0
         }
         yStart = yStart + 16
