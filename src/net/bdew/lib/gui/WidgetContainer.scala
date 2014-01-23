@@ -56,7 +56,7 @@ trait WidgetContainer {
   }
 
   def handleTooltip(op: Point, tip: mutable.MutableList[String]) {
-    val p = op - rect.origin
+    val p = op
     for (w <- widgets if w.rect.contains(p))
       w.handleTooltip(p - w.rect.origin, tip)
   }
