@@ -29,7 +29,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
     }
   }
 
-  override def draw() {
+  override def draw(mouse: Point) {
     GL11.glEnable(GL11.GL_BLEND)
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
@@ -42,10 +42,10 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
 
       while (fillHeight > 0) {
         if (fillHeight > 16) {
-          parent.drawTexturedModelRectFromIcon(rect.x, rect.y + rect.h - 16 - yStart, icon, rect.w, 16)
+          parent.drawIcon(Rect(rect.x, rect.y + rect.h - 16 - yStart, rect.w, 16), icon)
           fillHeight -= 16
         } else {
-          parent.drawTexturedModelRectFromIcon(rect.x, rect.y + rect.h - fillHeight - yStart, icon, rect.w, fillHeight)
+          parent.drawIcon(Rect(rect.x, rect.y + rect.h - fillHeight - yStart, rect.w, fillHeight), icon)
           fillHeight = 0
         }
         yStart = yStart + 16
@@ -54,7 +54,6 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
 
     GL11.glDisable(GL11.GL_BLEND)
 
-    bindTexture(overlay.resource)
-    parent.drawTexturedModalRect(rect.x, rect.y, overlay.x, overlay.y, rect.w, rect.h)
+    parent.drawTexture(rect, overlay)
   }
 }

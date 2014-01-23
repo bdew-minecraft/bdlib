@@ -18,10 +18,10 @@ import net.bdew.lib.gui.widgets.Widget
 class WidgetPowerGauge(val rect: Rect, texture: TextureLocation, dslot: DataSlotPower) extends Widget {
   val formater = new DecimalFormat("#,###")
 
-  override def draw() {
+  override def draw(mouse: Point) {
     Minecraft.getMinecraft.renderEngine.bindTexture(texture.resource)
     val fill = (dslot.stored / dslot.capacity * rect.h).round
-    parent.drawTexturedModalRect(rect.x, rect.y + rect.h - fill, texture.x, texture.y + rect.h - fill, rect.w, fill)
+    parent.drawTexture(Rect(rect.x, rect.y + rect.h - fill, rect.w, fill), Point(texture.x, texture.y + rect.h - fill))
   }
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += formater.format(dslot.stored) + "/" + formater.format(dslot.capacity) + " MJ"

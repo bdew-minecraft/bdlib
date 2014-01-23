@@ -10,17 +10,28 @@
 package net.bdew.lib.gui.widgets
 
 import scala.collection.mutable
-import net.bdew.lib.gui.{Point, BaseScreen, Rect}
+import net.bdew.lib.gui.{WidgetContainer, Point, Rect}
 import net.minecraft.util.ResourceLocation
 import net.minecraft.client.Minecraft
 
-trait Widget {
+trait BaseWidget {
   val rect: Rect
-  var parent: BaseScreen = null
+  var parent: WidgetContainer = null
+  def init(p: WidgetContainer) = parent = p
+  def handleTooltip(p: Point, tip: mutable.MutableList[String])
+  def mouseClicked(p: Point, button: Int)
+  def keyTyped(c: Char, i: Int): Boolean
+  def draw(mouse: Point)
+  def looseFocus()
+}
+
+trait Widget extends BaseWidget {
+  val rect: Rect
   def handleTooltip(p: Point, tip: mutable.MutableList[String]) {}
   def mouseClicked(p: Point, button: Int) {}
   def keyTyped(c: Char, i: Int): Boolean = false
-  def draw() {}
+  def draw(mouse: Point) {}
+  def looseFocus() {}
 
   def bindTexture(res: ResourceLocation) = Minecraft.getMinecraft.renderEngine.bindTexture(res)
 }

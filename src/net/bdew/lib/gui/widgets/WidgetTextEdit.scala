@@ -13,7 +13,13 @@ import net.minecraft.client.gui.{FontRenderer, GuiTextField}
 import net.bdew.lib.gui.{Point, Rect}
 
 class WidgetTextEdit(val rect: Rect, fr: FontRenderer) extends GuiTextField(fr, rect.x, rect.y, rect.w, rect.h) with Widget {
-  override def mouseClicked(p: Point, button: Int) = super.mouseClicked(p.x + rect.x, p.y + rect.y, button)
+
+  override def mouseClicked(p: Point, button: Int) = {
+    val pp = p + rect.origin
+    super.mouseClicked(pp.x, pp.y, button)
+  }
+
+  override def looseFocus() = setFocused(false)
   override def keyTyped(c: Char, i: Int): Boolean = super.textboxKeyTyped(c, i)
-  override def draw() = super.drawTextBox()
+  override def draw(mouse: Point) = super.drawTextBox()
 }

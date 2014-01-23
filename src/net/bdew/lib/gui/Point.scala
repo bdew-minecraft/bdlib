@@ -9,7 +9,7 @@
 
 package net.bdew.lib.gui
 
-class Point(val x: Int, val y: Int) {
+case class Point(x: Int, y: Int) {
   def this(p: Point) = this(p.x, p.y)
   def +(that: Point) = new Point(this.x + that.x, this.y + that.y)
   def -(that: Point) = new Point(this.x - that.x, this.y - that.y)

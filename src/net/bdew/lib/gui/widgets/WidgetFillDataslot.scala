@@ -9,29 +9,28 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui.{TextureLocation, Rect}
-import net.bdew.lib.gui.Direction
+import net.bdew.lib.gui.{Point, TextureLocation, Rect, Direction}
 import net.bdew.lib.data.base.DataSlotNumeric
 
 class WidgetFillDataslot[T](val rect: Rect, val texture: TextureLocation, dir: Direction.Direction, dslot: DataSlotNumeric[T], maxval: T)(implicit num: Numeric[T]) extends Widget {
 
   def getFillArea(max: Int): Int = (num.toFloat(dslot) / num.toFloat(maxval) * max).round
 
-  override def draw() {
+  override def draw(mouse: Point) {
     bindTexture(texture.resource)
     dir match {
       case Direction.UP =>
         val fill = getFillArea(rect.h)
-        parent.drawTexturedModalRect(rect.x, rect.y + rect.h - fill, texture.x, texture.y + rect.h - fill, rect.w, fill)
+        parent.drawTexture(Rect(rect.x, rect.y + rect.h - fill, rect.w, fill), Point(texture.x, texture.y + rect.h - fill))
       case Direction.DOWN =>
         val fill = getFillArea(rect.h)
-        parent.drawTexturedModalRect(rect.x, rect.y, texture.x, texture.y, rect.w, fill)
+        parent.drawTexture(Rect(rect.x, rect.y, rect.w, fill), Point(texture.x, texture.y))
       case Direction.LEFT =>
         val fill = getFillArea(rect.w)
-        parent.drawTexturedModalRect(rect.x + rect.w - fill, rect.y, texture.x + rect.w - fill, texture.y, fill, rect.h)
+        parent.drawTexture(Rect(rect.x + rect.w - fill, rect.y, fill, rect.h), Point(texture.x + rect.w - fill, texture.y))
       case Direction.RIGHT =>
         val fill = getFillArea(rect.w)
-        parent.drawTexturedModalRect(rect.x, rect.y, texture.x, texture.y, fill, rect.h)
+        parent.drawTexture(Rect(rect.x, rect.y, fill, rect.h), Point(texture.x, texture.y))
     }
   }
 }
