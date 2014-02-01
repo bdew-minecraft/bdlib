@@ -26,6 +26,7 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
   def rect = new Rect(guiLeft, guiTop, xSize, ySize)
 
   def getFontRenderer = fontRenderer
+  def getZLevel = zLevel
 
   override def initGui() {
     super.initGui()

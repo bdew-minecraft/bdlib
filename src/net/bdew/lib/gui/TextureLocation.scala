@@ -12,5 +12,9 @@ package net.bdew.lib.gui
 import net.minecraft.util.ResourceLocation
 
 class TextureLocation(val resource: ResourceLocation, val p: Point) extends Point(p.x, p.y) {
-  def this(resource: ResourceLocation, x: Int, y: Int) = this(resource, new Point(x, y))
+  def this(resource: ResourceLocation, x: Int, y: Int) = this(resource, Point(x, y))
+}
+
+class TextureLocationScaled(val resource: ResourceLocation, val r: Rect) extends Rect(r.x, r.y, r.w, r.h) {
+  def this(resource: ResourceLocation, x: Int, y: Int, w: Int, h: Int) = this(resource, Rect(x, y, w, h))
 }

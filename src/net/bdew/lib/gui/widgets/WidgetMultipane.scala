@@ -9,9 +9,7 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui.{Point, Rect}
-import scala.collection.mutable
-import org.lwjgl.opengl.GL11
+import net.bdew.lib.gui.Rect
 
 abstract class WidgetMultipane(rect: Rect) extends WidgetSubcontainer(rect) {
   def getActivePane: BaseWidget
