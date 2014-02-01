@@ -9,10 +9,9 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui.widgets.Widget
 import net.bdew.lib.gui.{Point, Rect}
 
-class WidgetDynLabel(text: =>String, x: Int, y: Int, color: Int) extends Widget {
+class WidgetDynLabel(text: => String, x: Int, y: Int, color: Int) extends Widget {
   val rect: Rect = new Rect(x, y, 0, 0)
   override def draw(mouse: Point) {
     parent.getFontRenderer.drawString(text, x, y, color)

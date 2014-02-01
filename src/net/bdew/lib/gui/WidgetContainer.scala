@@ -85,7 +85,7 @@ class WidgetContainerWindow(val parent: BaseScreen, xSz: Int, ySz: Int) extends 
   def getOffsetFromWindow = Point(0, 0)
   val rect = Rect(0, 0, xSz, ySz)
 
-  final val F = 1/256F
+  final val F = 1 / 256F
 
   def addVertexUVScaled(x: Float, y: Float, z: Float, u: Float, v: Float) {
     Tessellator.instance.addVertexWithUV(x, y, z, u * F, v * F)

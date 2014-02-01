@@ -18,5 +18,5 @@ class WidgetSubcontainer(val rect: Rect) extends BaseWidget with WidgetContainer
   def getOffsetFromWindow = parent.getOffsetFromWindow + rect.origin
   def drawTexture(r: Rect, uv: Point, color: Color = Color.white) = parent.drawTexture(r, uv, color)
   def drawIcon(r: Rect, i: Icon, color: Color = Color.white) = parent.drawIcon(r, i, color)
-  def drawTextureScaled(r: Rect, t: TextureLocationScaled, color: Color = Color.white) = parent.drawTextureScaled(r, t,color)
+  def drawTextureScaled(r: Rect, t: TextureLocationScaled, color: Color = Color.white) = parent.drawTextureScaled(r, t, color)
 }
