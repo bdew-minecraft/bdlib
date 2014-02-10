@@ -14,17 +14,16 @@ import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
 import net.minecraft.item.ItemStack
 import net.bdew.lib.block.HasTE
-import net.bdew.lib.config.IdManager
 import net.bdew.lib.Misc
 
-abstract class Machine[T <: Block](val name: String, val blockConstruct: (Int) => T) {
+abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
   var block: T = null.asInstanceOf[T]
   var tuning: ConfigSection = null
   var enabled = false
   val modId = Misc.getActiveModId
 
-  def regBlock(ids: IdManager) {
-    block = blockConstruct(ids.getBlockId(name))
+  def regBlock() {
+    block = blockConstruct
     GameRegistry.registerBlock(block, name)
     GameRegistry.registerCustomItemStack(name, new ItemStack(block))
     if (block.isInstanceOf[HasTE[_]]) {

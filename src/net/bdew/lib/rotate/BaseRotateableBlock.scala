@@ -14,12 +14,11 @@ import cpw.mods.fml.relauncher.SideOnly
 import net.minecraft.block.Block
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.item.ItemStack
-import net.minecraft.util.Icon
-import net.minecraft.util.MathHelper
+import net.minecraft.util.{IIcon, MathHelper}
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import net.minecraftforge.common.ForgeDirection
 import java.util.EnumSet
+import net.minecraftforge.common.util.ForgeDirection
 
 /**
  * Basic logic for block rotatation
@@ -29,12 +28,12 @@ trait BaseRotateableBlock extends Block {
   /**
    * Override this method to provide your textures, also called when rendering as item
    */
-  def getIcon(meta: Int, kind: IconType.Value): Icon
+  def getIcon(meta: Int, kind: IconType.Value): IIcon
 
   /**
    * Override this method to provide your textures, if you need to check other state
    */
-  def getIcon(world: IBlockAccess, x: Int, y: Int, z: Int, kind: IconType.Value): Icon = getIcon(world.getBlockMetadata(x, y, z), kind)
+  def getIcon(world: IBlockAccess, x: Int, y: Int, z: Int, kind: IconType.Value): IIcon = getIcon(world.getBlockMetadata(x, y, z), kind)
 
   /**
    * Set of valid rotations, default is all of them
@@ -63,10 +62,10 @@ trait BaseRotateableBlock extends Block {
   }
 
   @SideOnly(Side.CLIENT)
-  override def getIcon(side: Int, meta: Int): Icon = getIcon(meta, IconType.fromSideAndDir(side, getDefaultFacing))
+  override def getIcon(side: Int, meta: Int): IIcon = getIcon(meta, IconType.fromSideAndDir(side, getDefaultFacing))
 
   @SideOnly(Side.CLIENT)
-  override def getBlockTexture(world: IBlockAccess, x: Int, y: Int, z: Int, side: Int): Icon = getIcon(world, x, y, z, IconType.fromSideAndDir(side, getFacing(world, x, y, z)))
+  override def getIcon(world: IBlockAccess, x: Int, y: Int, z: Int, side: Int): IIcon = getIcon(world, x, y, z, IconType.fromSideAndDir(side, getFacing(world, x, y, z)))
 
   override def getValidRotations(worldObj: World, x: Int, y: Int, z: Int): Array[ForgeDirection] = getValidFacings.toArray(Array.empty[ForgeDirection])
 

@@ -1,20 +1,27 @@
 buildscript {
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
     repositories {
         mavenCentral()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
     }
 }
 
 apply plugin: 'forge'
 apply plugin: 'scala'
 
-version = "1.2.0"
+version = "2.0.0"
 
 if (project.hasProperty('buildnum')) {
     project.version = project.version + '.' + project.buildnum
@@ -24,10 +31,10 @@ if (project.hasProperty('buildnum')) {
 
 group = "net.bdew"
 archivesBaseName = "bdlib"
-ext.versuffix = "mc164"
+ext.versuffix = "mc172"
 
 minecraft {
-    version = "1.6.4-9.11.1.964"
+    version = "1.7.2-10.12.0.1024"
     replace("BDLIB_VER", project.version)
 }
 

@@ -9,10 +9,11 @@
 
 package net.bdew.lib.data.base
 
-import net.minecraft.network.packet.Packet132TileEntityData
 import scala.collection.mutable
 import net.minecraft.nbt.NBTTagCompound
 import net.bdew.lib.tile.TileExtended
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity
+import net.minecraft.network.Packet
 
 trait TileDataSlots extends TileExtended {
   val dataSlots = mutable.HashMap.empty[String, DataSlot]
@@ -32,7 +33,7 @@ trait TileDataSlots extends TileExtended {
       if (TRACE) printf("%s: %s L<= %s\n".format(kind, n, t.getTag(n)))
       s.load(t, kind)
       if (kind == UpdateKind.WORLD && s.updateKind.contains(UpdateKind.RENDER))
-        worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord)
+        getWorldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord)
     }
   }
 
@@ -42,20 +43,20 @@ trait TileDataSlots extends TileExtended {
   handleClientUpdate.listen(doLoad(UpdateKind.WORLD, _))
 
   def dataSlotChanged(slot: DataSlot) {
-    if (worldObj != null) {
+    if (getWorldObj != null) {
       if (slot.updateKind.contains(UpdateKind.GUI))
-        lastChange = worldObj.getTotalWorldTime
+        lastChange = getWorldObj.getTotalWorldTime
       if (slot.updateKind.contains(UpdateKind.WORLD))
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+        getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
       if (slot.updateKind.contains(UpdateKind.SAVE))
-        worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this)
+        getWorldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this)
     }
   }
 
-  def getDataSlotPacket: Packet132TileEntityData = {
+  def getDataSlotPacket: Packet = {
     val tag = new NBTTagCompound()
     doSave(UpdateKind.GUI, tag)
-    return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, ACT_GUI, tag)
+    return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, ACT_GUI, tag)
   }
 
   override protected def extDataPacket(id: Int, data: NBTTagCompound) {

@@ -11,10 +11,18 @@ package net.bdew.lib
 
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLPreInitializationEvent
+import org.apache.logging.log4j.Logger
 
 @Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")
 object BdLib {
+  var log: Logger = null
+
+  def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))
+  def logWarn(msg: String, args: Any*) = log.warn(msg.format(args: _*))
+  def logError(msg: String, args: Any*) = log.error(msg.format(args: _*))
+
   def preInit(ev: FMLPreInitializationEvent) {
-    ev.getModLog.info("bdlib BDLIB_VER loaded")
+    log = ev.getModLog
+    log.info("bdlib BDLIB_VER loaded")
   }
 }

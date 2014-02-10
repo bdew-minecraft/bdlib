@@ -49,7 +49,7 @@ case class DataSlotPower(name: String, parent: TileDataSlots) extends DataSlot {
     tag.setFloat("stored", stored)
     if (kind == UpdateKind.GUI)
       tag.setFloat("capacity", capacity)
-    t.setCompoundTag(name, tag)
+    t.setTag(name, tag)
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {

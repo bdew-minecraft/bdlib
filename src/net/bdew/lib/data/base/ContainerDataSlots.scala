@@ -21,19 +21,19 @@ trait ContainerDataSlots extends NoInvContainer {
     super.addCraftingToCrafters(crafter)
     if (crafter.isInstanceOf[EntityPlayerMP]) {
       val pkt = dataSource.getDataSlotPacket
-      crafter.asInstanceOf[EntityPlayerMP].playerNetServerHandler.sendPacketToPlayer(pkt)
+      crafter.asInstanceOf[EntityPlayerMP].playerNetServerHandler.sendPacket(pkt)
     }
   }
 
   override def detectAndSendChanges() {
     super.detectAndSendChanges()
     // only send updates every 10 ticks
-    if (dataSource.lastChange >= lastSentChange + 10 || (dataSource.lastChange > lastSentChange && lastSentChange + 10 < dataSource.worldObj.getTotalWorldTime)) {
+    if (dataSource.lastChange >= lastSentChange + 10 || (dataSource.lastChange > lastSentChange && lastSentChange + 10 < dataSource.getWorldObj.getTotalWorldTime)) {
       lastSentChange = dataSource.lastChange
       val pkt = dataSource.getDataSlotPacket
 
       for (player <- players)
-        player.playerNetServerHandler.sendPacketToPlayer(pkt)
+        player.playerNetServerHandler.sendPacket(pkt)
     }
   }
 }

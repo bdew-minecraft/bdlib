@@ -37,7 +37,7 @@ object ItemUtils {
   def isSameItem(stack1: ItemStack, stack2: ItemStack): Boolean = {
     if (stack1 == null || stack2 == null)
       return stack1 == stack2
-    if (stack1.itemID != stack2.itemID)
+    if (stack1.getItem != stack2.getItem)
       return false
     if (stack1.getHasSubtypes && stack2.getItemDamage != stack1.getItemDamage)
       return false
@@ -54,12 +54,12 @@ object ItemUtils {
       if (toAdd >= stack.stackSize) {
         target.stackSize += stack.stackSize
         stack.stackSize = 0
-        inv.onInventoryChanged()
+        inv.markDirty()
         return null
       } else if (toAdd > 0) {
         target.stackSize += toAdd
         stack.stackSize -= toAdd
-        inv.onInventoryChanged()
+        inv.markDirty()
       }
     }
 

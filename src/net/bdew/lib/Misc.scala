@@ -10,7 +10,7 @@
 package net.bdew.lib
 
 import cpw.mods.fml.common.registry.GameRegistry
-import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.StatCollector
 import net.minecraft.item.ItemStack
 import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
@@ -18,8 +18,10 @@ import cpw.mods.fml.common.Loader
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
-  def iterNbtList[X](list: NBTTagList) =
-    for (i <- 0 until list.tagCount()) yield list.tagAt(i).asInstanceOf[X]
+  def iterNbtCompoundList(parent: NBTTagCompound, name: String): Iterable[NBTTagCompound] = {
+    val list = parent.getTagList(name, 10)
+    for (i <- 0 until list.tagCount()) yield list.getCompoundTagAt(i)
+  }
 
   def getActiveModId = Loader.instance().activeModContainer().getModId
 
@@ -34,7 +36,7 @@ object Misc {
   def wrapTag(n: String, f: (NBTTagCompound) => Any)(t: NBTTagCompound) {
     val p = t.getCompoundTag(n)
     f(p)
-    t.setCompoundTag(n, p)
+    t.setTag(n, p)
   }
 
   def addRecipe(result: ItemStack, pattern: Seq[String], items: Map[Char, AnyRef]) =

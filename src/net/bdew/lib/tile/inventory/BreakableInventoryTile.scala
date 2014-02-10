@@ -15,9 +15,9 @@ import net.bdew.lib.items.ItemUtils
 
 trait BreakableInventoryTile extends TileEntity with BaseInventory {
   def dropItems() {
-    if (worldObj != null && !worldObj.isRemote) {
+    if (getWorldObj != null && !getWorldObj.isRemote) {
       for (stack <- inv if stack != null) {
-        ItemUtils.throwItemAt(worldObj, xCoord, yCoord, zCoord, stack)
+        ItemUtils.throwItemAt(getWorldObj, xCoord, yCoord, zCoord, stack)
       }
       inv = new Array[ItemStack](inv.size)
     }

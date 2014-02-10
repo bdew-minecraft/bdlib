@@ -13,13 +13,13 @@ import net.minecraft.item.{ItemStack, Item}
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.items.SimpleItem
 
-class ItemManager(val ids: IdManager) {
-  def regSimpleItem(name: String): SimpleItem = regItem(new SimpleItem(ids.getItemId(name), name), name)
+class ItemManager() {
+  def regSimpleItem(name: String): SimpleItem = regItem(new SimpleItem(name), name)
 
   def regItem[T <: SimpleItem](item: T): T = regItem[T](item, item.name)
 
   def regItemCls[T <: Item](itemCls: Class[T], name: String, addStack: Boolean = true): T = {
-    val item = itemCls.getConstructor(classOf[Int]).newInstance(ids.getItemId(name): Integer)
+    val item = itemCls.getConstructor(classOf[Int]).newInstance()
     regItem[T](item, name, addStack)
   }
 

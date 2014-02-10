@@ -10,8 +10,8 @@
 package net.bdew.lib.data
 
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind, DataSlotVal}
-import net.minecraftforge.common.ForgeDirection
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraftforge.common.util.ForgeDirection
 
 case class DataSlotDirection(name: String, parent: TileDataSlots) extends DataSlotVal[ForgeDirection] {
   var cval = ForgeDirection.UP

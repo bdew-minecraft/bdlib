@@ -17,7 +17,7 @@ import net.bdew.lib.tile.TileExtended
 trait PersistentInventoryTile extends TileExtended with BaseInventory {
   persistLoad.listen((tag: NBTTagCompound) => {
     inv = new Array[ItemStack](getSizeInventory)
-    for (nbtItem <- Misc.iterNbtList[NBTTagCompound](tag.getTagList("Items"))) {
+    for (nbtItem <- Misc.iterNbtCompoundList(tag, "Items")) {
       val slot = nbtItem.getByte("Slot")
       if (slot >= 0 && slot < inv.size) {
         inv(slot) = ItemStack.loadItemStackFromNBT(nbtItem)

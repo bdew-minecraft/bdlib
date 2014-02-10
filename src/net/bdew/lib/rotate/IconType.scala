@@ -9,7 +9,7 @@
 
 package net.bdew.lib.rotate
 
-import net.minecraftforge.common.ForgeDirection
+import net.minecraftforge.common.util.ForgeDirection
 
 object IconType extends Enumeration {
   val BACK = Value(0, "BACK")

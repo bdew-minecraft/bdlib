@@ -24,8 +24,8 @@ class GuiHandler extends IGuiHandler {
   }
 
   def getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef =
-    guis(ID).getContainer(world.getBlockTileEntity(x, y, z), player)
+    guis(ID).getContainer(world.getTileEntity(x, y, z), player)
 
   def getClientGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef =
-    guis(ID).getGui(world.getBlockTileEntity(x, y, z), player)
+    guis(ID).getGui(world.getTileEntity(x, y, z), player)
 }

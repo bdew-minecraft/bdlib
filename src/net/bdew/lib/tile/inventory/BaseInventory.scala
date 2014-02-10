@@ -37,14 +37,14 @@ trait BaseInventory extends IInventory {
     if (item != null) {
       if (item.stackSize <= n) {
         inv(slot) = null
-        onInventoryChanged()
+        markDirty()
         return item
       } else {
         var newstack = item.splitStack(n)
         if (item.stackSize == 0) {
           inv(slot) = null
         }
-        onInventoryChanged()
+        markDirty()
         return newstack
       }
     } else {
@@ -55,12 +55,12 @@ trait BaseInventory extends IInventory {
   def getStackInSlotOnClosing(slot: Int): ItemStack = {
     var tmp = inv(slot)
     inv(slot) = null
-    onInventoryChanged()
+    markDirty()
     return tmp
   }
 
   def setInventorySlotContents(slot: Int, stack: ItemStack) = {
     inv(slot) = stack
-    onInventoryChanged()
+    markDirty()
   }
 }

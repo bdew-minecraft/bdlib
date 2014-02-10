@@ -11,13 +11,10 @@ package net.bdew.lib.recipes
 
 import java.io.Reader
 import net.minecraft.item.{Item, ItemStack}
-import net.bdew.lib.Misc
+import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
 import net.minecraftforge.oredict.{ShapelessOreRecipe, OreDictionary}
-import java.util.logging.Logger
-import cpw.mods.fml.common.FMLLog
-import net.minecraft.item.crafting.FurnaceRecipes
 
 /**
  * Main recipe loader class
@@ -33,9 +30,6 @@ class RecipeLoader {
    * @return New ConfigParser (or subclass) instance
    */
   def newParser() = new RecipeParser()
-
-  val log: Logger = Logger.getLogger("RecipeLoader")
-  log.setParent(FMLLog.getLogger)
 
   /**
    * Current map of recipe characters to parser item references
@@ -90,7 +84,7 @@ class RecipeLoader {
       val l = x.copy()
       l.stackSize = cnt
       if (meta != OreDictionary.WILDCARD_VALUE && meta != l.getItemDamage) {
-        log.warning("%s requested with meta %d but specifies %d".format(source, meta, l.getItemDamage))
+        BdLib.logWarn("%s requested with meta %d but specifies %d", source, meta, l.getItemDamage)
         l.setItemDamage(meta)
       }
       return l
@@ -178,7 +172,7 @@ class RecipeLoader {
       if (l.size == 0) error("Concrete ItemStack requested for OD entry '%s' that is empty", id)
       val s = l.get(0).copy()
       s.stackSize = cnt
-      log.info("Concrete ItemStack for OD entry '%s' -> %s".format(id, s))
+      BdLib.logInfo("Concrete ItemStack for OD entry '%s' -> %s", id, s)
       return s
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)
     case StackMod(mod, id) =>
@@ -203,7 +197,7 @@ class RecipeLoader {
       if (!currCharMap.contains(x)) error("Character %s is undefined", x)
       val r = getRecipeComponent(currCharMap(x))
       if (r.isInstanceOf[String]) needOd = true
-      log.info("%s -> %s".format(x, r))
+      BdLib.logInfo("%s -> %s", x, r)
       comp += (x -> r)
     }
     return (comp, needOd)
@@ -216,29 +210,29 @@ class RecipeLoader {
   def processStatement(s: Statement): Unit = s match {
     case StIfHaveMod(mod, thn, els) =>
       if (Misc.haveModVersion(mod)) {
-        log.info("ifMod: %s found".format(mod))
+        BdLib.logInfo("ifMod: %s found", mod)
         processStatementsSafe(thn)
       } else {
-        log.info("ifMod: %s not found".format(mod))
+        BdLib.logInfo("ifMod: %s not found", mod)
         processStatementsSafe(els)
       }
 
     case StIfHaveOD(od, thn, els) =>
       if (OreDictionary.getOres(od).size() > 0) {
-        log.info("ifOreDict: %s found".format(od))
+        BdLib.logInfo("ifOreDict: %s found", od)
         processStatementsSafe(thn)
       } else {
-        log.info("ifOreDict: %s not found".format(od))
+        BdLib.logInfo("ifOreDict: %s not found", od)
         processStatementsSafe(els)
       }
 
     case StClearRecipes(res) =>
-      log.info("Clearing recipes that produce %s".format(res))
+      BdLib.logInfo("Clearing recipes that produce %s", res)
       delayedStatements = delayedStatements.filter({
         x =>
           if (x.isInstanceOf[CraftingStatement])
             if (x.asInstanceOf[CraftingStatement].result == res) {
-              log.info("Removing recipe %s".format(x))
+              BdLib.logInfo("Removing recipe %s", x)
               false
             } else true
           else true
@@ -248,7 +242,7 @@ class RecipeLoader {
       delayedStatements :+= x
 
     case x =>
-      log.severe("Can't process %s - this is a programing bug!".format(x))
+      BdLib.logError("Can't process %s - this is a programing bug!", x)
   }
 
   /**
@@ -258,19 +252,19 @@ class RecipeLoader {
   def processDelayedStatement(st: DelayedStatement) = st match {
     case StCharAssign(c, r) =>
       currCharMap += (c -> r)
-      log.info("Added %s = %s".format(c, r))
+      BdLib.logInfo("Added %s = %s", c, r)
 
     case StClassMacro(id, cls) =>
       currClassMacros += (id -> cls)
-      log.info("Added def %s = %s".format(id, cls))
+      BdLib.logInfo("Added def %s = %s", id, cls)
 
     case StRecipeShaped(rec, res, cnt) =>
-      log.info("Adding shaped recipe %s => %s * %d".format(rec, res, cnt))
+      BdLib.logInfo("Adding shaped recipe %s => %s * %d", rec, res, cnt)
       val (comp, needOd) = resolveRecipeComponents(rec.mkString(""))
       val resStack = getConcreteStack(res, cnt)
 
       if (resStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-        log.info("Result meta is unset, defaulting to 0")
+        BdLib.logInfo("Result meta is unset, defaulting to 0")
         resStack.setItemDamage(0)
       }
 
@@ -279,16 +273,16 @@ class RecipeLoader {
       else
         Misc.addRecipe(resStack, rec, comp)
 
-      log.info("Done... result=%s, od=%s".format(resStack, needOd))
+      BdLib.logInfo("Done... result=%s, od=%s", resStack, needOd)
 
     case StRecipeShapeless(rec, res, cnt) =>
-      log.info("Adding shapeless recipe %s => %s * %d".format(rec, res, cnt))
+      BdLib.logInfo("Adding shapeless recipe %s => %s * %d", rec, res, cnt)
       val (comp, needOd) = resolveRecipeComponents(rec)
       val resStack = getConcreteStack(res, cnt)
       val recTrans = rec.toCharArray.map(comp(_))
 
       if (resStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-        log.info("Result meta is unset, defaulting to 0")
+        BdLib.logInfo("Result meta is unset, defaulting to 0")
         resStack.setItemDamage(0)
       }
 
@@ -297,42 +291,37 @@ class RecipeLoader {
       else
         GameRegistry.addShapelessRecipe(resStack, recTrans: _*)
 
-      log.info("Done... result=%s, od=%s".format(resStack, needOd))
+      BdLib.logInfo("Done... result=%s, od=%s", resStack, needOd)
 
     case StSmeltRecipe(in, out, cnt, xp) =>
-      log.info("Adding smelting recipe %s => %s * %d (%f xp)".format(in, out, cnt, xp))
+      BdLib.logInfo("Adding smelting recipe %s => %s * %d (%f xp)", in, out, cnt, xp)
       val outStack = getConcreteStack(out, cnt)
       if (outStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-        log.info("Result meta is unset, defaulting to 0")
+        BdLib.logInfo("Result meta is unset, defaulting to 0")
         outStack.setItemDamage(0)
       }
       for (inStack <- getAllConcreteStacks(in, 1)) {
-        if (inStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-          FurnaceRecipes.smelting.addSmelting(inStack.itemID, outStack, xp)
-          log.info("added %d -> %s".format(inStack.itemID, outStack))
-        } else {
-          FurnaceRecipes.smelting.addSmelting(inStack.itemID, inStack.getItemDamage, outStack, xp)
-          log.info("added %d@%d -> %s".format(inStack.itemID, inStack.getItemDamage, outStack))
-        }
+        GameRegistry.addSmelting(inStack, outStack, xp)
+        BdLib.logInfo("added %d -> %s", inStack, outStack)
       }
 
     case x =>
-      log.severe("Can't process %s - this is a programing bug!".format(x))
+      BdLib.logError("Can't process %s - this is a programing bug!", x)
   }
 
   /**
    * Process delayed statements, clear the list afterwards
    */
   def processDelayedStatements() {
-    log.info("Processing %d delayed statements".format(delayedStatements.size))
+    BdLib.logInfo("Processing %d delayed statements", delayedStatements.size)
     for (s <- delayedStatements) {
       try {
         processDelayedStatement(s)
       } catch {
         case e: StatementError =>
-          log.severe("Error while processing %s: %s".format(s, e.getMessage))
+          BdLib.logError("Error while processing %s: %s", s, e.getMessage)
         case e: Throwable =>
-          log.severe("Error while processing %s: %s".format(s, e))
+          BdLib.logError("Error while processing %s: %s", s, e)
           e.printStackTrace()
       }
     }
@@ -349,19 +338,19 @@ class RecipeLoader {
         processStatement(s)
       } catch {
         case e: StatementError =>
-          log.severe("Error while processing %s: %s".format(s, e.getMessage))
+          BdLib.logError("Error while processing %s: %s", s, e.getMessage)
         case e: Throwable =>
-          log.severe("Error while processing %s: %s".format(s, e))
+          BdLib.logError("Error while processing %s: %s", s, e)
           e.printStackTrace()
       }
     }
   }
 
   def load(f: Reader) {
-    log.info("Starting parsing")
+    BdLib.logInfo("Starting parsing")
     val r = newParser().doParse(f)
-    log.info("Processing %d statements".format(r.size))
+    BdLib.logInfo("Processing %d statements", r.size)
     processStatementsSafe(r)
-    log.info("Done")
+    BdLib.logInfo("Done")
   }
 }

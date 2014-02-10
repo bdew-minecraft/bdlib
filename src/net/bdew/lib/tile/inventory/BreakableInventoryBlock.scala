@@ -13,13 +13,13 @@ import net.minecraft.block.Block
 import net.minecraft.world.World
 
 trait BreakableInventoryBlock extends Block {
-  override def breakBlock(world: World, x: Int, y: Int, z: Int, blockId: Int, meta: Int) {
+  override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
     if (!world.isRemote) {
-      val te = world.getBlockTileEntity(x, y, z).asInstanceOf[BreakableInventoryTile]
+      val te = world.getTileEntity(x, y, z).asInstanceOf[BreakableInventoryTile]
       if (te != null) {
         te.dropItems()
       }
     }
-    super.breakBlock(world, x, y, z, blockId, meta)
+    super.breakBlock(world, x, y, z, block, meta)
   }
 }

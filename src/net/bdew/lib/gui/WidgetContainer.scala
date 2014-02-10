@@ -11,11 +11,11 @@ package net.bdew.lib.gui
 
 import scala.collection.mutable
 import net.bdew.lib.gui.widgets.BaseWidget
-import net.minecraft.util.Icon
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.GL11
 import net.minecraft.client.renderer.Tessellator
+import net.minecraft.util.IIcon
 
 trait WidgetContainer {
   val rect: Rect
@@ -76,7 +76,7 @@ trait WidgetContainer {
   def getOffsetFromWindow: Point
 
   def drawTexture(r: Rect, uv: Point, color: Color = Color.white): Unit
-  def drawIcon(r: Rect, i: Icon, color: Color = Color.white)
+  def drawIcon(r: Rect, i: IIcon, color: Color = Color.white)
   def drawTextureScaled(r: Rect, t: TextureLocationScaled, color: Color = Color.white)
 }
 
@@ -110,7 +110,7 @@ class WidgetContainerWindow(val parent: BaseScreen, xSz: Int, ySz: Int) extends 
     parent.drawTexturedModalRect(r.x, r.y, uv.x, uv.y, r.w, r.h)
   }
 
-  def drawIcon(r: Rect, i: Icon, color: Color = Color.white) {
+  def drawIcon(r: Rect, i: IIcon, color: Color = Color.white) {
     color.activate()
     parent.drawTexturedModelRectFromIcon(r.x, r.y, i, r.w, r.h)
   }

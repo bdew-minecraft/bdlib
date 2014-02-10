@@ -38,7 +38,7 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
     writeToNBT(tag)
     if (k == UpdateKind.GUI)
       tag.setInteger("size", getCapacity)
-    t.setCompoundTag(name, tag)
+    t.setTag(name, tag)
   }
 
   def load(t: NBTTagCompound, k: UpdateKind.Value) {

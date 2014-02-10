@@ -14,10 +14,10 @@ import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.block.HasTE
 
-class BlockManager(val ids: IdManager) {
+class BlockManager() {
 
   def regBlockCls[T <: Block](blockCls: Class[T], name: String, addStack: Boolean = true): T = {
-    val block = blockCls.getConstructor(classOf[Int]).newInstance(ids.getBlockId(name): Integer)
+    val block = blockCls.getConstructor(classOf[Int]).newInstance()
     regBlock[T](block, name, addStack)
   }
 

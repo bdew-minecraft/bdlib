@@ -10,16 +10,16 @@
 package net.bdew.lib.items
 
 import net.minecraft.item.Item
-import net.minecraft.client.renderer.texture.IconRegister
+import net.minecraft.client.renderer.texture.IIconRegister
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
 
-class SimpleItem(id: Int, val name: String) extends Item(id) {
+class SimpleItem(val name: String) extends Item() {
   val modId = Misc.getActiveModId
   setUnlocalizedName(modId + "." + name)
 
   @SideOnly(Side.CLIENT)
-  override def registerIcons(reg: IconRegister) {
+  override def registerIcons(reg: IIconRegister) {
     itemIcon = reg.registerIcon(modId + ":" + name.toLowerCase)
   }
 }

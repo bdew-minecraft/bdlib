@@ -12,21 +12,21 @@ package net.bdew.lib.rotate
 import net.minecraft.block.ITileEntityProvider
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import net.minecraftforge.common.ForgeDirection
 import cpw.mods.fml.common.FMLCommonHandler
+import net.minecraftforge.common.util.ForgeDirection
 
 /**
  * Stores rotation data in tile entity. The TE should implement {@link RotateableTile}
  */
 trait RotateableTileBlock extends BaseRotateableBlock with ITileEntityProvider {
   def setFacing(world: World, x: Int, y: Int, z: Int, facing: ForgeDirection) {
-    world.getBlockTileEntity(x, y, z).asInstanceOf[RotateableTile].rotation := facing
+    world.getTileEntity(x, y, z).asInstanceOf[RotateableTile].rotation := facing
   }
 
   def getFacing(world: IBlockAccess, x: Int, y: Int, z: Int): ForgeDirection = {
-    val te: RotateableTile = world.getBlockTileEntity(x, y, z).asInstanceOf[RotateableTile]
+    val te: RotateableTile = world.getTileEntity(x, y, z).asInstanceOf[RotateableTile]
     if (te == null || te.rotation == null) {
-      FMLCommonHandler.instance().getFMLLogger.warning("Failed gettig rocation for block at %d, %d, %d".format(x, y, z))
+      FMLCommonHandler.instance().getFMLLogger.warn("Failed getting rocation for block at %d, %d, %d".format(x, y, z))
       return getDefaultFacing
     }
     return te.rotation

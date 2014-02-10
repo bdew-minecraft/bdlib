@@ -26,7 +26,7 @@ case class DataSlotItemStack(name: String, parent: TileDataSlots) extends DataSl
   def save(t: NBTTagCompound, kind: UpdateKind.Value) = {
     val tag = new NBTTagCompound()
     if (cval != null) cval.writeToNBT(tag)
-    t.setCompoundTag(name, tag)
+    t.setTag(name, tag)
   }
   def load(t: NBTTagCompound, kind: UpdateKind.Value) = cval = ItemStack.loadItemStackFromNBT(t.getCompoundTag(name))
 }

@@ -11,9 +11,9 @@ package net.bdew.lib.tile
 
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.INetworkManager
-import net.minecraft.network.packet.Packet132TileEntityData
+import net.minecraft.network.{NetworkManager, Packet}
 import net.bdew.lib.Event
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity
 
 class TileExtended extends TileEntity {
   final val ACT_CLIENT = 1
@@ -39,18 +39,18 @@ class TileExtended extends TileEntity {
     persistLoad.trigger(tag)
   }
 
-  override final def getDescriptionPacket: Packet132TileEntityData = {
+  override final def getDescriptionPacket: Packet = {
     if (!sendClientUpdate.hasListeners) return null
     val tag = new NBTTagCompound
     sendClientUpdate.trigger(tag)
-    return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, ACT_CLIENT, tag)
+    return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, ACT_CLIENT, tag)
   }
 
-  override final def onDataPacket(net: INetworkManager, pkt: Packet132TileEntityData) {
-    if (pkt.actionType == ACT_CLIENT)
-      handleClientUpdate.trigger(pkt.data)
+  override final def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity) {
+    if (pkt.func_148853_f == ACT_CLIENT)
+      handleClientUpdate.trigger(pkt.func_148857_g)
     else
-      extDataPacket(pkt.actionType, pkt.data)
+      extDataPacket(pkt.func_148853_f, pkt.func_148857_g)
   }
 
   override final def updateEntity() {

@@ -10,17 +10,18 @@
 package net.bdew.lib.recipes.gencfg
 
 import net.bdew.lib.recipes.{Statement, RecipeLoader}
+import net.bdew.lib.BdLib
 
 trait GenericConfigLoader extends RecipeLoader {
   val cfgStore: ConfigSection
 
   def processConfigStatement(section: ConfigSection, s: CfgStatement): Unit = s match {
     case CfgVal(id, v) =>
-      log.info("Config: %s%s = %s".format(section.pfx, id, v))
+      BdLib.logInfo("Config: %s%s = %s", section.pfx, id, v)
       section.set(id, v)
     case CfgSub(id, st) => processConfigBlock(section.getOrAddSection(id), st)
     case x =>
-      log.severe("Can't process %s - this is a programing bug!".format(x))
+      BdLib.logError("Can't process %s - this is a programing bug!", x)
   }
 
   def processConfigBlock(view: ConfigSection, block: List[CfgStatement]) = for (s <- block) processConfigStatement(view, s)

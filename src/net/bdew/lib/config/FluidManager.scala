@@ -11,7 +11,7 @@ package net.bdew.lib.config
 
 import net.minecraftforge.fluids.{FluidRegistry, Fluid}
 
-class FluidManager(val ids: IdManager) {
+class FluidManager() {
   def regFluid[T <: Fluid](fluid: T): T = {
     FluidRegistry.registerFluid(fluid)
     return fluid
