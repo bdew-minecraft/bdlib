@@ -12,6 +12,7 @@ package net.bdew.lib
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLPreInitializationEvent
 import org.apache.logging.log4j.Logger
+import cpw.mods.fml.common.Mod.EventHandler
 
 @Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")
 object BdLib {
@@ -21,6 +22,7 @@ object BdLib {
   def logWarn(msg: String, args: Any*) = log.warn(msg.format(args: _*))
   def logError(msg: String, args: Any*) = log.error(msg.format(args: _*))
 
+  @EventHandler
   def preInit(ev: FMLPreInitializationEvent) {
     log = ev.getModLog
     log.info("bdlib BDLIB_VER loaded")
