@@ -28,31 +28,33 @@ abstract class StackRef
 case class StackOreDict(id: String) extends StackRef
 
 /**
- * Mod item reference [[cpw.mods.fml.common.registry.GameRegistry.findItemStack]]
- * Syntax: {modID}:{name}
- * Parser: [[net.bdew.lib.recipes.RecipeParser.specModStack]]
+ * Generic Referende
+ * Syntax: S:{modid}:{name}
+ * Parser: [[net.bdew.lib.recipes.RecipeParser.specGenericStack]]
  * @param mod modId of owner mod
- * @param id name of the stack
+ * @param name name of the stack
  */
-case class StackMod(mod: String, id: String) extends StackRef
+case class StackGeneric(mod: String, name: String) extends StackRef
 
 /**
- * Vanilla block reference
- * Syntax: B:{name} [@ {meta}]
- * Parser: [[net.bdew.lib.recipes.RecipeParser.specMcBlock]]
- * @param name Unlocalized name (without "tile.")
+ * Block reference
+ * Syntax: B:[{modid}:]{name} [@ {meta}]
+ * Parser: [[net.bdew.lib.recipes.RecipeParser.specBlock]]
+ * @param mod modId of owner mod, default is "minecraft"
+ * @param name Registered name
  * @param meta Metadata / Damage
  */
-case class StackMCBlock(name: String, meta: Int) extends StackRef
+case class StackBlock(mod: String, name: String, meta: Int) extends StackRef
 
 /**
- * Vanilla item reference
- * Syntax: I:{name} [@ {meta}]
- * Parser: [[net.bdew.lib.recipes.RecipeParser.specMcItem]]
- * @param name Unlocalized name (without "item.")
+ * Item reference
+ * Syntax: I:[{modid}:]{name} [@ {meta}]
+ * Parser: [[net.bdew.lib.recipes.RecipeParser.specItem]]
+ * @param mod modId of owner mod, default is "minecraft"
+ * @param name Registered name
  * @param meta Metadata / Damage
  */
-case class StackMCItem(name: String, meta: Int) extends StackRef
+case class StackItem(mod: String, name: String, meta: Int) extends StackRef
 
 /**
  * Reference to an Item/Block/ItemStack pulic static field
