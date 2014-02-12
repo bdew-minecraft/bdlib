@@ -17,7 +17,7 @@ import net.bdew.lib.block.HasTE
 class BlockManager() {
 
   def regBlockCls[T <: Block](blockCls: Class[T], name: String, addStack: Boolean = true): T = {
-    val block = blockCls.getConstructor(classOf[Int]).newInstance()
+    val block = blockCls.newInstance()
     regBlock[T](block, name, addStack)
   }
 

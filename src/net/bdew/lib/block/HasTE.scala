@@ -16,14 +16,15 @@ import net.bdew.lib.BdLib
 
 trait HasTE[T] extends Block with ITileEntityProvider {
   val TEClass: Class[_ <: TileEntity]
-  def createNewTileEntity(world: World): TileEntity = TEClass.newInstance()
+
+  def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
   def getTE(w: IBlockAccess, x: Int, y: Int, z: Int): T = {
     var t = w.getTileEntity(x, y, z)
     if ((t == null) || !TEClass.isInstance(t)) {
       BdLib.logError("Tile entity for block %s at (%d,%d,%d) is corrupt or missing - recreating", this, x, y, z)
       w match {
         case ww: World =>
-          t = createNewTileEntity(ww)
+          t = createNewTileEntity(ww, w.getBlockMetadata(x, y, z))
           ww.setTileEntity(x, y, z, t)
         case _ =>
           sys.error("Unable to recreate TE")

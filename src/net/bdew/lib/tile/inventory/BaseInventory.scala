@@ -18,29 +18,29 @@ trait BaseInventory extends IInventory {
 
   def getStackInSlot(i: Int): ItemStack = inv(i)
 
-  def getInvName = ""
+  def getInventoryName = ""
 
-  def isInvNameLocalized = false
+  def hasCustomInventoryName = false
 
   def getInventoryStackLimit = 64
 
   def isUseableByPlayer(player: EntityPlayer) = true
 
-  def openChest() = Unit
+  def openInventory() {}
 
-  def closeChest() = Unit
+  def closeInventory() {}
 
   def isItemValidForSlot(slot: Int, stack: ItemStack) = true
 
   def decrStackSize(slot: Int, n: Int): ItemStack = {
-    var item = inv(slot)
+    val item = inv(slot)
     if (item != null) {
       if (item.stackSize <= n) {
         inv(slot) = null
         markDirty()
         return item
       } else {
-        var newstack = item.splitStack(n)
+        val newstack = item.splitStack(n)
         if (item.stackSize == 0) {
           inv(slot) = null
         }

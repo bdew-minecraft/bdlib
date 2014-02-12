@@ -19,7 +19,7 @@ class ItemManager() {
   def regItem[T <: SimpleItem](item: T): T = regItem[T](item, item.name)
 
   def regItemCls[T <: Item](itemCls: Class[T], name: String, addStack: Boolean = true): T = {
-    val item = itemCls.getConstructor(classOf[Int]).newInstance()
+    val item = itemCls.newInstance()
     regItem[T](item, name, addStack)
   }
 
