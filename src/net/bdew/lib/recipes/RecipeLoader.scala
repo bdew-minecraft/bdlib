@@ -159,7 +159,7 @@ class RecipeLoader {
     case _ => Seq(getConcreteStack(s))
   }
 
-  def notNull[T](v:T, err: => String) = if (v == null) error(err) else v
+  def notNull[T](v: T, err: => String) = if (v == null) error(err) else v
 
   /**
    * Returns an ItemStack that match a reference
@@ -178,11 +178,11 @@ class RecipeLoader {
       return s
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)
     case StackGeneric(mod, id) =>
-      notNull(GameRegistry.findItemStack(mod, id, 1),"Stack not found %s:%s".format(mod, id))
+      notNull(GameRegistry.findItemStack(mod, id, 1), "Stack not found %s:%s".format(mod, id))
     case StackBlock(mod, id, meta) =>
-      new ItemStack(notNull(GameRegistry.findBlock(mod, id),"Block not found %s:%s".format(mod, id)), 1, meta)
+      new ItemStack(notNull(GameRegistry.findBlock(mod, id), "Block not found %s:%s".format(mod, id)), 1, meta)
     case StackItem(mod, id, meta) =>
-      new ItemStack(notNull(GameRegistry.findItem(mod, id),"Item not found %s:%s".format(mod, id)), 1, meta)
+      new ItemStack(notNull(GameRegistry.findItem(mod, id), "Item not found %s:%s".format(mod, id)), 1, meta)
     case StackReflect(cls, field, meta) => reflectStack(cls, field, meta, cnt)
     case StackGetter(cls, method, param, meta) => reflectStackGetter(cls, method, param, meta, cnt)
   }
