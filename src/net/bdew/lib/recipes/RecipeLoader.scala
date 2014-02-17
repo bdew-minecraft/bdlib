@@ -11,12 +11,11 @@ package net.bdew.lib.recipes
 
 import java.io.Reader
 import net.minecraft.item.{Item, ItemStack}
-import net.bdew.lib.Misc
+import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
 import net.minecraftforge.oredict.{ShapelessOreRecipe, OreDictionary}
 import java.util.logging.Logger
-import cpw.mods.fml.common.FMLLog
 import net.minecraft.item.crafting.FurnaceRecipes
 
 /**
@@ -35,7 +34,7 @@ class RecipeLoader {
   def newParser() = new RecipeParser()
 
   val log: Logger = Logger.getLogger("RecipeLoader")
-  log.setParent(FMLLog.getLogger)
+  log.setParent(BdLib.log)
 
   /**
    * Current map of recipe characters to parser item references
