@@ -13,13 +13,23 @@ import net.minecraft.client.renderer.texture.IconRegister
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.ForgeSubscribe
 import net.minecraftforge.client.event.TextureStitchEvent
+import net.minecraft.util.Icon
 
 /**
  * Allows loading of texture that don't belong to specific block or item into vanilla block/item atlas
  * @param kind 0=Blocks / 1=Items
  */
-abstract class IconPreloader(kind: Int) {
-  def registerIcons(reg: IconRegister)
+class IconPreloader(kind: Int) {
+  var icons = Set.empty[Entry]
+
+  case class Entry(loc: String) {
+    var icon: Icon = null
+    icons += this
+  }
+
+  implicit def entry2icon(v: Entry) = v.icon
+
+  def registerIcons(reg: IconRegister) {}
 
   def init() {
     MinecraftForge.EVENT_BUS.register(this)
@@ -27,7 +37,9 @@ abstract class IconPreloader(kind: Int) {
 
   @ForgeSubscribe
   def preTextureStitch(ev: TextureStitchEvent.Pre) {
-    if (ev.map.getTextureType == kind)
+    if (ev.map.getTextureType == kind) {
+      for (x <- icons) x.icon = ev.map.registerIcon(x.loc)
       registerIcons(ev.map)
+    }
   }
 }
