@@ -98,10 +98,10 @@ class WidgetContainerWindow(val parent: BaseScreen, xSz: Int, ySz: Int) extends 
     Minecraft.getMinecraft.renderEngine.bindTexture(l.resource)
     color.activate()
     Tessellator.instance.startDrawingQuads()
-    addVertexUVScaled(r.x, r.y + r.w, z, t.x, t.y + t.w)
-    addVertexUVScaled(r.x + r.h, r.y + r.w, z, t.x + t.h, t.y + t.w)
-    addVertexUVScaled(r.x + r.h, r.y, z, t.x + t.h, t.y)
-    addVertexUVScaled(r.x, r.y, z, t.x, t.y)
+    addVertexUVScaled(r.x1, r.y2, z, t.x1, t.y2)
+    addVertexUVScaled(r.x2, r.y2, z, t.x2, t.y2)
+    addVertexUVScaled(r.x2, r.y1, z, t.x2, t.y1)
+    addVertexUVScaled(r.x1, r.y1, z, t.x1, t.y1)
     Tessellator.instance.draw()
   }
 

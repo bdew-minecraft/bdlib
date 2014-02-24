@@ -15,4 +15,8 @@ case class Rect(x: Int, y: Int, w: Int, h: Int) {
   def origin = new Point(x, y)
   def +(p: Point) = new Rect(origin + p, w, h)
   def -(p: Point) = new Rect(origin - p, w, h)
+  def x1 = x
+  def x2 = x + w
+  def y1 = y
+  def y2 = y + w
 }
