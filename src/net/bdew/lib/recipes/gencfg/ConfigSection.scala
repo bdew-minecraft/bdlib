@@ -15,6 +15,8 @@ case class EntryDouble(v: Double) extends CfgEntry
 
 case class EntryStr(v: String) extends CfgEntry
 
+case class EntryNumList(v: List[Double]) extends CfgEntry
+
 case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(String, CfgEntry)] {
   var raw = Map.empty[String, CfgEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx, x)))
 
@@ -33,6 +35,7 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
 
   def getDouble(id: String) = rawget(id, classOf[EntryDouble]).v
   def getString(id: String) = rawget(id, classOf[EntryStr]).v
+  def getDoubleList(id: String) = rawget(id, classOf[EntryNumList]).v
   def getSection(id: String) = rawget(id, classOf[ConfigSection])
 
   final val trueVals = Set("y", "true", "yes", "on")
@@ -52,6 +55,8 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
 
   def getInt(id: String) = getDouble(id).round.toInt
   def getFloat(id: String) = getDouble(id).toFloat
+  def getIntList(id: String) = getDoubleList(id).map(_.round.toInt).toList
+  def getFloatList(id: String) = getDoubleList(id).map(_.toFloat).toList
 }
 
 
