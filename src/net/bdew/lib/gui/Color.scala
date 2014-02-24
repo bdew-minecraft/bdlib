@@ -20,4 +20,11 @@ case class Color(r: Float, g: Float, b: Float) {
 
 object Color {
   final val white = Color(1, 1, 1)
+  final val black = Color(0, 0, 0)
+  final val red = Color(1, 0, 0)
+  final val green = Color(0, 1, 0)
+  final val blue = Color(0, 0, 1)
+  final val yellow = Color(1, 1, 0)
+  final val cyan = Color(0, 1, 1)
+  final val magenta = Color(1, 0, 1)
 }
