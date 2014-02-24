@@ -9,6 +9,8 @@
 
 package net.bdew.lib.recipes.gencfg
 
+import net.bdew.lib.gui.Color
+
 abstract class CfgEntry
 
 case class EntryDouble(v: Double) extends CfgEntry
@@ -57,6 +59,11 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
   def getFloat(id: String) = getDouble(id).toFloat
   def getIntList(id: String) = getDoubleList(id).map(_.round.toInt).toList
   def getFloatList(id: String) = getDoubleList(id).map(_.toFloat).toList
+
+  def getColor(id: String) = getFloatList(id) match {
+    case r :: g :: b :: Nil => Color(r, g, b)
+    case _ => sys.error("Color definition must be 3 numbers")
+  }
 }
 
 
