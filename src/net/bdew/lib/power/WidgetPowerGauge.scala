@@ -9,19 +9,19 @@
 
 package net.bdew.lib.power
 
-import net.bdew.lib.gui.{Point, TextureLocation, Rect}
+import net.bdew.lib.gui.{Texture, Point, Rect}
 import scala.collection.mutable
 import java.text.DecimalFormat
-import net.minecraft.client.Minecraft
 import net.bdew.lib.gui.widgets.Widget
 
-class WidgetPowerGauge(val rect: Rect, texture: TextureLocation, dslot: DataSlotPower) extends Widget {
+class WidgetPowerGauge(val rect: Rect, texture: Texture, dslot: DataSlotPower) extends Widget {
   val formater = new DecimalFormat("#,###")
 
+  val a = rect.map(_.round)
+
   override def draw(mouse: Point) {
-    Minecraft.getMinecraft.renderEngine.bindTexture(texture.resource)
-    val fill = (dslot.stored / dslot.capacity * rect.h).round
-    parent.drawTexture(Rect(rect.x, rect.y + rect.h - fill, rect.w, fill), Point(texture.x, texture.y + rect.h - fill))
+    val fill = dslot.stored / dslot.capacity
+    parent.drawTextureInterpolate(rect, texture, 0, 1 - fill, 1, 1)
   }
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += formater.format(dslot.stored) + "/" + formater.format(dslot.capacity) + " MJ"

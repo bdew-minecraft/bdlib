@@ -9,15 +9,14 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui.{Point, TextureLocation, Rect}
+import net.bdew.lib.gui.{Texture, Point, Rect}
 import net.bdew.lib.data.DataSlotTankBase
 import scala.collection.mutable
-import net.minecraft.client.renderer.texture.TextureMap
 import java.text.DecimalFormat
 import net.bdew.lib.Misc
 import org.lwjgl.opengl.GL11
 
-class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlotTankBase) extends Widget {
+class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase) extends Widget {
   val formater = new DecimalFormat("#,###")
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) {
@@ -35,17 +34,16 @@ class WidgetFluidGauge(val rect: Rect, overlay: TextureLocation, dslot: DataSlot
 
     val fstack = dslot.getFluid
     if (fstack != null && fstack.getFluid.getStillIcon != null) {
-      val icon = fstack.getFluid.getStillIcon
-      bindTexture(TextureMap.locationBlocksTexture)
-      var fillHeight: Int = if (dslot.getCapacity > 0) (rect.h * fstack.amount / dslot.getCapacity).round else 0
+      val icon = Texture(Texture.BLOCKS, fstack.getFluid.getStillIcon)
+      var fillHeight = if (dslot.getCapacity > 0) rect.h * fstack.amount / dslot.getCapacity else 0
       var yStart: Int = 0
 
       while (fillHeight > 0) {
         if (fillHeight > 16) {
-          parent.drawIcon(Rect(rect.x, rect.y + rect.h - 16 - yStart, rect.w, 16), icon)
+          parent.drawTexture(new Rect(rect.x, rect.y2 - 16 - yStart, rect.w, 16), icon)
           fillHeight -= 16
         } else {
-          parent.drawIcon(Rect(rect.x, rect.y + rect.h - fillHeight - yStart, rect.w, fillHeight), icon)
+          parent.drawTextureInterpolate(new Rect(rect.x, rect.y2 - 16 - yStart, rect.w, 16), icon, 0, 1 - fillHeight / 16, 1, 1)
           fillHeight = 0
         }
         yStart = yStart + 16
