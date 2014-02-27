@@ -45,6 +45,16 @@ trait WidgetContainer extends DrawTarget {
     return false
   }
 
+  def drawBackground(mouse: Point) {
+    val p = mouse - rect.origin
+    GL11.glPushMatrix()
+    GL11.glTranslatef(rect.origin.x, rect.origin.y, 0)
+    for (w <- activeWidgets) {
+      w.drawBackground(p)
+    }
+    GL11.glPopMatrix()
+  }
+
   def draw(mouse: Point) {
     val p = mouse - rect.origin
     GL11.glPushMatrix()
@@ -73,6 +83,3 @@ class WidgetContainerWindow(val parent: BaseScreen, xSz: Int, ySz: Int) extends 
   def getOffsetFromWindow = Point(0, 0)
   val rect = Rect(0, 0, xSz, ySz)
 }
-
-
-
