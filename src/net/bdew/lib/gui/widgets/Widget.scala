@@ -22,6 +22,7 @@ trait BaseWidget {
   def mouseClicked(p: Point, button: Int)
   def keyTyped(c: Char, i: Int): Boolean
   def draw(mouse: Point)
+  def drawBackground(mouse: Point)
   def looseFocus()
 }
 
@@ -31,7 +32,6 @@ trait Widget extends BaseWidget {
   def mouseClicked(p: Point, button: Int) {}
   def keyTyped(c: Char, i: Int): Boolean = false
   def draw(mouse: Point) {}
+  def drawBackground(mouse: Point) {}
   def looseFocus() {}
-
-  def bindTexture(res: ResourceLocation) = Minecraft.getMinecraft.renderEngine.bindTexture(res)
 }

@@ -12,8 +12,6 @@ package net.bdew.lib.gui
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.inventory.Container
 import scala.collection.mutable
-import net.minecraft.util.ResourceLocation
-import org.lwjgl.opengl.GL11
 import net.minecraft.client.Minecraft
 
 abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContainer(cont) {
@@ -22,7 +20,7 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
 
   val widgets = new WidgetContainerWindow(this, xSz, ySz)
 
-  val texture: ResourceLocation
+  val background: Texture
 
   def rect = new Rect(guiLeft, guiTop, xSize, ySize)
 
@@ -60,11 +58,9 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
       drawHoveringText(tip, x, y, getFontRenderer)
   }
 
-  protected def drawGuiContainerBackgroundLayer(f: Float, i: Int, j: Int) {
-    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F)
-    mc.renderEngine.bindTexture(texture)
-    val x = (width - xSize) / 2
-    val y = (height - ySize) / 2
-    this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize)
+  protected def drawGuiContainerBackgroundLayer(f: Float, x: Int, y: Int) {
+    if (background != null)
+      widgets.drawTexture(rect, background)
+    widgets.drawBackground(Point(x, y))
   }
 }

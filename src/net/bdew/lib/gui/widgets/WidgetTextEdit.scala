@@ -12,11 +12,11 @@ package net.bdew.lib.gui.widgets
 import net.minecraft.client.gui.{FontRenderer, GuiTextField}
 import net.bdew.lib.gui.{Point, Rect}
 
-class WidgetTextEdit(val rect: Rect, fr: FontRenderer) extends GuiTextField(fr, rect.x, rect.y, rect.w, rect.h) with Widget {
+class WidgetTextEdit(val rect: Rect, fr: FontRenderer) extends GuiTextField(fr, rect.x.round, rect.y.round, rect.w.round, rect.h.round) with Widget {
 
   override def mouseClicked(p: Point, button: Int) = {
     val pp = p + rect.origin
-    super.mouseClicked(pp.x, pp.y, button)
+    super.mouseClicked(pp.x.round, pp.y.round, button)
   }
 
   override def looseFocus() = setFocused(false)
