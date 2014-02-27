@@ -12,6 +12,7 @@ package net.bdew.lib.gui
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.inventory.Container
 import scala.collection.mutable
+import org.lwjgl.opengl.GL11
 
 abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContainer(cont) {
   xSize = xSz
@@ -60,6 +61,10 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
   protected def drawGuiContainerBackgroundLayer(f: Float, x: Int, y: Int) {
     if (background != null)
       widgets.drawTexture(rect, background)
-    widgets.drawBackground(Point(x, y))
+
+    GL11.glPushMatrix()
+    GL11.glTranslatef(rect.x, rect.y, 0)
+    widgets.drawBackground(Point(x, y) - rect.origin)
+    GL11.glPopMatrix()
   }
 }
