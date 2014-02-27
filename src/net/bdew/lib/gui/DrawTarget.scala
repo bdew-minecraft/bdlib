@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.gui.FontRenderer
 
 trait DrawTarget {
-  def getZLevel: Double
+  def getZLevel: Float
   def getFontRenderer: FontRenderer
   def drawTexture(r: Rect, t: Texture, color: Color = Color.white)
   def drawText(text: String, p: Point, color: Color, shadow: Boolean)
