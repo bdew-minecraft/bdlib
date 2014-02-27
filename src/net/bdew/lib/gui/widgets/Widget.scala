@@ -34,6 +34,4 @@ trait Widget extends BaseWidget {
   def draw(mouse: Point) {}
   def drawBackground(mouse: Point) {}
   def looseFocus() {}
-
-  def bindTexture(res: ResourceLocation) = Minecraft.getMinecraft.renderEngine.bindTexture(res)
 }
