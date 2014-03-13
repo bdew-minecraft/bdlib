@@ -125,13 +125,14 @@ case class StIfHaveMod(mod: String, thn: List[Statement], els: List[Statement]) 
 
 /**
  * Conditional block - checks if mod is loaded
+ * Can contain only delayed statements
  * Syntax: ifOreDict {string} { {statements} } [else { {statements} }]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.ifOreDict]]
  * @param id Ore Dictionary Entry
  * @param thn Statements to run if present
  * @param els Statements to run otherwise
  */
-case class StIfHaveOD(id: String, thn: List[Statement], els: List[Statement]) extends Statement
+case class StIfHaveOD(id: String, thn: List[DelayedStatement], els: List[DelayedStatement]) extends DelayedStatement
 
 /**
  * Removes previously defined recieps for a specific result
