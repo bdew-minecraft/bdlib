@@ -346,7 +346,6 @@ class RecipeLoader {
     }
   }
 
-
   /**
    * Process a list of statements and catch all exceptions
    * @param r The list to process

@@ -10,7 +10,6 @@
 package net.bdew.lib.gui
 
 import net.minecraft.inventory.IInventory
-import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 
 class SlotValidating(inv: IInventory, slot: Int, x: Int, y: Int) extends BaseSlot(inv, slot, x, y) {
