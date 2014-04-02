@@ -10,7 +10,7 @@
 package net.bdew.lib.items
 
 import net.minecraft.entity.item.EntityItem
-import net.minecraft.item.ItemStack
+import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.world.World
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.IInventory
@@ -76,4 +76,9 @@ object ItemUtils {
 
     return stack
   }
+
+  def findItemInInventory(inv: IInventory, item: Item) =
+    Range(0, inv.getSizeInventory).map(x => x -> inv.getStackInSlot(x))
+      .find({ case (slot, stack) => stack != null && stack.getItem == item })
+      .map({ case (slot, stack) => slot })
 }
