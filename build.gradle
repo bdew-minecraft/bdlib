@@ -14,7 +14,7 @@ buildscript {
 apply plugin: 'forge'
 apply plugin: 'scala'
 
-version = "1.2.0"
+version = "1.2.1"
 
 if (project.hasProperty('buildnum')) {
     project.version = project.version + '.' + project.buildnum
