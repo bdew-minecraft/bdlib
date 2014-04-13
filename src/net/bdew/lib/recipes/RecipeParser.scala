@@ -81,8 +81,8 @@ class RecipeParser extends JavaTokenParsers {
     case mod ~ thn ~ els => new StIfHaveMod(mod, thn, els.getOrElse(List.empty[Statement]))
   }
 
-  def ifOreDict = ("ifOreDict" ~> str) ~ ("{" ~> statements <~ "}") ~ ("else" ~> "{" ~> statements <~ "}").? ^^ {
-    case id ~ thn ~ els => new StIfHaveOD(id, thn, els.getOrElse(List.empty[Statement]))
+  def ifOreDict = ("ifOreDict" ~> str) ~ ("{" ~> delayedStatements <~ "}") ~ ("else" ~> "{" ~> delayedStatements <~ "}").? ^^ {
+    case id ~ thn ~ els => new StIfHaveOD(id, thn, els.getOrElse(List.empty[DelayedStatement]))
   }
 
   def recipeShaped3x3 = recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ~ recipeTriplet ^^ {
@@ -107,20 +107,21 @@ class RecipeParser extends JavaTokenParsers {
 
   def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp => StClearRecipes(sp) }
 
-  def statement: Parser[Statement] = (
+  def delayedStatement: Parser[DelayedStatement] = (
     charSpec
       | classMacro
-      | ifMod
       | ifOreDict
       | recipeShaped3x3
       | recipeShaped2x2
       | recipeShaped9
       | recipeShapeless
       | recipeSmelting
-      | clearRecipes
     )
 
+  def statement: Parser[Statement] = delayedStatement | ifMod | clearRecipes
+
   def statements = statement.*
+  def delayedStatements = delayedStatement.*
 
   def doParse(r: Reader): List[Statement] = {
     parseAll(statements, r) match {

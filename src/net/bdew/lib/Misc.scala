@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack
 import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
 import cpw.mods.fml.common.Loader
 import net.minecraftforge.oredict.ShapedOreRecipe
+import net.minecraft.world.biome.BiomeGenBase
 
 object Misc {
   def iterNbtCompoundList(parent: NBTTagCompound, name: String): Iterable[NBTTagCompound] = {
@@ -54,6 +55,8 @@ object Misc {
   def iterSomeEnum[T](list: Seq[T], indexes: Iterable[Int]): Iterable[(Int, T)] = for (i <- indexes) yield i -> list(i)
 
   def filterType[T](from: Iterable[_], cls: Class[T]) = from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
+
+  def getBiomeByName(name: String) = BiomeGenBase.biomeList.find(_.biomeName == name).getOrElse(null)
 
   def haveModVersion(spec: String): Boolean = {
     val req = VersionParser.parseVersionReference(spec)

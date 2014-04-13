@@ -10,7 +10,7 @@
 package net.bdew.lib.items.inventory
 
 import net.minecraft.item.Item
-import net.bdew.lib.gui.{BaseScreen, GuiProvider}
+import net.bdew.lib.gui.GuiProvider
 import cpw.mods.fml.common.Loader
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.minecraft.entity.player.EntityPlayer
@@ -29,7 +29,7 @@ trait ItemInventory extends Item with GuiProvider {
   val modObj = Loader.instance().activeModContainer().getMod
 
   @SideOnly(Side.CLIENT)
-  def makeGui(inv: InventoryItemAdapter, player: EntityPlayer): BaseScreen
+  def makeGui(inv: InventoryItemAdapter, player: EntityPlayer): AnyRef
   def makeContainer(inv: InventoryItemAdapter, player: EntityPlayer): ContainerItemInventory
 
   def makeAdaptor(player: EntityPlayer) = new InventoryItemAdapter(player, player.inventory.currentItem, invSize, invTagName)

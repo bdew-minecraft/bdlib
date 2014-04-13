@@ -219,15 +219,6 @@ class RecipeLoader {
         processStatementsSafe(els)
       }
 
-    case StIfHaveOD(od, thn, els) =>
-      if (OreDictionary.getOres(od).size() > 0) {
-        BdLib.logInfo("ifOreDict: %s found", od)
-        processStatementsSafe(thn)
-      } else {
-        BdLib.logInfo("ifOreDict: %s not found", od)
-        processStatementsSafe(els)
-      }
-
     case StClearRecipes(res) =>
       BdLib.logInfo("Clearing recipes that produce %s", res)
       delayedStatements = delayedStatements.filter({
@@ -307,16 +298,34 @@ class RecipeLoader {
         BdLib.logInfo("added %d -> %s", inStack, outStack)
       }
 
+    case StIfHaveOD(od, thn, els) =>
+      if (OreDictionary.getOres(od).size() > 0) {
+        BdLib.logInfo("ifOreDict: %s found".format(od))
+        processDelayedStatementsSafe(thn)
+      } else {
+        BdLib.logInfo("ifOreDict: %s not found".format(od))
+        processDelayedStatementsSafe(els)
+      }
+
     case x =>
       BdLib.logError("Can't process %s - this is a programing bug!", x)
   }
 
   /**
-   * Process delayed statements, clear the list afterwards
+   * Process main delayed statements list, clear the list afterwards
    */
   def processDelayedStatements() {
     BdLib.logInfo("Processing %d delayed statements", delayedStatements.size)
-    for (s <- delayedStatements) {
+    processDelayedStatementsSafe(delayedStatements)
+    delayedStatements = List.empty
+  }
+
+  /**
+   * Process a list of delayed statements and catch all exceptions
+   * @param list The list to process
+   */
+  def processDelayedStatementsSafe(list: List[DelayedStatement]) {
+    for (s <- list) {
       try {
         processDelayedStatement(s)
       } catch {
@@ -327,7 +336,6 @@ class RecipeLoader {
           e.printStackTrace()
       }
     }
-    delayedStatements = List.empty
   }
 
   /**

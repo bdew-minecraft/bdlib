@@ -11,8 +11,6 @@ package net.bdew.lib.gui.widgets
 
 import scala.collection.mutable
 import net.bdew.lib.gui.{WidgetContainer, Point, Rect}
-import net.minecraft.util.ResourceLocation
-import net.minecraft.client.Minecraft
 
 trait BaseWidget {
   val rect: Rect
