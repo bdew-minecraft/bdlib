@@ -56,7 +56,7 @@ object Misc {
 
   def filterType[T](from: Iterable[_], cls: Class[T]) = from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
 
-  def getBiomeByName(name: String) = BiomeGenBase.biomeList.find(_.biomeName == name).getOrElse(null)
+  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(_.biomeName == name).getOrElse(null)
 
   def haveModVersion(spec: String): Boolean = {
     val req = VersionParser.parseVersionReference(spec)
