@@ -16,12 +16,12 @@ import net.bdew.lib.block.HasTE
 
 class BlockManager() {
 
-  def regBlockCls[T <: Block](blockCls: Class[T], name: String, addStack: Boolean = true): T = {
+  def regBlockCls[T <: Block](blockCls: Class[T], name: String, addStack: Boolean = false): T = {
     val block = blockCls.newInstance()
     regBlock[T](block, name, addStack)
   }
 
-  def regBlock[T <: Block](block: T, name: String, addStack: Boolean = true): T = {
+  def regBlock[T <: Block](block: T, name: String, addStack: Boolean = false): T = {
     GameRegistry.registerBlock(block, name)
 
     if (addStack)

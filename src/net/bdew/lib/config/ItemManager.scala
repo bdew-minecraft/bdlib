@@ -18,12 +18,12 @@ class ItemManager() {
 
   def regItem[T <: SimpleItem](item: T): T = regItem[T](item, item.name)
 
-  def regItemCls[T <: Item](itemCls: Class[T], name: String, addStack: Boolean = true): T = {
+  def regItemCls[T <: Item](itemCls: Class[T], name: String, addStack: Boolean = false): T = {
     val item = itemCls.newInstance()
     regItem[T](item, name, addStack)
   }
 
-  def regItem[T <: Item](item: T, name: String, addStack: Boolean = true): T = {
+  def regItem[T <: Item](item: T, name: String, addStack: Boolean = false): T = {
     GameRegistry.registerItem(item, name)
     if (addStack)
       GameRegistry.registerCustomItemStack(name, new ItemStack(item))
