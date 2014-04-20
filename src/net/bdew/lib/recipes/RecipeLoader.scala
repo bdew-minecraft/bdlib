@@ -295,7 +295,7 @@ class RecipeLoader {
       }
       for (inStack <- getAllConcreteStacks(in, 1)) {
         GameRegistry.addSmelting(inStack, outStack, xp)
-        BdLib.logInfo("added %d -> %s", inStack, outStack)
+        BdLib.logInfo("added %s -> %s", inStack, outStack)
       }
 
     case StIfHaveOD(od, thn, els) =>
