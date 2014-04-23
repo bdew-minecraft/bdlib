@@ -332,8 +332,7 @@ class RecipeLoader {
         case e: StatementError =>
           BdLib.logError("Error while processing %s: %s", s, e.getMessage)
         case e: Throwable =>
-          BdLib.logError("Error while processing %s: %s", s, e)
-          e.printStackTrace()
+          BdLib.logErrorException("Error while processing %s", e, s)
       }
     }
   }
@@ -350,8 +349,7 @@ class RecipeLoader {
         case e: StatementError =>
           BdLib.logError("Error while processing %s: %s", s, e.getMessage)
         case e: Throwable =>
-          BdLib.logError("Error while processing %s: %s", s, e)
-          e.printStackTrace()
+          BdLib.logErrorException("Error while processing %s", e, s)
       }
     }
   }

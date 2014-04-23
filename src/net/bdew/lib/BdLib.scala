@@ -21,6 +21,8 @@ object BdLib {
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))
   def logWarn(msg: String, args: Any*) = log.warn(msg.format(args: _*))
   def logError(msg: String, args: Any*) = log.error(msg.format(args: _*))
+  def logWarnException(msg: String, t: Throwable, args: Any*) = log.warn(msg.format(args: _*), t)
+  def logErrorException(msg: String, t: Throwable, args: Any*) = log.error(msg.format(args: _*), t)
 
   @EventHandler
   def preInit(ev: FMLPreInitializationEvent) {
