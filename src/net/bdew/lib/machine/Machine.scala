@@ -12,7 +12,6 @@ package net.bdew.lib.machine
 import net.bdew.lib.recipes.gencfg.ConfigSection
 import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
-import net.minecraft.item.ItemStack
 import net.bdew.lib.block.HasTE
 import net.bdew.lib.Misc
 
@@ -25,7 +24,6 @@ abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
   def regBlock() {
     block = blockConstruct
     GameRegistry.registerBlock(block, name)
-    GameRegistry.registerCustomItemStack(name, new ItemStack(block))
     if (block.isInstanceOf[HasTE[_]]) {
       GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass, "%s.%s".format(modId, name))
     }
