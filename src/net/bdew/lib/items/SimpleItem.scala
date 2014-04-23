@@ -9,12 +9,10 @@
 
 package net.bdew.lib.items
 
-import net.minecraft.item.{ItemTool, Item}
+import net.minecraft.item.Item
 import net.minecraft.client.renderer.texture.IIconRegister
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
-import java.util
-import net.minecraft.block.Block
 
 trait NamedItem extends Item {
   def name: String

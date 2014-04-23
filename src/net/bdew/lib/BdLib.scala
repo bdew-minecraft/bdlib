@@ -10,9 +10,10 @@
 package net.bdew.lib
 
 import cpw.mods.fml.common.Mod
-import cpw.mods.fml.common.event.FMLPreInitializationEvent
+import cpw.mods.fml.common.event.{FMLServerStartingEvent, FMLPreInitializationEvent}
 import org.apache.logging.log4j.Logger
 import cpw.mods.fml.common.Mod.EventHandler
+import net.minecraft.command.CommandHandler
 
 @Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")
 object BdLib {
@@ -28,5 +29,11 @@ object BdLib {
   def preInit(ev: FMLPreInitializationEvent) {
     log = ev.getModLog
     log.info("bdlib BDLIB_VER loaded")
+  }
+
+  @EventHandler
+  def serverStarting(event: FMLServerStartingEvent) {
+    val commandHandler = event.getServer.getCommandManager.asInstanceOf[CommandHandler]
+    commandHandler.registerCommand(new CommandDumpRegistry)
   }
 }
