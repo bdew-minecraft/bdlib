@@ -11,12 +11,12 @@ package net.bdew.lib.config
 
 import net.minecraft.item.{ItemStack, Item}
 import cpw.mods.fml.common.registry.GameRegistry
-import net.bdew.lib.items.SimpleItem
+import net.bdew.lib.items.{NamedItem, SimpleItem}
 
 class ItemManager() {
   def regSimpleItem(name: String): SimpleItem = regItem(new SimpleItem(name), name)
 
-  def regItem[T <: SimpleItem](item: T): T = regItem[T](item, item.name)
+  def regItem[T <: NamedItem](item: T): T = regItem[T](item, item.name)
 
   def regItemCls[T <: Item](itemCls: Class[T], name: String, addStack: Boolean = false): T = {
     val item = itemCls.newInstance()

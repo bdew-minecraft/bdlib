@@ -9,12 +9,18 @@
 
 package net.bdew.lib.items
 
-import net.minecraft.item.Item
+import net.minecraft.item.{ItemTool, Item}
 import net.minecraft.client.renderer.texture.IIconRegister
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
+import java.util
+import net.minecraft.block.Block
 
-class SimpleItem(val name: String) extends Item() {
+trait NamedItem extends Item {
+  def name: String
+}
+
+class SimpleItem(val name: String) extends Item with NamedItem {
   val modId = Misc.getActiveModId
   setUnlocalizedName(modId + "." + name)
 
