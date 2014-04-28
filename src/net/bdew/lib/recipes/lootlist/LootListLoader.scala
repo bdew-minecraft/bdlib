@@ -11,29 +11,31 @@ package net.bdew.lib.recipes.lootlist
 
 import net.bdew.lib.recipes.gencfg.GenericConfigLoader
 import net.minecraftforge.oredict.OreDictionary
-import net.bdew.lib.BdLib
+import net.bdew.lib.recipes.StackRef
+import net.minecraft.item.ItemStack
 
 /**
  * Loader mixin for loot lists
  */
 trait LootListLoader extends GenericConfigLoader {
-  def resolveLootList(entry: EntryLootList) =
-    (for ((chance, ref) <- entry.list) yield {
+  def resolveLootList(entry: EntryLootList): List[(Int, ItemStack)] = resolveLootList(entry.list)
+  def resolveLootList(list: List[(Int, StackRef)]) =
+    (for ((chance, ref) <- list) yield {
       try {
         val itemStack = getConcreteStack(ref)
         if (itemStack == null) {
-          BdLib.logWarn("Unable to resolve %s: null returned", ref)
+          log.warning("Unable to resolve %s: null returned".format(ref))
           None
         } else {
           if (itemStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-            BdLib.logInfo("meta/damage is unset in %s, defaulting to 0", ref)
+            log.info("meta/damage is unset in %s, defaulting to 0".format(ref))
             itemStack.setItemDamage(0)
           }
           Some((chance, itemStack))
         }
       } catch {
         case e: Throwable =>
-          BdLib.logWarn("Unable to resolve %s: %s", ref, e.getMessage)
+          log.warning("Unable to resolve %s: %s".format(ref, e.getMessage))
           None
       }
     }).flatten
