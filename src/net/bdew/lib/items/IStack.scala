@@ -9,7 +9,8 @@
 
 package net.bdew.lib.items
 
-import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.item.{ItemBlock, Item, ItemStack}
+import net.minecraft.block.Block
 
 /**
  * Allows matching Items in ItemStacks in scala pattern matches
@@ -20,4 +21,15 @@ object IStack {
       None
     else
       Some(x.getItem)
+}
+
+/**
+ * Allows matching Blocks in ItemStacks in scala pattern matches
+ */
+object IStackBlock {
+  def unapply(x: ItemStack): Option[Block] =
+    if (x == null || x.getItem == null || !x.getItem.isInstanceOf[ItemBlock])
+      None
+    else
+      Some(x.getItem.asInstanceOf[ItemBlock].field_150939_a)
 }
