@@ -13,12 +13,17 @@ import net.bdew.lib.recipes.RecipeParser
 
 trait GenericConfigParser extends RecipeParser {
   override def statement = statementCfg | super.statement
-  def negativeNumber = "-" ~> decimalNumber ^^ { case x => "-" + x }
-  def signedNumber = decimalNumber | negativeNumber
+
+  // Hex variant must come before decimalNumber, otherwise the parser breaks
+  def signedNumber = (
+    ("0x" ~> "[0-9A-Fa-f]+".r) ^^ { case x => Integer.parseInt(x, 16).toDouble }
+      | decimalNumber ^^ { case x => x.toDouble }
+      | ("-" ~> decimalNumber) ^^ { case x => -x.toDouble }
+    )
 
   def cfgStatementNum = ident ~ "=" ~ signedNumber ^^ { case id ~ eq ~ n => CfgVal(id, EntryDouble(n.toDouble)) }
   def cfgStatementStr = ident ~ "=" ~ str ^^ { case id ~ eq ~ s => CfgVal(id, EntryStr(s)) }
-  def cfgStatementNumList = ident ~ ("=" ~> "{" ~> signedNumber.* <~ "}") ^^ { case id ~ l => CfgVal(id, EntryNumList(l.map(_.toDouble))) }
+  def cfgStatementNumList = ident ~ ("=" ~> "{" ~> signedNumber.* <~ "}") ^^ { case id ~ l => CfgVal(id, EntryNumList(l)) }
   def cfgStatementSub = cfgBlock ^^ { case (id, st) => CfgSub(id, st) }
 
   def cfgStatement = cfgStatementNum | cfgStatementStr | cfgStatementSub | cfgStatementNumList

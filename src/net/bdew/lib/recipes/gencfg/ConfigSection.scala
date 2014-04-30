@@ -60,10 +60,12 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
   def getIntList(id: String) = getDoubleList(id).map(_.round.toInt).toList
   def getFloatList(id: String) = getDoubleList(id).map(_.toFloat).toList
 
-  def getColor(id: String) = getFloatList(id) match {
-    case r :: g :: b :: Nil => Color(r, g, b)
-    case _ => sys.error("Color definition must be 3 numbers")
-  }
+  def getColor(id: String) =
+    raw(id) match {
+      case EntryDouble(c) => Color.fromInt(c.toInt)
+      case EntryNumList(r :: g :: b :: Nil) => Color(r.toFloat, g.toFloat, b.toFloat)
+      case x => sys.error("Invalid color definition: %s".format(x))
+    }
 }
 
 

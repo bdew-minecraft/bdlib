@@ -29,6 +29,11 @@ case class Color(r: Float, g: Float, b: Float, a: Float = 1) {
 
 object Color {
   def fromRGB(r: Int, g: Int, b: Int, a: Int = 255) = Color(r / 255F, g / 255F, b / 255F, a / 255F)
+  def fromInt(v: Int) = Color(
+    ((v >> 16) & 0xFF) / 255F,
+    ((v >> 8) & 0xFF) / 255F,
+    (v & 0xFF) / 255F
+  )
   final val white = Color(1, 1, 1)
   final val black = Color(0, 0, 0)
   final val red = Color(1, 0, 0)
