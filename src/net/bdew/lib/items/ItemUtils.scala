@@ -15,6 +15,7 @@ import net.minecraft.world.World
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.IInventory
 import net.bdew.lib.Misc
+import java.util.Random
 
 object ItemUtils {
   def throwItemAt(world: World, x: Int, y: Int, z: Int, stack: ItemStack) {
@@ -81,4 +82,17 @@ object ItemUtils {
     Range(0, inv.getSizeInventory).map(x => x -> inv.getStackInSlot(x))
       .find({ case (slot, stack) => stack != null && stack.getItem == item })
       .map({ case (slot, stack) => slot })
+
+  def copyWithRandomSize(template: ItemStack, max: Int, rand: Random) = {
+    val newSize = rand.nextInt(max)
+    val newStack = template.copy()
+    newStack.stackSize =
+      if (newSize > newStack.getMaxStackSize)
+        newStack.getMaxStackSize
+      else if (newSize <= 0)
+        1
+      else
+        newSize
+    newStack
+  }
 }

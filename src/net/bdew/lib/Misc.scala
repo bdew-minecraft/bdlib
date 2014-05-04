@@ -28,6 +28,7 @@ object Misc {
 
   def toLocal(s: String) = StatCollector.translateToLocal(s)
   def toLocalF(s: String, params: Any*) = StatCollector.translateToLocal(s).format(params: _*)
+  def hasLocal(s: String) = StatCollector.canTranslate(s)
 
   def flattenRecipe(pattern: Seq[String], items: Map[Char, AnyRef]) =
     pattern ++ items.map {
