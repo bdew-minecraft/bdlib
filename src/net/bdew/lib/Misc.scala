@@ -17,6 +17,8 @@ import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
 import cpw.mods.fml.common.Loader
 import net.minecraftforge.oredict.ShapedOreRecipe
 import net.minecraft.world.biome.BiomeGenBase
+import net.minecraftforge.common.ForgeDirection
+import net.minecraft.tileentity.TileEntity
 
 object Misc {
   def iterNbtList[X](list: NBTTagList) =
@@ -69,4 +71,16 @@ object Misc {
 
     return true
   }
+
+  // Because writing this every time is awkward
+  def forgeDirection(i: Int) = ForgeDirection.values()(i)
+
+  // Easy replacement for various "if(foo.isInstanceOf[Bar]) foo.asInstanceOf[Bar]" constructs
+  def asInstanceOpt[T](v: Any, cls: Class[T]) =
+    if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
+
+  def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
+    Option(origin.worldObj.getBlockTileEntity(origin.xCoord + dir.offsetX,
+      origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
 }
+

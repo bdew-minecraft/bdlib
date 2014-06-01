@@ -13,9 +13,10 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.world.World
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.IInventory
+import net.minecraft.inventory.{ISidedInventory, IInventory}
 import net.bdew.lib.Misc
 import java.util.Random
+import net.minecraftforge.common.ForgeDirection
 
 object ItemUtils {
   def throwItemAt(world: World, x: Int, y: Int, z: Int, stack: ItemStack) {
@@ -77,6 +78,11 @@ object ItemUtils {
 
     return stack
   }
+
+  def getAccessibleSlotsFromSide(inv: IInventory, side: ForgeDirection) =
+    (Misc.asInstanceOpt(inv, classOf[ISidedInventory])
+      map (_.getAccessibleSlotsFromSide(side.ordinal()).toList)
+      getOrElse (0 until inv.getSizeInventory))
 
   def findItemInInventory(inv: IInventory, item: Item) =
     Range(0, inv.getSizeInventory).map(x => x -> inv.getStackInSlot(x))
