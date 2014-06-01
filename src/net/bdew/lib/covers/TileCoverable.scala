@@ -9,16 +9,21 @@
 
 package net.bdew.lib.covers
 
-import net.bdew.lib.data.base.TileDataSlots
+import net.bdew.lib.data.base.{UpdateKind, TileDataSlots}
 import net.minecraftforge.common.ForgeDirection
+import net.bdew.lib.data.DataSlotItemStack
+import net.bdew.lib.Misc
+import net.minecraft.item.ItemStack
 
 trait TileCoverable extends TileDataSlots {
-  val covers = (ForgeDirection.VALID_DIRECTIONS map { x => x -> DataslotCover("cv_" + x.toString.toLowerCase, this) }).toMap
+  val covers = (ForgeDirection.VALID_DIRECTIONS map { x =>
+    x -> DataSlotItemStack("cover_" + x.toString.toLowerCase, this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
+  }).toMap
 
   /**
    * Checks if a specific cover can be installed here
    */
-  def isValidCover(side: ForgeDirection, cover: ItemCover): Boolean
+  def isValidCover(side: ForgeDirection, cover: ItemStack): Boolean
 
   /**
    * Called when new covers are installed
@@ -26,8 +31,13 @@ trait TileCoverable extends TileDataSlots {
   def onCoversChanged() {}
 
   def tickCovers() =
-    for ((dir, covopt) <- covers; cover <- covopt.cval)
-      cover.tickCover(this, dir)
+    for {
+      (dir, coverSlot) <- covers
+      coverStack <- Option(coverSlot.cval)
+      coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
+    } {
+      coverItem.tickCover(this, dir, coverStack)
+    }
 
   serverTick.listen(tickCovers)
 }

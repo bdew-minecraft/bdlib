@@ -14,7 +14,6 @@ import net.minecraft.world.{IBlockAccess, World}
 import net.minecraft.entity.player.EntityPlayer
 import net.bdew.lib.Misc
 import net.bdew.lib.items.ItemUtils
-import net.minecraft.item.ItemStack
 
 trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
   override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {
@@ -22,11 +21,11 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
     val side = Misc.forgeDirection(face)
 
     if (player.getCurrentEquippedItem == null && player.isSneaking) {
-      for (cover <- te.covers(side)) {
+      for (cover <- Option(te.covers(side).cval)) {
         if (!world.isRemote) {
-          te.covers(side) := None
+          te.covers(side) := null
           te.onCoversChanged()
-          ItemUtils.dropItemToPlayer(world, player, new ItemStack(cover))
+          ItemUtils.dropItemToPlayer(world, player, cover)
         }
         return true
       }
@@ -36,14 +35,15 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
       activeStack <- Option(player.getCurrentEquippedItem)
       activeItem <- Option(activeStack.getItem)
       coverItem <- Misc.asInstanceOpt(activeItem, classOf[ItemCover])
-      if te.isValidCover(side, coverItem) && coverItem.isValidTile(te)
+      if te.isValidCover(side, activeStack) && coverItem.isValidTile(te, activeStack)
     } {
       if (!world.isRemote) {
-        for (cover <- te.covers(side))
-          ItemUtils.dropItemToPlayer(world, player, new ItemStack(cover))
+        for (cover <- Option(te.covers(side).cval))
+          ItemUtils.throwItemAt(world, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, cover.copy())
 
-        player.inventory.decrStackSize(player.inventory.currentItem, 1)
-        te.covers(side) := coverItem
+        te.covers(side) := activeStack.splitStack(1)
+
+        if (activeStack.stackSize <= 0) player.inventory.setInventorySlotContents(player.inventory.currentItem, null)
         te.onCoversChanged()
       }
       return true
@@ -53,13 +53,16 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
   }
 
   override def getBlockTexture(w: IBlockAccess, x: Int, y: Int, z: Int, side: Int) =
-    getTE(w, x, y, z).covers(Misc.forgeDirection(side)).cval map (_.getCoverIcon) getOrElse
-      super.getBlockTexture(w, x, y, z, side)
+    (for {
+      coverStack <- Option(getTE(w, x, y, z).covers(Misc.forgeDirection(side)).cval)
+      coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
+    } yield coverItem.getCoverIcon(coverStack)
+      ) getOrElse super.getBlockTexture(w, x, y, z, side)
 
   override def breakBlock(world: World, x: Int, y: Int, z: Int, blockId: Int, meta: Int) {
     if (!world.isRemote)
-      for ((dir, covOpt) <- getTE(world, x, y, z).covers; cover <- covOpt)
-        ItemUtils.throwItemAt(world, x, y, z, new ItemStack(cover))
+      for ((dir, covOpt) <- getTE(world, x, y, z).covers; cover <- Option(covOpt.cval))
+        ItemUtils.throwItemAt(world, x, y, z, cover)
     super.breakBlock(world, x, y, z, blockId, meta)
   }
 }

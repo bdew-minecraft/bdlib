@@ -9,7 +9,7 @@
 
 package net.bdew.lib.covers
 
-import net.minecraft.item.Item
+import net.minecraft.item.{ItemStack, Item}
 import net.minecraftforge.common.ForgeDirection
 import net.minecraft.util.Icon
 
@@ -17,15 +17,15 @@ trait ItemCover extends Item {
   /**
    * @return Icon to render, MUST be on terrain spritesheet (0), not item!
    */
-  def getCoverIcon: Icon
+  def getCoverIcon(stack: ItemStack): Icon
 
   /**
    * Perform tick, called on server only
    */
-  def tickCover(te: TileCoverable, side: ForgeDirection)
+  def tickCover(te: TileCoverable, side: ForgeDirection, cover: ItemStack)
 
   /**
    * Checks if this cover can be installed on a specific TE
    */
-  def isValidTile(te: TileCoverable): Boolean
+  def isValidTile(te: TileCoverable, cover: ItemStack): Boolean
 }
