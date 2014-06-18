@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.block.HasTE
+import net.bdew.lib.Misc
 
 class BlockManager() {
 
@@ -28,7 +29,8 @@ class BlockManager() {
       GameRegistry.registerCustomItemStack(name, new ItemStack(block))
 
     if (block.isInstanceOf[HasTE[_]])
-      GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass, name)
+        GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
+          "%s.%s".format(Misc.getActiveModId, name))
 
     return block
   }

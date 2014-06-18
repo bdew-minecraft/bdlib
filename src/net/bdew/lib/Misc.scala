@@ -17,6 +17,8 @@ import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
 import cpw.mods.fml.common.Loader
 import net.minecraftforge.oredict.ShapedOreRecipe
 import net.minecraft.world.biome.BiomeGenBase
+import net.minecraft.tileentity.TileEntity
+import net.minecraftforge.common.util.ForgeDirection
 
 object Misc {
   def iterNbtCompoundList(parent: NBTTagCompound, name: String): Iterable[NBTTagCompound] = {
@@ -57,7 +59,7 @@ object Misc {
 
   def filterType[T](from: Iterable[_], cls: Class[T]) = from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
 
-  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(_.biomeName == name).getOrElse(null)
+  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(x => x != null && x.biomeName == name).getOrElse(null)
 
   def haveModVersion(spec: String): Boolean = {
     val req = VersionParser.parseVersionReference(spec)
@@ -71,4 +73,16 @@ object Misc {
 
     return true
   }
+
+  // Because writing this every time is awkward
+  def forgeDirection(i: Int) = ForgeDirection.values()(i)
+
+  // Easy replacement for various "if(foo.isInstanceOf[Bar]) foo.asInstanceOf[Bar]" constructs
+  def asInstanceOpt[T](v: Any, cls: Class[T]) =
+    if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
+
+  def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
+    Option(origin.getWorldObj.getBlockTileEntity(origin.xCoord + dir.offsetX,
+      origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
 }
+
