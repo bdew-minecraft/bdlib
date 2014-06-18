@@ -14,6 +14,7 @@ import net.minecraft.world.{IBlockAccess, World}
 import net.minecraft.entity.player.EntityPlayer
 import net.bdew.lib.Misc
 import net.bdew.lib.items.ItemUtils
+import net.minecraft.block.Block
 
 trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
   override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {
@@ -52,17 +53,17 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
     super.onBlockActivated(world, x, y, z, player, face, xoffs, yoffs, zoffs)
   }
 
-  override def getBlockTexture(w: IBlockAccess, x: Int, y: Int, z: Int, side: Int) =
+  override def getIcon(w: IBlockAccess, x: Int, y: Int, z: Int, side: Int) =
     (for {
       coverStack <- Option(getTE(w, x, y, z).covers(Misc.forgeDirection(side)).cval)
       coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
     } yield coverItem.getCoverIcon(coverStack)
-      ) getOrElse super.getBlockTexture(w, x, y, z, side)
+      ) getOrElse super.getIcon(w, x, y, z, side)
 
-  override def breakBlock(world: World, x: Int, y: Int, z: Int, blockId: Int, meta: Int) {
+  override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
     if (!world.isRemote)
       for ((dir, covOpt) <- getTE(world, x, y, z).covers; cover <- Option(covOpt.cval))
         ItemUtils.throwItemAt(world, x, y, z, cover)
-    super.breakBlock(world, x, y, z, blockId, meta)
+    super.breakBlock(world, x, y, z, block, meta)
   }
 }

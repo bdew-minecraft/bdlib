@@ -10,14 +10,14 @@
 package net.bdew.lib.covers
 
 import net.minecraft.item.{ItemStack, Item}
-import net.minecraftforge.common.ForgeDirection
-import net.minecraft.util.Icon
+import net.minecraft.util.IIcon
+import net.minecraftforge.common.util.ForgeDirection
 
 trait ItemCover extends Item {
   /**
    * @return Icon to render, MUST be on terrain spritesheet (0), not item!
    */
-  def getCoverIcon(stack: ItemStack): Icon
+  def getCoverIcon(stack: ItemStack): IIcon
 
   /**
    * Perform tick, called on server only

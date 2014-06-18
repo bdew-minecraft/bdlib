@@ -16,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.{ISidedInventory, IInventory}
 import net.bdew.lib.Misc
 import java.util.Random
-import net.minecraftforge.common.ForgeDirection
+import net.minecraftforge.common.util.ForgeDirection
 
 object ItemUtils {
   def throwItemAt(world: World, x: Int, y: Int, z: Int, stack: ItemStack) {

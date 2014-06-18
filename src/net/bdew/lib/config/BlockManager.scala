@@ -29,8 +29,8 @@ class BlockManager() {
       GameRegistry.registerCustomItemStack(name, new ItemStack(block))
 
     if (block.isInstanceOf[HasTE[_]])
-        GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
-          "%s.%s".format(Misc.getActiveModId, name))
+      GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
+        "%s.%s".format(Misc.getActiveModId, name))
 
     return block
   }

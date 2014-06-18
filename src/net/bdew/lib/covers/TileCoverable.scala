@@ -10,10 +10,10 @@
 package net.bdew.lib.covers
 
 import net.bdew.lib.data.base.{UpdateKind, TileDataSlots}
-import net.minecraftforge.common.ForgeDirection
 import net.bdew.lib.data.DataSlotItemStack
 import net.bdew.lib.Misc
 import net.minecraft.item.ItemStack
+import net.minecraftforge.common.util.ForgeDirection
 
 trait TileCoverable extends TileDataSlots {
   val covers = (ForgeDirection.VALID_DIRECTIONS map { x =>

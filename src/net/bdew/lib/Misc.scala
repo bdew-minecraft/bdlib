@@ -82,7 +82,7 @@ object Misc {
     if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
 
   def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
-    Option(origin.getWorldObj.getBlockTileEntity(origin.xCoord + dir.offsetX,
+    Option(origin.getWorldObj.getTileEntity(origin.xCoord + dir.offsetX,
       origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
 }
 
