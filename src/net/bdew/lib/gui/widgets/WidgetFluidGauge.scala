@@ -21,7 +21,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) {
     if (dslot.getFluid != null) {
-      tip += dslot.getFluid.getFluid.getLocalizedName
+      tip += dslot.getFluid.getFluid.getLocalizedName(dslot.getFluid)
       tip += "%s/%s mB".format(formater.format(dslot.getFluidAmount), formater.format(dslot.getCapacity))
     } else {
       tip += Misc.toLocal("bdlib.label.empty")

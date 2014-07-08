@@ -47,7 +47,8 @@ class Sprite(val resource: ResourceLocation, r: Rect, scale: Int = 256) extends 
 }
 
 class ScaledResourceLocation(path: String, val scale: Int = 256) extends ResourceLocation(path) {
-  def this(domain: String, path: String, scale: Int = 256) = this(domain + ":" + path, scale)
+  def this(domain: String, path: String, scale: Int) = this(domain + ":" + path, scale)
+  def this(domain: String, path: String) = this(domain + ":" + path, 256)
 }
 
 object Texture {

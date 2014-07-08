@@ -28,7 +28,7 @@ class Event2[T, R] extends EventBase[(T, R) => Unit] {
 }
 
 object Event {
-  def apply(t: Unit) = new Event0
+  def apply() = new Event0
   def apply[T] = new Event1[T]
   def apply[T, R] = new Event2[T, R]
 }

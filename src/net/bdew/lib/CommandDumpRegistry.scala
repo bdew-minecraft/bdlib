@@ -52,10 +52,10 @@ class CommandDumpRegistry extends CommandBase {
       dumpWriter.write(FluidRegistry.getRegisteredFluids.map(_._1).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
-      CommandBase.notifyAdmins(sender, "Registry dumped to " + dumpFile.getCanonicalPath)
+      CommandBase.func_152373_a(sender, this, "Registry dumped to " + dumpFile.getCanonicalPath)
     } catch {
       case e: Throwable =>
-        CommandBase.notifyAdmins(sender, "Failed to save registry dump: " + e)
+        CommandBase.func_152373_a(sender, this, "Failed to save registry dump: " + e)
         BdLib.logErrorException("Failed to save registry dump", e)
     } finally {
       dumpWriter.close()
