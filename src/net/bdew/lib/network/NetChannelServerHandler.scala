@@ -9,19 +9,21 @@
 
 package net.bdew.lib.network
 
-import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
-import net.minecraft.nbt.NBTTagCompound
 import cpw.mods.fml.common.network.NetworkRegistry
-import net.minecraft.network.NetHandlerPlayServer
+import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import net.bdew.lib.BdLib
+import net.minecraft.network.NetHandlerPlayServer
 
-class NetChannelServerHandler(ch: NetChannel) extends SimpleChannelInboundHandler[NBTTagCompound] {
-  def channelRead0(ctx: ChannelHandlerContext, msg: NBTTagCompound) {
-    val cmd = msg.getString("_cmd")
-    val nh = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get.asInstanceOf[NetHandlerPlayServer].playerEntity
-    ch.serverHandlers.getOrElse(cmd, {
-      BdLib.log.error("Unknown command: '%s' from '%s'".format(cmd, nh.getCommandSenderName))
-      return
-    })(msg, nh)
+class NetChannelServerHandler(ch: NetChannel) extends SimpleChannelInboundHandler[Message] {
+  def channelRead0(ctx: ChannelHandlerContext, msg: Message) {
+    try {
+      val player = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get.asInstanceOf[NetHandlerPlayServer].playerEntity
+      if (ch.serverChain.isDefinedAt(msg, player))
+        ch.serverChain(msg, player)
+      else
+        BdLib.logWarn("Unable to handle message from user %s: %s", player.getDisplayName, msg)
+    } catch {
+      case e: Throwable => BdLib.logErrorException("Error handling packet", e)
+    }
   }
 }

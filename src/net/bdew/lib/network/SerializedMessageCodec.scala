@@ -9,30 +9,31 @@
 
 package net.bdew.lib.network
 
-import io.netty.handler.codec.MessageToMessageCodec
-import cpw.mods.fml.common.network.internal.FMLProxyPacket
-import net.minecraft.nbt.{CompressedStreamTools, NBTTagCompound}
-import io.netty.channel.ChannelHandlerContext
+import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.util
-import java.io.{DataInputStream, DataOutputStream}
-import io.netty.buffer.{ByteBufInputStream, ByteBufOutputStream, Unpooled}
+
 import cpw.mods.fml.common.network.NetworkRegistry
+import cpw.mods.fml.common.network.internal.FMLProxyPacket
+import io.netty.buffer.{ByteBufInputStream, ByteBufOutputStream, Unpooled}
 import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel.ChannelHandlerContext
+import io.netty.handler.codec.MessageToMessageCodec
 import net.bdew.lib.BdLib
 
 @Sharable
-class NBTMessageToMessageCodec extends MessageToMessageCodec[FMLProxyPacket, NBTTagCompound] {
-  def encode(ctx: ChannelHandlerContext, msg: NBTTagCompound, out: util.List[AnyRef]) {
+class SerializedMessageCodec extends MessageToMessageCodec[FMLProxyPacket, Message] {
+  def encode(ctx: ChannelHandlerContext, msg: Message, out: util.List[AnyRef]) {
     val buff = Unpooled.buffer()
-    val writer = new DataOutputStream(new ByteBufOutputStream(buff))
-    CompressedStreamTools.write(msg, writer)
+    val writer = new ObjectOutputStream(new ByteBufOutputStream(buff))
+    writer.writeObject(msg)
     val pkt = new FMLProxyPacket(buff, ctx.channel.attr(NetworkRegistry.FML_CHANNEL).get)
     out.add(pkt)
   }
+
   def decode(ctx: ChannelHandlerContext, msg: FMLProxyPacket, out: util.List[AnyRef]) {
     try {
-      val stream = new DataInputStream(new ByteBufInputStream(msg.payload()))
-      out.add(CompressedStreamTools.read(stream))
+      val reader = new ObjectInputStream(new ByteBufInputStream(msg.payload()))
+      out.add(reader.readObject())
     } catch {
       case e: Throwable => BdLib.log.error("Error decoding packet", e)
     }

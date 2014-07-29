@@ -10,15 +10,17 @@
 package net.bdew.lib.network
 
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
-import net.minecraft.nbt.NBTTagCompound
 import net.bdew.lib.BdLib
 
-class NetChannelClientHandler(ch: NetChannel) extends SimpleChannelInboundHandler[NBTTagCompound] {
-  def channelRead0(ctx: ChannelHandlerContext, msg: NBTTagCompound) {
-    val cmd = msg.getString("_cmd")
-    ch.clientHandlers.getOrElse(cmd, {
-      BdLib.log.error("Unknown command: '%s' from server".format(cmd))
-      return
-    })(msg)
+class NetChannelClientHandler(ch: NetChannel) extends SimpleChannelInboundHandler[Message] {
+  def channelRead0(ctx: ChannelHandlerContext, msg: Message) {
+    try {
+      if (ch.clientChain.isDefinedAt(msg))
+        ch.clientChain(msg)
+      else
+        BdLib.logWarn("Unable to handle message from server: %s", msg)
+    } catch {
+      case e: Throwable => BdLib.logErrorException("Error handling packet", e)
+    }
   }
 }

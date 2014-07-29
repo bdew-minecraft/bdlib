@@ -9,63 +9,63 @@
 
 package net.bdew.lib.network
 
-import cpw.mods.fml.common.network.{FMLOutboundHandler, NetworkRegistry}
+import java.util
+
+import cpw.mods.fml.common.network.{FMLEmbeddedChannel, FMLOutboundHandler, NetworkRegistry}
 import cpw.mods.fml.relauncher.Side
-import net.minecraft.nbt.NBTTagCompound
+import io.netty.channel.{ChannelFutureListener, ChannelHandler}
+import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.entity.player.EntityPlayerMP
-import io.netty.channel.{ChannelHandler, ChannelFutureListener}
 
 class NetChannel(val name: String) {
-  val channels = NetworkRegistry.INSTANCE.newChannel(name, new NBTMessageToMessageCodec)
+  var channels: util.EnumMap[Side, FMLEmbeddedChannel] = null
 
-  var serverHandlers = Map.empty[String, (NBTTagCompound, EntityPlayerMP) => Unit]
-  var clientHandlers = Map.empty[String, (NBTTagCompound) => Unit]
+  def init() {
+    channels = NetworkRegistry.INSTANCE.newChannel(name, new SerializedMessageCodec)
+    BdLib.logInfo("Initialized network channel '%s' for mod '%s'", name, Misc.getActiveModId)
+    addHandler(Side.SERVER, new NetChannelServerHandler(this))
+    addHandler(Side.CLIENT, new NetChannelClientHandler(this))
+  }
 
-  def regServerHandler(id: String, callable: (NBTTagCompound, EntityPlayerMP) => Unit) =
-    if (serverHandlers.contains(id))
-      sys.error("Command name already in use: %s".format(name))
-    else
-      serverHandlers += (id -> callable)
+  var clientChain = PartialFunction.empty[Message, Unit]
+  var serverChain = PartialFunction.empty[(Message, EntityPlayerMP), Unit]
 
-  def regClientHandler(id: String, callable: (NBTTagCompound) => Unit) =
-    if (clientHandlers.contains(id))
-      sys.error("Command name already in use: %s".format(name))
-    else
-      clientHandlers += (id -> callable)
+  def regServerHandler(f: PartialFunction[(Message, EntityPlayerMP), Unit]) =
+    serverChain = serverChain.orElse(f)
 
-  addHandler(Side.SERVER, new NetChannelServerHandler(this))
-  addHandler(Side.CLIENT, new NetChannelClientHandler(this))
+  def regClientHandler(f: PartialFunction[Message, Unit]) =
+    clientChain = clientChain.orElse(f)
 
-  def addHandler(side: Side, handler: ChannelHandler) {
+  private def addHandler(side: Side, handler: ChannelHandler) {
     val ch = channels.get(side)
-    val name = ch.findChannelHandlerNameForType(classOf[NBTMessageToMessageCodec])
+    val name = ch.findChannelHandlerNameForType(classOf[SerializedMessageCodec])
     ch.pipeline().addAfter(name, side + "Handler", handler)
   }
 
-  def sendToAll(message: NBTTagCompound) {
+  def sendToAll(message: Message) {
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL)
     channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
-  def sendTo(message: NBTTagCompound, player: EntityPlayerMP) {
+  def sendTo(message: Message, player: EntityPlayerMP) {
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER)
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player)
     channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
-  def sendToAllAround(message: NBTTagCompound, point: NetworkRegistry.TargetPoint) {
+  def sendToAllAround(message: Message, point: NetworkRegistry.TargetPoint) {
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT)
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point)
     channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
-  def sendToDimension(message: NBTTagCompound, dimensionId: Int) {
+  def sendToDimension(message: Message, dimensionId: Int) {
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION)
     channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(new Integer(dimensionId))
     channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
-  def sendToServer(message: NBTTagCompound) {
+  def sendToServer(message: Message) {
     channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER)
     channels.get(Side.CLIENT).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
