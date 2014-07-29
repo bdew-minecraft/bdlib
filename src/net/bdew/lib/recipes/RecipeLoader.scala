@@ -11,6 +11,7 @@ package net.bdew.lib.recipes
 
 import java.io.Reader
 
+import cpw.mods.fml.common.ModAPIManager
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
@@ -217,6 +218,15 @@ class RecipeLoader {
         processStatementsSafe(thn)
       } else {
         BdLib.logInfo("ifMod: %s not found", mod)
+        processStatementsSafe(els)
+      }
+
+    case StIfHaveAPI(mod, thn, els) =>
+      if (ModAPIManager.INSTANCE.hasAPI(mod)) {
+        BdLib.logInfo("ifAPI: %s found", mod)
+        processStatementsSafe(thn)
+      } else {
+        BdLib.logInfo("ifAPI: %s not found", mod)
         processStatementsSafe(els)
       }
 

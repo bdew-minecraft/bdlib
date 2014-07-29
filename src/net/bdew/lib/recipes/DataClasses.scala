@@ -126,6 +126,16 @@ case class StClassMacro(id: String, cls: String) extends DelayedStatement
 case class StIfHaveMod(mod: String, thn: List[Statement], els: List[Statement]) extends Statement
 
 /**
+ * Conditional block - checks if api is loaded
+ * Syntax: ifAPI {string} { {statements} } [else { {statements} }]
+ * Parser: [[net.bdew.lib.recipes.RecipeParser.ifApi]]
+ * @param mod API modid
+ * @param thn Statements to run if present
+ * @param els Statements to run otherwise
+ */
+case class StIfHaveAPI(mod: String, thn: List[Statement], els: List[Statement]) extends Statement
+
+/**
  * Conditional block - checks if mod is loaded
  * Can contain only delayed statements
  * Syntax: ifOreDict {string} { {statements} } [else { {statements} }]

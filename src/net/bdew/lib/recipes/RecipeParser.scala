@@ -82,6 +82,10 @@ class RecipeParser extends JavaTokenParsers {
     case mod ~ thn ~ els => new StIfHaveMod(mod, thn, els.getOrElse(List.empty[Statement]))
   }
 
+  def ifAPI = ("ifAPI" ~> str) ~ ("{" ~> statements <~ "}") ~ ("else" ~> "{" ~> statements <~ "}").? ^^ {
+    case mod ~ thn ~ els => new StIfHaveAPI(mod, thn, els.getOrElse(List.empty[Statement]))
+  }
+
   def ifOreDict = ("ifOreDict" ~> str) ~ ("{" ~> delayedStatements <~ "}") ~ ("else" ~> "{" ~> delayedStatements <~ "}").? ^^ {
     case id ~ thn ~ els => new StIfHaveOD(id, thn, els.getOrElse(List.empty[DelayedStatement]))
   }
@@ -119,7 +123,7 @@ class RecipeParser extends JavaTokenParsers {
       | recipeSmelting
     )
 
-  def statement: Parser[Statement] = delayedStatement | ifMod | clearRecipes
+  def statement: Parser[Statement] = delayedStatement | ifMod | ifAPI | clearRecipes
 
   def statements = statement.*
   def delayedStatements = delayedStatement.*
