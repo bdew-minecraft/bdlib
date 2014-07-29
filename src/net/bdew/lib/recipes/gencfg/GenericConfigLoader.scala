@@ -9,8 +9,8 @@
 
 package net.bdew.lib.recipes.gencfg
 
-import net.bdew.lib.recipes.{Statement, RecipeLoader}
 import net.bdew.lib.BdLib
+import net.bdew.lib.recipes.{RecipeLoader, Statement}
 
 trait GenericConfigLoader extends RecipeLoader {
   val cfgStore: ConfigSection

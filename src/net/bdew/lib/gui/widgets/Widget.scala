@@ -9,8 +9,9 @@
 
 package net.bdew.lib.gui.widgets
 
+import net.bdew.lib.gui.{Point, Rect, WidgetContainer}
+
 import scala.collection.mutable
-import net.bdew.lib.gui.{WidgetContainer, Point, Rect}
 
 trait BaseWidget {
   val rect: Rect

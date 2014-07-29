@@ -9,14 +9,15 @@
 
 package net.bdew.lib
 
-import net.minecraft.command.{CommandBase, ICommandSender}
-import cpw.mods.fml.relauncher.FMLInjectionData
-import java.io.{FileWriter, BufferedWriter, File}
-import cpw.mods.fml.common.registry.GameData
+import java.io.{BufferedWriter, File, FileWriter}
+
 import com.google.common.collect.Table
+import cpw.mods.fml.common.registry.GameData
+import cpw.mods.fml.relauncher.FMLInjectionData
+import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.item.ItemStack
-import net.minecraftforge.oredict.OreDictionary
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.oredict.OreDictionary
 
 class CommandDumpRegistry extends CommandBase {
   def getCommandName = "dumpregistry"

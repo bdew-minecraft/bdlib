@@ -9,9 +9,9 @@
 
 package net.bdew.lib.gui
 
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.entity.player.EntityPlayer
 import cpw.mods.fml.relauncher.{Side, SideOnly}
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.tileentity.TileEntity
 
 trait GuiProvider {
   def guiId: Int

@@ -9,11 +9,11 @@
 
 package net.bdew.lib.config
 
-import net.minecraft.item.ItemStack
-import net.minecraft.block.Block
 import cpw.mods.fml.common.registry.GameRegistry
-import net.bdew.lib.block.HasTE
 import net.bdew.lib.Misc
+import net.bdew.lib.block.HasTE
+import net.minecraft.block.Block
+import net.minecraft.item.ItemStack
 
 class BlockManager() {
 

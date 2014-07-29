@@ -9,10 +9,10 @@
 
 package net.bdew.lib.items.inventory
 
-import net.minecraft.entity.player.EntityPlayer
 import net.bdew.lib.gui.BaseContainer
-import net.minecraft.item.ItemStack
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
+import net.minecraft.item.ItemStack
 
 class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) extends BaseContainer(inv) {
   def canInteractWith(entityplayer: EntityPlayer) = entityplayer == player

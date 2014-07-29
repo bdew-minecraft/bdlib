@@ -10,10 +10,10 @@
 package net.bdew.lib
 
 import cpw.mods.fml.common.Mod
-import cpw.mods.fml.common.event.{FMLServerStartingEvent, FMLPreInitializationEvent}
-import org.apache.logging.log4j.Logger
 import cpw.mods.fml.common.Mod.EventHandler
+import cpw.mods.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent}
 import net.minecraft.command.CommandHandler
+import org.apache.logging.log4j.Logger
 
 @Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")
 object BdLib {

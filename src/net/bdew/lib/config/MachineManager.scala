@@ -9,9 +9,9 @@
 
 package net.bdew.lib.config
 
-import net.bdew.lib.recipes.gencfg.ConfigSection
+import net.bdew.lib.gui.{GuiHandler, GuiProvider}
 import net.bdew.lib.machine.Machine
-import net.bdew.lib.gui.{GuiProvider, GuiHandler}
+import net.bdew.lib.recipes.gencfg.ConfigSection
 
 class MachineManager(val tuning: ConfigSection, guiHandler: GuiHandler) {
   def registerMachine[R <: Machine[_]](machine: R): R = {

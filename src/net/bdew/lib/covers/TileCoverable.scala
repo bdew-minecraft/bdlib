@@ -9,9 +9,9 @@
 
 package net.bdew.lib.covers
 
-import net.bdew.lib.data.base.{UpdateKind, TileDataSlots}
-import net.bdew.lib.data.DataSlotItemStack
 import net.bdew.lib.Misc
+import net.bdew.lib.data.DataSlotItemStack
+import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.minecraft.item.ItemStack
 import net.minecraftforge.common.util.ForgeDirection
 

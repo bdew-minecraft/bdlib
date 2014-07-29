@@ -9,12 +9,12 @@
 
 package net.bdew.lib.items.inventory
 
-import net.minecraft.item.Item
-import net.bdew.lib.gui.GuiProvider
 import cpw.mods.fml.common.Loader
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import net.minecraft.entity.player.EntityPlayer
 import net.bdew.lib.BdLib
+import net.bdew.lib.gui.GuiProvider
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.Item
 import net.minecraft.world.World
 
 /**

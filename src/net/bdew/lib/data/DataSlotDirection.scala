@@ -9,7 +9,7 @@
 
 package net.bdew.lib.data
 
-import net.bdew.lib.data.base.{TileDataSlots, UpdateKind, DataSlotVal}
+import net.bdew.lib.data.base.{DataSlotVal, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.ForgeDirection
 

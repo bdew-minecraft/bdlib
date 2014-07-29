@@ -9,8 +9,8 @@
 
 package net.bdew.lib.data
 
+import net.bdew.lib.data.base.{DataSlotVal, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.bdew.lib.data.base.{UpdateKind, TileDataSlots, DataSlotVal}
 
 case class DataSlotBoolean(name: String, parent: TileDataSlots, default: Boolean = false) extends DataSlotVal[Boolean] {
   var cval = default

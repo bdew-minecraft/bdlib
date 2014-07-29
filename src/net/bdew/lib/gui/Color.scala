@@ -9,8 +9,8 @@
 
 package net.bdew.lib.gui
 
-import org.lwjgl.opengl.GL11
 import net.bdew.lib.Misc
+import org.lwjgl.opengl.GL11
 
 case class Color(r: Float, g: Float, b: Float, a: Float = 1) {
   def this(c: (Float, Float, Float)) = this(c._1, c._2, c._3)

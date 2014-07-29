@@ -9,7 +9,7 @@
 
 package net.bdew.lib.config
 
-import net.minecraftforge.fluids.{FluidRegistry, Fluid}
+import net.minecraftforge.fluids.{Fluid, FluidRegistry}
 
 class FluidManager() {
   def regFluid[T <: Fluid](fluid: T): T = {

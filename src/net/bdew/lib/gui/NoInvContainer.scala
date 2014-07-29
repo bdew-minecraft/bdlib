@@ -9,9 +9,9 @@
 
 package net.bdew.lib.gui
 
-import net.minecraft.inventory.{Slot, Container}
 import net.bdew.lib.Misc
-import net.minecraft.entity.player.{EntityPlayer, InventoryPlayer, EntityPlayerMP}
+import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP, InventoryPlayer}
+import net.minecraft.inventory.{Container, Slot}
 import net.minecraft.item.ItemStack
 
 abstract class NoInvContainer extends Container {

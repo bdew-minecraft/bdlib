@@ -9,11 +9,11 @@
 
 package net.bdew.lib.power
 
-import net.bdew.lib.tile.TileExtended
-import net.bdew.lib.data.base.{UpdateKind, TileDataSlots}
-import net.bdew.lib.tile.inventory.{BreakableInventoryTile, SidedInventory, PersistentInventoryTile}
 import net.bdew.lib.data.DataSlotFloat
+import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.machine.ProcessorMachine
+import net.bdew.lib.tile.TileExtended
+import net.bdew.lib.tile.inventory.{BreakableInventoryTile, PersistentInventoryTile, SidedInventory}
 
 abstract class TileBaseProcessor extends TileExtended
 with TileDataSlots

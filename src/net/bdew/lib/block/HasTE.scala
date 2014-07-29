@@ -9,10 +9,10 @@
 
 package net.bdew.lib.block
 
-import net.minecraft.block.{ITileEntityProvider, Block}
-import net.minecraft.world.{IBlockAccess, World}
-import net.minecraft.tileentity.TileEntity
 import net.bdew.lib.BdLib
+import net.minecraft.block.{Block, ITileEntityProvider}
+import net.minecraft.tileentity.TileEntity
+import net.minecraft.world.{IBlockAccess, World}
 
 trait HasTE[T] extends Block with ITileEntityProvider {
   val TEClass: Class[_ <: TileEntity]

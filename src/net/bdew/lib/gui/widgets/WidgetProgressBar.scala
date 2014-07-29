@@ -9,9 +9,10 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui._
-import scala.collection.mutable
 import net.bdew.lib.data.DataSlotFloat
+import net.bdew.lib.gui._
+
+import scala.collection.mutable
 
 class WidgetProgressBar(rect: Rect, texture: Texture, dslot: DataSlotFloat) extends WidgetFillDataslot[Float](rect, texture, Direction.RIGHT, dslot, 1) {
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += "%.0f".format(dslot.cval * 100) + "%"

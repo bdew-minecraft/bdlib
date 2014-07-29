@@ -9,10 +9,10 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.minecraft.client.gui.GuiButton
 import net.bdew.lib.gui.{Point, Rect}
 import net.minecraft.client.Minecraft
 import net.minecraft.client.audio.PositionedSoundRecord
+import net.minecraft.client.gui.GuiButton
 import net.minecraft.util.ResourceLocation
 
 class WidgetButton(val rect: Rect, text: String, clicked: WidgetButton => Unit)

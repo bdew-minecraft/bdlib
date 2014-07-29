@@ -9,8 +9,8 @@
 
 package net.bdew.lib.data
 
+import net.bdew.lib.data.base.{DataSlotNumeric, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.bdew.lib.data.base.{UpdateKind, TileDataSlots, DataSlotNumeric}
 
 case class DataSlotInt(name: String, parent: TileDataSlots, default: Int = 0) extends DataSlotNumeric[Int](default) {
   def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setInteger(name, cval)

@@ -9,8 +9,8 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui._
 import net.bdew.lib.data.base.DataSlotNumeric
+import net.bdew.lib.gui._
 
 class WidgetFillDataslot[T](val rect: Rect, val texture: Texture, dir: Direction.Direction, dslot: DataSlotNumeric[T], maxval: T)(implicit num: Numeric[T]) extends Widget {
 

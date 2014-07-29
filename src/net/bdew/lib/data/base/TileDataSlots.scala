@@ -9,11 +9,12 @@
 
 package net.bdew.lib.data.base
 
-import scala.collection.mutable
-import net.minecraft.nbt.NBTTagCompound
 import net.bdew.lib.tile.TileExtended
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.Packet
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity
+
+import scala.collection.mutable
 
 trait TileDataSlots extends TileExtended {
   val dataSlots = mutable.HashMap.empty[String, DataSlot]

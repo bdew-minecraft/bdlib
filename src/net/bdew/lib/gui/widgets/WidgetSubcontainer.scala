@@ -9,8 +9,7 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui._
-import net.bdew.lib.gui.Rect
+import net.bdew.lib.gui.{Rect, _}
 
 class WidgetSubcontainer(val rect: Rect) extends BaseWidget with WidgetContainer with SimpleDrawTarget {
   def getZLevel = parent.getZLevel

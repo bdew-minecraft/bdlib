@@ -9,12 +9,14 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.bdew.lib.gui.{Texture, Point, Rect}
-import net.bdew.lib.data.DataSlotTankBase
-import scala.collection.mutable
 import java.text.DecimalFormat
+
 import net.bdew.lib.Misc
+import net.bdew.lib.data.DataSlotTankBase
+import net.bdew.lib.gui.{Point, Rect, Texture}
 import org.lwjgl.opengl.GL11
+
+import scala.collection.mutable
 
 class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase) extends Widget {
   val formater = new DecimalFormat("#,###")

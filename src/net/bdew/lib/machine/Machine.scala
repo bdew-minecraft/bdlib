@@ -9,11 +9,11 @@
 
 package net.bdew.lib.machine
 
+import cpw.mods.fml.common.registry.GameRegistry
+import net.bdew.lib.Misc
+import net.bdew.lib.block.HasTE
 import net.bdew.lib.recipes.gencfg.ConfigSection
 import net.minecraft.block.Block
-import cpw.mods.fml.common.registry.GameRegistry
-import net.bdew.lib.block.HasTE
-import net.bdew.lib.Misc
 
 abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
   var block: T = null.asInstanceOf[T]

@@ -9,12 +9,12 @@
 
 package net.bdew.lib.covers
 
-import net.bdew.lib.block.HasTE
-import net.minecraft.world.{IBlockAccess, World}
-import net.minecraft.entity.player.EntityPlayer
 import net.bdew.lib.Misc
+import net.bdew.lib.block.HasTE
 import net.bdew.lib.items.ItemUtils
 import net.minecraft.block.Block
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.world.{IBlockAccess, World}
 
 trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
   override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {

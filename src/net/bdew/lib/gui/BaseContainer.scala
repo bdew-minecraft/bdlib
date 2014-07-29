@@ -9,10 +9,10 @@
 
 package net.bdew.lib.gui
 
-import net.minecraft.inventory.IInventory
-import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.ItemStack
 import net.bdew.lib.items.ItemUtils
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.inventory.IInventory
+import net.minecraft.item.ItemStack
 
 abstract class BaseContainer(te: IInventory) extends NoInvContainer {
   override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = {

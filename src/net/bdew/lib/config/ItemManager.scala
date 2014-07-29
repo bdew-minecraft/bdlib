@@ -9,9 +9,9 @@
 
 package net.bdew.lib.config
 
-import net.minecraft.item.{ItemStack, Item}
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.items.{NamedItem, SimpleItem}
+import net.minecraft.item.{Item, ItemStack}
 
 class ItemManager() {
   def regSimpleItem(name: String): SimpleItem = regItem(new SimpleItem(name), name)

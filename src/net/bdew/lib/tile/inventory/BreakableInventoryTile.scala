@@ -9,9 +9,9 @@
 
 package net.bdew.lib.tile.inventory
 
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.item.ItemStack
 import net.bdew.lib.items.ItemUtils
+import net.minecraft.item.ItemStack
+import net.minecraft.tileentity.TileEntity
 
 trait BreakableInventoryTile extends TileEntity with BaseInventory {
   def dropItems() {

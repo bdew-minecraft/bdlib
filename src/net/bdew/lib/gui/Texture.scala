@@ -9,9 +9,9 @@
 
 package net.bdew.lib.gui
 
-import net.minecraft.util.{IIcon, ResourceLocation}
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.TextureMap
+import net.minecraft.util.{IIcon, ResourceLocation}
 
 trait Texture {
   def u1: Float

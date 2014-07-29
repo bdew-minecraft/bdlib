@@ -9,8 +9,8 @@
 
 package net.bdew.lib.data.base
 
-import net.minecraft.entity.player.EntityPlayerMP
 import net.bdew.lib.gui.NoInvContainer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.ICrafting
 
 trait ContainerDataSlots extends NoInvContainer {

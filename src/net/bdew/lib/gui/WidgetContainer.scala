@@ -9,10 +9,11 @@
 
 package net.bdew.lib.gui
 
-import scala.collection.mutable
 import net.bdew.lib.gui.widgets.BaseWidget
 import net.minecraft.client.gui.FontRenderer
 import org.lwjgl.opengl.GL11
+
+import scala.collection.mutable
 
 trait WidgetContainer extends DrawTarget {
   val rect: Rect

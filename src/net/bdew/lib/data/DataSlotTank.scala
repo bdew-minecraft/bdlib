@@ -9,9 +9,9 @@
 
 package net.bdew.lib.data
 
-import net.minecraftforge.fluids.{IFluidTank, FluidTank, FluidStack}
+import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.bdew.lib.data.base.{UpdateKind, TileDataSlots, DataSlot}
+import net.minecraftforge.fluids.{FluidStack, FluidTank, IFluidTank}
 
 abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlot {
   var oldStack: FluidStack = null

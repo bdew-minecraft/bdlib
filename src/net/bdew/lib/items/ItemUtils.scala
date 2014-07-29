@@ -9,13 +9,14 @@
 
 package net.bdew.lib.items
 
+import java.util.Random
+
+import net.bdew.lib.Misc
 import net.minecraft.entity.item.EntityItem
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.inventory.{IInventory, ISidedInventory}
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.world.World
-import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.{ISidedInventory, IInventory}
-import net.bdew.lib.Misc
-import java.util.Random
 import net.minecraftforge.common.util.ForgeDirection
 
 object ItemUtils {

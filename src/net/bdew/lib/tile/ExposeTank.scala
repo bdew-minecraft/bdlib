@@ -10,8 +10,8 @@
 package net.bdew.lib.tile
 
 import net.minecraft.tileentity.TileEntity
-import net.minecraftforge.fluids._
 import net.minecraftforge.common.util.ForgeDirection
+import net.minecraftforge.fluids._
 
 trait ExposeTank extends TileEntity with IFluidHandler {
   def getTankFromDirection(dir: ForgeDirection): IFluidTank

@@ -9,8 +9,8 @@
 
 package net.bdew.lib.power
 
-import net.bdew.lib.tile.TileExtended
 import net.bdew.lib.machine.PoweredMachine
+import net.bdew.lib.tile.TileExtended
 
 trait TilePoweredBase extends TileExtended {
   def power: DataSlotPower

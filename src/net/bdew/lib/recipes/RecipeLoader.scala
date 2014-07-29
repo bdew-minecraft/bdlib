@@ -10,11 +10,12 @@
 package net.bdew.lib.recipes
 
 import java.io.Reader
-import net.minecraft.item.{Item, ItemStack}
+
+import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
-import cpw.mods.fml.common.registry.GameRegistry
-import net.minecraftforge.oredict.{ShapelessOreRecipe, OreDictionary}
+import net.minecraft.item.{Item, ItemStack}
+import net.minecraftforge.oredict.{OreDictionary, ShapelessOreRecipe}
 
 /**
  * Main recipe loader class

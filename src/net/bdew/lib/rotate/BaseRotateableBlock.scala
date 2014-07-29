@@ -9,15 +9,14 @@
 
 package net.bdew.lib.rotate
 
-import cpw.mods.fml.relauncher.Side
-import cpw.mods.fml.relauncher.SideOnly
+import java.util.EnumSet
+
+import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.minecraft.block.Block
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.item.ItemStack
 import net.minecraft.util.{IIcon, MathHelper}
-import net.minecraft.world.IBlockAccess
-import net.minecraft.world.World
-import java.util.EnumSet
+import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 
 /**

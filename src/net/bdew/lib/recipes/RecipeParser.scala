@@ -11,9 +11,10 @@ package net.bdew.lib.recipes
 
 import java.io.Reader
 
-import scala.util.parsing.combinator._
-import org.apache.commons.lang3.StringEscapeUtils
 import net.minecraftforge.oredict.OreDictionary
+import org.apache.commons.lang3.StringEscapeUtils
+
+import scala.util.parsing.combinator._
 
 class RecipeParser extends JavaTokenParsers {
   // Allows C-style comments

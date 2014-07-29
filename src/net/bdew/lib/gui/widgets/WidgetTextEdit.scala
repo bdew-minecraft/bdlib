@@ -9,8 +9,8 @@
 
 package net.bdew.lib.gui.widgets
 
-import net.minecraft.client.gui.{FontRenderer, GuiTextField}
 import net.bdew.lib.gui.{Point, Rect}
+import net.minecraft.client.gui.{FontRenderer, GuiTextField}
 
 class WidgetTextEdit(val rect: Rect, fr: FontRenderer) extends GuiTextField(fr, rect.x.round, rect.y.round, rect.w.round, rect.h.round) with Widget {
 

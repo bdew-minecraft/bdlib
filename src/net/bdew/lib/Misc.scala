@@ -9,21 +9,26 @@
 
 package net.bdew.lib
 
-import cpw.mods.fml.common.registry.GameRegistry
-import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.StatCollector
-import net.minecraft.item.ItemStack
-import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
 import cpw.mods.fml.common.Loader
-import net.minecraftforge.oredict.ShapedOreRecipe
-import net.minecraft.world.biome.BiomeGenBase
+import cpw.mods.fml.common.registry.GameRegistry
+import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.StatCollector
+import net.minecraft.world.biome.BiomeGenBase
 import net.minecraftforge.common.util.ForgeDirection
+import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
   def iterNbtCompoundList(parent: NBTTagCompound, name: String): Iterable[NBTTagCompound] = {
     val list = parent.getTagList(name, 10)
     for (i <- 0 until list.tagCount()) yield list.getCompoundTagAt(i)
+  }
+
+  def iterNbtIntArray(parent: NBTTagCompound, name: String): Iterable[Array[Int]] = {
+    val list = parent.getTagList(name, 11)
+    for (i <- 0 until list.tagCount()) yield list.func_150306_c(i)
   }
 
   def getActiveModId = Loader.instance().activeModContainer().getModId

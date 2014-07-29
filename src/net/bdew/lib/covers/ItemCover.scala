@@ -9,7 +9,7 @@
 
 package net.bdew.lib.covers
 
-import net.minecraft.item.{ItemStack, Item}
+import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.util.IIcon
 import net.minecraftforge.common.util.ForgeDirection
 

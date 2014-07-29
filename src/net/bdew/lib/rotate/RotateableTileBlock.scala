@@ -9,10 +9,9 @@
 
 package net.bdew.lib.rotate
 
-import net.minecraft.block.ITileEntityProvider
-import net.minecraft.world.IBlockAccess
-import net.minecraft.world.World
 import cpw.mods.fml.common.FMLCommonHandler
+import net.minecraft.block.ITileEntityProvider
+import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 
 /**

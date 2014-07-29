@@ -9,7 +9,7 @@
 
 package net.bdew.lib.data.base
 
-import language.implicitConversions
+import scala.language.implicitConversions
 
 /**
  * Base trait for data slots that hold primitive values

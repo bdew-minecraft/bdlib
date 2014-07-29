@@ -13,7 +13,7 @@ package object gui {
   type Rect = BaseRect[Float]
   type Point = BasePoint[Float]
 
-  import language.implicitConversions
+  import scala.language.implicitConversions
 
   implicit def awt2point(p: java.awt.Point) = BasePoint(p.x, p.y)
   implicit def point2awt(p: BasePoint[Int]): java.awt.Point = new java.awt.Point(p.x, p.y)

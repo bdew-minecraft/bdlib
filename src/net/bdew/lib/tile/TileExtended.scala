@@ -9,11 +9,11 @@
 
 package net.bdew.lib.tile
 
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.{NetworkManager, Packet}
 import net.bdew.lib.Event
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity
+import net.minecraft.network.{NetworkManager, Packet}
+import net.minecraft.tileentity.TileEntity
 
 class TileExtended extends TileEntity {
   final val ACT_CLIENT = 1

@@ -9,11 +9,11 @@
 
 package net.bdew.lib.recipes.lootlist
 
-import net.bdew.lib.recipes.gencfg.GenericConfigLoader
-import net.minecraftforge.oredict.OreDictionary
-import net.bdew.lib.recipes.StackRef
-import net.minecraft.item.ItemStack
 import net.bdew.lib.BdLib
+import net.bdew.lib.recipes.StackRef
+import net.bdew.lib.recipes.gencfg.GenericConfigLoader
+import net.minecraft.item.ItemStack
+import net.minecraftforge.oredict.OreDictionary
 
 /**
  * Loader mixin for loot lists

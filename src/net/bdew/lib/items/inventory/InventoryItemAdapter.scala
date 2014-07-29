@@ -9,11 +9,11 @@
 
 package net.bdew.lib.items.inventory
 
-import net.minecraft.item.ItemStack
-import net.bdew.lib.tile.inventory.BaseInventory
 import net.bdew.lib.Misc
-import net.minecraft.nbt.{NBTTagList, NBTTagCompound}
+import net.bdew.lib.tile.inventory.BaseInventory
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
 class InventoryItemAdapter(val player: EntityPlayer, val slot: Int, val size: Int, val tagName: String) extends BaseInventory {
   def getSizeInventory = size

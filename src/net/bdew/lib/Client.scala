@@ -9,8 +9,8 @@
 
 package net.bdew.lib
 
-import org.lwjgl.input.Keyboard
 import net.minecraft.client.Minecraft
+import org.lwjgl.input.Keyboard
 
 /**
  * Misc functions and shortcuts for clientside code

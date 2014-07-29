@@ -9,10 +9,12 @@
 
 package net.bdew.lib.power
 
-import net.bdew.lib.gui.{Texture, Point, Rect}
-import scala.collection.mutable
 import java.text.DecimalFormat
+
 import net.bdew.lib.gui.widgets.Widget
+import net.bdew.lib.gui.{Point, Rect, Texture}
+
+import scala.collection.mutable
 
 class WidgetPowerGauge(val rect: Rect, texture: Texture, dslot: DataSlotPower) extends Widget {
   val formater = new DecimalFormat("#,###")

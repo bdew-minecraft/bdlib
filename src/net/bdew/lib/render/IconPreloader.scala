@@ -9,11 +9,11 @@
 
 package net.bdew.lib.render
 
-import net.minecraft.client.renderer.texture.IIconRegister
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.client.event.TextureStitchEvent
-import net.bdew.lib.gui.{Texture, IconWrapper}
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import net.bdew.lib.gui.{IconWrapper, Texture}
+import net.minecraft.client.renderer.texture.IIconRegister
+import net.minecraftforge.client.event.TextureStitchEvent
+import net.minecraftforge.common.MinecraftForge
 
 /**
  * Allows loading of texture that don't belong to specific block or item into vanilla block/item atlas
@@ -33,7 +33,7 @@ class IconPreloader(kind: Int) {
     icons += this
   }
 
-  import language.implicitConversions
+  import scala.language.implicitConversions
 
   implicit def entry2icon(v: TextureLoc) = v.texture.icon
   implicit def entry2texture(v: TextureLoc) = v.texture

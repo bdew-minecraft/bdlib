@@ -9,11 +9,12 @@
 
 package net.bdew.lib.gui
 
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.inventory.Container
-import scala.collection.mutable
-import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.GL11
+
+import scala.collection.mutable
 
 abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContainer(cont) {
   xSize = xSz
@@ -53,7 +54,7 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
 
     widgets.handleTooltip(Point(x, y) - rect.origin, tip)
 
-    import collection.JavaConversions._
+    import scala.collection.JavaConversions._
 
     if (tip.size > 0)
       drawHoveringText(tip, x, y, getFontRenderer)

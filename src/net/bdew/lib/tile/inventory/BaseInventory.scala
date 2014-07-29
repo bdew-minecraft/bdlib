@@ -9,9 +9,9 @@
 
 package net.bdew.lib.tile.inventory
 
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.entity.player.EntityPlayer
 
 trait BaseInventory extends IInventory {
   var inv: Array[ItemStack] = new Array(getSizeInventory)

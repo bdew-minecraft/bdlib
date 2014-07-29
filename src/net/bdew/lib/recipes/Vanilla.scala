@@ -9,10 +9,12 @@
 
 package net.bdew.lib.recipes
 
+import java.lang.reflect.Modifier
+
 import net.minecraft.block.Block
 import net.minecraft.item.Item
+
 import scala.reflect.ClassTag
-import java.lang.reflect.Modifier
 
 object Vanilla {
 

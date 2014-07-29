@@ -10,9 +10,10 @@
 package net.bdew.lib.gui
 
 import cpw.mods.fml.common.network.IGuiHandler
-import scala.collection.mutable
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.world.World
+
+import scala.collection.mutable
 
 class GuiHandler extends IGuiHandler {
   val guis = mutable.Map.empty[Int, GuiProvider]

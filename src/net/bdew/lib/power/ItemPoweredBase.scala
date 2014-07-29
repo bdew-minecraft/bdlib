@@ -9,9 +9,9 @@
 
 package net.bdew.lib.power
 
-import net.minecraft.item.{ItemStack, Item}
 import net.bdew.lib.Misc
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
 
 trait ItemPoweredBase extends Item {

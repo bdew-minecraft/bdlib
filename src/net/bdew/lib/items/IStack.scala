@@ -9,8 +9,8 @@
 
 package net.bdew.lib.items
 
-import net.minecraft.item.{ItemBlock, Item, ItemStack}
 import net.minecraft.block.Block
+import net.minecraft.item.{Item, ItemBlock, ItemStack}
 
 /**
  * Allows matching Items in ItemStacks in scala pattern matches

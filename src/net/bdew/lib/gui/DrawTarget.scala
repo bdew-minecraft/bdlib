@@ -9,8 +9,8 @@
 
 package net.bdew.lib.gui
 
-import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.gui.FontRenderer
+import net.minecraft.client.renderer.Tessellator
 
 trait DrawTarget {
   def getZLevel: Float
