@@ -64,7 +64,7 @@ object Misc {
 
   def filterType[T](from: Iterable[_], cls: Class[T]) = from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
 
-  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(x => x != null && x.biomeName == name).getOrElse(null)
+  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(x => x != null && x.biomeName == name).orNull
 
   def haveModVersion(spec: String): Boolean = {
     val req = VersionParser.parseVersionReference(spec)
@@ -89,5 +89,10 @@ object Misc {
   def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
     Option(origin.getWorldObj.getTileEntity(origin.xCoord + dir.offsetX,
       origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
+
+  def applyMutator[T](f: (T) => Unit, init: T): T = {
+    f(init)
+    init
+  }
 }
 

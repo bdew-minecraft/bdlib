@@ -25,7 +25,7 @@ case class BlockRef(x: Int, y: Int, z: Int) {
   def blockIs(w: IBlockAccess, other: Block) = block(w).contains(other)
 
   def neighbour(side: ForgeDirection) = BlockRef(x + side.offsetX, y + side.offsetY, z + side.offsetZ)
-  def neighbours = ForgeDirection.VALID_DIRECTIONS.map(x => x -> neighbour(x))
+  def neighbours = ForgeDirection.VALID_DIRECTIONS.map(x => x -> neighbour(x)).toMap
 
   override def toString = "(x=%d y=%d z=%d)".format(x, y, z)
 
@@ -35,6 +35,8 @@ case class BlockRef(x: Int, y: Int, z: Int) {
       Some(tile.asInstanceOf[T])
     else None
   }
+
+  def ==(tx: Int, ty: Int, tz: Int) = x == tx && y == ty && z == tz
 
   def getBlock[T: ClassTag](w: IBlockAccess) = block(w) flatMap { block =>
     val cls = implicitly[ClassTag[T]].runtimeClass

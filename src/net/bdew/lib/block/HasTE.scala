@@ -18,6 +18,9 @@ trait HasTE[T] extends Block with ITileEntityProvider {
   val TEClass: Class[_ <: TileEntity]
 
   def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
+
+  def getTE(w: IBlockAccess, ref: BlockRef): T = getTE(w, ref.x, ref.y, ref.z)
+
   def getTE(w: IBlockAccess, x: Int, y: Int, z: Int): T = {
     var t = w.getTileEntity(x, y, z)
     if ((t == null) || !TEClass.isInstance(t)) {
