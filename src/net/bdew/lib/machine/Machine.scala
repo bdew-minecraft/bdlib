@@ -14,6 +14,7 @@ import net.bdew.lib.Misc
 import net.bdew.lib.block.HasTE
 import net.bdew.lib.recipes.gencfg.ConfigSection
 import net.minecraft.block.Block
+import net.minecraft.creativetab.CreativeTabs
 
 abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
   var block: T = null.asInstanceOf[T]
@@ -21,9 +22,10 @@ abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
   var enabled = false
   val modId = Misc.getActiveModId
 
-  def regBlock() {
+  def regBlock(creativeTab: CreativeTabs) {
     block = blockConstruct
     GameRegistry.registerBlock(block, name)
+    block.setCreativeTab(creativeTab)
     if (block.isInstanceOf[HasTE[_]]) {
       GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass, "%s.%s".format(modId, name))
     }
