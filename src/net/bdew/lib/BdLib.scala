@@ -12,6 +12,7 @@ package net.bdew.lib
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent}
+import net.bdew.lib.multiblock.network.NetHandler
 import net.minecraft.command.CommandHandler
 import org.apache.logging.log4j.Logger
 
@@ -29,6 +30,7 @@ object BdLib {
   def preInit(ev: FMLPreInitializationEvent) {
     log = ev.getModLog
     log.info("bdlib BDLIB_VER loaded")
+    NetHandler.init()
   }
 
   @EventHandler

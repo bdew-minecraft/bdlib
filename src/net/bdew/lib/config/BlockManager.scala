@@ -11,7 +11,7 @@ package net.bdew.lib.config
 
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{NamedBlock, HasTE, SimpleBlock}
+import net.bdew.lib.block.{HasTE, NamedBlock}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
