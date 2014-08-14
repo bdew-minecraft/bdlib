@@ -11,13 +11,13 @@ package net.bdew.lib.config
 
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{HasTE, SimpleBlock}
+import net.bdew.lib.block.{NamedBlock, HasTE, SimpleBlock}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
 class BlockManager(creativeTab: CreativeTabs) {
-  def regBlock[T <: SimpleBlock](block: T): T = regBlock(block, block.name)
+  def regBlock[T <: NamedBlock](block: T): T = regBlock(block, block.name)
 
   def regBlock[T <: Block](block: T, name: String, addStack: Boolean = false): T = {
     GameRegistry.registerBlock(block, name)
