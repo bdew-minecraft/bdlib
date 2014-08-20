@@ -1,0 +1,19 @@
+bdlib.multiblock.face.north=North
+bdlib.multiblock.face.south=South
+bdlib.multiblock.face.east=East
+bdlib.multiblock.face.west=West
+bdlib.multiblock.face.up=Top
+bdlib.multiblock.face.down=Bottom
+
+bdlib.multiblock.disabled=Disabled
+bdlib.multiblock.incomplete=This machine is incomplete, it requires at least:
+bdlib.multiblock.notconnected=Not connected to a valid machine
+bdlib.multiblock.toomanyoutputs=Too many outputs connected, unable to attach new connection
+
+bdlib.rsmode.always=Always ON
+bdlib.rsmode.never=Disabled
+bdlib.rsmode.rs_on=Enable on redstone
+bdlib.rsmode.rs_off=Disable on redstone
+
+bdlib.label.empty=Empty
+
