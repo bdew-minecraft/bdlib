@@ -56,8 +56,10 @@ abstract class TileOutput extends TileModule with MIOutput {
       val toRemove = known -- connections
       toRemove.foreach(x => core.removeOutput(mypos, x))
       toAdd.foreach(x => core.newOutput(mypos, x, makeCfgObject(x)))
-      if (toAdd.size > 0 || toRemove.size > 0)
+      if (toAdd.size > 0 || toRemove.size > 0) {
         onConnectionsChanged(toAdd, toRemove)
+        getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+      }
     }
   }
 }
