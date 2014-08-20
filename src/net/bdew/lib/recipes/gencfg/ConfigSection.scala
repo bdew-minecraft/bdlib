@@ -25,6 +25,8 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
   def iterator: Iterator[(String, CfgEntry)] = raw.iterator
   def filterType[T <: CfgEntry](cls: Class[T]): Iterable[(String, T)] = raw.filter(x => cls.isInstance(x._2)).map(x => x.asInstanceOf[(String, T)])
 
+  def keys = raw.keys
+
   def rawget[T](id: String, t: Class[T]): T = {
     val v = raw(id)
     if (t.isInstance(v))
