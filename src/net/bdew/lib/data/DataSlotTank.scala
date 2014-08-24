@@ -48,6 +48,19 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
     if (k == UpdateKind.GUI)
       setCapacity(tag.getInteger("size"))
   }
+  override def setFluid(fluid: FluidStack) = execWithChangeNotify(super.setFluid(fluid))
+  override def setCapacity(capacity: Int) = execWithChangeNotify(super.setCapacity(capacity))
+  override def drain(maxDrain: Int, doDrain: Boolean) =
+    if (doDrain)
+      execWithChangeNotify(super.drain(maxDrain, true))
+    else
+      super.drain(maxDrain, false)
+
+  override def fill(resource: FluidStack, doFill: Boolean) =
+    if (doFill)
+      execWithChangeNotify(super.fill(resource, true))
+    else
+      super.fill(resource, false)
 }
 
 case class DataSlotTank(name: String, parent: TileDataSlots, size: Int) extends DataSlotTankBase(size)

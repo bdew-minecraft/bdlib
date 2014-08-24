@@ -35,6 +35,12 @@ trait DataSlot {
   def save(t: NBTTagCompound, kind: UpdateKind.Value)
   def load(t: NBTTagCompound, kind: UpdateKind.Value)
 
+  def execWithChangeNotify[T](f: => T): T = {
+    val v = f
+    parent.dataSlotChanged(this)
+    v
+  }
+
   def setUpdate(vals: UpdateKind.Value*): this.type = {
     updateKind = vals.toSet
     return this
