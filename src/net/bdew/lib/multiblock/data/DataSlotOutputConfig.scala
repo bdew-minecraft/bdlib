@@ -25,6 +25,7 @@ case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int)
       x.write(tmp)
       val kind = x match {
         case _: OutputConfigPower => "power"
+        case _: OutputConfigFluid => "fluid"
         case _ => sys.error("Unknown output config kind: " + x)
       }
       tmp.setString("kind", kind)
@@ -39,6 +40,7 @@ case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int)
         val cfg = t.getCompoundTag(name + "_" + i)
         val cfgObj = cfg.getString("kind") match {
           case "power" => new OutputConfigPower
+          case "fluid" => new OutputConfigFluid
           case _ => new OutputConfigInvalid
         }
         cfgObj.read(cfg)
