@@ -19,6 +19,10 @@ abstract class OutputConfig {
   def handleConfigPacket(m: MsgOutputCfg)
 }
 
+trait OutputConfigRSControllable {
+  var rsMode: RSMode.Value
+}
+
 class OutputConfigInvalid extends OutputConfig {
   def read(t: NBTTagCompound) {}
   def write(t: NBTTagCompound) = throw new NotImplementedException

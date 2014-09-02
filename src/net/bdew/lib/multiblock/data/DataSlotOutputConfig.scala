@@ -39,7 +39,7 @@ case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int)
         val cfg = t.getCompoundTag(name + "_" + i)
         val cfgObj = cfg.getString("kind") match {
           case "power" => new OutputConfigPower
-          case x => new OutputConfigInvalid
+          case _ => new OutputConfigInvalid
         }
         cfgObj.read(cfg)
         map += i -> cfgObj

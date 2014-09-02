@@ -9,26 +9,14 @@
 
 package net.bdew.lib.multiblock.tile
 
-import net.bdew.lib.multiblock.data.{OutputConfigPower, RSMode}
+import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.interact.{CIOutputFaces, MIOutput}
 import net.minecraftforge.common.util.ForgeDirection
 
 abstract class TileOutput extends TileModule with MIOutput {
-  val unit: String
-
   override def getCore = getCoreAs[CIOutputFaces]
 
-  def checkCanOutput(cfg: OutputConfigPower): Boolean = {
-    if (cfg.rsMode == RSMode.ALWAYS) return true
-    if (cfg.rsMode == RSMode.NEVER) return false
-    return worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord) ^ (cfg.rsMode == RSMode.RS_OFF)
-  }
-
-  def makeCfgObject(face: ForgeDirection) = {
-    val cfg = new OutputConfigPower
-    cfg.unit = unit
-    cfg
-  }
+  def makeCfgObject(face: ForgeDirection): OutputConfig
 
   var rescanFaces = false
 
