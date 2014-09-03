@@ -38,7 +38,11 @@ abstract class TileOutput extends TileModule with MIOutput {
 
   def doRescanFaces() {
     getCore map { core =>
-      val connections = ForgeDirection.VALID_DIRECTIONS.filter(canConnectoToFace).toSet
+      val connections = (
+        ForgeDirection.VALID_DIRECTIONS
+          filterNot { dir => core.modules.contains(mypos.neighbour(dir)) }
+          filter canConnectoToFace
+        ).toSet
       val known = core.outputFaces.filter(_._1.origin == mypos).map(_._1.face).toSet
       val toAdd = connections -- known
       val toRemove = known -- connections
