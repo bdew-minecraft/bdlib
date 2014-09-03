@@ -20,8 +20,9 @@ trait TileModule extends TileDataSlots {
   val kind: String
   val connected = new DataSlotPos("connected", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE, UpdateKind.RENDER)
 
-  def getCoreAs[T: ClassTag] = connected flatMap (_.getTile[TileController with T](getWorldObj))
-  def getCore = connected flatMap (_.getTile[TileController](getWorldObj))
+  def getCoreAs[T <: TileController : ClassTag] = connected flatMap (_.getTile[T](getWorldObj))
+
+  def getCore = getCoreAs[TileController]
 
   lazy val mypos = BlockRef(xCoord, yCoord, zCoord)
 
