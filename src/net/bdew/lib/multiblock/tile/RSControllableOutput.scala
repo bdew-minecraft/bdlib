@@ -10,8 +10,9 @@
 package net.bdew.lib.multiblock.tile
 
 import net.bdew.lib.multiblock.data.{OutputConfigRSControllable, RSMode}
+import net.minecraft.tileentity.TileEntity
 
-trait RSControllableOutput extends TileOutput {
+trait RSControllableOutput extends TileEntity {
   def checkCanOutput(cfg: OutputConfigRSControllable): Boolean = {
     if (cfg.rsMode == RSMode.ALWAYS) return true
     if (cfg.rsMode == RSMode.NEVER) return false

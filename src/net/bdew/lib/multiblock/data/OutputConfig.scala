@@ -19,7 +19,7 @@ abstract class OutputConfig {
   def handleConfigPacket(m: MsgOutputCfg)
 }
 
-trait OutputConfigRSControllable {
+trait OutputConfigRSControllable extends OutputConfig {
   var rsMode: RSMode.Value
 }
 

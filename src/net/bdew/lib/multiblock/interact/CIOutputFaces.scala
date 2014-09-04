@@ -52,13 +52,13 @@ trait CIOutputFaces extends TileController {
   }
 
   def doOutputs() {
-    for ((x, n) <- outputFaces) {
-      val t = x.origin.getTile[MIOutput](getWorldObj)
-      if (t.isDefined) {
-        if (!outputConfig.isDefinedAt(n) || outputConfig(n).isInstanceOf[OutputConfigInvalid])
-          outputConfig(n) = t.get.makeCfgObject(x.face)
-        t.get.doOutput(x.face, outputConfig(n))
-      }
+    for {
+      (x, n) <- outputFaces
+      t <- x.origin.getTile[MIOutput[_]](getWorldObj)
+    } {
+      if (!outputConfig.isDefinedAt(n) || !t.outputConfigType.isInstance(outputConfig(n)))
+        outputConfig(n) = t.makeCfgObject(x.face)
+      t.doOutput(x.face, outputConfig(n).asInstanceOf[t.OCType])
     }
   }
 

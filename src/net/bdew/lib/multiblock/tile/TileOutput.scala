@@ -9,16 +9,26 @@
 
 package net.bdew.lib.multiblock.tile
 
+import net.bdew.lib.Misc
+import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.interact.{CIOutputFaces, MIOutput}
 import net.minecraftforge.common.util.ForgeDirection
 
-abstract class TileOutput extends TileModule with MIOutput {
+abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T] {
   override def getCore = getCoreAs[CIOutputFaces]
 
-  def makeCfgObject(face: ForgeDirection): OutputConfig
+  def makeCfgObject(face: ForgeDirection): T
 
   var rescanFaces = false
+
+  def getCfg(dir: ForgeDirection): Option[T] =
+    for {
+      core <- getCore
+      onum <- core.outputFaces.get(BlockFace(mypos, dir))
+      cfggen <- core.outputConfig.get(onum)
+      cfg <- Misc.asInstanceOpt(cfggen, outputConfigType)
+    } yield cfg
 
   serverTick.listen(() => {
     if (rescanFaces) {

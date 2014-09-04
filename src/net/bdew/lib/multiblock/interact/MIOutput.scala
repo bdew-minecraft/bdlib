@@ -9,11 +9,16 @@
 
 package net.bdew.lib.multiblock.interact
 
+import net.bdew.lib.BdLib
 import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.tile.TileModule
 import net.minecraftforge.common.util.ForgeDirection
 
-trait MIOutput extends TileModule {
-  def doOutput(face: ForgeDirection, cfg: OutputConfig)
+trait MIOutput[T <: OutputConfig] extends TileModule {
+  val outputConfigType: Class[T]
+  type OCType = T
+
+  def doOutput(face: ForgeDirection, cfg: OCType)
+
   def makeCfgObject(face: ForgeDirection): OutputConfig
 }

@@ -15,7 +15,7 @@ import net.bdew.lib.render.connected.{BlockAdditionalRender, ConnectedHelper, Fa
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.util.ForgeDirection
 
-trait BlockOutput[T <: TileOutput] extends BlockModule[T] with BlockAdditionalRender {
+trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] with BlockAdditionalRender {
   def getAdjancedFaces(face: ForgeDirection, bp: BlockRef) = {
     val sides = ConnectedHelper.faceAdjanced(face)
     Seq(
