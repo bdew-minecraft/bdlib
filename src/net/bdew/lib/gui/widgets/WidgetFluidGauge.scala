@@ -13,7 +13,7 @@ import java.text.DecimalFormat
 
 import net.bdew.lib.Misc
 import net.bdew.lib.data.DataSlotTankBase
-import net.bdew.lib.gui.{Point, Rect, Texture}
+import net.bdew.lib.gui.{Color, Point, Rect, Texture}
 import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
@@ -39,19 +39,21 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase
       val icon = Texture(Texture.BLOCKS, fstack.getFluid.getStillIcon)
       var fillHeight = if (dslot.getCapacity > 0) rect.h * fstack.amount / dslot.getCapacity else 0
       var yStart: Int = 0
+      val color = Color.fromInt(fstack.getFluid.getColor(fstack))
 
       while (fillHeight > 0) {
         if (fillHeight > 16) {
-          parent.drawTexture(new Rect(rect.x, rect.y2 - 16 - yStart, rect.w, 16), icon)
+          parent.drawTexture(new Rect(rect.x, rect.y2 - 16 - yStart, rect.w, 16), icon, color)
           fillHeight -= 16
         } else {
-          parent.drawTextureInterpolate(new Rect(rect.x, rect.y2 - 16 - yStart, rect.w, 16), icon, 0, 1 - fillHeight / 16, 1, 1)
+          parent.drawTextureInterpolate(new Rect(rect.x, rect.y2 - 16 - yStart, rect.w, 16), icon, 0, 1 - fillHeight / 16, 1, 1, color)
           fillHeight = 0
         }
         yStart = yStart + 16
       }
     }
 
+    GL11.glColor3d(1, 1, 1)
     GL11.glDisable(GL11.GL_BLEND)
 
     parent.drawTexture(rect, overlay)
