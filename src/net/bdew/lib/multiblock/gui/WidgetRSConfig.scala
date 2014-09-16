@@ -4,25 +4,22 @@
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
  * License 1.0, or MMPL. Please check the contents of the license located in
- * https://raw.github.com/bdew/bdlib/master/MMPL-1.0.txt
+ * http://bdew.net/minecraft-mod-public-license/
  */
 
 package net.bdew.lib.multiblock.gui
 
-import java.text.DecimalFormat
-
 import net.bdew.lib.Misc
-import net.bdew.lib.gui.widgets.{WidgetButtonIcon, WidgetDynLabel}
-import net.bdew.lib.gui.{Color, Point}
-import net.bdew.lib.multiblock.data.{MsgOutputCfgPower, OutputConfigPower, RSMode}
+import net.bdew.lib.gui.widgets.{WidgetButtonIcon, WidgetSubcontainer}
+import net.bdew.lib.gui.{Point, Rect}
+import net.bdew.lib.multiblock.data.{MsgOutputCfgRSMode, OutputConfigRSControllable, RSMode}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 import net.bdew.lib.multiblock.network.NetHandler
 
-class WidgetPowerOutput(te: CIOutputFaces, output: Int) extends WidgetOutputDisplay {
-  def cfg = te.outputConfig(output).asInstanceOf[OutputConfigPower]
-  val dec = new DecimalFormat("#,##0")
-  val bt = add(new WidgetButtonIcon(Point(56, 1), clicked, te.resources.btBase, te.resources.btHover))
-  add(new WidgetDynLabel("%s %s/t".format(dec.format(cfg.avg), cfg.unit), 1, 5, Color.darkgray))
+class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSubcontainer(new Rect(p, 16, 16)) {
+  def cfg = te.outputConfig(output).asInstanceOf[OutputConfigRSControllable]
+
+  val bt = add(new WidgetButtonIcon(Point(0, 0), clicked, te.resources.btBase, te.resources.btHover))
 
   val icons = Map(
     RSMode.ALWAYS -> te.resources.btEnabled,
@@ -45,6 +42,6 @@ class WidgetPowerOutput(te: CIOutputFaces, output: Int) extends WidgetOutputDisp
   }
 
   def clicked(b: WidgetButtonIcon) {
-    NetHandler.sendToServer(MsgOutputCfgPower(output, next(cfg.rsMode)))
+    NetHandler.sendToServer(MsgOutputCfgRSMode(output, next(cfg.rsMode)))
   }
 }
