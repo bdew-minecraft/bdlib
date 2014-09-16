@@ -12,8 +12,6 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.multiblock.network.MsgOutputCfg
 import net.minecraft.nbt.NBTTagCompound
 
-case class MsgOutputCfgFluid(output: Int, rsMode: RSMode.Value) extends MsgOutputCfg
-
 class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
   var avg = 0.0
   var rsMode = RSMode.ALWAYS
@@ -35,7 +33,7 @@ class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
   }
 
   def handleConfigPacket(m: MsgOutputCfg) = m match {
-    case MsgOutputCfgFluid(_, r) => rsMode = r
+    case MsgOutputCfgRSMode(_, r) => rsMode = r
     case _ => sys.error("Invalid output config packet %s to config %s".format(m, this))
   }
 }

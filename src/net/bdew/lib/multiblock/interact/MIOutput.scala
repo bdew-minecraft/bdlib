@@ -9,7 +9,6 @@
 
 package net.bdew.lib.multiblock.interact
 
-import net.bdew.lib.BdLib
 import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.tile.TileModule
 import net.minecraftforge.common.util.ForgeDirection
