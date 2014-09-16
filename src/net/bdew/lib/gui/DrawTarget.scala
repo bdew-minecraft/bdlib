@@ -20,7 +20,7 @@ trait DrawTarget {
   def drawTextMultiline(text: String, r: Rect, color: Color)
 
   def drawTextureInterpolate(r: Rect, t: Texture, x1: Float, y1: Float, x2: Float, y2: Float, color: Color = Color.white) =
-    drawTexture(r.interpolate(x1, y1, x2, y2), Texture.interpolate(t, x1, y1, x2, y2))
+    drawTexture(r.interpolate(x1, y1, x2, y2), Texture.interpolate(t, x1, y1, x2, y2), color)
 }
 
 trait SimpleDrawTarget extends DrawTarget {
