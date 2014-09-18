@@ -20,6 +20,8 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
 
   updateKind = Set(UpdateKind.GUI, UpdateKind.SAVE)
 
+  val sendCapacityOnUpdateKind = Set(UpdateKind.GUI)
+
   def checkUpdate() {
     if (!isSame(oldStack, fluid)) {
       oldStack = if (fluid == null) null else fluid.copy()
@@ -36,7 +38,7 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
   def save(t: NBTTagCompound, k: UpdateKind.Value) {
     val tag = new NBTTagCompound()
     writeToNBT(tag)
-    if (k == UpdateKind.GUI)
+    if (sendCapacityOnUpdateKind.contains(k))
       tag.setInteger("size", getCapacity)
     t.setTag(name, tag)
   }
@@ -45,7 +47,7 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
     setFluid(null)
     val tag = t.getCompoundTag(name)
     readFromNBT(tag)
-    if (k == UpdateKind.GUI)
+    if (sendCapacityOnUpdateKind.contains(k))
       setCapacity(tag.getInteger("size"))
   }
   override def setFluid(fluid: FluidStack) = execWithChangeNotify(super.setFluid(fluid))
