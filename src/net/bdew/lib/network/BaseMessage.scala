@@ -9,4 +9,4 @@
 
 package net.bdew.lib.network
 
-abstract class Message extends Serializable
+abstract class BaseMessage[CH <: NetChannel] extends Serializable

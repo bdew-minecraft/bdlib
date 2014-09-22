@@ -13,18 +13,49 @@ import java.util
 
 import cpw.mods.fml.common.network.{FMLEmbeddedChannel, FMLOutboundHandler, NetworkRegistry}
 import cpw.mods.fml.relauncher.Side
-import io.netty.channel.{ChannelFutureListener, ChannelHandler}
+import io.netty.channel.{ChannelFutureListener, ChannelHandler, ChannelHandlerContext, SimpleChannelInboundHandler}
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.network.NetHandlerPlayServer
 
 class NetChannel(val name: String) {
   var channels: util.EnumMap[Side, FMLEmbeddedChannel] = null
 
+  type Message = BaseMessage[this.type]
+
+  object ServerHandler extends SimpleChannelInboundHandler[Message] {
+    def channelRead0(ctx: ChannelHandlerContext, msg: Message) {
+      try {
+        val player = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get.asInstanceOf[NetHandlerPlayServer].playerEntity
+        if (serverChain.isDefinedAt(msg, player))
+          serverChain(msg, player)
+        else
+          BdLib.logWarn("Unable to handle message from user %s: %s", player.getDisplayName, msg)
+      } catch {
+        case e: Throwable => BdLib.logErrorException("Error handling packet", e)
+      }
+    }
+  }
+
+  object ClientHandler extends SimpleChannelInboundHandler[Message] {
+    def channelRead0(ctx: ChannelHandlerContext, msg: Message) {
+      try {
+        if (clientChain.isDefinedAt(msg))
+          clientChain(msg)
+        else
+          BdLib.logWarn("Unable to handle message from server: %s", msg)
+      } catch {
+        case e: Throwable => BdLib.logErrorException("Error handling packet", e)
+      }
+    }
+  }
+
   def init() {
+    if (channels != null) sys.error("Attempted to initalize a channel twice (%s)".format(name))
     channels = NetworkRegistry.INSTANCE.newChannel(name, new SerializedMessageCodec)
     BdLib.logInfo("Initialized network channel '%s' for mod '%s'", name, Misc.getActiveModId)
-    addHandler(Side.SERVER, new NetChannelServerHandler(this))
-    addHandler(Side.CLIENT, new NetChannelClientHandler(this))
+    addHandler(Side.SERVER, ServerHandler)
+    addHandler(Side.CLIENT, ClientHandler)
   }
 
   var clientChain = PartialFunction.empty[Message, Unit]
@@ -38,7 +69,7 @@ class NetChannel(val name: String) {
 
   private def addHandler(side: Side, handler: ChannelHandler) {
     val ch = channels.get(side)
-    val name = ch.findChannelHandlerNameForType(classOf[SerializedMessageCodec])
+    val name = ch.findChannelHandlerNameForType(classOf[SerializedMessageCodec[this.type]])
     ch.pipeline().addAfter(name, side + "Handler", handler)
   }
 

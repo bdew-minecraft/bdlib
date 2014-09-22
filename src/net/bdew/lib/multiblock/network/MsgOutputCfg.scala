@@ -9,8 +9,8 @@
 
 package net.bdew.lib.multiblock.network
 
-import net.bdew.lib.network.Message
+import net.bdew.lib.network.BaseMessage
 
-abstract class MsgOutputCfg extends Message {
+abstract class MsgOutputCfg extends BaseMessage[NetHandler.type] {
   val output: Int
 }

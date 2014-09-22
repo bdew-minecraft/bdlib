@@ -21,8 +21,8 @@ import io.netty.handler.codec.MessageToMessageCodec
 import net.bdew.lib.BdLib
 
 @Sharable
-class SerializedMessageCodec extends MessageToMessageCodec[FMLProxyPacket, Message] {
-  def encode(ctx: ChannelHandlerContext, msg: Message, out: util.List[AnyRef]) {
+class SerializedMessageCodec[T <: NetChannel] extends MessageToMessageCodec[FMLProxyPacket, BaseMessage[T]] {
+  def encode(ctx: ChannelHandlerContext, msg: BaseMessage[T], out: util.List[AnyRef]) {
     val buff = Unpooled.buffer()
     val writer = new ObjectOutputStream(new ByteBufOutputStream(buff))
     writer.writeObject(msg)
