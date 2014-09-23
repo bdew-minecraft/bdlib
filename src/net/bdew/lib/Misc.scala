@@ -86,6 +86,10 @@ object Misc {
   def asInstanceOpt[T](v: Any, cls: Class[T]) =
     if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
 
+  // Same thing but in a way that's easier to use with map, etc.
+  def asInstanceOpt[T](cls: Class[T])(v: Any) =
+    if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
+
   def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
     Option(origin.getWorldObj.getTileEntity(origin.xCoord + dir.offsetX,
       origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
