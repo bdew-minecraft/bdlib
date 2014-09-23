@@ -11,7 +11,7 @@ package net.bdew.lib
 
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.Mod.EventHandler
-import cpw.mods.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent}
+import cpw.mods.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent, FMLServerStoppingEvent}
 import net.bdew.lib.multiblock.network.NetHandler
 import net.minecraft.command.CommandHandler
 import org.apache.logging.log4j.Logger
@@ -26,6 +26,9 @@ object BdLib {
   def logWarnException(msg: String, t: Throwable, args: Any*) = log.warn(msg.format(args: _*), t)
   def logErrorException(msg: String, t: Throwable, args: Any*) = log.error(msg.format(args: _*), t)
 
+  val onServerStarting = Event[FMLServerStartingEvent]
+  val onServerStopping = Event[FMLServerStoppingEvent]
+
   @EventHandler
   def preInit(ev: FMLPreInitializationEvent) {
     log = ev.getModLog
@@ -37,5 +40,11 @@ object BdLib {
   def serverStarting(event: FMLServerStartingEvent) {
     val commandHandler = event.getServer.getCommandManager.asInstanceOf[CommandHandler]
     commandHandler.registerCommand(new CommandDumpRegistry)
+    onServerStarting.trigger(event)
+  }
+
+  @EventHandler
+  def serverStopping(event: FMLServerStoppingEvent) {
+    onServerStopping.trigger(event)
   }
 }
