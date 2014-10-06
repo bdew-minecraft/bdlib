@@ -46,7 +46,12 @@ class CommandDumpRegistry extends CommandBase {
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ORE DICT ====\n")
-      dumpWriter.write(OreDictionary.getOreNames.sorted.mkString("\n"))
+      dumpWriter.write((OreDictionary.getOreNames.sorted flatMap { name =>
+        List(name) ++
+          (OreDictionary.getOres(name) map { ore =>
+            " - " + ore.toString
+          })
+      }).mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== FLUIDS ====\n")
