@@ -11,19 +11,19 @@ package net.bdew.lib.recipes.gencfg
 
 import net.bdew.lib.gui.Color
 
-abstract class CfgEntry
+abstract class ConfigEntry
 
-case class EntryDouble(v: Double) extends CfgEntry
+case class EntryDouble(v: Double) extends ConfigEntry
 
-case class EntryStr(v: String) extends CfgEntry
+case class EntryStr(v: String) extends ConfigEntry
 
-case class EntryNumList(v: List[Double]) extends CfgEntry
+case class EntryNumList(v: List[Double]) extends ConfigEntry
 
-case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(String, CfgEntry)] {
-  var raw = Map.empty[String, CfgEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx, x)))
+case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(String, ConfigEntry)] {
+  var raw = Map.empty[String, ConfigEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx, x)))
 
-  def iterator: Iterator[(String, CfgEntry)] = raw.iterator
-  def filterType[T <: CfgEntry](cls: Class[T]): Iterable[(String, T)] = raw.filter(x => cls.isInstance(x._2)).map(x => x.asInstanceOf[(String, T)])
+  def iterator: Iterator[(String, ConfigEntry)] = raw.iterator
+  def filterType[T <: ConfigEntry](cls: Class[T]): Iterable[(String, T)] = raw.filter(x => cls.isInstance(x._2)).map(x => x.asInstanceOf[(String, T)])
 
   def keys = raw.keys
 
@@ -35,7 +35,7 @@ case class ConfigSection(pfx: String = "") extends CfgEntry with Iterable[(Strin
       sys.error("Config value '%s%s' is of the wrong type, expected %s, got %s".format(pfx, id, t.getName, v.getClass.getName))
   }
 
-  def set(id: String, v: CfgEntry) = raw += id -> v
+  def set(id: String, v: ConfigEntry) = raw += id -> v
 
   def getDouble(id: String) = rawget(id, classOf[EntryDouble]).v
   def getString(id: String) = rawget(id, classOf[EntryStr]).v

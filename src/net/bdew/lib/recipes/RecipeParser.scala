@@ -68,68 +68,95 @@ class RecipeParser extends JavaTokenParsers {
   // Spec with possible number of items
   def specWithCount = spec ~ ("*" ~> int).?
 
+  // === Conditions ===
+
+  def cndHaveMod = "HaveMod" ~> str ^^ CndHaveMod
+  def cndHaveAPI = "HaveAPI" ~> str ^^ CndHaveAPI
+  def cndHaveOD = "HaveOD" ~> str ^^ CndHaveOD
+
+  def cndNOT = "!" ~> condition ^^ CndNOT
+  def cndOR = "(" ~> condition ~ "||" ~ condition <~ ")" ^^ { case c1 ~ or ~ c2 => CndOR(c1, c2) }
+  def cndAND = "(" ~> condition ~ "&&" ~ condition <~ ")" ^^ { case c1 ~ and ~ c2 => CndAND(c1, c2) }
+
+  def condition: Parser[Condition] = cndHaveAPI | cndHaveMod | cndHaveOD | cndNOT | cndOR | cndAND
+
+  // === Blocks ===
+
+  def recipesSubBlock = "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ RsRecipes
+  def recipesTopBlock = "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ CsRecipeBlock
+
+  def conditionRecipes = "if" ~> condition ~ ("{" ~> recipeStatements <~ "}") ~ ("else" ~> "{" ~> recipeStatements <~ "}").? ^^ {
+    case cond ~ thn ~ els => new RsConditional(cond, thn, els.getOrElse(List.empty))
+  }
+
+  def conditionConfig = "if" ~> condition ~ ("<<" ~> configStatements <~ ">>") ~ ("else" ~> "<<" ~> configStatements <~ ">>").? ^^ {
+    case cond ~ thn ~ els => new CsConditionalConfig(cond, thn, els.getOrElse(List.empty))
+  }
+
+  def conditionBridge = conditionRecipes ^^ { case cond => CsRecipeBlock(List(cond)) }
+
   // === Statements ===
 
   def charSpec = recipeChar ~ "=" ~ spec ^^ {
-    case ch ~ eq ~ spec => new StCharAssign(ch, spec)
+    case ch ~ eq ~ spec => new RsCharAssign(ch, spec)
   }
 
   def classMacro = ("def" ~> ident <~ "=") ~ clsPath ^^ {
-    case id ~ (p ~ cl) => StClassMacro(id, (p :+ cl).mkString("."))
-  }
-
-  def ifMod = ("ifMod" ~> str) ~ ("{" ~> statements <~ "}") ~ ("else" ~> "{" ~> statements <~ "}").? ^^ {
-    case mod ~ thn ~ els => new StIfHaveMod(mod, thn, els.getOrElse(List.empty[Statement]))
-  }
-
-  def ifAPI = ("ifAPI" ~> str) ~ ("{" ~> statements <~ "}") ~ ("else" ~> "{" ~> statements <~ "}").? ^^ {
-    case mod ~ thn ~ els => new StIfHaveAPI(mod, thn, els.getOrElse(List.empty[Statement]))
-  }
-
-  def ifOreDict = ("ifOreDict" ~> str) ~ ("{" ~> delayedStatements <~ "}") ~ ("else" ~> "{" ~> delayedStatements <~ "}").? ^^ {
-    case id ~ thn ~ els => new StIfHaveOD(id, thn, els.getOrElse(List.empty[DelayedStatement]))
+    case id ~ (p ~ cl) => RsClassMacro(id, (p :+ cl).mkString("."))
   }
 
   def recipeShaped3x3 = recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ~ recipeTriplet ^^ {
-    case r1 ~ r2 ~ (res ~ n) ~ r3 => StRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
+    case r1 ~ r2 ~ (res ~ n) ~ r3 => RsRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
   }
 
   def recipeShaped2x2 = recipeDuplet ~ recipeDuplet ~ ("=>" ~> specWithCount) ^^ {
-    case r1 ~ r2 ~ (res ~ n) => StRecipeShaped(Seq(r1, r2), res, n.getOrElse(1))
+    case r1 ~ r2 ~ (res ~ n) => RsRecipeShaped(Seq(r1, r2), res, n.getOrElse(1))
   }
 
   def recipeShaped9 = recipeTriplet ~ recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ^^ {
-    case r1 ~ r2 ~ r3 ~ (res ~ n) => StRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
+    case r1 ~ r2 ~ r3 ~ (res ~ n) => RsRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
   }
 
   def recipeShapeless = "shapeless" ~> ":" ~> recipeChar.+ ~ ("=>" ~> specWithCount) ^^ {
-    case r ~ (res ~ n) => StRecipeShapeless(r.mkString(""), res, n.getOrElse(1))
+    case r ~ (res ~ n) => RsRecipeShapeless(r.mkString(""), res, n.getOrElse(1))
   }
 
-  def recipeSmelting = "smelt" ~> ":" ~> spec ~ ("=>" ~> specWithCount) ~ ("," ~> decimalNumber).? ^^ {
-    case in ~ (out ~ n) ~ xp => StSmeltRecipe(in, out, n.getOrElse(1), xp.getOrElse("0").toFloat)
+  def recipeSmelting = "smelt" ~> ":" ~> spec ~ ("=>" ~> specWithCount) ~ ("+" ~> decimalNumber <~ "xp").? ^^ {
+    case in ~ (out ~ n) ~ xp => RsRecipeSmelting(in, out, n.getOrElse(1), xp.getOrElse("0").toFloat)
   }
 
-  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp => StClearRecipes(sp) }
+  def regOreDict = "regOreDict" ~> ":" ~> spec ~ "@WILDCARD".? ~ ("=>" ~> str) ^^ {
+    case spec ~ wildcard ~ id => RsRegOredict(id, spec, wildcard.isDefined)
+  }
 
-  def delayedStatement: Parser[DelayedStatement] = (
+  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp => CsClearRecipes(sp) }
+
+  def recipeStatement: Parser[RecipeStatement] = (
     charSpec
       | classMacro
-      | ifOreDict
+      | recipesSubBlock
+      | conditionRecipes
+      | recipesSubBlock
       | recipeShaped3x3
       | recipeShaped2x2
       | recipeShaped9
       | recipeShapeless
       | recipeSmelting
+      | regOreDict
     )
 
-  def statement: Parser[Statement] = delayedStatement | ifMod | ifAPI | clearRecipes
+  def configStatement: Parser[ConfigStatement] = (
+    recipesTopBlock
+      | clearRecipes
+      | conditionBridge
+      | conditionConfig
+    )
 
-  def statements = statement.*
-  def delayedStatements = delayedStatement.*
+  def configStatements = configStatement.*
+  def recipeStatements = recipeStatement.*
 
-  def doParse(r: Reader): List[Statement] = {
-    parseAll(statements, r) match {
+  def doParse(r: Reader): List[ConfigStatement] = {
+    parseAll(configStatements, r) match {
       case Success(res, next) => return res
       case NoSuccess(msg, next) => sys.error("Config parsing failed at %s: %s".format(next.pos, msg))
     }

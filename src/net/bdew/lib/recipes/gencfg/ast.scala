@@ -9,15 +9,15 @@
 
 package net.bdew.lib.recipes.gencfg
 
-import net.bdew.lib.recipes.Statement
+import net.bdew.lib.recipes.ConfigStatement
 
-abstract class CfgStatement
+abstract class CfgEntry
 
-case class CfgVal(id: String, value: CfgEntry) extends CfgStatement
+case class CfgVal(id: String, value: ConfigEntry) extends CfgEntry
 
-case class CfgSub(id: String, vals: List[CfgStatement]) extends CfgStatement
+case class CfgSection(id: String, vals: List[CfgEntry]) extends CfgEntry
 
-case class StCfg(id: String, vals: List[CfgStatement]) extends Statement
+case class CsCfgSection(id: String, vals: List[CfgEntry]) extends ConfigStatement
 
 
 

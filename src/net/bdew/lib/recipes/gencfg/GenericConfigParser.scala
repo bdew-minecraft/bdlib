@@ -12,7 +12,7 @@ package net.bdew.lib.recipes.gencfg
 import net.bdew.lib.recipes.RecipeParser
 
 trait GenericConfigParser extends RecipeParser {
-  override def statement = statementCfg | super.statement
+  override def configStatement = statementCfg | super.configStatement
 
   // Hex variant must come before decimalNumber, otherwise the parser breaks
   def signedNumber = (
@@ -21,17 +21,21 @@ trait GenericConfigParser extends RecipeParser {
       | ("-" ~> decimalNumber) ^^ { case x => -x.toDouble }
     )
 
-  def cfgStatementNum = str ~ "=" ~ signedNumber ^^ { case id ~ eq ~ n => CfgVal(id, EntryDouble(n.toDouble)) }
-  def cfgStatementStr = str ~ "=" ~ str ^^ { case id ~ eq ~ s => CfgVal(id, EntryStr(s)) }
-  def cfgStatementNumList = str ~ ("=" ~> "{" ~> signedNumber.* <~ "}") ^^ { case id ~ l => CfgVal(id, EntryNumList(l)) }
-  def cfgStatementSub = cfgBlock ^^ { case (id, st) => CfgSub(id, st) }
+  def cvNum = signedNumber ^^ EntryDouble
+  def cvStr = str ^^ EntryStr
+  def cvNumList = "=" ~> "{" ~> signedNumber.* <~ "}" ^^ EntryNumList
 
-  def cfgStatement = cfgStatementNum | cfgStatementStr | cfgStatementSub | cfgStatementNumList
+  def cfgValue = cvNum | cvStr | cvNumList
+
+  def ceSub = cfgBlock ^^ { case (id, st) => CfgSection(id, st) }
+  def ceAssign = str ~ "=" ~ cfgValue ^^ { case k ~ eq ~ v => CfgVal(k, v) }
+
+  def cfgEntry = ceSub | ceAssign
 
   // A bit of type acrobatics because this is recursive (via cfgStatementSub)
   // the tuple is translated into the proper class in either cfgStatementSub or cfg
-  def cfgBlock: Parser[(String, List[CfgStatement])] =
-    "cfg" ~> str ~ ("{" ~> cfgStatement.* <~ "}") ^^ { case id ~ st => (id, st) }
+  def cfgBlock: Parser[(String, List[CfgEntry])] =
+    "cfg" ~> str ~ ("{" ~> cfgEntry.* <~ "}") ^^ { case id ~ st => (id, st) }
 
-  def statementCfg = cfgBlock ^^ { case (id, st) => StCfg(id, st) }
+  def statementCfg = cfgBlock ^^ { case (id, st) => CsCfgSection(id, st) }
 }

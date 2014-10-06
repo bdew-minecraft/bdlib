@@ -21,7 +21,7 @@ import net.minecraftforge.oredict.{OreDictionary, ShapelessOreRecipe}
 /**
  * Main recipe loader class
  * The input file is parsed by [[net.bdew.lib.recipes.RecipeParser]]
- * Into a list of [[net.bdew.lib.recipes.Statement]] subclasses
+ * Into a list of [[net.bdew.lib.recipes.ConfigStatement]] subclasses
  * That are then executed here
  */
 
@@ -49,9 +49,9 @@ class RecipeLoader {
   def error(msg: String, params: Any*) = throw new StatementError(msg.format(params: _*))
 
   /**
-   * List of unprocessed delayed statements
+   * List of unprocessed recipe statements
    */
-  var delayedStatements = List.empty[DelayedStatement]
+  var recipeStatements = List.empty[RecipeStatement]
 
   /**
    * Looks up a recipe component
@@ -67,11 +67,10 @@ class RecipeLoader {
   /**
    * Resolve class name if it's a macro
    */
-  def getRealClassName(s: String): String = {
-    if (s.startsWith("$")) {
-      return currClassMacros(s.stripPrefix("$"))
-    }
-    return s
+  def getRealClassName(s: String) = {
+    if (s.startsWith("$"))
+      currClassMacros(s.stripPrefix("$"))
+    else s
   }
   /**
    * Sanitize items from reflection
@@ -208,61 +207,82 @@ class RecipeLoader {
   }
 
   /**
+   * Helper to remove recipes from lists
+   * @param list list to check
+   * @param res crafting result to remove
+   * @return cleaned list
+   */
+  def clearStatements(list: List[RecipeStatement], res: StackRef): List[RecipeStatement] = {
+    list flatMap {
+      case x: CraftingStatement =>
+        if (res == x.result) {
+          BdLib.logInfo("Removing recipe %s", this)
+          None
+        } else Some(x)
+      case RsRecipes(inner) =>
+        Some(RsRecipes(clearStatements(inner, res)))
+      case RsConditional(cnd, thn, els) =>
+        Some(RsConditional(cnd, clearStatements(thn, res), clearStatements(els, res)))
+      case x => Some(x)
+    }
+  }
+
+  /**
+   * Checks a condition and returns the result
+   */
+  def resolveCondition(cond: Condition): Boolean = cond match {
+    case CndHaveMod(mod) =>
+      Misc.haveModVersion(mod)
+    case CndHaveAPI(api) =>
+      ModAPIManager.INSTANCE.hasAPI(api)
+    case CndHaveOD(od) =>
+      OreDictionary.getOres(od).size() > 0
+    case CndNOT(cnd) => !resolveCondition(cnd)
+    case CndAND(c1, c2) => resolveCondition(c1) && resolveCondition(c2)
+    case CndOR(c1, c2) => resolveCondition(c1) || resolveCondition(c2)
+    case x =>
+      error("Can't process %s - this is a programing bug!", x)
+  }
+
+  /**
    * Process a single statement, override this to add more statements
    * @param s The statement
    */
-  def processStatement(s: Statement): Unit = s match {
-    case StIfHaveMod(mod, thn, els) =>
-      if (Misc.haveModVersion(mod)) {
-        BdLib.logInfo("ifMod: %s found", mod)
-        processStatementsSafe(thn)
+  def processConfigStatement(s: ConfigStatement): Unit = s match {
+    case CsConditionalConfig(cnd, thn, els) =>
+      if (resolveCondition(cnd)) {
+        BdLib.logInfo("Condition %s - TRUE", cnd)
+        processConfigStatementsSafe(thn)
       } else {
-        BdLib.logInfo("ifMod: %s not found", mod)
-        processStatementsSafe(els)
+        BdLib.logInfo("Condition %s - FALSE", cnd)
+        processConfigStatementsSafe(els)
       }
 
-    case StIfHaveAPI(mod, thn, els) =>
-      if (ModAPIManager.INSTANCE.hasAPI(mod)) {
-        BdLib.logInfo("ifAPI: %s found", mod)
-        processStatementsSafe(thn)
-      } else {
-        BdLib.logInfo("ifAPI: %s not found", mod)
-        processStatementsSafe(els)
-      }
-
-    case StClearRecipes(res) =>
+    case CsClearRecipes(res) =>
       BdLib.logInfo("Clearing recipes that produce %s", res)
-      delayedStatements = delayedStatements.filter({
-        x =>
-          if (x.isInstanceOf[CraftingStatement])
-            if (x.asInstanceOf[CraftingStatement].result == res) {
-              BdLib.logInfo("Removing recipe %s", x)
-              false
-            } else true
-          else true
-      })
+      recipeStatements = clearStatements(recipeStatements, res)
 
-    case x: DelayedStatement =>
-      delayedStatements :+= x
+    case CsRecipeBlock(lst) =>
+      recipeStatements :+= RsRecipes(lst)
 
     case x =>
       BdLib.logError("Can't process %s - this is a programing bug!", x)
   }
 
   /**
-   * Process a single delayed statement
+   * Process a single recipe statement
    * @param st The statement
    */
-  def processDelayedStatement(st: DelayedStatement) = st match {
-    case StCharAssign(c, r) =>
+  def processRecipeStatement(st: RecipeStatement) = st match {
+    case RsCharAssign(c, r) =>
       currCharMap += (c -> r)
       BdLib.logInfo("Added %s = %s", c, r)
 
-    case StClassMacro(id, cls) =>
+    case RsClassMacro(id, cls) =>
       currClassMacros += (id -> cls)
       BdLib.logInfo("Added def %s = %s", id, cls)
 
-    case StRecipeShaped(rec, res, cnt) =>
+    case RsRecipeShaped(rec, res, cnt) =>
       BdLib.logInfo("Adding shaped recipe %s => %s * %d", rec, res, cnt)
       val (comp, needOd) = resolveRecipeComponents(rec.mkString(""))
       val resStack = getConcreteStack(res, cnt)
@@ -279,7 +299,7 @@ class RecipeLoader {
 
       BdLib.logInfo("Done... result=%s, od=%s", resStack, needOd)
 
-    case StRecipeShapeless(rec, res, cnt) =>
+    case RsRecipeShapeless(rec, res, cnt) =>
       BdLib.logInfo("Adding shapeless recipe %s => %s * %d", rec, res, cnt)
       val (comp, needOd) = resolveRecipeComponents(rec)
       val resStack = getConcreteStack(res, cnt)
@@ -297,7 +317,7 @@ class RecipeLoader {
 
       BdLib.logInfo("Done... result=%s, od=%s", resStack, needOd)
 
-    case StSmeltRecipe(in, out, cnt, xp) =>
+    case RsRecipeSmelting(in, out, cnt, xp) =>
       BdLib.logInfo("Adding smelting recipe %s => %s * %d (%f xp)", in, out, cnt, xp)
       val outStack = getConcreteStack(out, cnt)
       if (outStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
@@ -309,36 +329,64 @@ class RecipeLoader {
         BdLib.logInfo("added %s -> %s", inStack, outStack)
       }
 
-    case StIfHaveOD(od, thn, els) =>
-      if (OreDictionary.getOres(od).size() > 0) {
-        BdLib.logInfo("ifOreDict: %s found".format(od))
-        processDelayedStatementsSafe(thn)
+    case RsConditional(cnd, thn, els) =>
+      if (resolveCondition(cnd)) {
+        BdLib.logInfo("Condition %s - TRUE", cnd)
+        processRecipeStatementsInSubcontext(thn)
       } else {
-        BdLib.logInfo("ifOreDict: %s not found".format(od))
-        processDelayedStatementsSafe(els)
+        BdLib.logInfo("Condition %s - FALSE", cnd)
+        processRecipeStatementsInSubcontext(els)
       }
+
+    case RsRecipes(list) =>
+      processRecipeStatementsInSubcontext(list)
+
+    case RsRegOredict(id, spec, wildcard) =>
+      BdLib.logInfo("Registering ore dictionary entry: %s -> %s", spec, id)
+      val stack = getConcreteStack(spec)
+      if (wildcard) {
+        BdLib.logInfo("Forcing wildcard damage (was %d)", stack.getItemDamage)
+        stack.setItemDamage(OreDictionary.WILDCARD_VALUE)
+      }
+      BdLib.logInfo("Actual stack: %s", stack)
+      OreDictionary.registerOre(id, stack)
 
     case x =>
       BdLib.logError("Can't process %s - this is a programing bug!", x)
   }
 
   /**
-   * Process main delayed statements list, clear the list afterwards
+   * Processes recipe statements in a new context
+   * Any changes to mutable state will not persist when this method returns
    */
-  def processDelayedStatements() {
-    BdLib.logInfo("Processing %d delayed statements", delayedStatements.size)
-    processDelayedStatementsSafe(delayedStatements)
-    delayedStatements = List.empty
+  def processRecipeStatementsInSubcontext(list: List[RecipeStatement]) = {
+    val oldCharMap = currCharMap
+    val oldClassMacros = currClassMacros
+    try {
+      processRecipeStatementsSafe(list)
+    } finally {
+      currCharMap = oldCharMap
+      currClassMacros = oldClassMacros
+    }
   }
 
   /**
-   * Process a list of delayed statements and catch all exceptions
+   * Process main recipe statements list, clear the list afterwards
+   */
+  def processRecipeStatements() {
+    BdLib.logInfo("Processing %d recipe statements", recipeStatements.size)
+    processRecipeStatementsSafe(recipeStatements)
+    recipeStatements = List.empty
+  }
+
+  /**
+   * Process a list of recipe statements and catch all exceptions
    * @param list The list to process
    */
-  def processDelayedStatementsSafe(list: List[DelayedStatement]) {
+  def processRecipeStatementsSafe(list: List[RecipeStatement]) {
     for (s <- list) {
       try {
-        processDelayedStatement(s)
+        processRecipeStatement(s)
       } catch {
         case e: StatementError =>
           BdLib.logError("Error while processing %s: %s", s, e.getMessage)
@@ -349,13 +397,13 @@ class RecipeLoader {
   }
 
   /**
-   * Process a list of statements and catch all exceptions
+   * Process a list of config statements and catch all exceptions
    * @param r The list to process
    */
-  def processStatementsSafe(r: List[Statement]): Unit = {
+  def processConfigStatementsSafe(r: List[ConfigStatement]): Unit = {
     for (s <- r) {
       try {
-        processStatement(s)
+        processConfigStatement(s)
       } catch {
         case e: StatementError =>
           BdLib.logError("Error while processing %s: %s", s, e.getMessage)
@@ -369,7 +417,7 @@ class RecipeLoader {
     BdLib.logInfo("Starting parsing")
     val r = newParser().doParse(f)
     BdLib.logInfo("Processing %d statements", r.size)
-    processStatementsSafe(r)
+    processConfigStatementsSafe(r)
     BdLib.logInfo("Done")
   }
 }

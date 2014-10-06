@@ -9,17 +9,18 @@
 
 package net.bdew.lib.recipes.lootlist
 
-import net.bdew.lib.recipes.gencfg.{CfgVal, GenericConfigParser}
+import net.bdew.lib.recipes.gencfg.GenericConfigParser
 
 /**
  * Parser mixin for loot lists
- * ident: DropsList(
+ * ident = DropsList(
  * {chance}% {stackRef}
  * ...
  * )
  */
 trait LootListParser extends GenericConfigParser {
   def dropsEntry = (wholeNumber <~ "%") ~ spec ^^ { case n ~ s => (n.toInt, s) }
-  def cfgDrops = ident ~ (":" ~> "DropsList" ~> "(" ~> dropsEntry.* <~ ")") ^^ { case id ~ a => CfgVal(id, EntryLootList(a)) }
-  override def cfgStatement = cfgDrops | super.cfgStatement
+  def ceDrops = "DropsList" ~> "(" ~> dropsEntry.* <~ ")" ^^ EntryLootList
+  override def cfgValue = ceDrops | super.cfgValue
 }
+
