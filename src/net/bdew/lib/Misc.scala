@@ -15,9 +15,10 @@ import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.StatCollector
+import net.minecraft.util.{IIcon, StatCollector}
 import net.minecraft.world.biome.BiomeGenBase
 import net.minecraftforge.common.util.ForgeDirection
+import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
@@ -98,5 +99,20 @@ object Misc {
     f(init)
     init
   }
+
+  def getFluidIcon(fs: FluidStack): IIcon =
+    if (fs != null && fs.getFluid != null && fs.getFluid.getIcon != null)
+      fs.getFluid.getIcon(fs)
+    else
+      Client.blockMissingIcon
+
+  def getFluidIcon(f: Fluid): IIcon =
+    if (f != null) getFluidIcon(new FluidStack(f, 1)) else Client.blockMissingIcon
+
+  def getFluidColor(fs: FluidStack): Int =
+    if (fs != null && fs.getFluid != null) fs.getFluid.getColor(fs) else 0xFFFFFF
+
+  def getFluidColor(f: Fluid): Int =
+    if (f != null) getFluidColor(new FluidStack(f, 1)) else 0xFFFFFF
 }
 

@@ -10,6 +10,7 @@
 package net.bdew.lib
 
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.texture.TextureMap
 import org.lwjgl.input.Keyboard
 
 /**
@@ -21,6 +22,10 @@ object Client {
   def renderEngine = Minecraft.getMinecraft.renderEngine
   def world = Minecraft.getMinecraft.theWorld
   def player = Minecraft.getMinecraft.thePlayer
+  def textureManager = Minecraft.getMinecraft.getTextureManager
+
+  def blockMissingIcon = textureManager.getTexture(TextureMap.locationBlocksTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
+  def itemMissingIcon = textureManager.getTexture(TextureMap.locationItemsTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
 
   def shiftDown: Boolean = {
     return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)

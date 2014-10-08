@@ -9,6 +9,7 @@
 
 package net.bdew.lib.gui
 
+import net.bdew.lib.Client
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.util.{IIcon, ResourceLocation}
@@ -29,7 +30,13 @@ class InterpolatedTexture(val texture: Texture, rect: Rect) extends Texture {
   def v2 = rect.y2 * (texture.v2 - texture.v1) + texture.v1
 }
 
-class IconWrapper(val resource: ResourceLocation, val icon: IIcon) extends Texture {
+class IconWrapper(val resource: ResourceLocation, picon: IIcon) extends Texture {
+  val icon = if (picon == null) {
+    if (resource == Texture.ITEMS) Client.itemMissingIcon
+    else if (resource == Texture.BLOCKS) Client.blockMissingIcon
+    else sys.error("Attempt to create IconWrapper for null IIcon")
+  } else picon
+
   def u1 = icon.getMinU
   def u2 = icon.getMaxU
   def v1 = icon.getMinV

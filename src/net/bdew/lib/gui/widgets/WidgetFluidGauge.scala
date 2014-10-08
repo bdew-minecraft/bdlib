@@ -35,11 +35,11 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
     val fstack = dslot.getFluid
-    if (fstack != null && fstack.getFluid.getStillIcon != null) {
-      val icon = Texture(Texture.BLOCKS, fstack.getFluid.getStillIcon)
+    if (fstack != null) {
+      val color = Color.fromInt(Misc.getFluidColor(fstack))
+      val icon = Texture(Texture.BLOCKS, Misc.getFluidIcon(fstack))
       var fillHeight = if (dslot.getCapacity > 0) rect.h * fstack.amount / dslot.getCapacity else 0
       var yStart: Int = 0
-      val color = Color.fromInt(fstack.getFluid.getColor(fstack))
 
       while (fillHeight > 0) {
         if (fillHeight > 16) {
