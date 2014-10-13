@@ -1,0 +1,19 @@
+bdlib.multiblock.face.north=Sever
+bdlib.multiblock.face.south=Jih
+bdlib.multiblock.face.east=Západ
+bdlib.multiblock.face.west=Východ
+bdlib.multiblock.face.up=Vršek
+bdlib.multiblock.face.down=Spodek
+
+bdlib.multiblock.disabled=Zakázáno
+bdlib.multiblock.incomplete=Tento stroj není kompletní, ještě potřebuje alespoň:
+bdlib.multiblock.notconnected=Nepřipojeno ke správnému stroji
+bdlib.multiblock.toomanyoutputs=Připojeno příliš mnoho výstupů, nemohu získat nové připojení
+
+bdlib.rsmode.always=Vždy ZAPNUTO
+bdlib.rsmode.never=Zakázáno
+bdlib.rsmode.rs_on=Povoleno při ruditovém signálu
+bdlib.rsmode.rs_off=Zakázáno při ruditovém signálu
+
+bdlib.label.empty=Prázdný
+
