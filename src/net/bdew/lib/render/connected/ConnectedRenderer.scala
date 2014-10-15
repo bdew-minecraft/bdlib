@@ -9,32 +9,15 @@
 
 package net.bdew.lib.render.connected
 
-import cpw.mods.fml.client.registry.{ISimpleBlockRenderingHandler, RenderingRegistry}
 import net.bdew.lib.block.BlockRef
+import net.bdew.lib.render.{BaseBlockRenderHandler, RenderUtils}
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.{RenderBlocks, Tessellator}
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.util.ForgeDirection
 import org.lwjgl.opengl.GL11
 
-object ConnectedRenderer extends ISimpleBlockRenderingHandler {
-  val id = RenderingRegistry.getNextAvailableRenderId
-  RenderingRegistry.registerBlockHandler(this)
-
-  def doRenderItemSide(d: ForgeDirection, r: RenderBlocks, block: Block, meta: Int) = {
-    val icon = r.getBlockIconFromSideAndMetadata(block, d.ordinal(), meta)
-    Tessellator.instance.setNormal(d.offsetX, d.offsetY, d.offsetZ)
-    d match {
-      case ForgeDirection.DOWN => r.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.UP => r.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.NORTH => r.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.SOUTH => r.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.WEST => r.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.EAST => r.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, icon)
-      case _ => sys.error("Invalid side")
-    }
-  }
-
+object ConnectedRenderer extends BaseBlockRenderHandler {
   override def renderInventoryBlock(block: Block, metadata: Int, modelID: Int, renderer: RenderBlocks) {
     val tessellator = Tessellator.instance
     GL11.glTranslatef(-0.5F, -0.5F, -0.5F)
@@ -43,8 +26,7 @@ object ConnectedRenderer extends ISimpleBlockRenderingHandler {
 
     for (side <- ForgeDirection.VALID_DIRECTIONS) {
       tessellator.startDrawingQuads()
-      doRenderItemSide(side, renderer, block, metadata)
-      val m = ConnectedHelper.brightnessMultiplier(side)
+      RenderUtils.doRenderItemSide(side, renderer, block, metadata)
       ConnectedHelper.draw(side, 8).doDraw(ConnectedHelper.Vec3F(0, 0, 0), edge)
       tessellator.draw()
     }
@@ -105,9 +87,6 @@ object ConnectedRenderer extends ISimpleBlockRenderingHandler {
       }
     }
   }
-
-  override def shouldRender3DInInventory(modelId: Int) = true
-  override def getRenderId = id
 }
 
 
