@@ -9,14 +9,20 @@
 
 package net.bdew.lib.covers
 
+import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
 import net.bdew.lib.block.HasTE
 import net.bdew.lib.items.ItemUtils
 import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
+import net.minecraftforge.common.util.ForgeDirection
 
 trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
+  @SideOnly(Side.CLIENT)
+  override def getRenderType = CoverRenderer.id
+
   override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {
     val te = getTE(world, x, y, z)
     val side = Misc.forgeDirection(face)
@@ -53,12 +59,12 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
     super.onBlockActivated(world, x, y, z, player, face, xoffs, yoffs, zoffs)
   }
 
-  override def getIcon(w: IBlockAccess, x: Int, y: Int, z: Int, side: Int) =
-    (for {
-      coverStack <- Option(getTE(w, x, y, z).covers(Misc.forgeDirection(side)).cval)
-      coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
+  def getCoverIcon(w: IBlockAccess, x: Int, y: Int, z: Int, side: ForgeDirection): Option[IIcon] =
+    for {
+      coverStack <- Option(getTE(w, x, y, z).covers(side).cval)
+      coverItemMaybe <- Option(coverStack.getItem)
+      coverItem <- Misc.asInstanceOpt(coverItemMaybe, classOf[ItemCover])
     } yield coverItem.getCoverIcon(coverStack)
-      ) getOrElse super.getIcon(w, x, y, z, side)
 
   override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
     if (!world.isRemote)
