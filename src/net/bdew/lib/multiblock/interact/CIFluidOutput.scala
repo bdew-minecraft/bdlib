@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTankInfo}
 
 trait CIFluidOutput extends CIOutputFaces {
   def outputFluid(resource: FluidStack, doDrain: Boolean): FluidStack
-  def outputFluid(ammount: Int, doDrain: Boolean): FluidStack
+  def outputFluid(amount: Int, doDrain: Boolean): FluidStack
   def canOutputFluid(fluid: Fluid): Boolean
   def getTankInfo: Array[FluidTankInfo]
 }

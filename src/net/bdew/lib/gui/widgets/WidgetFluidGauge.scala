@@ -56,6 +56,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase
     GL11.glColor3d(1, 1, 1)
     GL11.glDisable(GL11.GL_BLEND)
 
-    parent.drawTexture(rect, overlay)
+    if (overlay != null)
+      parent.drawTexture(rect, overlay)
   }
 }
