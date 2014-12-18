@@ -11,20 +11,19 @@ package net.bdew.lib.power
 
 import java.text.DecimalFormat
 
+import net.bdew.lib.DecFormat
 import net.bdew.lib.gui.widgets.Widget
 import net.bdew.lib.gui.{Point, Rect, Texture}
 
 import scala.collection.mutable
 
-class WidgetPowerGauge(val rect: Rect, texture: Texture, dslot: DataSlotPower) extends Widget {
-  val formater = new DecimalFormat("#,###")
-
+class WidgetPowerGauge(val rect: Rect, texture: Texture, dSlot: DataSlotPower) extends Widget {
   val a = rect.map(_.round)
 
   override def draw(mouse: Point) {
-    val fill = dslot.stored / dslot.capacity
+    val fill = dSlot.stored / dSlot.capacity
     parent.drawTextureInterpolate(rect, texture, 0, 1 - fill, 1, 1)
   }
 
-  override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += formater.format(dslot.stored) + "/" + formater.format(dslot.capacity) + " MJ"
+  override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += DecFormat.round(dSlot.stored) + "/" + DecFormat.round(dSlot.capacity) + " MJ"
 }

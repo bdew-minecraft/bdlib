@@ -36,7 +36,10 @@ class ItemStackSerialize(var stack: ItemStack) extends Serializable {
 }
 
 object ItemStackSerialize {
-  implicit def ser2content(v: ItemStackSerialize) = v.stack
-  implicit def content2ser(v: ItemStack) = new ItemStackSerialize(v)
+
+  import scala.language.implicitConversions
+
+  implicit def ser2content(v: ItemStackSerialize): ItemStack = v.stack
+  implicit def content2ser(v: ItemStack): ItemStackSerialize = new ItemStackSerialize(v)
 }
 

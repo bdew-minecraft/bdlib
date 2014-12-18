@@ -25,6 +25,9 @@ class NBTTagCompoundSerialize(var tag: NBTTagCompound = new NBTTagCompound) exte
 }
 
 object NBTTagCompoundSerialize {
-  implicit def ser2content(v: NBTTagCompoundSerialize) = v.tag
-  implicit def content2ser(v: NBTTagCompound) = new NBTTagCompoundSerialize(v)
+
+  import scala.language.implicitConversions
+
+  implicit def ser2content(v: NBTTagCompoundSerialize): NBTTagCompound = v.tag
+  implicit def content2ser(v: NBTTagCompound): NBTTagCompoundSerialize = new NBTTagCompoundSerialize(v)
 }

@@ -55,8 +55,8 @@ object Misc {
   def addRecipeOD(result: ItemStack, pattern: Seq[String], items: Map[Char, AnyRef]) =
     GameRegistry.addRecipe(new ShapedOreRecipe(result, flattenRecipe(pattern, items): _*))
 
-  def min[T](vals: T*)(implicit o: Ordering[T]): T = vals.min(o)
-  def max[T](vals: T*)(implicit o: Ordering[T]): T = vals.max(o)
+  def min[T: Ordering](values: T*) = values.min
+  def max[T: Ordering](values: T*) = values.max
 
   def clamp[T](value: T, min: T, max: T)(implicit o: Ordering[T]): T = if (o.gt(value, max)) max else if (o.lt(value, min)) min else value
 
@@ -95,7 +95,12 @@ object Misc {
     Option(origin.getWorldObj.getTileEntity(origin.xCoord + dir.offsetX,
       origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
 
-  def applyMutator[T](f: (T) => Unit, init: T): T = {
+  @inline def applyMutator[T](f: (T) => Unit, init: T): T = {
+    f(init)
+    init
+  }
+
+  @inline def applyMutator[T](init: T)(f: (T) => Unit) = {
     f(init)
     init
   }
