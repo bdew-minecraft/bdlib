@@ -13,6 +13,7 @@ import net.bdew.lib.multiblock.network.MsgOutputCfg
 import net.minecraft.nbt.NBTTagCompound
 
 class OutputConfigPower(var unit: String = "MJ") extends OutputConfig with OutputConfigRSControllable {
+  override val id = "power"
   var avg = 0.0
   var rsMode = RSMode.ALWAYS
 

@@ -13,6 +13,7 @@ import net.bdew.lib.multiblock.network.MsgOutputCfg
 import net.minecraft.nbt.NBTTagCompound
 
 class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
+  override def id = "fluid"
   var avg = 0.0
   var rsMode = RSMode.ALWAYS
 

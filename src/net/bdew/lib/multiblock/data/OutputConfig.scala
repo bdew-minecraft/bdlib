@@ -14,13 +14,24 @@ import net.minecraft.nbt.NBTTagCompound
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 abstract class OutputConfig {
+  def id: String
   def read(t: NBTTagCompound)
   def write(t: NBTTagCompound)
   def handleConfigPacket(m: MsgOutputCfg)
 }
 
 class OutputConfigInvalid extends OutputConfig {
+  override val id: String = "invalid"
   def read(t: NBTTagCompound) {}
   def write(t: NBTTagCompound) = throw new NotImplementedException
   def handleConfigPacket(m: MsgOutputCfg) = throw new NotImplementedException
+}
+
+object OutputConfigManager {
+  var loaders = Map.empty[String, () => OutputConfig]
+  def register(id: String, loader: () => OutputConfig) = loaders += id -> loader
+  def create(id: String) = loaders.get(id).map(_.apply()).getOrElse(new OutputConfigInvalid)
+
+  register("fluid", () => new OutputConfigFluid)
+  register("power", () => new OutputConfigPower)
 }

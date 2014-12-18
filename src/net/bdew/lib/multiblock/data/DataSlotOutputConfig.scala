@@ -23,12 +23,7 @@ case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int)
     for ((n, x) <- map) {
       val tmp = new NBTTagCompound()
       x.write(tmp)
-      val kind = x match {
-        case _: OutputConfigPower => "power"
-        case _: OutputConfigFluid => "fluid"
-        case _ => sys.error("Unknown output config kind: " + x)
-      }
-      tmp.setString("kind", kind)
+      tmp.setString("kind", x.id)
       t.setTag(name + "_" + n, tmp)
     }
   }
@@ -38,11 +33,7 @@ case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int)
     for (i <- 0 until slots) {
       if (t.hasKey(name + "_" + i)) {
         val cfg = t.getCompoundTag(name + "_" + i)
-        val cfgObj = cfg.getString("kind") match {
-          case "power" => new OutputConfigPower
-          case "fluid" => new OutputConfigFluid
-          case _ => new OutputConfigInvalid
-        }
+        val cfgObj = OutputConfigManager.create(cfg.getString("kind"))
         cfgObj.read(cfg)
         map += i -> cfgObj
       }
