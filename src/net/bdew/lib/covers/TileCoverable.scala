@@ -33,7 +33,7 @@ trait TileCoverable extends TileDataSlots {
   def tickCovers() =
     for {
       (dir, coverSlot) <- covers
-      coverStack <- Option(coverSlot.cval)
+      coverStack <- Option(coverSlot.value)
       coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
     } {
       coverItem.tickCover(this, dir, coverStack)

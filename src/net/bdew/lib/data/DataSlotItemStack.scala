@@ -14,19 +14,19 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
 case class DataSlotItemStack(name: String, parent: TileDataSlots) extends DataSlotVal[ItemStack] {
-  var cval: ItemStack = null
+  var value: ItemStack = null
 
   override def update(v: ItemStack) = {
-    if (!ItemStack.areItemStacksEqual(v, cval)) {
-      cval = if (v == null) null else v.copy()
+    if (!ItemStack.areItemStacksEqual(v, value)) {
+      value = if (v == null) null else v.copy()
       parent.dataSlotChanged(this)
     }
   }
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) = {
     val tag = new NBTTagCompound()
-    if (cval != null) cval.writeToNBT(tag)
+    if (value != null) value.writeToNBT(tag)
     t.setTag(name, tag)
   }
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = cval = ItemStack.loadItemStackFromNBT(t.getCompoundTag(name))
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = ItemStack.loadItemStackFromNBT(t.getCompoundTag(name))
 }

@@ -22,7 +22,7 @@ import net.minecraftforge.oredict.OreDictionary
 class CommandDumpRegistry extends CommandBase {
   def getCommandName = "dumpregistry"
   override def getRequiredPermissionLevel = 2
-  def getCommandUsage(icommandsender: ICommandSender) = "dumpregistry"
+  def getCommandUsage(c: ICommandSender) = "dumpregistry"
 
   def processCommand(sender: ICommandSender, params: Array[String]) {
     val mcHome = FMLInjectionData.data()(6).asInstanceOf[File] //is there a better way to get this?

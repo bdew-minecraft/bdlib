@@ -28,5 +28,7 @@ abstract class BaseContainer(te: IInventory) extends NoInvContainer {
     getSlot(slot).putStack(stack)
     return null
   }
+
+  override def canInteractWith(player: EntityPlayer) = te.isUseableByPlayer(player)
 }
 

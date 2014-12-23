@@ -26,8 +26,8 @@ class RecipeParser extends JavaTokenParsers {
   // Possible metadata suffix (defaults to wildcard value)
   def maybeMeta = ("@" ~> int).? ^^ (_.getOrElse(OreDictionary.WILDCARD_VALUE))
 
-  // Possible modid prefix (defaults to minecraft)
-  def maybeModid = (str <~ ":").? ^^ (_.getOrElse("minecraft"))
+  // Possible modId prefix (defaults to minecraft)
+  def maybeModId = (str <~ ":").? ^^ (_.getOrElse("minecraft"))
 
   // Qualified class name
   def clsPath = (ident <~ ".").* ~ ident
@@ -50,8 +50,8 @@ class RecipeParser extends JavaTokenParsers {
   // === Item references ===
 
   def specOD = "OD" ~> ":" ~> ident ^^ StackOreDict
-  def specBlock = "B" ~> ":" ~> maybeModid ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackBlock(m, n, i) }
-  def specItem = "I" ~> ":" ~> maybeModid ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackItem(m, n, i) }
+  def specBlock = "B" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackBlock(m, n, i) }
+  def specItem = "I" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackItem(m, n, i) }
   def specGenericStack = "S" ~> ":" ~> str ~ ":" ~ str ^^ { case m ~ c ~ n => StackGeneric(m, n) }
   def specMacro = "$" ~> recipeChar ^^ StackMacro
 

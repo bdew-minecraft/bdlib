@@ -51,7 +51,7 @@ class NetChannel(val name: String) {
   }
 
   def init() {
-    if (channels != null) sys.error("Attempted to initalize a channel twice (%s)".format(name))
+    if (channels != null) sys.error("Attempted to initialize a channel twice (%s)".format(name))
     channels = NetworkRegistry.INSTANCE.newChannel(name, new SerializedMessageCodec)
     BdLib.logInfo("Initialized network channel '%s' for mod '%s'", name, Misc.getActiveModId)
     addHandler(Side.SERVER, ServerHandler)

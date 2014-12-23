@@ -25,11 +25,11 @@ object ItemUtils {
     val dx = world.rand.nextFloat * 0.8
     val dy = world.rand.nextFloat * 0.8
     val dz = world.rand.nextFloat * 0.8
-    val entityitem: EntityItem = new EntityItem(world, x + dx, y + dy, z + dz, stack)
-    entityitem.motionX = world.rand.nextGaussian * 0.05
-    entityitem.motionY = world.rand.nextGaussian * 0.05 + 0.2
-    entityitem.motionZ = world.rand.nextGaussian * 0.05
-    world.spawnEntityInWorld(entityitem)
+    val entity = new EntityItem(world, x + dx, y + dy, z + dz, stack)
+    entity.motionX = world.rand.nextGaussian * 0.05
+    entity.motionY = world.rand.nextGaussian * 0.05 + 0.2
+    entity.motionZ = world.rand.nextGaussian * 0.05
+    world.spawnEntityInWorld(entity)
   }
 
   def dropItemToPlayer(world: World, player: EntityPlayer, stack: ItemStack) {
@@ -47,11 +47,11 @@ object ItemUtils {
     return ItemStack.areItemStackTagsEqual(stack2, stack1)
   }
 
-  def addStackToSlots(stack: ItemStack, inv: IInventory, slots: Iterable[Int], checkvalid: Boolean): ItemStack = {
+  def addStackToSlots(stack: ItemStack, inv: IInventory, slots: Iterable[Int], checkValid: Boolean): ItemStack = {
     if (stack == null) return null
 
     // Try merging into existing slots
-    for (slot <- slots if (!checkvalid || inv.isItemValidForSlot(slot, stack)) && isSameItem(stack, inv.getStackInSlot(slot))) {
+    for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && isSameItem(stack, inv.getStackInSlot(slot))) {
       val target = inv.getStackInSlot(slot)
       val toAdd = Misc.min(target.getMaxStackSize - target.stackSize, inv.getInventoryStackLimit - target.stackSize, stack.stackSize)
       if (toAdd >= stack.stackSize) {
@@ -67,7 +67,7 @@ object ItemUtils {
     }
 
     // Now find empty slots and stick any leftovers there
-    for (slot <- slots if (!checkvalid || inv.isItemValidForSlot(slot, stack)) && inv.getStackInSlot(slot) == null) {
+    for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && inv.getStackInSlot(slot) == null) {
       if (inv.getInventoryStackLimit < stack.stackSize) {
         inv.setInventorySlotContents(slot, stack.splitStack(inv.getInventoryStackLimit))
       } else {

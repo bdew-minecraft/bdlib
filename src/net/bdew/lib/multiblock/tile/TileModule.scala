@@ -24,11 +24,11 @@ trait TileModule extends TileDataSlots {
 
   def getCore = getCoreAs[TileController]
 
-  lazy val mypos = BlockRef(xCoord, yCoord, zCoord)
+  lazy val myPos = BlockRef(xCoord, yCoord, zCoord)
 
   def connect(target: TileController) {
     if (target.moduleConnected(this)) {
-      connected.set(target.mypos)
+      connected.set(target.myPos)
       getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
       getWorldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType)
     }
@@ -47,7 +47,7 @@ trait TileModule extends TileDataSlots {
   def tryConnect() {
     if (getCore.isEmpty) {
       for {
-        conn <- Tools.findConnections(getWorldObj, mypos, kind).headOption
+        conn <- Tools.findConnections(getWorldObj, myPos, kind).headOption
         core <- conn.getTile[TileController](getWorldObj)
       } {
         connect(core)

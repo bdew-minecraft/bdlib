@@ -12,15 +12,15 @@ package net.bdew.lib.data
 import net.bdew.lib.data.base.DataSlotVal
 
 abstract class DataSlotOption[T] extends DataSlotVal[Option[T]] {
-  override var cval: Option[T] = None
+  override var value: Option[T] = None
 
   def set(v: T) {
     if (v == null) sys.error("Null should never be used with DataSlotOption")
-    cval = Some(v)
+    value = Some(v)
   }
 
   def unset() {
-    cval = None
+    value = None
   }
 
   override def isSame(v: Option[T]) = {

@@ -12,6 +12,8 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
+import scala.collection.mutable
+
 case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int) extends DataSlot {
   val map = collection.mutable.Map.empty[Int, OutputConfig]
 
@@ -47,5 +49,5 @@ object DataSlotOutputConfig {
 
   import scala.language.implicitConversions
 
-  implicit def dsbfm2map(v: DataSlotOutputConfig) = v.map
+  implicit def dataSlotOutputConfig2map(v: DataSlotOutputConfig): mutable.Map[Int, OutputConfig] = v.map
 }

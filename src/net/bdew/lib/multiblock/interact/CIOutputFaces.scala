@@ -42,7 +42,7 @@ trait CIOutputFaces extends TileController {
   serverTick.listen(doOutputs)
 
   override def moduleRemoved(module: TileModule) {
-    for ((bf, n) <- outputFaces if bf.origin == module.mypos) {
+    for ((bf, n) <- outputFaces if bf.origin == module.myPos) {
       outputFaces -= bf
       outputConfig -= n
     }

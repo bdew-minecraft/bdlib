@@ -23,6 +23,6 @@ class WidgetInfo(val rect: Rect, icon: Texture, text: => String, tooltip: => Str
 
   override def draw(mouse: Point) {
     parent.drawTexture(iconRect + rect.origin, icon)
-    parent.drawText(text, rect.origin +(12, 1), Color.darkgray, false)
+    parent.drawText(text, rect.origin +(12, 1), Color.darkGray, false)
   }
 }

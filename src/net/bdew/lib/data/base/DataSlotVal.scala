@@ -13,27 +13,27 @@ import scala.language.implicitConversions
 
 /**
  * Base trait for data slots that hold primitive values
- * Defines some convinience operators to access the value and an implicit conversion to the value
+ * Defines some convenience operators to access the value and an implicit conversion to the value
  */
 
 trait DataSlotVal[T] extends DataSlot {
-  var cval: T
+  var value: T
 
-  def isSame(v: T) = v == cval
+  def isSame(v: T) = v == value
 
   def :=(that: T) = update(that)
 
-  def :!=(that: T) = cval != that
-  def :==(that: T) = cval == that
+  def :!=(that: T) = value != that
+  def :==(that: T) = value == that
 
   def update(v: T) {
     if (!isSame(v)) {
-      cval = v
+      value = v
       parent.dataSlotChanged(this)
     }
   }
 }
 
 object DataSlotVal {
-  implicit def slot2val[T](slot: DataSlotVal[T]): T = slot.cval
+  implicit def slot2val[T](slot: DataSlotVal[T]): T = slot.value
 }

@@ -9,7 +9,7 @@
 
 package net.bdew.lib.rotate
 
-import java.util.EnumSet
+import java.util
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.minecraft.block.Block
@@ -20,9 +20,9 @@ import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 
 /**
- * Basic logic for block rotatation
+ * Basic logic for block rotation
  */
-trait BaseRotateableBlock extends Block {
+trait BaseRotatableBlock extends Block {
 
   /**
    * Override this method to provide your textures, also called when rendering as item
@@ -37,8 +37,8 @@ trait BaseRotateableBlock extends Block {
   /**
    * Set of valid rotations, default is all of them
    */
-  def getValidFacings: EnumSet[ForgeDirection] = {
-    return EnumSet.allOf(classOf[ForgeDirection])
+  def getValidFacings: util.EnumSet[ForgeDirection] = {
+    return util.EnumSet.allOf(classOf[ForgeDirection])
   }
 
   /**
@@ -47,7 +47,7 @@ trait BaseRotateableBlock extends Block {
   def getDefaultFacing: ForgeDirection = ForgeDirection.UP
 
   /**
-   * Those will be overrided to provide concrete storage
+   * Those will be overridden to provide concrete storage
    */
   def setFacing(world: World, x: Int, y: Int, z: Int, facing: ForgeDirection)
   def getFacing(world: IBlockAccess, x: Int, y: Int, z: Int): ForgeDirection

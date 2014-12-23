@@ -25,9 +25,9 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
   def getCfg(dir: ForgeDirection): Option[T] =
     for {
       core <- getCore
-      onum <- core.outputFaces.get(BlockFace(mypos, dir))
-      cfggen <- core.outputConfig.get(onum)
-      cfg <- Misc.asInstanceOpt(cfggen, outputConfigType)
+      oNum <- core.outputFaces.get(BlockFace(myPos, dir))
+      cfgGen <- core.outputConfig.get(oNum)
+      cfg <- Misc.asInstanceOpt(cfgGen, outputConfigType)
     } yield cfg
 
   serverTick.listen(() => {
@@ -42,7 +42,7 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
     if (connected.isDefined) rescanFaces = true
   }
 
-  def canConnectoToFace(d: ForgeDirection): Boolean
+  def canConnectToFace(d: ForgeDirection): Boolean
 
   def onConnectionsChanged(added: Set[ForgeDirection], removed: Set[ForgeDirection]) {}
 
@@ -50,14 +50,14 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
     getCore map { core =>
       val connections = (
         ForgeDirection.VALID_DIRECTIONS
-          filterNot { dir => core.modules.contains(mypos.neighbour(dir)) }
-          filter canConnectoToFace
+          filterNot { dir => core.modules.contains(myPos.neighbour(dir)) }
+          filter canConnectToFace
         ).toSet
-      val known = core.outputFaces.filter(_._1.origin == mypos).map(_._1.face).toSet
+      val known = core.outputFaces.filter(_._1.origin == myPos).map(_._1.face).toSet
       val toAdd = connections -- known
       val toRemove = known -- connections
-      toRemove.foreach(x => core.removeOutput(mypos, x))
-      toAdd.foreach(x => core.newOutput(mypos, x, makeCfgObject(x)))
+      toRemove.foreach(x => core.removeOutput(myPos, x))
+      toAdd.foreach(x => core.newOutput(myPos, x, makeCfgObject(x)))
       if (toAdd.size > 0 || toRemove.size > 0) {
         onConnectionsChanged(toAdd, toRemove)
         getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)

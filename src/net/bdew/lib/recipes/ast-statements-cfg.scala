@@ -35,7 +35,7 @@ case class CsRecipeBlock(list: List[RecipeStatement]) extends ConfigStatement
 case class CsConditionalConfig(cond: Condition, thn: List[ConfigStatement], els: List[ConfigStatement]) extends ConfigStatement
 
 /**
- * Removes previously defined recieps for a specific result
+ * Removes previously defined recipes for a specific result
  * Syntax: clearRecipes: {spec} 
  * Parser: [[RecipeParser.clearRecipes]]
  * @param res Recipes that produce this result will be cleared

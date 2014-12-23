@@ -54,7 +54,7 @@ case class RsRecipes(list: List[RecipeStatement]) extends RecipeStatement
 case class RsConditional(cond: Condition, thn: List[RecipeStatement], els: List[RecipeStatement]) extends RecipeStatement
 
 /**
- * Base class for staments that represent a crafting recipe, that has a result
+ * Base class for statements that represent a crafting recipe, that has a result
  */
 abstract class CraftingStatement extends RecipeStatement {
   def result: StackRef
@@ -90,7 +90,7 @@ case class RsRecipeShaped(rec: Seq[String], result: StackRef, cnt: Int) extends 
  * Syntax: shapeless: {characters} => {result} [* {count}]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.recipeShapeless]]
  *
- * @param rec Recipe pattehrn
+ * @param rec Recipe pattern
  * @param result Result reference
  * @param cnt Number of output items
  */

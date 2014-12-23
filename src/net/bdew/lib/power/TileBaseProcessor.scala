@@ -56,12 +56,12 @@ with TilePoweredBase {
   def isWorking: Boolean
 
   /**
-   * Try starting a new operation, return true if succesful
+   * Try starting a new operation, return true if successful
    */
   def tryStart(): Boolean
 
   /**
-   * Perform output when operation is done, return true if succesful
+   * Perform output when operation is done, return true if successful
    */
   def tryFinish(): Boolean
 }

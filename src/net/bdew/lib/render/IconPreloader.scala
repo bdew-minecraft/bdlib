@@ -12,6 +12,7 @@ package net.bdew.lib.render
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import net.bdew.lib.gui.{IconWrapper, Texture}
 import net.minecraft.client.renderer.texture.IIconRegister
+import net.minecraft.util.IIcon
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 
@@ -25,7 +26,7 @@ class IconPreloader(kind: Int) {
   val sheet = kind match {
     case 0 => Texture.BLOCKS
     case 1 => Texture.ITEMS
-    case x => sys.error("Invalid spritesheet number: %d".format(x))
+    case x => sys.error("Invalid sprite sheet number: %d".format(x))
   }
 
   case class TextureLoc(loc: String) {
@@ -35,8 +36,8 @@ class IconPreloader(kind: Int) {
 
   import scala.language.implicitConversions
 
-  implicit def entry2icon(v: TextureLoc) = v.texture.icon
-  implicit def entry2texture(v: TextureLoc) = v.texture
+  implicit def entry2icon(v: TextureLoc): IIcon = v.texture.icon
+  implicit def entry2texture(v: TextureLoc): IconWrapper = v.texture
 
   def registerIcons(reg: IIconRegister) {}
 

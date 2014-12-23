@@ -29,8 +29,8 @@ abstract class StackRef
 case class StackOreDict(id: String) extends StackRef
 
 /**
- * Generic Referende
- * Syntax: S:{modid}:{name}
+ * Generic Reference
+ * Syntax: S:{modId}:{name}
  * Parser: [[net.bdew.lib.recipes.RecipeParser.specGenericStack]]
  * @param mod modId of owner mod
  * @param name name of the stack
@@ -39,7 +39,7 @@ case class StackGeneric(mod: String, name: String) extends StackRef
 
 /**
  * Block reference
- * Syntax: B:[{modid}:]{name} [@ {meta}]
+ * Syntax: B:[{modId}:]{name} [@ {meta}]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.specBlock]]
  * @param mod modId of owner mod, default is "minecraft"
  * @param name Registered name
@@ -49,7 +49,7 @@ case class StackBlock(mod: String, name: String, meta: Int) extends StackRef
 
 /**
  * Item reference
- * Syntax: I:[{modid}:]{name} [@ {meta}]
+ * Syntax: I:[{modId}:]{name} [@ {meta}]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.specItem]]
  * @param mod modId of owner mod, default is "minecraft"
  * @param name Registered name
@@ -58,7 +58,7 @@ case class StackBlock(mod: String, name: String, meta: Int) extends StackRef
 case class StackItem(mod: String, name: String, meta: Int) extends StackRef
 
 /**
- * Reference to an Item/Block/ItemStack pulic static field
+ * Reference to an Item/Block/ItemStack public static field
  * Syntax: {path}.{to}.{class}[{field}] [@ {meta}]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.specReflect]]
  * @param cls Class name
@@ -68,7 +68,7 @@ case class StackItem(mod: String, name: String, meta: Int) extends StackRef
 case class StackReflect(cls: String, field: String, meta: Int) extends StackRef
 
 /**
- * Reference to an Item/Block/ItemStack pulic static getter
+ * Reference to an Item/Block/ItemStack public static getter
  * Syntax: {path}.{to}.{class}.{method}({string}) [@ {meta}]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.specGetter]]
  * @param cls Class name

@@ -33,7 +33,7 @@ abstract class BlockController[T <: TileController](val name: String, material: 
   override def canConnect(world: IBlockAccess, origin: BlockRef, target: BlockRef) =
     getTE(world, origin).modules.contains(target)
 
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {
+  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     getTE(world, x, y, z).onClick(player)

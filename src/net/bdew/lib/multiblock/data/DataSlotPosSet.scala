@@ -14,6 +14,8 @@ import net.bdew.lib.block.BlockRef
 import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
+import scala.collection.mutable
+
 case class DataSlotPosSet(name: String, parent: TileDataSlots) extends DataSlot {
   val set = collection.mutable.Set.empty[BlockRef]
 
@@ -38,5 +40,5 @@ object DataSlotPosSet {
 
   import scala.language.implicitConversions
 
-  implicit def dsps2set(v: DataSlotPosSet) = v.set
+  implicit def dataSlotPosSet2set(v: DataSlotPosSet): mutable.Set[BlockRef] = v.set
 }

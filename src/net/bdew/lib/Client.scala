@@ -14,11 +14,11 @@ import net.minecraft.client.renderer.texture.TextureMap
 import org.lwjgl.input.Keyboard
 
 /**
- * Misc functions and shortcuts for clientside code
+ * Misc functions and shortcuts for client-side code
  */
 object Client {
   def minecraft = Minecraft.getMinecraft
-  def fontRenederer = Minecraft.getMinecraft.fontRenderer
+  def fontRenderer = Minecraft.getMinecraft.fontRenderer
   def renderEngine = Minecraft.getMinecraft.renderEngine
   def world = Minecraft.getMinecraft.theWorld
   def player = Minecraft.getMinecraft.thePlayer

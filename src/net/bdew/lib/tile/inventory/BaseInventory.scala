@@ -40,12 +40,12 @@ trait BaseInventory extends IInventory {
         markDirty()
         return item
       } else {
-        val newstack = item.splitStack(n)
+        val newStack = item.splitStack(n)
         if (item.stackSize == 0) {
           inv(slot) = null
         }
         markDirty()
-        return newstack
+        return newStack
       }
     } else {
       return null

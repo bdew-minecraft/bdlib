@@ -17,20 +17,20 @@ import net.minecraft.nbt.NBTTagCompound
 import org.apache.commons.lang3.StringUtils
 
 case class DataSlotGameProfile(name: String, parent: TileDataSlots) extends DataSlotVal[GameProfile] {
-  override var cval: GameProfile = null
+  override var value: GameProfile = null
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) = {
-    cval = if (t.hasKey(name + "_uid") || t.hasKey(name + "_name")) {
-      val uid = if (t.hasKey(name + "_uid")) UUID.fromString(t.getString(name + "_uid")) else null
-      val uname = if (t.hasKey(name + "_name")) t.getString(name + "_name") else null
-      new GameProfile(uid, uname)
+    value = if (t.hasKey(name + "_uid") || t.hasKey(name + "_name")) {
+      val uId = if (t.hasKey(name + "_uid")) UUID.fromString(t.getString(name + "_uid")) else null
+      val uName = if (t.hasKey(name + "_name")) t.getString(name + "_name") else null
+      new GameProfile(uId, uName)
     } else null
   }
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) = {
-    if (cval != null) {
-      Option(cval.getId) map (id => t.setString(name + "_uid", id.toString))
-      Option(cval.getName) filterNot (name => StringUtils.isBlank(name)) map (name => t.setString(name + "_name", name))
+    if (value != null) {
+      Option(value.getId) map (id => t.setString(name + "_uid", id.toString))
+      Option(value.getName) filterNot (name => StringUtils.isBlank(name)) map (name => t.setString(name + "_name", name))
     }
   }
 }

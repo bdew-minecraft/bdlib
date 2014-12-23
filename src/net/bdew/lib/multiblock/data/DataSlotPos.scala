@@ -19,11 +19,11 @@ case class DataSlotPos(name: String, parent: TileDataSlots) extends DataSlotOpti
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    cval map (x => t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
+    value map (x => t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {
-    cval = if (t.hasKey(name))
+    value = if (t.hasKey(name))
       Some(BlockRef.fromNBT(t.getCompoundTag(name)))
     else
       None

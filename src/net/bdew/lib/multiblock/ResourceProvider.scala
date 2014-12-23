@@ -13,7 +13,7 @@ import net.bdew.lib.gui.{Color, Texture}
 import net.minecraft.util.IIcon
 
 trait ResourceProvider {
-  // Icons for rendering, *must* be on block spritesheet
+  // Icons for rendering, *must* be on block sprite sheet
   def edge: IIcon
   def disabled: IIcon
   def output: IIcon

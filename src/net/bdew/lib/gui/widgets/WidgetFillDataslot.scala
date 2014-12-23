@@ -12,12 +12,12 @@ package net.bdew.lib.gui.widgets
 import net.bdew.lib.data.base.DataSlotNumeric
 import net.bdew.lib.gui._
 
-class WidgetFillDataslot[T](val rect: Rect, val texture: Texture, dir: Direction.Direction, dslot: DataSlotNumeric[T], maxval: T)(implicit num: Numeric[T]) extends Widget {
+class WidgetFillDataSlot[T](val rect: Rect, val texture: Texture, dir: Direction.Direction, dSlot: DataSlotNumeric[T], maxVal: T)(implicit num: Numeric[T]) extends Widget {
 
   import num.mkNumericOps
 
   override def draw(mouse: Point) {
-    val fill = dslot.cval.toFloat() / maxval.toFloat()
+    val fill = dSlot.value.toFloat() / maxVal.toFloat()
     dir match {
       case Direction.UP =>
         parent.drawTextureInterpolate(rect, texture, 0, 1 - fill, 1, 1)

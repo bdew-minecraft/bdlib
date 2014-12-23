@@ -34,7 +34,7 @@ object ConnectedHelper {
     RectF(0, 0, 1, 1)
   )
 
-  val faceAdjanced = (for (x <- ForgeDirection.VALID_DIRECTIONS) yield x -> new FaceAdjanced(x)).toMap
+  val neighbourFaces = (for (x <- ForgeDirection.VALID_DIRECTIONS) yield x -> new neighbourFaces(x)).toMap
 
   // Maps edge number + face to 3d vertices
   val draw =
@@ -83,7 +83,7 @@ object ConnectedHelper {
 
     def doDraw(pos: Vec3F, icon: IIcon) {
       for (v <- vertices)
-        addVertextWithUV(v.pos + pos, mapToIcon(v.tex, icon))
+        addVertexWithUV(v.pos + pos, mapToIcon(v.tex, icon))
     }
   }
 
@@ -95,10 +95,10 @@ object ConnectedHelper {
 
   def mapToIcon(v: Vec2F, i: IIcon) = Vec2F(i.getInterpolatedU(v.u * 16), i.getInterpolatedV((1 - v.v) * 16))
 
-  def addVertextWithUV(p: Vec3F, t: Vec2F) =
+  def addVertexWithUV(p: Vec3F, t: Vec2F) =
     Tessellator.instance.addVertexWithUV(p.x, p.y, p.z, t.u, t.v)
 
-  class FaceAdjanced(d: ForgeDirection) {
+  class neighbourFaces(d: ForgeDirection) {
     val top = d match {
       case ForgeDirection.UP => ForgeDirection.NORTH
       case ForgeDirection.DOWN => ForgeDirection.SOUTH

@@ -11,7 +11,7 @@ package net.bdew.lib.gui.widgets
 
 import net.bdew.lib.gui.Rect
 
-abstract class WidgetMultipane(rect: Rect) extends WidgetSubcontainer(rect) {
+abstract class WidgetMultiPane(rect: Rect) extends WidgetSubContainer(rect) {
   def getActivePane: BaseWidget
 
   def addPane[T <: BaseWidget](w: T): T = {

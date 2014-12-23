@@ -27,7 +27,7 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
 
   def keys = raw.keys
 
-  def rawget[T](id: String, t: Class[T]): T = {
+  def getRaw[T](id: String, t: Class[T]): T = {
     val v = raw(id)
     if (t.isInstance(v))
       return v.asInstanceOf[T]
@@ -37,10 +37,10 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
 
   def set(id: String, v: ConfigEntry) = raw += id -> v
 
-  def getDouble(id: String) = rawget(id, classOf[EntryDouble]).v
-  def getString(id: String) = rawget(id, classOf[EntryStr]).v
-  def getDoubleList(id: String) = rawget(id, classOf[EntryNumList]).v
-  def getSection(id: String) = rawget(id, classOf[ConfigSection])
+  def getDouble(id: String) = getRaw(id, classOf[EntryDouble]).v
+  def getString(id: String) = getRaw(id, classOf[EntryStr]).v
+  def getDoubleList(id: String) = getRaw(id, classOf[EntryNumList]).v
+  def getSection(id: String) = getRaw(id, classOf[ConfigSection])
 
   final val trueVals = Set("y", "true", "yes", "on")
   def getBoolean(id: String) = trueVals.contains(getString(id).toLowerCase)
@@ -49,7 +49,7 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
 
   def getOrAddSection(id: String) = {
     if (raw.isDefinedAt(id)) {
-      rawget(id, classOf[ConfigSection])
+      getRaw(id, classOf[ConfigSection])
     } else {
       val newSection = new ConfigSection(pfx + id + ".")
       set(id, newSection)

@@ -23,12 +23,12 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
   @SideOnly(Side.CLIENT)
   override def getRenderType = CoverRenderer.id
 
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {
+  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
     val te = getTE(world, x, y, z)
     val side = Misc.forgeDirection(face)
 
     if (player.getCurrentEquippedItem == null && player.isSneaking) {
-      for (cover <- Option(te.covers(side).cval)) {
+      for (cover <- Option(te.covers(side).value)) {
         if (!world.isRemote) {
           te.covers(side) := null
           te.onCoversChanged()
@@ -45,7 +45,7 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
       if te.isValidCover(side, activeStack) && coverItem.isValidTile(te, activeStack)
     } {
       if (!world.isRemote) {
-        for (cover <- Option(te.covers(side).cval))
+        for (cover <- Option(te.covers(side).value))
           ItemUtils.throwItemAt(world, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, cover.copy())
 
         te.covers(side) := activeStack.splitStack(1)
@@ -56,19 +56,19 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
       return true
     }
 
-    super.onBlockActivated(world, x, y, z, player, face, xoffs, yoffs, zoffs)
+    super.onBlockActivated(world, x, y, z, player, face, xOffs, yOffs, zOffs)
   }
 
   def getCoverIcon(w: IBlockAccess, x: Int, y: Int, z: Int, side: ForgeDirection): Option[IIcon] =
     for {
-      coverStack <- Option(getTE(w, x, y, z).covers(side).cval)
+      coverStack <- Option(getTE(w, x, y, z).covers(side).value)
       coverItemMaybe <- Option(coverStack.getItem)
       coverItem <- Misc.asInstanceOpt(coverItemMaybe, classOf[ItemCover])
     } yield coverItem.getCoverIcon(coverStack)
 
   override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
     if (!world.isRemote)
-      for ((dir, covOpt) <- getTE(world, x, y, z).covers; cover <- Option(covOpt.cval))
+      for ((dir, covOpt) <- getTE(world, x, y, z).covers; cover <- Option(covOpt.value))
         ItemUtils.throwItemAt(world, x, y, z, cover)
     super.breakBlock(world, x, y, z, block, meta)
   }

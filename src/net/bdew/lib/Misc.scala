@@ -69,11 +69,11 @@ object Misc {
 
   def haveModVersion(spec: String): Boolean = {
     val req = VersionParser.parseVersionReference(spec)
-    val modid = req.getLabel
+    val modId = req.getLabel
 
-    if (!Loader.instance.getIndexedModList.containsKey(modid)) return false
+    if (!Loader.instance.getIndexedModList.containsKey(modId)) return false
 
-    val found: ArtifactVersion = Loader.instance.getIndexedModList.get(modid).getProcessedVersion
+    val found: ArtifactVersion = Loader.instance.getIndexedModList.get(modId).getProcessedVersion
 
     if (found == null || !req.containsVersion(found)) return false
 

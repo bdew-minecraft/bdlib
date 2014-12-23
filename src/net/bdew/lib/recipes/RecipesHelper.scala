@@ -17,7 +17,7 @@ import net.bdew.lib.BdLib
 object RecipesHelper {
   /**
    * Perform full loading of a set of config
-   * @param modName Name of the mod, used in logging an derrors
+   * @param modName Name of the mod, used in logging and errors
    * @param listResource Resource Name of the internal config list file
    * @param configDir Base path to user config giles
    * @param resBaseName Base resource name for internal config files
@@ -44,9 +44,9 @@ object RecipesHelper {
       if (overrideFile.exists()) {
         tryLoadConfig(new FileReader(overrideFile), overrideFile.getCanonicalPath, modName, loader)
       } else {
-        val resname = resBaseName + fileName
-        tryLoadConfig(new InputStreamReader(getClass.getResourceAsStream(resname)),
-          getClass.getResource(resname).toString, modName, loader)
+        val resource = resBaseName + fileName
+        tryLoadConfig(new InputStreamReader(getClass.getResourceAsStream(resource)),
+          getClass.getResource(resource).toString, modName, loader)
       }
     }
 

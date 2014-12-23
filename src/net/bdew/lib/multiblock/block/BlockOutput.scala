@@ -16,8 +16,8 @@ import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.util.ForgeDirection
 
 trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] with BlockAdditionalRender {
-  def getAdjancedFaces(face: ForgeDirection, bp: BlockRef) = {
-    val sides = ConnectedHelper.faceAdjanced(face)
+  def getNeighbourFaces(face: ForgeDirection, bp: BlockRef) = {
+    val sides = ConnectedHelper.neighbourFaces(face)
     Seq(
       (BlockFace(bp, sides.top), resources.arrowTop),
       (BlockFace(bp, sides.right), resources.arrowRight),
@@ -32,7 +32,7 @@ trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] with BlockAdditiona
       val bf = BlockFace(x, y, z, face)
       if (core.outputFaces.contains(bf))
         result :+= FaceOverlay(resources.output, resources.outputColors(core.outputFaces(bf)))
-      for ((bf, icon) <- getAdjancedFaces(face, bf.origin)) {
+      for ((bf, icon) <- getNeighbourFaces(face, bf.origin)) {
         if (core.outputFaces.contains(bf))
           result :+= FaceOverlay(icon, resources.outputColors(core.outputFaces(bf)))
       }

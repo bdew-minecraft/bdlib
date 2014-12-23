@@ -15,6 +15,8 @@ import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.{NBTTagCompound, NBTTagIntArray, NBTTagList}
 import net.minecraftforge.common.util.ForgeDirection
 
+import scala.collection.mutable
+
 case class DataSlotBlockFaceMap(name: String, parent: TileDataSlots) extends DataSlot {
   val map = collection.mutable.Map.empty[BlockFace, Int]
 
@@ -43,5 +45,5 @@ object DataSlotBlockFaceMap {
 
   import scala.language.implicitConversions
 
-  implicit def dsbfm2map(v: DataSlotBlockFaceMap) = v.map
+  implicit def dataSlotBlockFaceMap2map(v: DataSlotBlockFaceMap): mutable.Map[BlockFace, Int] = v.map
 }

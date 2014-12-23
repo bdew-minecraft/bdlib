@@ -16,11 +16,11 @@ import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
 
-class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase) extends Widget {
+class WidgetFluidGauge(val rect: Rect, overlay: Texture, dSlot: DataSlotTankBase) extends Widget {
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) {
-    if (dslot.getFluid != null) {
-      tip += dslot.getFluid.getFluid.getLocalizedName(dslot.getFluid)
-      tip += "%s/%s mB".format(DecFormat.round(dslot.getFluidAmount), DecFormat.round(dslot.getCapacity))
+    if (dSlot.getFluid != null) {
+      tip += dSlot.getFluid.getFluid.getLocalizedName(dSlot.getFluid)
+      tip += "%s/%s mB".format(DecFormat.round(dSlot.getFluidAmount), DecFormat.round(dSlot.getCapacity))
     } else {
       tip += Misc.toLocal("bdlib.label.empty")
     }
@@ -30,11 +30,11 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dslot: DataSlotTankBase
     GL11.glEnable(GL11.GL_BLEND)
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
-    val fStack = dslot.getFluid
+    val fStack = dSlot.getFluid
     if (fStack != null) {
       val color = Color.fromInt(Misc.getFluidColor(fStack))
       val icon = Texture(Texture.BLOCKS, Misc.getFluidIcon(fStack))
-      var fillHeight = if (dslot.getCapacity > 0) rect.h * fStack.amount / dslot.getCapacity else 0
+      var fillHeight = if (dSlot.getCapacity > 0) rect.h * fStack.amount / dSlot.getCapacity else 0
       var yStart: Int = 0
 
       while (fillHeight > 0) {

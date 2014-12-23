@@ -99,29 +99,28 @@ class RecipeLoader {
 
   /**
    * Fetches an ItemStack using reflection from static fields
-   * Item and Block instaces are converted to ItemStacks
+   * Item and Block instances are converted to ItemStacks
    * @param clsName Name of class to fetch from (can be a class macro)
    * @param fldName Field name
    * @param meta Metadata or damage
    * @param cnt Stack size
-   * @return Matching itemstack
+   * @return Matching item stack
    */
   def reflectStack(clsName: String, fldName: String, meta: Int, cnt: Int): ItemStack = {
     val realName = getRealClassName(clsName)
-    val cls = Class.forName(realName)
-    val fld = cls.getField(fldName).get(null)
+    val fld = Class.forName(realName).getField(fldName).get(null)
     return sanitizeReflectedItem(fld, "%s.%s".format(realName, fldName), meta, cnt)
   }
 
   /**
    * Fetches an ItemStack using reflection from static getters
-   * Item and Block instaces are converted to ItemStacks
+   * Item and Block instances are converted to ItemStacks
    * @param clsName Name of class to fetch from (can be a class macro)
    * @param method Method name
    * @param param Parameter to method
    * @param meta Metadata or damage
    * @param cnt Stack size
-   * @return Matching itemstack
+   * @return Matching item stack
    */
   def reflectStackGetter(clsName: String, method: String, param: String, meta: Int, cnt: Int): ItemStack = {
     var realName: String = clsName
@@ -138,9 +137,7 @@ class RecipeLoader {
       realName = getRealClassName(clsName)
     }
 
-    val cls = Class.forName(realName)
-    val meth = cls.getMethod(realMethod, classOf[String])
-    val res = meth.invoke(null, param)
+    val res = Class.forName(realName).getMethod(realMethod, classOf[String]).invoke(null, param)
     return sanitizeReflectedItem(res, "%s.%s(%s)".format(realName, realMethod, param), meta, cnt)
   }
 

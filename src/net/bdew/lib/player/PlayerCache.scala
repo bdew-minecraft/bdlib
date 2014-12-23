@@ -51,11 +51,11 @@ class PlayerCache[T] extends mutable.Map[EntityPlayer, T] {
   override def iterator = map.iterator
 
   @SubscribeEvent
-  def hadlePlayerLogout(ev: PlayerLoggedOutEvent) = reset(ev.player)
+  def handlePlayerLogout(ev: PlayerLoggedOutEvent) = reset(ev.player)
 
   @SubscribeEvent
-  def hadlePlayerChangedDimension(ev: PlayerChangedDimensionEvent) = reset(ev.player)
+  def handlePlayerChangedDimension(ev: PlayerChangedDimensionEvent) = reset(ev.player)
 
   @SubscribeEvent
-  def hadlePlayerRespawn(ev: PlayerRespawnEvent) = reset(ev.player)
+  def handlePlayerRespawn(ev: PlayerRespawnEvent) = reset(ev.player)
 }

@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.ForgeDirection
 
 case class DataSlotDirection(name: String, parent: TileDataSlots) extends DataSlotVal[ForgeDirection] {
-  var cval = ForgeDirection.UP
-  def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setByte(name, cval.ordinal().toByte)
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = cval = ForgeDirection.getOrientation(t.getByte(name))
+  var value = ForgeDirection.UP
+  def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setByte(name, value.ordinal().toByte)
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = ForgeDirection.getOrientation(t.getByte(name))
 }

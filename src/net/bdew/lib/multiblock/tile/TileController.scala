@@ -27,9 +27,9 @@ trait TileController extends TileDataSlots {
   var revalidateOnNextTick = true
   var modulesChanged = true
 
-  lazy val mypos = BlockRef(xCoord, yCoord, zCoord)
+  lazy val myPos = BlockRef(xCoord, yCoord, zCoord)
 
-  def getNumOfMoudules(kind: String) = modules.map(_.getTile[TileModule](getWorldObj)).flatten.count(_.kind == kind)
+  def getNumOfModules(kind: String) = modules.map(_.getTile[TileModule](getWorldObj)).flatten.count(_.kind == kind)
 
   def onModulesChanged()
   def onClick(player: EntityPlayer)
@@ -64,11 +64,11 @@ trait TileController extends TileDataSlots {
       BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %d,%d,%d", x, this.getClass.getSimpleName, xCoord, yCoord, zCoord)
       modules.remove(x)
     })
-    val reachable = Tools.findReachableModules(getWorldObj, mypos)
-    val toremove = modules.filterNot(reachable.contains).flatMap(_.getTile[TileModule](getWorldObj))
+    val reachable = Tools.findReachableModules(getWorldObj, myPos)
+    val toRemove = modules.filterNot(reachable.contains).flatMap(_.getTile[TileModule](getWorldObj))
     acceptNewModules = false
-    toremove.foreach(moduleRemoved)
-    toremove.foreach(_.coreRemoved())
+    toRemove.foreach(moduleRemoved)
+    toRemove.foreach(_.coreRemoved())
     acceptNewModules = true
     modulesChanged = true
     modules.map(x =>

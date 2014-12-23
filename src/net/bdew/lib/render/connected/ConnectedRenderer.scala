@@ -48,7 +48,7 @@ object ConnectedRenderer extends BaseBlockRenderHandler {
   def drawFaceEdges(world: IBlockAccess, pos: ConnectedHelper.Vec3F, face: ForgeDirection, block: ConnectedTextureBlock) {
     val edge = block.edgeIcon
     val canConnect = block.canConnect(world, pos.asBlockRef, _: BlockRef)
-    val sides = ConnectedHelper.faceAdjanced(face)
+    val sides = ConnectedHelper.neighbourFaces(face)
 
     val m = ConnectedHelper.brightnessMultiplier(face)
     Tessellator.instance.setColorOpaque_F(m, m, m)

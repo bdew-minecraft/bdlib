@@ -16,7 +16,7 @@ abstract class TileControllerGui extends TileController {
   def openGui(player: EntityPlayer)
 
   def onClick(player: EntityPlayer) = {
-    val missing = cfg.required.filter({ case (mod, cnt) => getNumOfMoudules(mod) < cnt })
+    val missing = cfg.required.filter({ case (mod, cnt) => getNumOfModules(mod) < cnt })
     if (missing.size > 0) {
       player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.incomplete")
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))

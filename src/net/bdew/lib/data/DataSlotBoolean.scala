@@ -13,7 +13,7 @@ import net.bdew.lib.data.base.{DataSlotVal, TileDataSlots, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
 case class DataSlotBoolean(name: String, parent: TileDataSlots, default: Boolean = false) extends DataSlotVal[Boolean] {
-  var cval = default
-  def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setBoolean(name, cval)
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = cval = t.getBoolean(name)
+  var value = default
+  def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setBoolean(name, value)
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = t.getBoolean(name)
 }

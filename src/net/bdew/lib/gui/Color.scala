@@ -44,6 +44,6 @@ object Color {
   final val magenta = Color(1, 0, 1)
 
   final val gray = Color(0.5F, 0.5F, 0.5F)
-  final val lightgray = Color(0.75F, 0.75F, 0.75F)
-  final val darkgray = Color(0.25F, 0.25F, 0.25F)
+  final val lightGray = Color(0.75F, 0.75F, 0.75F)
+  final val darkGray = Color(0.25F, 0.25F, 0.25F)
 }

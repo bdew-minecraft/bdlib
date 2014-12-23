@@ -11,7 +11,7 @@ package net.bdew.lib.gui.widgets
 
 import net.bdew.lib.gui._
 
-class WidgetSubcontainer(val rect: Rect) extends BaseWidget with WidgetContainer with SimpleDrawTarget {
+class WidgetSubContainer(val rect: Rect) extends BaseWidget with WidgetContainer with SimpleDrawTarget {
   def getZLevel = parent.getZLevel
   def getFontRenderer = parent.getFontRenderer
   def getOffsetFromWindow = parent.getOffsetFromWindow + rect.origin

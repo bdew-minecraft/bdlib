@@ -10,12 +10,12 @@
 package net.bdew.lib.data.base
 
 /**
- * Base class for data slots that hold values with ordering operators, adds more convinience operators
+ * Base class for data slots that hold values with ordering operators, adds more convenience operators
  * TODO: Do i need this? normal operators can be used with the implicit conversion
  */
 abstract class DataSlotOrdered[T](implicit n: Ordering[T]) extends DataSlotVal[T] {
-  def :>(that: T) = n.compare(cval, that) > 0
-  def :<(that: T) = n.compare(cval, that) < 0
-  def :>=(that: T) = n.compare(cval, that) >= 0
-  def :<=(that: T) = n.compare(cval, that) <= 0
+  def :>(that: T) = n.compare(value, that) > 0
+  def :<(that: T) = n.compare(value, that) < 0
+  def :>=(that: T) = n.compare(value, that) >= 0
+  def :<=(that: T) = n.compare(value, that) <= 0
 }

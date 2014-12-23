@@ -33,7 +33,7 @@ case class CndHaveMod(mod: String) extends Condition
 case class CndHaveAPI(api: String) extends Condition
 
 /**
- * True if oredict entery is present
+ * True if oredict entry is present
  * Syntax: HaveOD {string}
  * Parser: [[RecipeParser.cndHaveOD]]
  */

@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection
 
 trait ItemCover extends Item {
   /**
-   * @return Icon to render, MUST be on terrain spritesheet (0), not item!
+   * @return Icon to render, MUST be on terrain sprite sheet (0), not item!
    */
   def getCoverIcon(stack: ItemStack): IIcon
 

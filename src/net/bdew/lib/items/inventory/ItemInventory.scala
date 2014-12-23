@@ -19,7 +19,7 @@ import net.minecraft.world.World
 
 /**
  * Mixin for items that have an internal inventory
- * Subclasses are responsible for registering themself with the GuiHandler of their mod
+ * Subclasses are responsible for registering themselves with the GuiHandler of their mod
  */
 trait ItemInventory extends Item with GuiProvider {
   type TEClass = Any

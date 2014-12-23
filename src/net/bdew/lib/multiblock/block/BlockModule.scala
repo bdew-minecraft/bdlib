@@ -52,12 +52,12 @@ abstract class BlockModule[T <: TileModule](val name: String, val kind: String, 
       })
   }
 
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xoffs: Float, yoffs: Float, zoffs: Float): Boolean = {
+  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     val te = getTE(world, x, y, z)
     (for {
-      p <- te.connected.cval
+      p <- te.connected.value
       bl <- p.block(world)
     } yield {
       bl.onBlockActivated(world, p.x, p.y, p.z, player, meta, 0, 0, 0)
