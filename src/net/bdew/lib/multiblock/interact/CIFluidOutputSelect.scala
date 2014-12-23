@@ -9,6 +9,7 @@
 
 package net.bdew.lib.multiblock.interact
 
+import net.bdew.lib.multiblock.data.SlotSet
 import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTankInfo}
 
 trait CIFluidOutputSelect extends CIOutputFaces {

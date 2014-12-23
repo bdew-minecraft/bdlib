@@ -9,7 +9,7 @@
 
 package net.bdew.lib.multiblock.data
 
-import net.bdew.lib.multiblock.network.MsgOutputCfg
+import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgSlot}
 import net.minecraft.nbt.NBTTagCompound
 
 trait OutputConfigSlots {

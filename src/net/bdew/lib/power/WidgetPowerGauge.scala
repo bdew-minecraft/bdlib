@@ -4,12 +4,10 @@
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
  * License 1.0, or MMPL. Please check the contents of the license located in
- * https://raw.github.com/bdew/bdlib/master/MMPL-1.0.txt
+ * http://bdew.net/minecraft-mod-public-license/
  */
 
 package net.bdew.lib.power
-
-import java.text.DecimalFormat
 
 import net.bdew.lib.DecFormat
 import net.bdew.lib.gui.widgets.Widget

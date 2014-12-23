@@ -101,7 +101,7 @@ class DataSlotResource(val name: String, val parent: TileDataSlots, initCapacity
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     val tag = new NBTTagCompound()
 
-    resource map { res => tag.setTag("resource", ResourceManager.saveToNBT(res))}
+    resource map { res => tag.setTag("resource", ResourceManager.saveToNBT(res)) }
 
     if (sendCapacityOnUpdateKind.contains(kind))
       tag.setInteger("capacity", capacity)
