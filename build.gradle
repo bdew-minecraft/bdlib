@@ -70,7 +70,7 @@ task sourceJar(type: Jar) {
 }
 
 task deobfJar(type: Jar) {
-    from sourceSets.main.output
+    from sourceSets.main.output.classesDir
 }
 
 jar {
