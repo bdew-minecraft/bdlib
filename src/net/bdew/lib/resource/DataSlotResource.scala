@@ -56,7 +56,7 @@ class DataSlotResource(val name: String, val parent: TileDataSlots, initCapacity
       if (onlyRound) canDrain = canDrain.floor
       if (doDrain) execWithChangeNotify {
         resource =
-          if (canDrain == res.amount)
+          if (res.amount - canDrain < 0.000001)
             None
           else
             Some(Resource(res.kind, res.amount - canDrain))
