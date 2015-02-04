@@ -70,7 +70,8 @@ task sourceJar(type: Jar) {
 }
 
 task deobfJar(type: Jar) {
-    from sourceSets.main.output.classesDir
+    from sourceSets.main.output
+    duplicatesStrategy "exclude"
 }
 
 jar {
