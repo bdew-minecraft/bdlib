@@ -9,6 +9,7 @@
 
 package net.bdew.lib.multiblock.data
 
+import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.gui.Texture
 
 abstract class SlotSet(val outputConfigId: String) {
@@ -16,13 +17,19 @@ abstract class SlotSet(val outputConfigId: String) {
 
   var slotMap = Map.empty[String, Slot]
 
-  case class Slot(id: String, name: String, texture: Texture) {
+  case class Slot(id: String, name: String) {
     slotMap += id -> this
     def next = order(this)
+
+    @SideOnly(Side.CLIENT)
+    def texture = textures(this)
   }
 
   def default: Slot
   val order: Map[Slot, Slot]
+
+  @SideOnly(Side.CLIENT)
+  def textures: Map[Slot, Texture]
 
   def get(id: String) = slotMap(id)
 }
