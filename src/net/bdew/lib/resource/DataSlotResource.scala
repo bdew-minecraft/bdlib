@@ -68,7 +68,7 @@ class DataSlotResource(val name: String, val parent: TileDataSlots, initCapacity
   def fillFluid(resource: FluidStack, doFill: Boolean): Int = rawFill(Resource.from(resource), onlyRound = true, doFill).toInt
   def drainFluid(maxDrain: Int, doDrain: Boolean): FluidStack = {
     (for {
-      res <- rawDrain(maxDrain, true, doDrain)
+      res <- rawDrain(maxDrain, true, false)
       rKind <- Misc.asInstanceOpt(res.kind, classOf[FluidResource])
     } yield {
       if (doDrain)
