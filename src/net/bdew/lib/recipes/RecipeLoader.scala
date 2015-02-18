@@ -172,7 +172,7 @@ class RecipeLoader {
       if (l.size == 0) error("Concrete ItemStack requested for OD entry '%s' that is empty", id)
       val s = l.get(0).copy()
       s.stackSize = cnt
-      BdLib.logInfo("Concrete ItemStack for OD entry '%s' -> %s", id, s)
+      BdLib.logDebug("Concrete ItemStack for OD entry '%s' -> %s", id, s)
       return s
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)
     case StackGeneric(mod, id) =>
@@ -197,7 +197,7 @@ class RecipeLoader {
       if (!currCharMap.contains(x)) error("Character %s is undefined", x)
       val r = getRecipeComponent(currCharMap(x))
       if (r.isInstanceOf[String]) needOd = true
-      BdLib.logInfo("%s -> %s", x, r)
+      BdLib.logDebug("%s -> %s", x, r)
       comp += (x -> r)
     }
     return (comp, needOd)
@@ -213,7 +213,7 @@ class RecipeLoader {
     list flatMap {
       case x: CraftingStatement =>
         if (res == x.result) {
-          BdLib.logInfo("Removing recipe %s", this)
+          BdLib.logDebug("Removing recipe %s", this)
           None
         } else Some(x)
       case RsRecipes(inner) =>
@@ -248,15 +248,15 @@ class RecipeLoader {
   def processConfigStatement(s: ConfigStatement): Unit = s match {
     case CsConditionalConfig(cnd, thn, els) =>
       if (resolveCondition(cnd)) {
-        BdLib.logInfo("Condition %s - TRUE", cnd)
+        BdLib.logDebug("Condition %s - TRUE", cnd)
         processConfigStatementsSafe(thn)
       } else {
-        BdLib.logInfo("Condition %s - FALSE", cnd)
+        BdLib.logDebug("Condition %s - FALSE", cnd)
         processConfigStatementsSafe(els)
       }
 
     case CsClearRecipes(res) =>
-      BdLib.logInfo("Clearing recipes that produce %s", res)
+      BdLib.logDebug("Clearing recipes that produce %s", res)
       recipeStatements = clearStatements(recipeStatements, res)
 
     case CsRecipeBlock(lst) =>
@@ -273,19 +273,19 @@ class RecipeLoader {
   def processRecipeStatement(st: RecipeStatement) = st match {
     case RsCharAssign(c, r) =>
       currCharMap += (c -> r)
-      BdLib.logInfo("Added %s = %s", c, r)
+      BdLib.logDebug("Added %s = %s", c, r)
 
     case RsClassMacro(id, cls) =>
       currClassMacros += (id -> cls)
-      BdLib.logInfo("Added def %s = %s", id, cls)
+      BdLib.logDebug("Added def %s = %s", id, cls)
 
     case RsRecipeShaped(rec, res, cnt) =>
-      BdLib.logInfo("Adding shaped recipe %s => %s * %d", rec, res, cnt)
+      BdLib.logDebug("Adding shaped recipe %s => %s * %d", rec, res, cnt)
       val (comp, needOd) = resolveRecipeComponents(rec.mkString(""))
       val resStack = getConcreteStack(res, cnt)
 
       if (resStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-        BdLib.logInfo("Result meta is unset, defaulting to 0")
+        BdLib.logDebug("Result meta is unset, defaulting to 0")
         resStack.setItemDamage(0)
       }
 
@@ -294,16 +294,16 @@ class RecipeLoader {
       else
         Misc.addRecipe(resStack, rec, comp)
 
-      BdLib.logInfo("Done... result=%s, od=%s", resStack, needOd)
+      BdLib.logDebug("Done... result=%s, od=%s", resStack, needOd)
 
     case RsRecipeShapeless(rec, res, cnt) =>
-      BdLib.logInfo("Adding shapeless recipe %s => %s * %d", rec, res, cnt)
+      BdLib.logDebug("Adding shapeless recipe %s => %s * %d", rec, res, cnt)
       val (comp, needOd) = resolveRecipeComponents(rec)
       val resStack = getConcreteStack(res, cnt)
       val recTrans = rec.toCharArray.map(comp(_))
 
       if (resStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-        BdLib.logInfo("Result meta is unset, defaulting to 0")
+        BdLib.logDebug("Result meta is unset, defaulting to 0")
         resStack.setItemDamage(0)
       }
 
@@ -312,26 +312,26 @@ class RecipeLoader {
       else
         GameRegistry.addShapelessRecipe(resStack, recTrans: _*)
 
-      BdLib.logInfo("Done... result=%s, od=%s", resStack, needOd)
+      BdLib.logDebug("Done... result=%s, od=%s", resStack, needOd)
 
     case RsRecipeSmelting(in, out, cnt, xp) =>
-      BdLib.logInfo("Adding smelting recipe %s => %s * %d (%f xp)", in, out, cnt, xp)
+      BdLib.logDebug("Adding smelting recipe %s => %s * %d (%f xp)", in, out, cnt, xp)
       val outStack = getConcreteStack(out, cnt)
       if (outStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-        BdLib.logInfo("Result meta is unset, defaulting to 0")
+        BdLib.logDebug("Result meta is unset, defaulting to 0")
         outStack.setItemDamage(0)
       }
       for (inStack <- getAllConcreteStacks(in, 1)) {
         GameRegistry.addSmelting(inStack, outStack, xp)
-        BdLib.logInfo("added %s -> %s", inStack, outStack)
+        BdLib.logDebug("added %s -> %s", inStack, outStack)
       }
 
     case RsConditional(cnd, thn, els) =>
       if (resolveCondition(cnd)) {
-        BdLib.logInfo("Condition %s - TRUE", cnd)
+        BdLib.logDebug("Condition %s - TRUE", cnd)
         processRecipeStatementsInSubcontext(thn)
       } else {
-        BdLib.logInfo("Condition %s - FALSE", cnd)
+        BdLib.logDebug("Condition %s - FALSE", cnd)
         processRecipeStatementsInSubcontext(els)
       }
 
@@ -339,13 +339,13 @@ class RecipeLoader {
       processRecipeStatementsInSubcontext(list)
 
     case RsRegOredict(id, spec, wildcard) =>
-      BdLib.logInfo("Registering ore dictionary entry: %s -> %s", spec, id)
+      BdLib.logDebug("Registering ore dictionary entry: %s -> %s", spec, id)
       val stack = getConcreteStack(spec)
       if (wildcard) {
-        BdLib.logInfo("Forcing wildcard damage (was %d)", stack.getItemDamage)
+        BdLib.logDebug("Forcing wildcard damage (was %d)", stack.getItemDamage)
         stack.setItemDamage(OreDictionary.WILDCARD_VALUE)
       }
-      BdLib.logInfo("Actual stack: %s", stack)
+      BdLib.logDebug("Actual stack: %s", stack)
       OreDictionary.registerOre(id, stack)
 
     case x =>
@@ -371,7 +371,7 @@ class RecipeLoader {
    * Process main recipe statements list, clear the list afterwards
    */
   def processRecipeStatements() {
-    BdLib.logInfo("Processing %d recipe statements", recipeStatements.size)
+    BdLib.logDebug("Processing %d recipe statements", recipeStatements.size)
     processRecipeStatementsSafe(recipeStatements)
     recipeStatements = List.empty
   }
@@ -411,10 +411,10 @@ class RecipeLoader {
   }
 
   def load(f: Reader) {
-    BdLib.logInfo("Starting parsing")
+    BdLib.logDebug("Starting parsing")
     val r = newParser().doParse(f)
-    BdLib.logInfo("Processing %d statements", r.size)
+    BdLib.logDebug("Processing %d statements", r.size)
     processConfigStatementsSafe(r)
-    BdLib.logInfo("Done")
+    BdLib.logDebug("Done")
   }
 }

@@ -17,7 +17,7 @@ trait GenericConfigLoader extends RecipeLoader {
 
   def processConfigStatement(section: ConfigSection, s: CfgEntry): Unit = s match {
     case CfgVal(id, v) =>
-      BdLib.logInfo("Config: %s%s = %s", section.pfx, id, v)
+      BdLib.logDebug("Config: %s%s = %s", section.pfx, id, v)
       section.set(id, v)
     case CfgSection(id, st) => processConfigBlock(section.getOrAddSection(id), st)
     case x =>

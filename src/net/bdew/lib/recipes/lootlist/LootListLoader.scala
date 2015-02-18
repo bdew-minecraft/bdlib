@@ -29,7 +29,7 @@ trait LootListLoader extends GenericConfigLoader {
           None
         } else {
           if (itemStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
-            BdLib.logInfo("meta/damage is unset in %s, defaulting to 0", ref)
+            BdLib.logDebug("meta/damage is unset in %s, defaulting to 0", ref)
             itemStack.setItemDamage(0)
           }
           Some((chance, itemStack))
