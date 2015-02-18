@@ -18,9 +18,11 @@ import net.minecraftforge.common.util.ForgeDirection
 import scala.reflect.ClassTag
 
 case class BlockRef(x: Int, y: Int, z: Int) {
-  def block(w: IBlockAccess) = Option(w.getBlock(x, y, z))
-  def tile(w: IBlockAccess) = Option(w.getTileEntity(x, y, z))
-  def meta(w: IBlockAccess) = w.getBlockMetadata(x, y, z)
+  def isValid(w: IBlockAccess) = y >= 0 && y < w.getHeight
+
+  def block(w: IBlockAccess) = if (isValid(w)) Option(w.getBlock(x, y, z)) else None
+  def tile(w: IBlockAccess) = if (isValid(w)) Option(w.getTileEntity(x, y, z)) else None
+  def meta(w: IBlockAccess) = if (isValid(w)) w.getBlockMetadata(x, y, z) else 0
 
   def blockIs(w: IBlockAccess, other: Block) = block(w).contains(other)
 
