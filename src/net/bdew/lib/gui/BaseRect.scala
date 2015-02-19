@@ -16,7 +16,7 @@ case class BaseRect[T: Numeric](x: T, y: T, w: T, h: T) {
 
   def this(p: BasePoint[T], w: T, h: T) = this(p.x, p.y, w, h)
 
-  def contains(p: BasePoint[T]) = n.gteq(p.x, x) && n.gteq(p.y, y) && n.lteq(p.x, x2) && n.lteq(p.y, y2)
+  def contains(p: BasePoint[T]) = n.gteq(p.x, x) && n.gteq(p.y, y) && n.lt(p.x, x2) && n.lt(p.y, y2)
 
   def origin = BasePoint(x, y)
 
