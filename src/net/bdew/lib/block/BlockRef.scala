@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection
 import scala.reflect.ClassTag
 
 case class BlockRef(x: Int, y: Int, z: Int) {
-  def isValid(w: IBlockAccess) = y >= 0 && y < w.getHeight
+  def isValid(w: IBlockAccess) = y >= 0 && y < 256 // hardcoded because getHeight is unavailable on servers :(
 
   def block(w: IBlockAccess) = if (isValid(w)) Option(w.getBlock(x, y, z)) else None
   def tile(w: IBlockAccess) = if (isValid(w)) Option(w.getTileEntity(x, y, z)) else None
