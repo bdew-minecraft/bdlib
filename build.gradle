@@ -34,7 +34,7 @@ archivesBaseName = "bdlib"
 ext.versuffix = "mc1710"
 
 minecraft {
-    version = "1.7.10-10.13.2.1231"
+    version = "1.7.10-10.13.2.1291"
     replace("BDLIB_VER", project.version)
 }
 
