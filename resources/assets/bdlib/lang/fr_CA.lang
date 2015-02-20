@@ -1,0 +1,18 @@
+bdlib.multiblock.face.north=Nord
+bdlib.multiblock.face.south=Sud
+bdlib.multiblock.face.east=Est
+bdlib.multiblock.face.west=Ouest
+bdlib.multiblock.face.up=Haut
+bdlib.multiblock.face.down=Bas
+
+bdlib.multiblock.disabled=Désactivé(e)
+bdlib.multiblock.incomplete=Cette machine est incomplète, elle requiert au moins :
+bdlib.multiblock.notconnected=Pas connecté(e) à une machine valide
+bdlib.multiblock.toomanyoutputs=Trop de sorties connectées, incapable d'attacher de nouvelles connexions
+
+bdlib.rsmode.always=Toujours en marche
+bdlib.rsmode.never=Désactivé(e)
+bdlib.rsmode.rs_on=Activer par la redstone
+bdlib.rsmode.rs_off=Désactiver par la redstone
+
+bdlib.label.empty=Vide
