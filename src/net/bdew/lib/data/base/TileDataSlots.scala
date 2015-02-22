@@ -19,10 +19,13 @@ import scala.collection.mutable
 trait TileDataSlots extends TileExtended {
   val dataSlots = mutable.HashMap.empty[String, DataSlot]
   var lastChange = 0L
+  var lastGuiPacket = 0L
 
   final val TRACE = false
 
   def doSave(kind: UpdateKind.Value, t: NBTTagCompound) {
+    if (kind == UpdateKind.GUI)
+      t.setLong("BDLib_TS", getWorldObj.getTotalWorldTime)
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
       s.save(t, kind)
       if (TRACE) printf("%s: %s S=> %s\n".format(kind, n, t.getTag(n)))
@@ -30,6 +33,14 @@ trait TileDataSlots extends TileExtended {
   }
 
   def doLoad(kind: UpdateKind.Value, t: NBTTagCompound) {
+    if (kind == UpdateKind.GUI) {
+      val ts = t.getLong("BDLib_TS")
+      if (ts > lastGuiPacket) {
+        lastGuiPacket = ts
+      } else {
+        return
+      }
+    }
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
       if (TRACE) printf("%s: %s L<= %s\n".format(kind, n, t.getTag(n)))
       s.load(t, kind)
