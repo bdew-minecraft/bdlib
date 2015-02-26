@@ -36,7 +36,7 @@ class DataSlotResource(val name: String, val parent: TileDataSlots, initCapacity
       val current = if (resource.isEmpty) 0D else resource.get.amount
       var canFill = Misc.clamp(res.amount, 0D, capacity * res.kind.capacityMultiplier - current)
       if (onlyRound) canFill = canFill.floor
-      if (doFill) execWithChangeNotify {
+      if (doFill && canFill > 0) execWithChangeNotify {
         resource = Some(Resource(res.kind, current + canFill))
       }
       canFill
@@ -54,7 +54,7 @@ class DataSlotResource(val name: String, val parent: TileDataSlots, initCapacity
     resource map { res =>
       var canDrain = Misc.clamp(res.amount, 0D, maxDrain)
       if (onlyRound) canDrain = canDrain.floor
-      if (doDrain) execWithChangeNotify {
+      if (doDrain && canDrain > 0) execWithChangeNotify {
         resource =
           if (res.amount - canDrain < 0.000001)
             None

@@ -50,17 +50,19 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
     if (sendCapacityOnUpdateKind.contains(k))
       setCapacity(tag.getInteger("size"))
   }
+
   override def setFluid(fluid: FluidStack) = execWithChangeNotify(super.setFluid(fluid))
   override def setCapacity(capacity: Int) = execWithChangeNotify(super.setCapacity(capacity))
+
   override def drain(maxDrain: Int, doDrain: Boolean) =
     if (doDrain)
-      execWithChangeNotify(super.drain(maxDrain, true))
+      execWithChangeNotifyConditional[FluidStack](super.drain(maxDrain, true), _ != null)
     else
       super.drain(maxDrain, false)
 
   override def fill(resource: FluidStack, doFill: Boolean) =
     if (doFill)
-      execWithChangeNotify(super.fill(resource, true))
+      execWithChangeNotifyConditional[Int](super.fill(resource, true), _ > 0)
     else
       super.fill(resource, false)
 }

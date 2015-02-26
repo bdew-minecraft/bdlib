@@ -41,6 +41,13 @@ trait DataSlot {
     v
   }
 
+  def execWithChangeNotifyConditional[T](f: => T, condition: T => Boolean): T = {
+    val v = f
+    if (condition(v))
+      parent.dataSlotChanged(this)
+    v
+  }
+
   def setUpdate(vals: UpdateKind.Value*): this.type = {
     updateKind = vals.toSet
     return this
