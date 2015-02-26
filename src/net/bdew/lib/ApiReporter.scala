@@ -26,8 +26,8 @@ object ApiReporter extends ICrashCallable {
           mod.getSource
         else
           mod.getSource.getName
-      )).mkString(System.lineSeparator())
+      )).mkString(Misc.lineSeparator)
   }
   override def getLabel = "List of loaded APIs"
-  override def call() = System.lineSeparator() + APIs
+  override def call() = Misc.lineSeparator + APIs
 }

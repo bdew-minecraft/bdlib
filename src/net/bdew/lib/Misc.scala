@@ -127,5 +127,7 @@ object Misc {
 
   def getFluidColor(f: Fluid): Int =
     if (f != null) getFluidColor(new FluidStack(f, 1)) else 0xFFFFFF
+
+  lazy val lineSeparator = System.getProperty("line.separator")
 }
 
