@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2013 - 2014
+ * Copyright (c) bdew, 2013 - 2015
  * https://github.com/bdew/bdlib
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -10,7 +10,8 @@
 package net.bdew.lib.render.connected
 
 import net.bdew.lib.block.BlockRef
-import net.bdew.lib.render.{BaseBlockRenderHandler, RenderUtils}
+import net.bdew.lib.render.{BaseBlockRenderHandler, RenderUtils, RotatedBlockRenderer}
+import net.bdew.lib.rotate.BaseRotatableBlock
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.{RenderBlocks, Tessellator}
 import net.minecraft.world.IBlockAccess
@@ -35,7 +36,10 @@ object ConnectedRenderer extends BaseBlockRenderHandler {
   }
 
   override def renderWorldBlock(world: IBlockAccess, x: Int, y: Int, z: Int, block: Block, modelId: Int, renderer: RenderBlocks): Boolean = {
-    renderer.renderStandardBlock(block, x, y, z)
+    if (block.isInstanceOf[BaseRotatableBlock])
+      RotatedBlockRenderer.renderWorldBlock(world, x, y, z, block, modelId, renderer)
+    else
+      renderer.renderStandardBlock(block, x, y, z)
 
     val pos = ConnectedHelper.Vec3F(x, y, z)
     for (face <- ForgeDirection.VALID_DIRECTIONS)
