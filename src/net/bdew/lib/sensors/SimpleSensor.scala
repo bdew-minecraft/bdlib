@@ -23,6 +23,8 @@ abstract class SimpleSensor extends SensorType {
   override def paramClicked(current: SensorParameter, item: ItemStack, button: Int, mod: Int) =
     if (item == null && button == 0 && mod == 0)
       Misc.nextInSeq(parameters, current)
+    else if (item == null && button == 1 && mod == 0)
+      Misc.prevInSeq(parameters, current)
     else
       current
 
