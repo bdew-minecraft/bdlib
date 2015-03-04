@@ -108,9 +108,17 @@ object Misc {
   def nextInSeq[T](seq: Seq[T], elem: T) = {
     val pos = seq.indexOf(elem)
     if (pos < 0 || pos == seq.size - 1)
-      seq(0)
+      seq.head
     else
       seq(pos + 1)
+  }
+
+  def prevInSeq[T](seq: Seq[T], elem: T) = {
+    val pos = seq.indexOf(elem)
+    if (pos <= 0)
+      seq.last
+    else
+      seq(pos - 1)
   }
 
   def getFluidIcon(fs: FluidStack): IIcon =
