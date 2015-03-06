@@ -36,6 +36,8 @@ object RenderUtils {
    * Render a simple block as an item (for gui, item entities etc.)
    */
   def renderSimpleBlockItem(block: Block, metadata: Int, renderer: RenderBlocks) {
+    block.setBlockBoundsForItemRender()
+    renderer.setRenderBoundsFromBlock(block)
     val T = Tessellator.instance
     GL11.glTranslatef(-0.5F, -0.5F, -0.5F)
     for (side <- ForgeDirection.VALID_DIRECTIONS) {

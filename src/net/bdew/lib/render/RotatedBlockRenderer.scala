@@ -21,12 +21,8 @@ object RotatedBlockRenderer extends BaseBlockRenderHandler {
     (for (dir <- ForgeDirection.VALID_DIRECTIONS)
     yield (dir, new EdgeDraw(RectF(0.35F, 0.35F, 0.65F, 0.65F), dir))).toMap
 
-  override def renderInventoryBlock(block: Block, metadata: Int, modelID: Int, renderer: RenderBlocks) {
-    RenderUtils.renderSimpleBlockItem(block, metadata, renderer)
-  }
-
-  override def renderWorldBlock(world: IBlockAccess, x: Int, y: Int, z: Int, block: Block, modelId: Int, renderer: RenderBlocks): Boolean = {
-    block.asInstanceOf[BaseRotatableBlock].getFacing(world, x, y, z).ordinal() match {
+  def setRenderRotation(renderer: RenderBlocks, side: ForgeDirection): Unit = {
+    side.ordinal() match {
       case 0 =>
         renderer.uvRotateEast = 3
         renderer.uvRotateWest = 3
@@ -52,15 +48,27 @@ object RotatedBlockRenderer extends BaseBlockRenderHandler {
         renderer.uvRotateBottom = 2
       case _ =>
     }
+  }
 
-    renderer.renderStandardBlock(block, x, y, z)
+  def clearRenderRotation(renderer: RenderBlocks): Unit = {
     renderer.uvRotateEast = 0
     renderer.uvRotateWest = 0
     renderer.uvRotateSouth = 0
     renderer.uvRotateNorth = 0
     renderer.uvRotateTop = 0
     renderer.uvRotateBottom = 0
+  }
 
+  override def renderInventoryBlock(block: Block, metadata: Int, modelID: Int, renderer: RenderBlocks) {
+    setRenderRotation(renderer, block.asInstanceOf[BaseRotatableBlock].getDefaultFacing)
+    RenderUtils.renderSimpleBlockItem(block, metadata, renderer)
+    clearRenderRotation(renderer)
+  }
+
+  override def renderWorldBlock(world: IBlockAccess, x: Int, y: Int, z: Int, block: Block, modelId: Int, renderer: RenderBlocks): Boolean = {
+    setRenderRotation(renderer, block.asInstanceOf[BaseRotatableBlock].getFacing(world, x, y, z))
+    renderer.renderStandardBlock(block, x, y, z)
+    clearRenderRotation(renderer)
     true
   }
 }
