@@ -14,13 +14,15 @@ import net.bdew.lib.Misc
 import net.bdew.lib.block.{HasTE, NamedBlock}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.ItemStack
+import net.minecraft.item.{ItemBlock, Item, ItemStack}
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: NamedBlock](block: T): T = regBlock(block, block.name)
 
-  def regBlock[T <: Block](block: T, name: String, addStack: Boolean = false): T = {
-    GameRegistry.registerBlock(block, name)
+  def regBlock[T <: NamedBlock](block: T, itemClass: Class[_ <: ItemBlock]): T = regBlock(block, block.name, itemClass)
+
+  def regBlock[T <: Block](block: T, name: String, itemClass: Class[_ <: ItemBlock] = classOf[ItemBlock], addStack: Boolean = false): T = {
+    GameRegistry.registerBlock(block, itemClass, name)
 
     block.setCreativeTab(creativeTab)
 
