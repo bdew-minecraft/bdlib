@@ -180,7 +180,7 @@ class RecipeLoader {
     case StackBlock(mod, id, meta) =>
       val block = notNull(GameRegistry.findBlock(mod, id), "Block not found %s:%s".format(mod, id))
       if (Item.getItemFromBlock(block) == null)
-        throw new StatementError("The block '%s:%s' does not have a valid matching item registered and thus can't be used in recipes".format(mod, id))
+        error("The block '%s:%s' does not have a valid matching item registered and thus can't be used in recipes", mod, id)
       new ItemStack(block, cnt, meta)
     case StackItem(mod, id, meta) =>
       new ItemStack(notNull(GameRegistry.findItem(mod, id), "Item not found %s:%s".format(mod, id)), cnt, meta)
