@@ -10,11 +10,11 @@
 package net.bdew.lib.power
 
 import net.bdew.lib.Misc
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.machine.PoweredMachine
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotPower(name: String, parent: TileDataSlots) extends DataSlot {
+case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSlot {
   updateKind = Set(UpdateKind.GUI, UpdateKind.SAVE)
 
   var stored = 0F

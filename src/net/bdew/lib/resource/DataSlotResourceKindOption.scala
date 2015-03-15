@@ -11,10 +11,10 @@ package net.bdew.lib.resource
 
 import net.bdew.lib.Misc
 import net.bdew.lib.data.DataSlotOption
-import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotResourceKindOption(name: String, parent: TileDataSlots) extends DataSlotOption[ResourceKind] {
+case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) extends DataSlotOption[ResourceKind] {
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {

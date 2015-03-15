@@ -10,12 +10,12 @@
 package net.bdew.lib.data
 
 import net.bdew.lib.Misc
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.tile.inventory.BaseInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
-case class DataSlotInventory(name: String, parent: TileDataSlots, size: Int) extends DataSlot with BaseInventory {
+case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int) extends DataSlot with BaseInventory {
   setUpdate(UpdateKind.SAVE)
 
   override def getSizeInventory = size

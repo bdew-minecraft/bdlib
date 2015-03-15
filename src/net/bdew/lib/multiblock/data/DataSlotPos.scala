@@ -12,10 +12,10 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.data.DataSlotOption
-import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotPos(name: String, parent: TileDataSlots) extends DataSlotOption[BlockRef] {
+case class DataSlotPos(name: String, parent: DataSlotContainer) extends DataSlotOption[BlockRef] {
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {

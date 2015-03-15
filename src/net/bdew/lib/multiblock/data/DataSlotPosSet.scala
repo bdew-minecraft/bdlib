@@ -11,12 +11,12 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockRef
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
 import scala.collection.mutable
 
-case class DataSlotPosSet(name: String, parent: TileDataSlots) extends DataSlot {
+case class DataSlotPosSet(name: String, parent: DataSlotContainer) extends DataSlot {
   val set = collection.mutable.Set.empty[BlockRef]
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)

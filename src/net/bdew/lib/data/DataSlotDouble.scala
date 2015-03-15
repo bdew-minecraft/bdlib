@@ -9,10 +9,10 @@
 
 package net.bdew.lib.data
 
-import net.bdew.lib.data.base.{DataSlotNumeric, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlotContainer, DataSlotNumeric, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotDouble(name: String, parent: TileDataSlots, default: Double = 0) extends DataSlotNumeric[Double](default) {
+case class DataSlotDouble(name: String, parent: DataSlotContainer, default: Double = 0) extends DataSlotNumeric[Double](default) {
   def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setDouble(name, value)
   def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = t.getDouble(name)
 }

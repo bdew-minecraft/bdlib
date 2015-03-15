@@ -9,12 +9,12 @@
 
 package net.bdew.lib.multiblock.data
 
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 
-case class DataSlotOutputConfig(name: String, parent: TileDataSlots, slots: Int) extends DataSlot {
+case class DataSlotOutputConfig(name: String, parent: DataSlotContainer, slots: Int) extends DataSlot {
   val map = collection.mutable.Map.empty[Int, OutputConfig]
 
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)

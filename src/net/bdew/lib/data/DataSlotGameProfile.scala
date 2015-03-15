@@ -12,11 +12,11 @@ package net.bdew.lib.data
 import java.util.UUID
 
 import com.mojang.authlib.GameProfile
-import net.bdew.lib.data.base.{DataSlotVal, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import org.apache.commons.lang3.StringUtils
 
-case class DataSlotGameProfile(name: String, parent: TileDataSlots) extends DataSlotVal[GameProfile] {
+case class DataSlotGameProfile(name: String, parent: DataSlotContainer) extends DataSlotVal[GameProfile] {
   override var value: GameProfile = null
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) = {

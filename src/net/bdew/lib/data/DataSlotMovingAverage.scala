@@ -11,12 +11,12 @@ package net.bdew.lib.data
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
 
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 
-case class DataSlotMovingAverage(name: String, parent: TileDataSlots, size: Int) extends DataSlot {
+case class DataSlotMovingAverage(name: String, parent: DataSlotContainer, size: Int) extends DataSlot {
   val values = mutable.Queue.empty[Double]
   var average: Double = 0
 

@@ -9,11 +9,11 @@
 
 package net.bdew.lib.data
 
-import net.bdew.lib.data.base.{DataSlotVal, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotItemStack(name: String, parent: TileDataSlots) extends DataSlotVal[ItemStack] {
+case class DataSlotItemStack(name: String, parent: DataSlotContainer) extends DataSlotVal[ItemStack] {
   var value: ItemStack = null
 
   override def update(v: ItemStack) = {

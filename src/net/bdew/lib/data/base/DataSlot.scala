@@ -19,7 +19,7 @@ trait DataSlot {
    * Tile Entity that owns this slot
    * Accessed in constructor, so should be in parameters or a lazy val, otherwise will crash
    */
-  val parent: TileDataSlots
+  val parent: DataSlotContainer
 
   /**
    * Unique name

@@ -10,11 +10,11 @@
 package net.bdew.lib.resource
 
 import net.bdew.lib.Misc
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.{FluidStack, FluidTankInfo}
 
-class DataSlotResource(val name: String, val parent: TileDataSlots, initCapacity: Int) extends DataSlot {
+class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapacity: Int) extends DataSlot {
   var resource: Option[Resource] = None
   var amount = 0D
   var capacity = initCapacity

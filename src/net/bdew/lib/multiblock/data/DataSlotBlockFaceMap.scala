@@ -11,13 +11,13 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockFace
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.{NBTTagCompound, NBTTagIntArray, NBTTagList}
 import net.minecraftforge.common.util.ForgeDirection
 
 import scala.collection.mutable
 
-case class DataSlotBlockFaceMap(name: String, parent: TileDataSlots) extends DataSlot {
+case class DataSlotBlockFaceMap(name: String, parent: DataSlotContainer) extends DataSlot {
   val map = collection.mutable.Map.empty[BlockFace, Int]
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
