@@ -24,6 +24,8 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
       getWorldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord)
   }
 
+  override def getWorldObject = getWorldObj
+
   override def onServerTick(f: () => Unit) = serverTick.listen(f)
 
   override def dataSlotChanged(slot: DataSlot) = {

@@ -18,7 +18,9 @@ import scala.collection.mutable
  * Base Trait for objects that can contain Data Slots, this allows implementing them on things that aren't TEs
  */
 trait DataSlotContainer {
-  def getWorldObj: World
+
+  // Can't use getWorldObj - it fails to get remapped and stuff breaks in obfuscated environment
+  def getWorldObject: World
 
   /**
    * Called when a dataslot value changes
@@ -49,7 +51,7 @@ trait DataSlotContainer {
 
   def doSave(kind: UpdateKind.Value, t: NBTTagCompound) {
     if (kind == UpdateKind.GUI)
-      t.setLong("BDLib_TS", getWorldObj.getTotalWorldTime)
+      t.setLong("BDLib_TS", getWorldObject.getTotalWorldTime)
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
       s.save(t, kind)
       if (TRACE) printf("%s: %s S=> %s\n".format(kind, n, t.getTag(n)))
