@@ -10,6 +10,7 @@
 package net.bdew.lib.render
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import net.bdew.lib.Misc
 import net.bdew.lib.gui.{IconWrapper, Texture}
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.util.IIcon
@@ -21,6 +22,13 @@ import net.minecraftforge.common.MinecraftForge
  * @param kind 0=Blocks / 1=Items
  */
 class IconPreloader(kind: Int) {
+  lazy val map = {
+    (for {
+      method <- getClass.getMethods if method.getParameterTypes.length == 0 && classOf[TextureLoc].isAssignableFrom(method.getReturnType)
+      value <- Misc.asInstanceOpt(method.invoke(this), classOf[TextureLoc])
+    } yield method.getName -> value).toMap
+  }
+
   var icons = Set.empty[TextureLoc]
 
   val sheet = kind match {

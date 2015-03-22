@@ -9,10 +9,10 @@
 
 package net.bdew.lib.sensors.multiblock
 
-import net.bdew.lib.multiblock.tile.TileModule
-import net.bdew.lib.sensors.DataSlotSensor
+import net.bdew.lib.multiblock.tile.TileController
+import net.bdew.lib.sensors.GenericSensorType
+import net.minecraft.tileentity.TileEntity
 
-abstract class TileSensorModule extends TileModule {
-  def config: DataSlotSensor
-  override def getCore = getCoreAs[CISensors]
+trait CIRedstoneSensors extends TileController {
+  def sensorTypes: Seq[GenericSensorType[TileEntity, Boolean]]
 }

@@ -13,14 +13,14 @@ import net.bdew.lib.Misc
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
-abstract class SimpleSensor extends SensorType {
-  def parameters: IndexedSeq[SensorParameter]
+abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends GenericSensorType[T, R](system) {
+  def parameters: IndexedSeq[GenericSensorParameter]
 
-  override lazy val defaultParameter = parameters.headOption.getOrElse(InvalidParameter)
+  override lazy val defaultParameter = parameters.headOption.getOrElse(system.DisabledParameter)
 
   lazy val parameterMap = (parameters map (x => x.uid -> x)).toMap
 
-  override def paramClicked(current: SensorParameter, item: ItemStack, button: Int, mod: Int) =
+  override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int) =
     if (item == null && button == 0 && mod == 0)
       Misc.nextInSeq(parameters, current)
     else if (item == null && button == 1 && mod == 0)
@@ -28,6 +28,7 @@ abstract class SimpleSensor extends SensorType {
     else
       current
 
-  override def saveParameter(p: SensorParameter, tag: NBTTagCompound) = tag.setString("param", p.uid)
-  override def loadParameter(tag: NBTTagCompound) = parameterMap.getOrElse(tag.getString("param"), InvalidParameter)
+  override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound) = tag.setString("param", p.uid)
+  override def loadParameter(tag: NBTTagCompound) = parameterMap.getOrElse(tag.getString("param"), system.DisabledParameter)
 }
+
