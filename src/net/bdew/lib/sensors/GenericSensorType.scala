@@ -11,7 +11,7 @@ package net.bdew.lib.sensors
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
-import net.bdew.lib.gui.{Color, Texture}
+import net.bdew.lib.gui.{Color, DrawTarget, Rect, Texture}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
@@ -28,6 +28,11 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
   def loadParameter(tag: NBTTagCompound): GenericSensorParameter
 
   def getResult(param: GenericSensorParameter, obj: T): R
+
+  @SideOnly(Side.CLIENT)
+  def drawSensor(rect: Rect, target: DrawTarget): Unit = {
+    target.drawTexture(rect, texture, textureColor)
+  }
 
   @SideOnly(Side.CLIENT)
   def texture: Texture

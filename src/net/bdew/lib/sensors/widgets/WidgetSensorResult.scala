@@ -9,28 +9,18 @@
 
 package net.bdew.lib.sensors.widgets
 
-import net.bdew.lib.Misc
 import net.bdew.lib.gui._
 import net.bdew.lib.gui.widgets.Widget
-import net.minecraft.init.Blocks
+import net.bdew.lib.sensors.SensorSystem
 
 import scala.collection.mutable
 
-class WidgetSensorBooleanResult(val p: Point, state: => Boolean, stringPrefix: String) extends Widget {
-  val rsOn = new IconWrapper(Texture.BLOCKS, Blocks.redstone_torch.getIcon(0, 0))
-  val rsOff = new IconWrapper(Texture.BLOCKS, Blocks.unlit_redstone_torch.getIcon(0, 0))
-
+class WidgetSensorResult[T](val p: Point, state: => T, system: SensorSystem[_, T]) extends Widget {
   override val rect = new Rect(p, 16, 16)
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) =
-    if (state)
-      tip += Misc.toLocal(stringPrefix + ".on")
-    else
-      tip += Misc.toLocal(stringPrefix + ".off")
+    tip += system.getLocalizedResultText(state)
 
   override def draw(mouse: Point) =
-    if (state)
-      parent.drawTexture(rect, rsOn)
-    else
-      parent.drawTexture(rect, rsOff)
+    system.drawResult(state, rect, parent)
 }

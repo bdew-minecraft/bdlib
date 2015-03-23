@@ -10,7 +10,7 @@
 package net.bdew.lib.sensors
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import net.bdew.lib.gui.Texture
+import net.bdew.lib.gui._
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -30,6 +30,12 @@ abstract class SensorSystem[T, R](defaultResult: R) {
   def disabledTexture: Texture
 
   def localizationPrefix: String
+
+  @SideOnly(Side.CLIENT)
+  def drawResult(result: R, rect: Rect, target: DrawTarget): Unit
+
+  @SideOnly(Side.CLIENT)
+  def getLocalizedResultText(result: R): String
 
   abstract class SensorType extends GenericSensorType(this)
 

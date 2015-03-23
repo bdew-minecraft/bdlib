@@ -11,12 +11,17 @@ package net.bdew.lib.sensors
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
-import net.bdew.lib.gui.{Color, Texture}
+import net.bdew.lib.gui._
 
 abstract class GenericSensorParameter(system: SensorSystem[_, _]) {
   val uid: String
 
   def localizedName = Misc.toLocal(system.localizationPrefix + ".param." + uid)
+
+  @SideOnly(Side.CLIENT)
+  def drawParam(rect: Rect, target: DrawTarget): Unit = {
+    target.drawTexture(rect, texture, textureColor)
+  }
 
   @SideOnly(Side.CLIENT)
   def texture: Texture

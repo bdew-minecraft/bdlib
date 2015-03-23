@@ -18,7 +18,7 @@ import scala.collection.mutable
 class WidgetSensorType[T, R](val p: Point, sensor: => GenericSensorType[T, R]) extends Widget {
   override val rect = new Rect(p, 16, 16)
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += sensor.localizedName
-  override def draw(mouse: Point) = parent.drawTexture(rect, sensor.texture, sensor.textureColor)
+  override def draw(mouse: Point) = sensor.drawSensor(rect, parent)
 }
 
 
