@@ -47,7 +47,7 @@ abstract class SensorSystem[T, R](defaultResult: R) {
     override val uid = "disabled"
 
     @SideOnly(Side.CLIENT)
-    override val texture = disabledTexture
+    override def texture = disabledTexture
   }
 
   object DisabledSensor extends SensorType {
@@ -59,7 +59,7 @@ abstract class SensorSystem[T, R](defaultResult: R) {
     override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int) = DisabledParameter
 
     @SideOnly(Side.CLIENT)
-    override val texture = disabledTexture
+    override def texture = disabledTexture
   }
 
   object DisabledSensorPair extends SensorPair(DisabledSensor, DisabledParameter)
