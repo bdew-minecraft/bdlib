@@ -11,9 +11,12 @@ package net.bdew.lib.nbt
 
 import net.minecraft.nbt._
 
+import scala.annotation.implicitNotFound
+
 object NBTTypes {
   var map = Map.empty[Int, Type[_, _]]
 
+  @implicitNotFound("Type ${R} is not supported by NBT")
   abstract class Type[T <: NBTBase, R](val id: Int, val cls: Class[T], val valueClass: Class[R]) {
     map += id -> this
     def toVal(p: T): R
@@ -25,6 +28,7 @@ object NBTTypes {
     override def toNBT(p: T): T = p
   }
 
+  @implicitNotFound("Type ${R} can't currently be retrieved from NBT lists")
   case class TypeInList[T <: NBTBase, R](definition: Type[T, R], fromList: (NBTTagList, Int) => R)
 
   implicit object TByte extends Type(1, classOf[NBTTagByte], classOf[Byte]) {
