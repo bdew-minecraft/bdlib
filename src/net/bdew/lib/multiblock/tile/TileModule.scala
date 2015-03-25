@@ -41,13 +41,15 @@ trait TileModule extends TileDataSlots {
   }
 
   def onBreak() {
-    getCore map (_.moduleRemoved(this))
+    getCore foreach (_.moduleRemoved(this))
   }
+
+  def canConnectToCore(br: BlockRef) = true
 
   def tryConnect() {
     if (getCore.isEmpty) {
       for {
-        conn <- Tools.findConnections(getWorldObj, myPos, kind).headOption
+        conn <- Tools.findConnections(getWorldObj, myPos, kind).headOption if canConnectToCore(conn)
         core <- conn.getTile[TileController](getWorldObj)
       } {
         connect(core)
