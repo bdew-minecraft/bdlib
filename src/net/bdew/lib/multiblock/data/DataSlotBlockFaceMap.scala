@@ -9,10 +9,9 @@
 
 package net.bdew.lib.multiblock.data
 
-import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockFace
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.{NBTTagCompound, NBTTagIntArray, NBTTagList}
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.ForgeDirection
 
 import scala.collection.mutable
@@ -27,15 +26,15 @@ case class DataSlotBlockFaceMap(name: String, parent: DataSlotContainer) extends
   def ent2arr(x: (BlockFace, Int)) = Array(x._2, x._1.x, x._1.y, x._1.z, x._1.face.ordinal())
   def arr2ent(x: Array[Int]) = BlockFace(x(1), x(2), x(3), ForgeDirection.values()(x(4))) -> x(0)
 
+  import net.bdew.lib.nbt.NBTHelper._
+
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    val lst = new NBTTagList()
-    for (x <- map) lst.appendTag(new NBTTagIntArray(ent2arr(x)))
-    t.setTag(name, lst)
+    t.setList(name, map.map(ent2arr))
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {
     map.clear()
-    map ++= Misc.iterNbtIntArray(t, name) map arr2ent
+    map ++= t.getList[Array[Int]]("name") map arr2ent
   }
 
   def updated() = parent.dataSlotChanged(this)

@@ -22,14 +22,16 @@ import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
+  @deprecated("Use NBTImplicits instead", "bdlib 1.7.0")
   def iterNbtCompoundList(parent: NBTTagCompound, name: String): Iterable[NBTTagCompound] = {
-    val list = parent.getTagList(name, 10)
-    for (i <- 0 until list.tagCount()) yield list.getCompoundTagAt(i)
+    import net.bdew.lib.nbt.NBTHelper._
+    parent.getList[NBTTagCompound](name)
   }
 
+  @deprecated("Use NBTImplicits instead", "bdlib 1.7.0")
   def iterNbtIntArray(parent: NBTTagCompound, name: String): Iterable[Array[Int]] = {
-    val list = parent.getTagList(name, 11)
-    for (i <- 0 until list.tagCount()) yield list.func_150306_c(i)
+    import net.bdew.lib.nbt.NBTHelper._
+    parent.getList[Array[Int]](name)
   }
 
   def getActiveModId = Loader.instance().activeModContainer().getModId

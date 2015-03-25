@@ -10,26 +10,36 @@
 package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.multiblock.network.MsgOutputCfg
-import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
+
+import scala.collection.mutable
 
 class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
   override def id = "fluid"
-  var avg = 0.0
+  val values = mutable.Queue.empty[Double]
   var rsMode = RSMode.ALWAYS
 
-  final val decay = 0.5
+  final val ticks = 20
+
+  import net.bdew.lib.nbt.NBTHelper._
+
+  def avg = values.sum / values.size
 
   def updateAvg(v: Double) {
-    avg = avg * decay + (1 - decay) * v
+    values += v
+    if (values.size > ticks)
+      values.dequeue()
   }
 
   def read(t: NBTTagCompound) {
-    avg = t.getDouble("avg")
+    values.clear()
+    values ++= t.getList[Double]("values")
     rsMode = RSMode(t.getInteger("rsMode"))
   }
 
   def write(t: NBTTagCompound) {
-    t.setDouble("avg", avg)
+    val l = new NBTTagList
+    t.setList("values", values)
     t.setInteger("rsMode", rsMode.id)
   }
 

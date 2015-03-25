@@ -12,7 +12,7 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
+import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 
@@ -21,19 +21,18 @@ case class DataSlotPosSet(name: String, parent: DataSlotContainer) extends DataS
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
+  import net.bdew.lib.nbt.NBTHelper._
+
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    val lst = new NBTTagList()
-    for (x <- set) lst.appendTag(Misc.applyMutator(x.writeToNBT, new NBTTagCompound))
-    t.setTag(name, lst)
+    t.setList(name, set.map(x => Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {
     set.clear()
-    set ++= Misc.iterNbtCompoundList(t, name) map BlockRef.fromNBT
+    set ++= t.getList[NBTTagCompound](name) map BlockRef.fromNBT
   }
 
   def updated() = parent.dataSlotChanged(this)
-
 }
 
 object DataSlotPosSet {

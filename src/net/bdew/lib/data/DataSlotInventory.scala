@@ -9,7 +9,6 @@
 
 package net.bdew.lib.data
 
-import net.bdew.lib.Misc
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.tile.inventory.BaseInventory
 import net.minecraft.item.ItemStack
@@ -23,9 +22,10 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) {
     inv = new Array[ItemStack](getSizeInventory)
-    for (nbtItem <- Misc.iterNbtCompoundList(t, name)) {
+    import net.bdew.lib.nbt.NBTHelper._
+    for (nbtItem <- t.getList[NBTTagCompound](name)) {
       val slot = nbtItem.getByte("Slot")
-      if (slot >= 0 && slot < inv.size) {
+      if (slot >= 0 && slot < inv.length) {
         inv(slot) = ItemStack.loadItemStackFromNBT(nbtItem)
       }
     }

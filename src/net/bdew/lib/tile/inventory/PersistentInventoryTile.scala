@@ -12,27 +12,28 @@ package net.bdew.lib.tile.inventory
 import net.bdew.lib.Misc
 import net.bdew.lib.tile.TileExtended
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
+import net.minecraft.nbt.NBTTagCompound
 
 trait PersistentInventoryTile extends TileExtended with BaseInventory {
+
+  import net.bdew.lib.nbt.NBTHelper._
+
   persistLoad.listen((tag: NBTTagCompound) => {
     inv = new Array[ItemStack](getSizeInventory)
-    for (nbtItem <- Misc.iterNbtCompoundList(tag, "Items")) {
+    for (nbtItem <- tag.getList[NBTTagCompound]("Items")) {
       val slot = nbtItem.getByte("Slot")
-      if (slot >= 0 && slot < inv.size) {
+      if (slot >= 0 && slot < inv.length) {
         inv(slot) = ItemStack.loadItemStackFromNBT(nbtItem)
       }
     }
   })
 
   persistSave.listen((tag: NBTTagCompound) => {
-    val itemList = new NBTTagList
-    for ((item, i) <- inv.view.zipWithIndex if item != null) {
-      val itemNbt: NBTTagCompound = new NBTTagCompound
-      itemNbt.setByte("Slot", i.asInstanceOf[Byte])
-      item.writeToNBT(itemNbt)
-      itemList.appendTag(itemNbt)
-    }
-    tag.setTag("Items", itemList)
+    tag.setList("name",
+      for ((item, i) <- inv.view.zipWithIndex if item != null)
+        yield Misc.applyMutator(new NBTTagCompound) { itemNbt =>
+          itemNbt.setByte("Slot", i.asInstanceOf[Byte])
+          item.writeToNBT(itemNbt)
+        })
   })
 }
