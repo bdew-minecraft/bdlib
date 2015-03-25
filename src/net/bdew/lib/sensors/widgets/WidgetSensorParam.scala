@@ -11,12 +11,12 @@ package net.bdew.lib.sensors.widgets
 
 import net.bdew.lib.gui._
 import net.bdew.lib.gui.widgets.Widget
-import net.bdew.lib.sensors.GenericSensorParameter
+import net.bdew.lib.sensors.SensorPair
 
 import scala.collection.mutable
 
-class WidgetSensorParam(val p: Point, param: => GenericSensorParameter) extends Widget {
+class WidgetSensorParam[T](val p: Point, config: => SensorPair[T, _], obj: => Option[T]) extends Widget {
   override val rect = new Rect(p, 16, 16)
-  override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += param.localizedName
-  override def draw(mouse: Point) = param.drawParam(rect, parent)
+  override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += config.param.localizedName
+  override def draw(mouse: Point) = obj foreach (x => config.sensor.drawParameter(rect, parent, x, config.param))
 }

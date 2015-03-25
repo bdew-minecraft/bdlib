@@ -13,7 +13,6 @@ import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.gui._
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NBTTagCompound
 
 abstract class SensorSystem[T, R](defaultResult: R) {
   val map = collection.mutable.Map.empty[String, GenericSensorType[T, R]]
@@ -39,24 +38,25 @@ abstract class SensorSystem[T, R](defaultResult: R) {
 
   abstract class SensorType extends GenericSensorType(this)
 
-  abstract class SimpleSensor extends SimpleGenericSensor(this)
-
   abstract class SensorParameter extends GenericSensorParameter(this)
 
-  object DisabledParameter extends SensorParameter {
+  abstract class SimpleSensor extends SimpleGenericSensor(this)
+
+  abstract class SimpleParameter extends SimpleGenericParameter(this)
+
+  object DisabledParameter extends SimpleParameter {
     override val uid = "disabled"
 
     @SideOnly(Side.CLIENT)
     override def texture = disabledTexture
   }
 
-  object DisabledSensor extends SensorType {
+  object DisabledSensor extends SimpleSensor {
+    override def parameters = Vector(DisabledParameter)
     override def uid = "disabled"
-    override def defaultParameter = DisabledParameter
-    override def loadParameter(tag: NBTTagCompound) = DisabledParameter
-    override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound) = {}
-    override def getResult(param: GenericSensorParameter, obj: T) = defaultResult
-    override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int) = DisabledParameter
+
+    override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T): GenericSensorParameter = DisabledParameter
+    override def getResult(param: GenericSensorParameter, obj: T): R = defaultResult
 
     @SideOnly(Side.CLIENT)
     override def texture = disabledTexture

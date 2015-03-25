@@ -15,10 +15,10 @@ import net.bdew.lib.sensors.GenericSensorType
 
 import scala.collection.mutable
 
-class WidgetSensorType[T, R](val p: Point, sensor: => GenericSensorType[T, R]) extends Widget {
+class WidgetSensorType[T](val p: Point, sensor: => GenericSensorType[T, _], obj: => Option[T]) extends Widget {
   override val rect = new Rect(p, 16, 16)
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += sensor.localizedName
-  override def draw(mouse: Point) = sensor.drawSensor(rect, parent)
+  override def draw(mouse: Point) = obj foreach (x => sensor.drawSensor(rect, parent, x))
 }
 
 

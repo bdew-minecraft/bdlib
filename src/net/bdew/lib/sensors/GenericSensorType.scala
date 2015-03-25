@@ -11,7 +11,7 @@ package net.bdew.lib.sensors
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
-import net.bdew.lib.gui.{Color, DrawTarget, Rect, Texture}
+import net.bdew.lib.gui.{DrawTarget, Rect}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
@@ -23,20 +23,18 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
   def localizedName = Misc.toLocal(system.localizationPrefix + "." + uid)
 
   def defaultParameter: GenericSensorParameter
-  def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int): GenericSensorParameter
+
+  def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T): GenericSensorParameter
+
   def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound)
   def loadParameter(tag: NBTTagCompound): GenericSensorParameter
+  def isValidParameter(p: GenericSensorParameter): Boolean
 
   def getResult(param: GenericSensorParameter, obj: T): R
 
   @SideOnly(Side.CLIENT)
-  def drawSensor(rect: Rect, target: DrawTarget): Unit = {
-    target.drawTexture(rect, texture, textureColor)
-  }
+  def drawSensor(rect: Rect, target: DrawTarget, obj: T): Unit
 
   @SideOnly(Side.CLIENT)
-  def texture: Texture
-
-  @SideOnly(Side.CLIENT)
-  def textureColor = Color.white
+  def drawParameter(rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit
 }
