@@ -34,7 +34,7 @@ case class DataSlotBlockFaceMap(name: String, parent: DataSlotContainer) extends
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {
     map.clear()
-    map ++= t.getList[Array[Int]]("name") map arr2ent
+    map ++= t.getList[Array[Int]](name) map arr2ent
   }
 
   def updated() = parent.dataSlotChanged(this)

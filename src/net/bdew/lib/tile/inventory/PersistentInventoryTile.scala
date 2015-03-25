@@ -29,7 +29,7 @@ trait PersistentInventoryTile extends TileExtended with BaseInventory {
   })
 
   persistSave.listen((tag: NBTTagCompound) => {
-    tag.setList("name",
+    tag.setList("Items",
       for ((item, i) <- inv.view.zipWithIndex if item != null)
         yield Misc.applyMutator(new NBTTagCompound) { itemNbt =>
           itemNbt.setByte("Slot", i.asInstanceOf[Byte])
