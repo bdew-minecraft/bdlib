@@ -15,5 +15,4 @@ abstract class GenericSensorParameter(system: SensorSystem[_, _]) {
   val uid: String
 
   def localizedName = Misc.toLocal(system.localizationPrefix + ".param." + uid)
-
 }

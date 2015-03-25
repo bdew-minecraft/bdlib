@@ -24,7 +24,7 @@ abstract class SimpleGenericParameter(system: SensorSystem[_, _]) extends Generi
 }
 
 abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends GenericSensorType[T, R](system) {
-  def parameters: IndexedSeq[GenericSensorParameter]
+  def parameters: IndexedSeq[SimpleGenericParameter]
 
   override lazy val defaultParameter = parameters.headOption.getOrElse(system.DisabledParameter)
 
@@ -40,7 +40,7 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
 
   override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound) = tag.setString("param", p.uid)
   override def loadParameter(tag: NBTTagCompound) = parameterMap.getOrElse(tag.getString("param"), system.DisabledParameter)
-  override def isValidParameter(p: GenericSensorParameter) = parameters.contains(p)
+  override def isValidParameter(p: GenericSensorParameter, obj: T) = parameters.contains(p)
 
   @SideOnly(Side.CLIENT)
   def texture: Texture
