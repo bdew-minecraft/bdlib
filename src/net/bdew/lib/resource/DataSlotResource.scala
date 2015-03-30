@@ -16,7 +16,6 @@ import net.minecraftforge.fluids.{FluidStack, FluidTankInfo}
 
 class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapacity: Int) extends DataSlot {
   var resource: Option[Resource] = None
-  var amount = 0D
   var capacity = initCapacity
   val sendCapacityOnUpdateKind = Set(UpdateKind.GUI)
 
@@ -101,7 +100,7 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     val tag = new NBTTagCompound()
 
-    resource map { res => tag.setTag("resource", ResourceManager.saveToNBT(res)) }
+    resource foreach { res => tag.setTag("resource", ResourceManager.saveToNBT(res)) }
 
     if (sendCapacityOnUpdateKind.contains(kind))
       tag.setInteger("capacity", capacity)
