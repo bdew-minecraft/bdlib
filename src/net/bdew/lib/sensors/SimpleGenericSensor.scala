@@ -24,7 +24,7 @@ abstract class SimpleGenericParameter(system: SensorSystem[_, _]) extends Generi
 }
 
 abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends GenericSensorType[T, R](system) {
-  def parameters: IndexedSeq[SimpleGenericParameter]
+  def parameters: IndexedSeq[GenericSensorParameter]
 
   override lazy val defaultParameter = parameters.headOption.getOrElse(system.DisabledParameter)
 
