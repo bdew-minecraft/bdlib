@@ -22,15 +22,15 @@ import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
-  @deprecated("Use NBTImplicits instead", "bdlib 1.7.0")
+  @deprecated("Use net.bdew.lib.nbt instead", "bdlib 1.7.0")
   def iterNbtCompoundList(parent: NBTTagCompound, name: String): Iterable[NBTTagCompound] = {
-    import net.bdew.lib.nbt.NBTHelper._
+    import net.bdew.lib.nbt._
     parent.getList[NBTTagCompound](name)
   }
 
-  @deprecated("Use NBTImplicits instead", "bdlib 1.7.0")
+  @deprecated("Use net.bdew.lib.nbt instead", "bdlib 1.7.0")
   def iterNbtIntArray(parent: NBTTagCompound, name: String): Iterable[Array[Int]] = {
-    import net.bdew.lib.nbt.NBTHelper._
+    import net.bdew.lib.nbt._
     parent.getList[Array[Int]](name)
   }
 

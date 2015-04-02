@@ -21,7 +21,7 @@ case class DataSlotPosSet(name: String, parent: DataSlotContainer) extends DataS
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
-  import net.bdew.lib.nbt.NBTHelper._
+  import net.bdew.lib.nbt._
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     t.setList(name, set.map(x => Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))

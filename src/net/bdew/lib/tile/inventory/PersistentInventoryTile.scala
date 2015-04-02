@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound
 
 trait PersistentInventoryTile extends TileExtended with BaseInventory {
 
-  import net.bdew.lib.nbt.NBTHelper._
+  import net.bdew.lib.nbt._
 
   persistLoad.listen((tag: NBTTagCompound) => {
     inv = new Array[ItemStack](getSizeInventory)

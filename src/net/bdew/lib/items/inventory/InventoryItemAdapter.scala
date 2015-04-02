@@ -22,7 +22,7 @@ class InventoryItemAdapter(val player: EntityPlayer, val slot: Int, val size: In
     load()
 
   def load() {
-    import net.bdew.lib.nbt.NBTHelper._
+    import net.bdew.lib.nbt._
     val tag = getStack.getTagCompound
     for (nbtItem <- tag.getList[NBTTagCompound](tagName)) {
       val slot = nbtItem.getByte("Slot")

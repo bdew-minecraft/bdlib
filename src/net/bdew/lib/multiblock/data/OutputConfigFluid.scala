@@ -21,7 +21,7 @@ class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
 
   final val ticks = 20
 
-  import net.bdew.lib.nbt.NBTHelper._
+  import net.bdew.lib.nbt._
 
   def avg = values.sum / values.size
 

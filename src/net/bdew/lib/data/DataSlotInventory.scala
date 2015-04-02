@@ -22,7 +22,7 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) {
     inv = new Array[ItemStack](getSizeInventory)
-    import net.bdew.lib.nbt.NBTHelper._
+    import net.bdew.lib.nbt._
     for (nbtItem <- t.getList[NBTTagCompound](name)) {
       val slot = nbtItem.getByte("Slot")
       if (slot >= 0 && slot < inv.length) {
