@@ -19,4 +19,9 @@ abstract class DataSlotNumeric[T](default: T)(implicit n: Numeric[T]) extends Da
   def +=(that: T) = update(n.plus(value, that))
   def -=(that: T) = update(n.minus(value, that))
   def *=(that: T) = update(n.times(value, that))
+
+  /* Special Int versions, using the conversion from numeric */
+  def +=(that: Int) = update(n.plus(value, n.fromInt(that)))
+  def -=(that: Int) = update(n.minus(value, n.fromInt(that)))
+  def *=(that: Int) = update(n.times(value, n.fromInt(that)))
 }
