@@ -21,21 +21,30 @@ buildscript {
 apply plugin: 'scala'
 apply plugin: 'forge'
 
-version = "1.7.1"
+file "build.properties" withReader {
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
+
+if (project.hasProperty('forgeOverride')) {
+    config.forge.version = forgeOverride
+}
 
 if (project.hasProperty('buildnum')) {
-    project.version = project.version + '.' + project.buildnum
+    ext.simpleVersion = "${config.bdlib.version}.${project.buildnum}"
 } else {
-    project.version = "0-SNAPSHOT"
+    ext.simpleVersion = "${config.bdlib.version}-DEV"
 }
+
+version = simpleVersion + '-mc' + config.minecraft.version
 
 group = "net.bdew"
 archivesBaseName = "bdlib"
-ext.versuffix = "mc1710"
 
 minecraft {
-    version = "1.7.10-10.13.2.1291"
-    replace("BDLIB_VER", project.version)
+    version = "${config.minecraft.version}-${config.forge.version}"
+    replace("BDLIB_VER", simpleVersion.toString())
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -66,16 +75,18 @@ processResources {
 }
 
 task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
+    classifier "sources"
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
+    classifier "dev"
     duplicatesStrategy "exclude"
 }
 
-jar {
-    appendix = project.versuffix
+afterEvaluate { project ->
+    // Fudge the inputs of source jars so we get the version after replacements
+    tasks.getByPath(":sourceJar").from(tasks.getByPath(":sourceMainScala").outputs.files)
 }
 
 artifacts {
@@ -89,10 +100,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifact deobfJar
-
-            artifact sourceJar {
-                classifier "sources"
-            }
+            artifact sourceJar
         }
     }
     repositories {
