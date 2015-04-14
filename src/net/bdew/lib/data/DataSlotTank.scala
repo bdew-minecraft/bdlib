@@ -11,7 +11,7 @@ package net.bdew.lib.data
 
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraftforge.fluids.{FluidStack, FluidTank, IFluidTank}
+import net.minecraftforge.fluids.{FluidRegistry, FluidStack, FluidTank, IFluidTank}
 
 abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlot {
   var oldStack: FluidStack = null
@@ -70,10 +70,12 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
 case class DataSlotTank(name: String, parent: DataSlotContainer, size: Int) extends DataSlotTankBase(size)
 
 case class DataSlotTankRestricted(name: String, parent: DataSlotContainer, var size: Int, fluidID: Int) extends DataSlotTankBase(size) {
-  def fill(amount: Int, doFill: Boolean) = super.fill(new FluidStack(fluidID, amount), doFill)
+  val filterFluid = FluidRegistry.getFluid(fluidID)
+
+  def fill(amount: Int, doFill: Boolean) = super.fill(new FluidStack(filterFluid, amount), doFill)
 
   override def fill(resource: FluidStack, doFill: Boolean): Int = {
-    if ((resource != null) && (resource.fluidID != fluidID)) return 0
+    if ((resource != null) && (resource.getFluid != filterFluid)) return 0
     return super.fill(resource, doFill)
   }
 }
