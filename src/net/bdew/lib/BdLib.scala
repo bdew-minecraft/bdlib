@@ -42,7 +42,8 @@ object BdLib {
   @EventHandler
   def serverStarting(event: FMLServerStartingEvent) {
     val commandHandler = event.getServer.getCommandManager.asInstanceOf[CommandHandler]
-    commandHandler.registerCommand(new CommandDumpRegistry)
+    commandHandler.registerCommand(CommandDumpRegistry)
+    commandHandler.registerCommand(CommandOreDistribution)
     onServerStarting.trigger(event)
   }
 

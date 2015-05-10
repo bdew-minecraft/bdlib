@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.oredict.OreDictionary
 
-class CommandDumpRegistry extends CommandBase {
+object CommandDumpRegistry extends CommandBase {
   def getCommandName = "dumpregistry"
   override def getRequiredPermissionLevel = 2
   def getCommandUsage(c: ICommandSender) = "dumpregistry"
