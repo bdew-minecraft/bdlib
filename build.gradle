@@ -109,3 +109,17 @@ publishing {
         }
     }
 }
+
+apply plugin: 'curseforge'
+
+curse {
+    projectId = config.curseforge.id
+    apiKey = project.curseForgeApiKey
+    releaseType = 'alpha'
+
+    artifact = jar
+    changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
+
+    additionalArtifact deobfJar
+    additionalArtifact sourceJar
+}
