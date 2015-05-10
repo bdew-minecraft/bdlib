@@ -14,10 +14,10 @@ import net.bdew.lib.recipes.gencfg.ConfigEntry
 
 /**
  * Allows definition of random-weighted loot/drop lists in config sections
- * @param list List on (chance percent, stack reference) pairs, resolve to
+ * @param list List of (chance percent, stack reference) pairs, resolve to
  *             real ItemStacks with LootListLoader.resolveLootList
  */
-case class EntryLootList(list: List[(Int, StackRef)]) extends ConfigEntry
+case class EntryLootList(list: List[(Double, StackRef)]) extends ConfigEntry
 
 
 

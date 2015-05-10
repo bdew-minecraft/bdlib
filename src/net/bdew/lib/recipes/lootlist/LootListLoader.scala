@@ -19,8 +19,8 @@ import net.minecraftforge.oredict.OreDictionary
  * Loader mixin for loot lists
  */
 trait LootListLoader extends GenericConfigLoader {
-  def resolveLootList(entry: EntryLootList): List[(Int, ItemStack)] = resolveLootList(entry.list)
-  def resolveLootList(list: List[(Int, StackRef)]) =
+  def resolveLootList(entry: EntryLootList): List[(Double, ItemStack)] = resolveLootList(entry.list)
+  def resolveLootList(list: List[(Double, StackRef)]) =
     (for ((chance, ref) <- list) yield {
       try {
         val itemStack = getConcreteStack(ref)
