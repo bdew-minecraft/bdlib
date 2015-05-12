@@ -17,7 +17,7 @@ bdlib.rsmode.rs_off=Désactivé par redstone
 
 bdlib.label.empty=Vide
 
-bdlib.oredistribution.usage=/oredistribution <rayon> [<hauteur mini>] [<hauteur maxi>] [--fichier]
+bdlib.oredistribution.usage=/oredistribution <rayon> [<hauteur mini>] [<hauteur maxi>] [--file]
 bdlib.oredistribution.start1=Valide la distribution de minerai entre (%s,%s,%s) et (%s,%s,%s) dim %s
 bdlib.oredistribution.start2=Le server peut ralentir pendantun certain temps
 bdlib.oredistribution.entry=%s %s - %s (%s%%)
