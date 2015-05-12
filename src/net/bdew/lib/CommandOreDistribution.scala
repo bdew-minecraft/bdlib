@@ -64,8 +64,14 @@ object CommandOreDistribution extends CommandBase {
 
     import scala.collection.JavaConversions._
 
-    val ores = (OreDictionary.getOreNames.filter(_.startsWith("ore")) flatMap { name =>
-      for (s <- OreDictionary.getOres(name)) yield (s.getItem, s.getItemDamage) -> name
+    val ores = (OreDictionary.getOreNames.filter(x => x.startsWith("ore") || x.startsWith("denseore")) flatMap { name =>
+      val fixedName =
+        if (name.startsWith("ore"))
+          name.substring(3)
+        else if (name.startsWith("denseore"))
+          "Dense " + name.substring(8)
+        else name
+      for (s <- OreDictionary.getOres(name)) yield (s.getItem, s.getItemDamage) -> fixedName
     }).toMap
 
     val distribution = mutable.Map.empty[String, Int].withDefaultValue(0)
@@ -100,7 +106,7 @@ object CommandOreDistribution extends CommandBase {
         dumpWriter.newLine()
         if (warnings.size > 0) {
           for ((id, types) <- warnings.toList.sortBy(_._1)) {
-            dumpWriter.write("Warning: %s has multiple variants generated:".format(id.substring(3)))
+            dumpWriter.write("Warning: %s has multiple variants generated:".format(id))
             dumpWriter.newLine()
             for ((item, dmg) <- types) {
               dumpWriter.write(" - %s@%s".format(GameData.getItemRegistry.getNameForObject(item), dmg))
@@ -113,7 +119,7 @@ object CommandOreDistribution extends CommandBase {
           dumpWriter.newLine()
         }
         for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
-          dumpWriter.write("%s - %s (%s%%)".format(id.substring(3), DecFormat.round(num), DecFormat.short(100F * num / total)))
+          dumpWriter.write("%s - %s (%s%%)".format(id, DecFormat.round(num), DecFormat.short(100F * num / total)))
           dumpWriter.newLine()
         }
         CommandBase.func_152373_a(sender, this, "bdlib.oredistribution.saved", dumpFile.getCanonicalPath)
@@ -128,13 +134,13 @@ object CommandOreDistribution extends CommandBase {
       // === OUTPUT TO CHAT ===
       for ((id, types) <- warnings.toList.sortBy(_._1)) {
         CommandBase.func_152373_a(sender, this, "bdlib.oredistribution.warn",
-          wrapColor(" !", EnumChatFormatting.RED), wrapColor(id.substring(3), EnumChatFormatting.RED))
+          wrapColor(" !", EnumChatFormatting.RED), wrapColor(id, EnumChatFormatting.RED))
         for ((item, dmg) <- types)
           CommandBase.func_152373_a(sender, this, wrapColor(" - ", EnumChatFormatting.RED) + GameData.getItemRegistry.getNameForObject(item) + "@" + dmg)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
         CommandBase.func_152373_a(sender, this, "bdlib.oredistribution.entry",
-          " *", wrapColor(id.substring(3), EnumChatFormatting.YELLOW),
+          " *", wrapColor(id, EnumChatFormatting.YELLOW),
           DecFormat.round(num), DecFormat.short(100F * num / total))
       }
     }
