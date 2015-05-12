@@ -70,12 +70,10 @@ object CommandOreDistribution extends CommandBase {
       z <- startZ - radius to startZ + radius
       if !world.isAirBlock(x, y, z)
     } {
-      val block = world.getBlock(x, y, z)
-      val item = Item.getItemFromBlock(block)
-      val damage = block.getDamageValue(world, x, y, z)
-      for (ore <- ores.get((item, damage))) {
+      val key = (Item.getItemFromBlock(world.getBlock(x, y, z)), world.getBlockMetadata(x, y, z))
+      for (ore <- ores.get(key)) {
         distribution(ore) += 1
-        kinds(ore) += ((item, damage))
+        kinds(ore) += key
       }
     }
 
