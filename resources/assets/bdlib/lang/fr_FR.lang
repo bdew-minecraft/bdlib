@@ -1,0 +1,26 @@
+bdlib.multiblock.face.north=Nord
+bdlib.multiblock.face.south=Sud
+bdlib.multiblock.face.east=Est
+bdlib.multiblock.face.west=Ouest
+bdlib.multiblock.face.up=Dessus
+bdlib.multiblock.face.down=Dessous
+
+bdlib.multiblock.disabled=Désactivé
+bdlib.multiblock.incomplete=Cette machine est incomplète, elle exige au moins :
+bdlib.multiblock.notconnected=Pas connecté à une machine valide
+bdlib.multiblock.toomanyoutputs=Trop de soties connectées, Incapable d'ajouter une nouvelle connexion
+
+bdlib.rsmode.always=Toujours actif
+bdlib.rsmode.never=Désactivé
+bdlib.rsmode.rs_on=Activé par redstone
+bdlib.rsmode.rs_off=Désactivé par redstone
+
+bdlib.label.empty=Vide
+
+bdlib.oredistribution.usage=/oredistribution <rayon> [<hauteur mini>] [<hauteur maxi>] [--file]
+bdlib.oredistribution.start1=Valide la distribution de minerai entre (%s,%s,%s) et (%s,%s,%s) dim %s
+bdlib.oredistribution.start2=Le server peut ralentir pendantun certain temps
+bdlib.oredistribution.entry=%s %s - %s (%s%%)
+bdlib.oredistribution.warn=%s Attention: %s fait produire des variantes multiples :
+bdlib.oredistribution.saved=Distribution de minerai déposée dans %s
+bdlib.oredistribution.error=Impossible d'enregistrer la distribution de minerai : %s
