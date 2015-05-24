@@ -9,9 +9,11 @@
 
 package net.bdew.lib
 
-import cpw.mods.fml.common.Loader
+import java.util
+
 import cpw.mods.fml.common.registry.GameRegistry
-import cpw.mods.fml.common.versioning.{ArtifactVersion, VersionParser}
+import cpw.mods.fml.common.versioning.VersionParser
+import cpw.mods.fml.common.{Loader, ModAPIManager, ModContainer}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
@@ -41,9 +43,9 @@ object Misc {
   def hasLocal(s: String) = StatCollector.canTranslate(s)
 
   def flattenRecipe(pattern: Seq[String], items: Map[Char, AnyRef]) =
-    pattern ++ items.map {
+    pattern ++ items.flatMap {
       case (k, v) => Seq(new Character(k), v)
-    }.flatten
+    }
 
   def wrapTag(n: String, f: (NBTTagCompound) => Any)(t: NBTTagCompound) {
     val p = t.getCompoundTag(n)
@@ -69,17 +71,28 @@ object Misc {
 
   def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(x => x != null && x.biomeName == name).orNull
 
-  def haveModVersion(spec: String): Boolean = {
-    val req = VersionParser.parseVersionReference(spec)
-    val modId = req.getLabel
+  private lazy val modLookup = {
+    val mods = new util.ArrayList[ModContainer]
+    val nameLookup = new util.HashMap[String, ModContainer]
 
-    if (!Loader.instance.getIndexedModList.containsKey(modId)) return false
+    nameLookup.putAll(Loader.instance().getIndexedModList)
+    ModAPIManager.INSTANCE.injectAPIModContainers(mods, nameLookup)
 
-    val found: ArtifactVersion = Loader.instance.getIndexedModList.get(modId).getProcessedVersion
+    import scala.collection.JavaConverters._
+    nameLookup.asScala
+  }
 
-    if (found == null || !req.containsVersion(found)) return false
+  def haveModVersion(modId: String) = {
+    val spec = VersionParser.parseVersionReference(modId)
+    modLookup.contains(spec.getLabel) && spec.containsVersion(modLookup(spec.getLabel).getProcessedVersion)
+  }
 
-    return true
+  def getModVersion(modId: String) =
+    modLookup.get(modId) map (_.getVersion)
+
+  def getModVersionString(modId: String): String = {
+    val cont = modLookup.getOrElse(modId, return "NOT FOUND")
+    cont.getModId + " " + cont.getVersion
   }
 
   // Because writing this every time is awkward
