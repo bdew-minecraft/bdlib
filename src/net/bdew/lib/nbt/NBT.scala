@@ -9,7 +9,8 @@
 
 package net.bdew.lib.nbt
 
-import net.minecraft.nbt.{NBTBase, NBTTagCompound, NBTTagList}
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.{NBTBase, NBTTagByte, NBTTagCompound, NBTTagList}
 
 import scala.language.implicitConversions
 
@@ -17,20 +18,33 @@ object NBT {
 
   class NBTSerialized(val value: NBTBase) extends AnyVal
 
-  implicit def serializeNbtPrimitive[T: Type](v: T): NBTSerialized = new NBTSerialized(Type[T].toNBT(v))
+  object NBTSerialized {
+    implicit def serializeNbtPrimitive[T: Type](v: T): NBTSerialized = new NBTSerialized(Type[T].toNBT(v))
 
-  implicit def serializeNbtList[T: Type](v: List[T]): NBTSerialized = {
-    val list = new NBTTagList
-    for (x <- v) list.appendTag(Type[T].toNBT(x))
-    new NBTSerialized(list)
+    implicit def serializeNbtList[T: Type](v: Traversable[T]): NBTSerialized = {
+      val list = new NBTTagList
+      for (x <- v) list.appendTag(Type[T].toNBT(x))
+      new NBTSerialized(list)
+    }
+
+    // Boolean is special because it's represented as a byte in NBT
+    implicit def serializeBoolean(v: Boolean): NBTSerialized = new NBTSerialized(new NBTTagByte(if (v) 1 else 0))
+
+    // Itemstack serialization helpers
+    implicit def serializeItemStack(v: ItemStack): NBTSerialized = new NBTSerialized(NBT.from(v.writeToNBT _))
+    implicit def serializeItemStackList(v: Traversable[ItemStack]): NBTSerialized = serializeNbtList(v map (x => NBT.from(x.writeToNBT _)))
   }
 
-  def apply(pairs: (String, NBTSerialized)*): NBTTagCompound = apply(pairs.toMap)
-
-  def apply(m: Map[String, NBTSerialized]): NBTTagCompound = {
+  def apply(pairs: (String, NBTSerialized)*): NBTTagCompound = {
     val tag = new NBTTagCompound()
-    for ((k, v) <- m)
+    for ((k, v) <- pairs)
       tag.setTag(k, v.value)
     tag
+  }
+
+  def from(f: (NBTTagCompound) => _) = {
+    val v = new NBTTagCompound
+    f(v)
+    v
   }
 }
