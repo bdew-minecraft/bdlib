@@ -9,12 +9,14 @@
 
 package net.bdew.lib.config
 
+import cpw.mods.fml.common.ObfuscationReflectionHelper
 import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.Misc
 import net.bdew.lib.block.{HasTE, NamedBlock}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.{ItemBlock, Item, ItemStack}
+import net.minecraft.item.{ItemBlock, ItemStack}
+import net.minecraft.tileentity.TileEntity
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: NamedBlock](block: T): T = regBlock(block, block.name)
@@ -34,6 +36,15 @@ class BlockManager(creativeTab: CreativeTabs) {
         "%s.%s".format(Misc.getActiveModId, name))
 
     return block
+  }
+
+  /**
+   * Registers a legacy TE name->class mapping. Stolen from GameRegistry.registerTileEntityWithAlternatives
+   */
+  def registerLegacyTileEntity(name: String, cls: Class[_ <: TileEntity]): Unit = {
+    val teMappings: java.util.Map[String, Class[_]] = ObfuscationReflectionHelper.getPrivateValue(classOf[TileEntity], null, "field_" + "145855_i", "nameToClassMap")
+    if (!teMappings.containsKey(name))
+      teMappings.put(name, cls)
   }
 
   def load() {}
