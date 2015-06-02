@@ -17,11 +17,11 @@ import net.minecraft.tileentity.TileEntity
 trait InventoryProxy extends TileEntity with IInventory {
   def targetInventory: Option[IInventory]
 
-  override def openInventory() = targetInventory map (_.openInventory())
-  override def closeInventory() = targetInventory map (_.closeInventory())
+  override def openInventory() = targetInventory foreach (_.openInventory())
+  override def closeInventory() = targetInventory foreach (_.closeInventory())
 
   override def markDirty() = {
-    targetInventory map (_.markDirty())
+    targetInventory foreach (_.markDirty())
     super.markDirty()
   }
 
@@ -30,7 +30,7 @@ trait InventoryProxy extends TileEntity with IInventory {
 
   override def getStackInSlot(slot: Int) = targetInventory.map(_.getStackInSlot(slot)).orNull
   override def getStackInSlotOnClosing(slot: Int) = targetInventory.map(_.getStackInSlotOnClosing(slot)).orNull
-  override def setInventorySlotContents(slot: Int, item: ItemStack) = targetInventory.map(_.setInventorySlotContents(slot, item))
+  override def setInventorySlotContents(slot: Int, item: ItemStack) = targetInventory.foreach(_.setInventorySlotContents(slot, item))
   override def decrStackSize(slot: Int, num: Int) = targetInventory.map(_.decrStackSize(slot, num)).orNull
 
   override def isItemValidForSlot(slot: Int, item: ItemStack) = targetInventory.exists(_.isItemValidForSlot(slot, item))

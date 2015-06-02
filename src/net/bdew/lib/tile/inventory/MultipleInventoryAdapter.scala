@@ -15,9 +15,9 @@ import net.minecraft.item.ItemStack
 
 class MultipleInventoryAdapter(val map: Map[Int, (IInventory, Int)]) extends IInventory {
   def this(inventories: Iterable[IInventory]) =
-    this((inventories map { inv => (0 until inv.getSizeInventory).map((inv, _)) }).flatten.zipWithIndex.map(_.swap).toMap)
+    this((inventories flatMap { inv => (0 until inv.getSizeInventory).map((inv, _)) }).zipWithIndex.map(_.swap).toMap)
   def this(inventories: IInventory*) =
-    this((inventories map { inv => (0 until inv.getSizeInventory).map((inv, _)) }).flatten.zipWithIndex.map(_.swap).toMap)
+    this((inventories flatMap { inv => (0 until inv.getSizeInventory).map((inv, _)) }).zipWithIndex.map(_.swap).toMap)
 
   lazy val inventories = map.values.map(_._1).toSet
   override lazy val getInventoryStackLimit = inventories.map(_.getInventoryStackLimit).min

@@ -29,8 +29,8 @@ case class DataSlotGameProfile(name: String, parent: DataSlotContainer) extends 
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) = {
     if (value != null) {
-      Option(value.getId) map (id => t.setString(name + "_uid", id.toString))
-      Option(value.getName) filterNot (name => StringUtils.isBlank(name)) map (name => t.setString(name + "_name", name))
+      Option(value.getId) foreach (id => t.setString(name + "_uid", id.toString))
+      Option(value.getName) filterNot (name => StringUtils.isBlank(name)) foreach (name => t.setString(name + "_name", name))
     }
   }
 }

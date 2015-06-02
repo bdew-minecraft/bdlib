@@ -24,7 +24,7 @@ import net.minecraftforge.common.MinecraftForge
 class IconPreloader(kind: Int) {
   lazy val map = {
     (for {
-      method <- getClass.getMethods if method.getParameterTypes.length == 0 && classOf[TextureLoc].isAssignableFrom(method.getReturnType)
+      method <- getClass.getMethods if method.getParameterTypes.isEmpty && classOf[TextureLoc].isAssignableFrom(method.getReturnType)
       value <- Misc.asInstanceOpt(method.invoke(this), classOf[TextureLoc])
     } yield method.getName -> value).toMap
   }

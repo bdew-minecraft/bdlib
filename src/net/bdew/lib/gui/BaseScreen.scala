@@ -56,7 +56,7 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
 
     import scala.collection.JavaConversions._
 
-    if (tip.size > 0)
+    if (tip.nonEmpty)
       drawHoveringText(tip, x, y, getFontRenderer)
   }
 

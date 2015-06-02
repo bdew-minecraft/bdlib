@@ -12,7 +12,7 @@ package net.bdew.lib
 class EventBase[T] extends {
   var listeners = Seq.empty[T]
   def listen(x: T) = listeners :+= x
-  def hasListeners = listeners.size > 0
+  def hasListeners = listeners.nonEmpty
 }
 
 class Event0 extends EventBase[() => Unit] {

@@ -90,7 +90,7 @@ object CommandOreDistribution extends CommandBase {
       }
     }
 
-    val total = distribution.map(_._2).sum
+    val total = distribution.values.sum
     val warnings = kinds.filter(_._2.size > 1)
 
     if (toFile) {
@@ -104,7 +104,7 @@ object CommandOreDistribution extends CommandBase {
         ))
         dumpWriter.newLine()
         dumpWriter.newLine()
-        if (warnings.size > 0) {
+        if (warnings.nonEmpty) {
           for ((id, types) <- warnings.toList.sortBy(_._1)) {
             dumpWriter.write("Warning: %s has multiple variants generated:".format(id))
             dumpWriter.newLine()

@@ -16,7 +16,7 @@ import net.minecraft.inventory.{IInventory, Slot}
 
 class SlotSensorType[T, R](inv: IInventory, index: Int, x: Int, y: Int, ds: DataSlotSensor[T, R], types: => Seq[GenericSensorType[T, R]]) extends Slot(inv, index, x, y) with SlotClickable {
   override def onClick(button: Int, mods: Int, player: EntityPlayer) = {
-    if (mods == 0 && (button == 0 || button == 1) && types.size > 0 && player.inventory.getItemStack == null) {
+    if (mods == 0 && (button == 0 || button == 1) && types.nonEmpty && player.inventory.getItemStack == null) {
       val newSensor =
         if (button == 0)
           Misc.nextInSeq(types, ds.sensor)

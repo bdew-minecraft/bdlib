@@ -41,7 +41,7 @@ object Tools {
     val seen = mutable.Set.empty[BlockRef]
     val queue = mutable.Queue.empty[BlockRef]
     queue ++= getConnectedNeighbours(world, core, core, seen)
-    while (queue.size > 0) {
+    while (queue.nonEmpty) {
       val current = queue.dequeue()
       seen.add(current)
       queue ++= getConnectedNeighbours(world, core, current, seen)

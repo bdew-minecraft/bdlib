@@ -19,7 +19,7 @@ case class DataSlotPos(name: String, parent: DataSlotContainer) extends DataSlot
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    value map (x => t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
+    value foreach (x => t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {

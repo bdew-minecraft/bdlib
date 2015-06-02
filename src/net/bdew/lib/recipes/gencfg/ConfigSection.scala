@@ -59,8 +59,8 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
 
   def getInt(id: String) = getDouble(id).round.toInt
   def getFloat(id: String) = getDouble(id).toFloat
-  def getIntList(id: String) = getDoubleList(id).map(_.round.toInt).toList
-  def getFloatList(id: String) = getDoubleList(id).map(_.toFloat).toList
+  def getIntList(id: String) = getDoubleList(id).map(_.round.toInt)
+  def getFloatList(id: String) = getDoubleList(id).map(_.toFloat)
 
   def getColor(id: String) =
     raw(id) match {

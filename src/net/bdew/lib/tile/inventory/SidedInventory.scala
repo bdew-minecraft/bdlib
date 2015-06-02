@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack
 trait SidedInventory extends BaseInventory with ISidedInventory {
   var allowSided = false
 
-  def getAccessibleSlotsFromSide(side: Int): Array[Int] = (0 until inv.size).toArray
+  def getAccessibleSlotsFromSide(side: Int): Array[Int] = inv.indices.toArray
 
   def canInsertItem(slot: Int, stack: ItemStack, side: Int) = allowSided && isItemValidForSlot(slot, stack)
 

@@ -28,7 +28,7 @@ trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] with BlockAdditiona
 
   def getFaceOverlays(world: IBlockAccess, x: Int, y: Int, z: Int, face: ForgeDirection): List[FaceOverlay] = {
     var result = List.empty[FaceOverlay]
-    Option(getTE(world, x, y, z)) flatMap (_.getCore) map { core =>
+    Option(getTE(world, x, y, z)) flatMap (_.getCore) foreach { core =>
       val bf = BlockFace(x, y, z, face)
       if (core.outputFaces.contains(bf))
         result :+= FaceOverlay(resources.output, resources.outputColors(core.outputFaces(bf)))

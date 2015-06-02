@@ -29,7 +29,7 @@ trait TileController extends TileDataSlots {
 
   lazy val myPos = BlockRef(xCoord, yCoord, zCoord)
 
-  def getNumOfModules(kind: String) = modules.map(_.getTile[TileModule](getWorldObj)).flatten.count(_.kind == kind)
+  def getNumOfModules(kind: String) = modules.flatMap(_.getTile[TileModule](getWorldObj)).count(_.kind == kind)
 
   def onModulesChanged()
   def onClick(player: EntityPlayer)
@@ -59,7 +59,7 @@ trait TileController extends TileDataSlots {
 
   def validateModules() {
     modules.filter(x => {
-      !x.getTile[TileModule](getWorldObj).isDefined || !x.getBlock[BlockModule[TileModule]](getWorldObj).isDefined
+      x.getTile[TileModule](getWorldObj).isEmpty || x.getBlock[BlockModule[TileModule]](getWorldObj).isEmpty
     }).foreach(x => {
       BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %d,%d,%d", x, this.getClass.getSimpleName, xCoord, yCoord, zCoord)
       modules.remove(x)

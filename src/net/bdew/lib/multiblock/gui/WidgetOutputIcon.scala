@@ -24,7 +24,7 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
     val faces = te.outputFaces.inverted
     if (faces.isDefinedAt(output)) {
       val bf = faces(output)
-      bf.origin.block(te.getWorldObj) map { block =>
+      bf.origin.block(te.getWorldObj) foreach { block =>
         parent.drawTexture(rect, Texture(Texture.BLOCKS, block.getIcon(te.getWorldObj, bf.origin.x, bf.origin.y, bf.origin.z, bf.face.ordinal())))
         if (block.isInstanceOf[BlockAdditionalRender]) {
           for (over <- block.asInstanceOf[BlockAdditionalRender].getFaceOverlays(te.getWorldObj, bf.origin.x, bf.origin.y, bf.origin.z, bf.face))

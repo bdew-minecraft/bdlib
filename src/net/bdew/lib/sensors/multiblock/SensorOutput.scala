@@ -58,7 +58,7 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
       (current, obj) match {
         case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
           val outputs = x.outputFaces.map.values.toList.sorted
-          if (outputs.size > 0)
+          if (outputs.nonEmpty)
             if (button == 0)
               SensorOutputFlowParameter(Misc.nextInSeq(outputs, n))
             else

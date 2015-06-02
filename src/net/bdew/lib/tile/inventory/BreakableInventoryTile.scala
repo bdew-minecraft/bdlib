@@ -19,7 +19,7 @@ trait BreakableInventoryTile extends TileEntity with BaseInventory {
       for (stack <- inv if stack != null) {
         ItemUtils.throwItemAt(getWorldObj, xCoord, yCoord, zCoord, stack)
       }
-      inv = new Array[ItemStack](inv.size)
+      inv = new Array[ItemStack](inv.length)
     }
   }
 }

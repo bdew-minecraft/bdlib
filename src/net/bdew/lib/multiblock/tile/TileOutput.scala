@@ -47,7 +47,7 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
   def onConnectionsChanged(added: Set[ForgeDirection], removed: Set[ForgeDirection]) {}
 
   def doRescanFaces() {
-    getCore map { core =>
+    getCore foreach { core =>
       val connections = (
         ForgeDirection.VALID_DIRECTIONS
           filterNot { dir => core.modules.contains(myPos.neighbour(dir)) }
@@ -58,7 +58,7 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
       val toRemove = known -- connections
       toRemove.foreach(x => core.removeOutput(myPos, x))
       toAdd.foreach(x => core.newOutput(myPos, x, makeCfgObject(x)))
-      if (toAdd.size > 0 || toRemove.size > 0) {
+      if (toAdd.nonEmpty || toRemove.nonEmpty) {
         onConnectionsChanged(toAdd, toRemove)
         getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
       }

@@ -18,7 +18,7 @@ case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) e
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    value map { r =>
+    value foreach { r =>
       t.setTag(name,
         Misc.applyMutator(new NBTTagCompound) { tag =>
           r.helperObject.saveToNBT(tag, r)
