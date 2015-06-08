@@ -40,8 +40,7 @@ object ServerTickExecutionContext extends ExecutionContext {
   override def reportFailure(cause: Throwable): Unit =
     BdLib.logErrorException("Error in execution context", cause)
 
-  @SubscribeEvent
-  def onTick(ev: ServerTickEvent): Unit = {
+  def doSingleLoop(): Unit = {
     for (r <- getNextBatch) {
       try {
         r.run()
@@ -50,4 +49,7 @@ object ServerTickExecutionContext extends ExecutionContext {
       }
     }
   }
+
+  @SubscribeEvent
+  def onTick(ev: ServerTickEvent): Unit = doSingleLoop()
 }
