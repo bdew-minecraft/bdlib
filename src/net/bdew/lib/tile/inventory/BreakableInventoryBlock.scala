@@ -9,16 +9,15 @@
 
 package net.bdew.lib.tile.inventory
 
+import net.bdew.lib.block.HasTE
 import net.minecraft.block.Block
 import net.minecraft.world.World
 
 trait BreakableInventoryBlock extends Block {
+  this: HasTE[_ <: BreakableInventoryTile] =>
   override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
     if (!world.isRemote) {
-      val te = world.getTileEntity(x, y, z).asInstanceOf[BreakableInventoryTile]
-      if (te != null) {
-        te.dropItems()
-      }
+      getTE(world, x, y, z).dropItems()
     }
     super.breakBlock(world, x, y, z, block, meta)
   }
