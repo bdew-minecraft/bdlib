@@ -9,6 +9,7 @@
 
 package net.bdew.lib.nbt
 
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
 import scala.language.implicitConversions
@@ -27,4 +28,5 @@ class RichNBTTagCompound(tag: NBTTagCompound) {
     tag.setTag(name, list)
   }
 
+  def toItemStack = Option(ItemStack.loadItemStackFromNBT(tag))
 }
