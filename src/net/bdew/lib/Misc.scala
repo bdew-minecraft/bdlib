@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
-  def getActiveModId = Loader.instance().activeModContainer().getModId
+  def getActiveModId = Option(Loader.instance().activeModContainer().getModId) getOrElse "<UNKNOWN>"
 
   def toLocal(s: String) = StatCollector.translateToLocal(s)
   def toLocalF(s: String, params: Any*) = StatCollector.translateToLocal(s).format(params: _*)
