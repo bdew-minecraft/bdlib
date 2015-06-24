@@ -15,7 +15,8 @@ import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.{ItemBlock, ItemStack}
 
-trait BlockTooltip extends Block {
+trait BlockTooltip extends Block with HasItemBlock {
+  override val ItemBlockClass: Class[_ <: ItemBlock] = classOf[ItemBlockTooltip]
   def getTooltip(stack: ItemStack, player: EntityPlayer, advanced: Boolean): List[String]
 }
 
@@ -25,5 +26,4 @@ class ItemBlockTooltip(b: Block) extends ItemBlock(b) {
     if (b.isInstanceOf[BlockTooltip])
       list.asInstanceOf[util.List[String]].addAll(b.asInstanceOf[BlockTooltip].getTooltip(stack, player, advanced))
   }
-
 }
