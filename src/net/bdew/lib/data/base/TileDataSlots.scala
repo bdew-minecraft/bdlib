@@ -32,7 +32,7 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
     if (getWorldObj != null) {
       if (slot.updateKind.contains(UpdateKind.GUI))
         lastChange = getWorldObj.getTotalWorldTime
-      if (slot.updateKind.contains(UpdateKind.WORLD))
+      if (!getWorldObj.isRemote && slot.updateKind.contains(UpdateKind.WORLD))
         getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
       if (slot.updateKind.contains(UpdateKind.SAVE))
         getWorldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this)
