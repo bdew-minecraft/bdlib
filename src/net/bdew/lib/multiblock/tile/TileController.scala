@@ -18,7 +18,7 @@ import net.bdew.lib.multiblock.{MachineCore, ResourceProvider, Tools}
 import net.minecraft.entity.player.EntityPlayer
 
 trait TileController extends TileDataSlots {
-  val modules = new DataSlotPosSet("modules", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE, UpdateKind.RENDER)
+  val modules = new DataSlotPosSet("modules", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE)
 
   def resources: ResourceProvider
   def cfg: MachineCore
