@@ -34,6 +34,7 @@ case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSl
     val canExtract = Misc.clamp(v, 0F, stored)
     if ((canExtract > 0) && !simulate) {
       stored -= canExtract
+      if (stored < 1) stored = 0
       parent.dataSlotChanged(this)
     }
     return canExtract
