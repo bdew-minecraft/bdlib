@@ -14,11 +14,11 @@ import net.bdew.lib.gui.{Color, Point, Rect, Texture}
 
 import scala.collection.mutable
 
-class WidgetInfo(val rect: Rect, icon: Texture, text: => String, tooltip: => String) extends Widget {
+class WidgetInfoMulti(val rect: Rect, icon: Texture, text: => String, tooltip: => List[String]) extends Widget {
   final val iconRect = Rect(1, 1, 8, 8)
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) {
-    if (iconRect.contains(p) && tooltip != null) tip += tooltip
+    if (iconRect.contains(p) && tooltip != null) tip ++= tooltip
   }
 
   override def draw(mouse: Point) {
@@ -26,3 +26,5 @@ class WidgetInfo(val rect: Rect, icon: Texture, text: => String, tooltip: => Str
     parent.drawText(text, rect.origin +(12, 1), Color.darkGray, false)
   }
 }
+
+class WidgetInfo(rect: Rect, icon: Texture, text: => String, tooltip: => String) extends WidgetInfoMulti(rect, icon, text, List(tooltip))
