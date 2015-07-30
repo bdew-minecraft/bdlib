@@ -140,5 +140,29 @@ object Misc {
     if (f != null) getFluidColor(new FluidStack(f, 1)) else 0xFFFFFF
 
   lazy val lineSeparator = System.getProperty("line.separator")
+
+  /**
+   * Provides something like java try-with-resources in scala
+   */
+  def withAutoClose[T <: AutoCloseable, R](o: T)(f: T => R): R = {
+    val res = try {
+      f(o)
+    } catch {
+      case t1: Throwable =>
+        if (o != null) {
+          try {
+            o.close()
+          } catch {
+            case t2: Throwable =>
+              t1.addSuppressed(t2)
+          }
+        }
+        throw t1
+    }
+    if (o != null)
+      o.close()
+    res
+  }
+
 }
 

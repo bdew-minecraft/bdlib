@@ -12,7 +12,7 @@ package net.bdew.lib.recipes
 import java.io._
 
 import cpw.mods.fml.common.FMLCommonHandler
-import net.bdew.lib.BdLib
+import net.bdew.lib.{BdLib, Misc}
 
 object RecipesHelper {
   /**
@@ -26,15 +26,14 @@ object RecipesHelper {
   def loadConfigs(modName: String, listResource: String, configDir: File, resBaseName: String, loader: RecipeLoader) {
     BdLib.logInfo("Loading internal config files for mod %s", modName)
 
-    val listReader = new BufferedReader(new InputStreamReader(getClass.getResourceAsStream(listResource)))
-    val internals = Iterator.continually(listReader.readLine)
-      .takeWhile(_ != null)
-      .map(_.trim)
-      .filterNot(_.startsWith("#"))
-      .filterNot(_.isEmpty)
-      .toList
-    listReader.close()
-
+    val internals = Misc.withAutoClose(new BufferedReader(new InputStreamReader(getClass.getResourceAsStream(listResource)))) { listReader =>
+      Iterator.continually(listReader.readLine)
+        .takeWhile(_ != null)
+        .map(_.trim)
+        .filterNot(_.startsWith("#"))
+        .filterNot(_.isEmpty)
+        .toList
+    }
 
     val overrideDir = new File(configDir, "overrides")
     if (!overrideDir.exists()) overrideDir.mkdir()
@@ -44,9 +43,10 @@ object RecipesHelper {
       if (overrideFile.exists()) {
         tryLoadConfig(new FileReader(overrideFile), overrideFile.getCanonicalPath, modName, loader)
       } else {
-        val resource = resBaseName + fileName
-        tryLoadConfig(new InputStreamReader(getClass.getResourceAsStream(resource)),
-          getClass.getResource(resource).toString, modName, loader)
+        val url = getClass.getResource(resBaseName + fileName)
+        Misc.withAutoClose(url.openStream()) { stream =>
+          tryLoadConfig(new InputStreamReader(stream), url.toString, modName, loader)
+        }
       }
     }
 
