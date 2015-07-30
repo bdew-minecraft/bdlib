@@ -10,21 +10,17 @@
 package net.bdew.lib.multiblock.tile
 
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.{ChatComponentTranslation, ChatStyle, EnumChatFormatting}
 
 abstract class TileControllerGui extends TileController {
   def openGui(player: EntityPlayer)
 
   def onClick(player: EntityPlayer) = {
+    import net.bdew.lib.helpers.ChatHelper._
     val missing = cfg.required.filter({ case (mod, cnt) => getNumOfModules(mod) < cnt })
     if (missing.nonEmpty) {
-      player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.incomplete")
-        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+      player.addChatMessage(L("bdlib.multiblock.incomplete").setColor(Color.RED))
       for ((mod, cnt) <- missing)
-        player.addChatMessage(
-          new ChatComponentTranslation("- %s %s", Integer.valueOf(cnt),
-            new ChatComponentTranslation(resources.getModuleName(mod)))
-            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+        player.addChatMessage(L("- %s %s", cnt.toString, L(resources.getModuleName(mod))).setColor(Color.RED))
     } else openGui(player)
   }
 
