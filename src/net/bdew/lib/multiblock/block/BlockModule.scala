@@ -9,7 +9,9 @@
 
 package net.bdew.lib.multiblock.block
 
-import net.bdew.lib.block.{BlockRef, HasTE}
+import net.bdew.lib.Misc
+import net.bdew.lib.block.{BlockRef, BlockTooltip, HasTE}
+import net.bdew.lib.config.MachineManagerMultiblock
 import net.bdew.lib.multiblock.tile.TileModule
 import net.bdew.lib.multiblock.{ResourceProvider, Tools}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
@@ -18,11 +20,11 @@ import net.minecraft.block.material.Material
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
-import net.minecraft.util.ChatComponentTranslation
+import net.minecraft.util.{ChatComponentTranslation, EnumChatFormatting}
 import net.minecraft.world.{IBlockAccess, World}
 
-abstract class BlockModule[T <: TileModule](val name: String, val kind: String, material: Material, val TEClass: Class[T])
-  extends Block(material) with HasTE[T] with ConnectedTextureBlock {
+abstract class BlockModule[T <: TileModule](val name: String, val kind: String, material: Material, val TEClass: Class[T], val machines: MachineManagerMultiblock)
+  extends Block(material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
 
   def resources: ResourceProvider
 
@@ -60,10 +62,27 @@ abstract class BlockModule[T <: TileModule](val name: String, val kind: String, 
       p <- te.connected.value
       bl <- p.block(world)
     } yield {
-      bl.onBlockActivated(world, p.x, p.y, p.z, player, meta, 0, 0, 0)
-    }) getOrElse {
+        bl.onBlockActivated(world, p.x, p.y, p.z, player, meta, 0, 0, 0)
+      }) getOrElse {
       player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.notconnected"))
     }
     true
+  }
+
+  override def getTooltip(stack: ItemStack, player: EntityPlayer, advanced: Boolean): List[String] = {
+    List(Misc.toLocal("bdlib.multiblock.tip.module")) ++ (
+      for ((machine, (min, max)) <- machines.getMachinesForBlock(this)) yield {
+        val name = machine.getController.getLocalizedName
+        if (min > 0) {
+          Misc.toLocalF("bdlib.multiblock.tip.module.range",
+            EnumChatFormatting.YELLOW + name + EnumChatFormatting.RESET,
+            EnumChatFormatting.YELLOW + min.toString + EnumChatFormatting.RESET,
+            EnumChatFormatting.YELLOW + max.toString + EnumChatFormatting.RESET)
+        } else {
+          Misc.toLocalF("bdlib.multiblock.tip.module.max",
+            EnumChatFormatting.YELLOW + name + EnumChatFormatting.RESET,
+            EnumChatFormatting.YELLOW + max.toString + EnumChatFormatting.RESET)
+        }
+      })
   }
 }

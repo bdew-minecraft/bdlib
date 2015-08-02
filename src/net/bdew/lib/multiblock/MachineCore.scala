@@ -9,10 +9,15 @@
 
 package net.bdew.lib.multiblock
 
+import net.bdew.lib.machine.Machine
+import net.bdew.lib.multiblock.block.BlockController
 import net.bdew.lib.recipes.gencfg.{ConfigSection, EntryDouble}
 
-trait MachineCore {
+trait MachineCore extends {
+  this: Machine[_ <: BlockController[_]] =>
   var tuning: ConfigSection
+
+  def getController: BlockController[_] = block
 
   def cfgSectionToMap(name: String) = tuning.getSection(name).map({
     case (n, EntryDouble(v)) => n -> v.toInt

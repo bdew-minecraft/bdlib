@@ -9,17 +9,22 @@
 
 package net.bdew.lib.multiblock.block
 
-import net.bdew.lib.block.{BlockRef, HasTE}
-import net.bdew.lib.multiblock.ResourceProvider
+import net.bdew.lib.Misc
+import net.bdew.lib.block.{BlockRef, BlockTooltip, HasTE}
 import net.bdew.lib.multiblock.tile.TileController
+import net.bdew.lib.multiblock.{MachineCore, ResourceProvider}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.ItemStack
+import net.minecraft.util.EnumChatFormatting
 import net.minecraft.world.{IBlockAccess, World}
 
 abstract class BlockController[T <: TileController](val name: String, material: Material, val TEClass: Class[T])
-  extends Block(material) with HasTE[T] with ConnectedTextureBlock {
+  extends Block(material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
+
+  var machine: MachineCore = null
 
   def resources: ResourceProvider
 
@@ -38,6 +43,23 @@ abstract class BlockController[T <: TileController](val name: String, material: 
     if (world.isRemote) return true
     getTE(world, x, y, z).onClick(player)
     return true
+  }
+
+  override def getTooltip(stack: ItemStack, player: EntityPlayer, advanced: Boolean): List[String] = {
+    List(Misc.toLocal("bdlib.multiblock.tip.controller")) ++ (
+      for ((kind, max) <- machine.modules) yield {
+        val name = Misc.toLocalF(resources.getModuleName(kind))
+        if (machine.required.getOrElse(kind, 0) > 0) {
+          Misc.toLocalF("bdlib.multiblock.tip.module.range",
+            EnumChatFormatting.YELLOW + name + EnumChatFormatting.RESET,
+            EnumChatFormatting.YELLOW + machine.required(kind).toString + EnumChatFormatting.RESET,
+            EnumChatFormatting.YELLOW + max.toString + EnumChatFormatting.RESET)
+        } else {
+          Misc.toLocalF("bdlib.multiblock.tip.module.max",
+            EnumChatFormatting.YELLOW + name + EnumChatFormatting.RESET,
+            EnumChatFormatting.YELLOW + max.toString + EnumChatFormatting.RESET)
+        }
+      })
   }
 }
 
