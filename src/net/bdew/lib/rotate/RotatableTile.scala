@@ -13,5 +13,5 @@ import net.bdew.lib.data.DataSlotDirection
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 
 trait RotatableTile extends TileDataSlots {
-  var rotation = DataSlotDirection("rotation", this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
+  var rotation = DataSlotDirection("rotation", this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
 }
