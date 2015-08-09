@@ -9,6 +9,8 @@
 
 package net.bdew.lib.recipes.gencfg
 
+import java.util.Locale
+
 import net.bdew.lib.gui.Color
 
 abstract class ConfigEntry
@@ -43,7 +45,7 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
   def getSection(id: String) = getRaw(id, classOf[ConfigSection])
 
   final val trueVals = Set("y", "true", "yes", "on")
-  def getBoolean(id: String) = trueVals.contains(getString(id).toLowerCase)
+  def getBoolean(id: String) = trueVals.contains(getString(id).toLowerCase(Locale.US))
 
   def hasValue(id: String) = raw.isDefinedAt(id)
 

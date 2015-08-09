@@ -9,6 +9,8 @@
 
 package net.bdew.lib.multiblock.gui
 
+import java.util.Locale
+
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.widgets.{WidgetButtonIcon, WidgetSubContainer}
 import net.bdew.lib.gui.{Point, Rect}
@@ -37,7 +39,7 @@ class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSub
 
   override def draw(mouse: Point) {
     bt.icon = icons(cfg.rsMode)
-    bt.hover = Misc.toLocal("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase)
+    bt.hover = Misc.toLocal("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase(Locale.US))
     super.draw(mouse)
   }
 

@@ -9,6 +9,8 @@
 
 package net.bdew.lib.sensors.multiblock
 
+import java.util.Locale
+
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
 import net.bdew.lib.gui._
@@ -102,7 +104,7 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
         val bf = faces(output)
         bf.origin.block(te.getWorldObj) foreach { block =>
           list :+= block.getLocalizedName
-          list :+= "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase))
+          list :+= "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase(Locale.US)))
         }
       }
       list

@@ -9,6 +9,8 @@
 
 package net.bdew.lib.multiblock.gui
 
+import java.util.Locale
+
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.widgets.Widget
 import net.bdew.lib.gui.{Point, Rect, Texture}
@@ -43,7 +45,7 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
       val bf = faces(output)
       bf.origin.block(te.getWorldObj) map { block =>
         tip += block.getLocalizedName
-        tip += "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase))
+        tip += "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase(Locale.US)))
       }
     } else {
       tip += Misc.toLocal("bdlib.multiblock.disabled")

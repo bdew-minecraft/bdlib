@@ -9,6 +9,8 @@
 
 package net.bdew.lib.covers
 
+import java.util.Locale
+
 import net.bdew.lib.Misc
 import net.bdew.lib.data.DataSlotItemStack
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
@@ -17,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection
 
 trait TileCoverable extends TileDataSlots {
   val covers = (ForgeDirection.VALID_DIRECTIONS map { x =>
-    x -> DataSlotItemStack("cover_" + x.toString.toLowerCase, this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
+    x -> DataSlotItemStack("cover_" + x.toString.toLowerCase(Locale.US), this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
   }).toMap
 
   /**

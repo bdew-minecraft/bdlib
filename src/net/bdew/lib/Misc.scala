@@ -10,6 +10,7 @@
 package net.bdew.lib
 
 import java.util
+import java.util.Locale
 
 import cpw.mods.fml.common.registry.GameRegistry
 import cpw.mods.fml.common.versioning.VersionParser
@@ -163,6 +164,12 @@ object Misc {
       o.close()
     res
   }
+
+  def iconName(domain: String, name: String, path: String*) =
+    if (path.isEmpty)
+      "%s:%s".format(domain, name).toLowerCase(Locale.US)
+    else
+      "%s:%s/%s".format(domain, name, path.mkString("/")).toLowerCase(Locale.US)
 
 }
 

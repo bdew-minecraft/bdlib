@@ -24,6 +24,6 @@ class SimpleItem(val name: String) extends Item with NamedItem {
 
   @SideOnly(Side.CLIENT)
   override def registerIcons(reg: IIconRegister) {
-    itemIcon = reg.registerIcon(modId + ":" + name.toLowerCase)
+    itemIcon = reg.registerIcon(Misc.iconName(modId, name))
   }
 }

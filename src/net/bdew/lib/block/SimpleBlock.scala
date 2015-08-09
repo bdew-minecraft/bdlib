@@ -15,6 +15,8 @@ import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.texture.IIconRegister
 
+import scala.language.implicitConversions
+
 trait NamedBlock extends Block {
   def name: String
 }
@@ -25,6 +27,6 @@ class SimpleBlock(val name: String, material: Material) extends Block(material) 
 
   @SideOnly(Side.CLIENT)
   override def registerBlockIcons(reg: IIconRegister) {
-    blockIcon = reg.registerIcon(modId + ":" + name.toLowerCase)
+    blockIcon = reg.registerIcon(Misc.iconName(modId, name))
   }
 }

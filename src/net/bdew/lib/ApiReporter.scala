@@ -10,6 +10,7 @@
 package net.bdew.lib
 
 import java.util
+import java.util.Locale
 
 import cpw.mods.fml.common.{ICrashCallable, ModAPIManager, ModContainer}
 
@@ -20,7 +21,7 @@ object ApiReporter extends ICrashCallable {
     val mods = new util.ArrayList[ModContainer]
     val nameLookup = new util.HashMap[String, ModContainer]
     ModAPIManager.INSTANCE.injectAPIModContainers(mods, nameLookup)
-    (for (mod <- mods.sortBy(_.getModId.toLowerCase)) yield
+    (for (mod <- mods.sortBy(_.getModId.toLowerCase(Locale.US))) yield
       "\t\t* %s (%s) from %s".format(mod.getModId, mod.getVersion,
         if (mod.getSource.isDirectory)
           mod.getSource
