@@ -23,12 +23,13 @@ object CoverRenderer extends BaseBlockRenderHandler {
 
   override def renderWorldBlock(world: IBlockAccess, x: Int, y: Int, z: Int, block: Block, modelId: Int, renderer: RenderBlocks) = {
     renderer.renderStandardBlock(block, x, y, z)
-    for {
-      blockCov <- Misc.asInstanceOpt(block, classOf[BlockCoverable[_]])
-      face <- ForgeDirection.VALID_DIRECTIONS
-      icon <- blockCov.getCoverIcon(world, x, y, z, face)
-      if block.shouldSideBeRendered(world, x + face.offsetX, y + face.offsetY, z + face.offsetZ, face.ordinal())
-    } ConnectedHelper.draw(face, 8).doDraw(ConnectedHelper.Vec3F(x, y, z), icon)
+    if (!renderer.hasOverrideBlockTexture)
+      for {
+        blockCov <- Misc.asInstanceOpt(block, classOf[BlockCoverable[_]])
+        face <- ForgeDirection.VALID_DIRECTIONS
+        icon <- blockCov.getCoverIcon(world, x, y, z, face)
+        if block.shouldSideBeRendered(world, x + face.offsetX, y + face.offsetY, z + face.offsetZ, face.ordinal())
+      } ConnectedHelper.draw(face, 8).doDraw(ConnectedHelper.Vec3F(x, y, z), icon)
     true
   }
 }
