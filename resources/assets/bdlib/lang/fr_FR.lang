@@ -8,7 +8,11 @@ bdlib.multiblock.face.down=Dessous
 bdlib.multiblock.disabled=Désactivé
 bdlib.multiblock.incomplete=Cette machine est incomplète, elle exige au moins :
 bdlib.multiblock.notconnected=Pas connecté à une machine valide
-bdlib.multiblock.toomanyoutputs=Trop de soties connectées, Incapable d'ajouter une nouvelle connexion
+bdlib.multiblock.toomanyoutputs=Trop de sorties connectées, impossible d'ajouter une nouvelle connexion
+bdlib.multiblock.tip.module=Peut être installé dans :
+bdlib.multiblock.tip.controller=Modules possibles:
+bdlib.multiblock.tip.module.range= * %s (%s - %s)
+bdlib.multiblock.tip.module.max= * %s (plus de %s)
 
 bdlib.rsmode.always=Toujours actif
 bdlib.rsmode.never=Désactivé
