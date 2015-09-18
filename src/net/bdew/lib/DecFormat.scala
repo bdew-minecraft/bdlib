@@ -16,13 +16,13 @@ object DecFormat {
   val dec2Fmt = new DecimalFormat("#,##0.00")
   val dec1Fmt = new DecimalFormat("#,##0.0")
 
-  def round(x: Double) = thousandsFmt.format(x)
-  def round(x: Float) = thousandsFmt.format(x)
-  def round(x: Int) = thousandsFmt.format(x)
+  def round(x: Double) = thousandsFmt.format(x).replace('\u00A0', ' ')
+  def round(x: Float) = thousandsFmt.format(x).replace('\u00A0', ' ')
+  def round(x: Int) = thousandsFmt.format(x).replace('\u00A0', ' ')
 
-  def dec2(x: Double) = dec2Fmt.format(x)
-  def dec2(x: Float) = dec2Fmt.format(x)
-  def dec2(x: Int) = dec2Fmt.format(x)
+  def dec2(x: Double) = dec2Fmt.format(x).replace('\u00A0', ' ')
+  def dec2(x: Float) = dec2Fmt.format(x).replace('\u00A0', ' ')
+  def dec2(x: Int) = dec2Fmt.format(x).replace('\u00A0', ' ')
 
   def short(x: Double) = if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)
   def short(x: Float) = if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)
