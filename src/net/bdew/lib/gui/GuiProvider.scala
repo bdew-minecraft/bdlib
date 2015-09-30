@@ -23,6 +23,13 @@ trait GuiProvider {
   def getContainer(te: TEClass, player: EntityPlayer): AnyRef
 
   @SideOnly(Side.CLIENT)
-  def getGui(te: TileEntity, player: EntityPlayer): AnyRef = getGui(te.asInstanceOf[TEClass], player)
-  def getContainer(te: TileEntity, player: EntityPlayer): AnyRef = getContainer(te.asInstanceOf[TEClass], player)
+  def getGui(te: TileEntity, player: EntityPlayer): AnyRef =
+    if (te != null)
+      getGui(te.asInstanceOf[TEClass], player)
+    else null
+
+  def getContainer(te: TileEntity, player: EntityPlayer): AnyRef =
+    if (te != null)
+      getContainer(te.asInstanceOf[TEClass], player)
+    else null
 }
