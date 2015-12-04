@@ -24,7 +24,7 @@ object DecFormat {
   def dec2(x: Float) = dec2Fmt.format(x).replace('\u00A0', ' ')
   def dec2(x: Int) = dec2Fmt.format(x).replace('\u00A0', ' ')
 
-  def short(x: Double) = if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)
-  def short(x: Float) = if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)
-  def short(x: Int) = if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)
+  def short(x: Double) = (if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)).replace('\u00A0', ' ')
+  def short(x: Float) = (if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)).replace('\u00A0', ' ')
+  def short(x: Int) = (if (x > 10) thousandsFmt.format(x) else if (x > 1) dec1Fmt.format(x) else dec2Fmt.format(x)).replace('\u00A0', ' ')
 }
