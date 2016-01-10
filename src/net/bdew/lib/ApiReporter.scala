@@ -12,7 +12,7 @@ package net.bdew.lib
 import java.util
 import java.util.Locale
 
-import cpw.mods.fml.common.{ICrashCallable, ModAPIManager, ModContainer}
+import net.minecraftforge.fml.common.{ICrashCallable, ModAPIManager, ModContainer}
 
 import scala.collection.JavaConversions._
 

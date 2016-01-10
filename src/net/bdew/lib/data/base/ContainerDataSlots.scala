@@ -17,8 +17,8 @@ trait ContainerDataSlots extends NoInvContainer {
   val dataSource: TileDataSlots
   var lastSentChange = dataSource.lastChange
 
-  override def addCraftingToCrafters(crafter: ICrafting) {
-    super.addCraftingToCrafters(crafter)
+  override def onCraftGuiOpened(crafter: ICrafting) {
+    super.onCraftGuiOpened(crafter)
     if (crafter.isInstanceOf[EntityPlayerMP]) {
       val pkt = dataSource.getDataSlotPacket
       crafter.asInstanceOf[EntityPlayerMP].playerNetServerHandler.sendPacket(pkt)
@@ -28,7 +28,7 @@ trait ContainerDataSlots extends NoInvContainer {
   override def detectAndSendChanges() {
     super.detectAndSendChanges()
     // only send updates every 10 ticks
-    if (dataSource.lastChange >= lastSentChange + 10 || (dataSource.lastChange > lastSentChange && lastSentChange + 10 < dataSource.getWorldObj.getTotalWorldTime)) {
+    if (dataSource.lastChange >= lastSentChange + 10 || (dataSource.lastChange > lastSentChange && lastSentChange + 10 < dataSource.getWorld.getTotalWorldTime)) {
       lastSentChange = dataSource.lastChange
       val pkt = dataSource.getDataSlotPacket
 

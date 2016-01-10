@@ -11,7 +11,6 @@ package net.bdew.lib.data.base
 
 import net.bdew.lib.tile.TileExtended
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.Packet
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity
 
 trait TileDataSlots extends TileExtended with DataSlotContainer {
@@ -21,28 +20,26 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
   handleClientUpdate.listen { tag =>
     doLoad(UpdateKind.WORLD, tag)
     if (dataSlots.values.exists(_.updateKind.contains(UpdateKind.RENDER)))
-      getWorldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord)
+      getWorld.markBlockRangeForRenderUpdate(getPos, getPos)
   }
 
-  override def getWorldObject = getWorldObj
-
-  override def onServerTick(f: () => Unit) = serverTick.listen(f)
+  override def getWorldObject = getWorld
 
   override def dataSlotChanged(slot: DataSlot) = {
-    if (getWorldObj != null) {
+    if (getWorld != null) {
       if (slot.updateKind.contains(UpdateKind.GUI))
-        lastChange = getWorldObj.getTotalWorldTime
-      if (!getWorldObj.isRemote && slot.updateKind.contains(UpdateKind.WORLD))
-        getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+        lastChange = getWorld.getTotalWorldTime
+      if (!getWorld.isRemote && slot.updateKind.contains(UpdateKind.WORLD))
+        getWorld.markBlockForUpdate(getPos)
       if (slot.updateKind.contains(UpdateKind.SAVE))
-        getWorldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this)
+        getWorld.markChunkDirty(getPos, this)
     }
   }
 
-  def getDataSlotPacket: Packet = {
+  def getDataSlotPacket = {
     val tag = new NBTTagCompound()
     doSave(UpdateKind.GUI, tag)
-    return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, ACT_GUI, tag)
+    new S35PacketUpdateTileEntity(getPos, ACT_GUI, tag)
   }
 
   override protected def extDataPacket(id: Int, data: NBTTagCompound) {

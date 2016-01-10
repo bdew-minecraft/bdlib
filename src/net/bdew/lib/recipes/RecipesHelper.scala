@@ -11,8 +11,8 @@ package net.bdew.lib.recipes
 
 import java.io._
 
-import cpw.mods.fml.common.FMLCommonHandler
 import net.bdew.lib.{BdLib, Misc}
+import net.minecraftforge.fml.common.FMLCommonHandler
 
 object RecipesHelper {
   /**

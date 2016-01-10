@@ -9,7 +9,7 @@
 
 package net.bdew.lib.gui
 
-import net.minecraft.client.Minecraft
+import net.bdew.lib.Client
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.inventory.Container
 import org.lwjgl.opengl.GL11
@@ -26,7 +26,7 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
 
   def rect = new Rect(guiLeft, guiTop, xSize, ySize)
 
-  def getFontRenderer = Minecraft.getMinecraft.fontRenderer
+  def getFontRenderer = Client.fontRenderer
   def getZLevel = zLevel
 
   override def initGui() {

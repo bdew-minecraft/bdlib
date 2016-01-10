@@ -9,22 +9,22 @@
 
 package net.bdew.lib.config
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper
-import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.Misc
 import net.bdew.lib.block.{HasItemBlock, HasTE, NamedBlock}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.{ItemBlock, ItemStack}
+import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper
+import net.minecraftforge.fml.common.registry.GameRegistry
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: NamedBlock](block: T): T = regBlock(block, block.name)
 
-  def regSpecial[T <: NamedBlock](block: T, addStack: Boolean = false, skipTileEntityReg: Boolean = false): T =
-    regBlock(block, block.name, addStack, skipTileEntityReg)
+  def regSpecial[T <: NamedBlock](block: T, skipTileEntityReg: Boolean = false): T =
+    regBlock(block, block.name, skipTileEntityReg)
 
-  def regBlock[T <: Block](block: T, name: String, addStack: Boolean = false, skipTileEntityReg: Boolean = false): T = {
+  def regBlock[T <: Block](block: T, name: String, skipTileEntityReg: Boolean = false): T = {
     val itemClass: Class[_ <: ItemBlock] = if (block.isInstanceOf[HasItemBlock])
       block.asInstanceOf[HasItemBlock].ItemBlockClass
     else
@@ -33,9 +33,6 @@ class BlockManager(creativeTab: CreativeTabs) {
     GameRegistry.registerBlock(block, itemClass, name)
 
     block.setCreativeTab(creativeTab)
-
-    if (addStack)
-      GameRegistry.registerCustomItemStack(name, new ItemStack(block))
 
     if (block.isInstanceOf[HasTE[_]] && !skipTileEntityReg)
       GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,

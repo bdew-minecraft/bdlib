@@ -9,11 +9,9 @@
 
 package net.bdew.lib.block
 
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
-import net.minecraft.client.renderer.texture.IIconRegister
 
 import scala.language.implicitConversions
 
@@ -23,10 +21,5 @@ trait NamedBlock extends Block {
 
 class SimpleBlock(val name: String, material: Material) extends Block(material) with NamedBlock {
   val modId = Misc.getActiveModId
-  setBlockName(modId + "." + name)
-
-  @SideOnly(Side.CLIENT)
-  override def registerBlockIcons(reg: IIconRegister) {
-    blockIcon = reg.registerIcon(Misc.iconName(modId, name))
-  }
+  setRegistryName(modId, name)
 }

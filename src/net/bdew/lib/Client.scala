@@ -18,14 +18,13 @@ import org.lwjgl.input.Keyboard
  */
 object Client {
   def minecraft = Minecraft.getMinecraft
-  def fontRenderer = Minecraft.getMinecraft.fontRenderer
+  def fontRenderer = Minecraft.getMinecraft.fontRendererObj
   def renderEngine = Minecraft.getMinecraft.renderEngine
   def world = Minecraft.getMinecraft.theWorld
   def player = Minecraft.getMinecraft.thePlayer
   def textureManager = Minecraft.getMinecraft.getTextureManager
 
-  def blockMissingIcon = textureManager.getTexture(TextureMap.locationBlocksTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
-  def itemMissingIcon = textureManager.getTexture(TextureMap.locationItemsTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
+  def missingIcon = textureManager.getTexture(TextureMap.locationBlocksTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
 
   def shiftDown: Boolean = {
     return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)

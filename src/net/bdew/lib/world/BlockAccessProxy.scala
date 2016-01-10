@@ -9,35 +9,17 @@
 
 package net.bdew.lib.world
 
+import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.IBlockAccess
-import net.minecraftforge.common.util.ForgeDirection
 
 class BlockAccessProxy(base: IBlockAccess) extends IBlockAccess {
-  override def getBlock(x: Int, y: Int, z: Int) =
-    base.getBlock(x, y, z)
-
-  override def getBlockMetadata(x: Int, y: Int, z: Int) =
-    base.getBlockMetadata(x, y, z)
-
-  override def getTileEntity(x: Int, y: Int, z: Int) =
-    base.getTileEntity(x, y, z)
-
-  override def isSideSolid(x: Int, y: Int, z: Int, side: ForgeDirection, default: Boolean) =
-    base.isSideSolid(x, y, z, side, default)
-
-  override def getHeight = base.getHeight
-
-  override def getLightBrightnessForSkyBlocks(x: Int, y: Int, z: Int, lightValue: Int) =
-    base.getLightBrightnessForSkyBlocks(x, y, z, lightValue)
-
-  override def isBlockProvidingPowerTo(x: Int, y: Int, z: Int, side: Int) =
-    base.isBlockProvidingPowerTo(x, y, z, side)
-
+  override def isSideSolid(pos: BlockPos, side: EnumFacing, _default: Boolean) = base.isSideSolid(pos, side, _default)
+  override def getWorldType = base.getWorldType
+  override def getCombinedLight(pos: BlockPos, lightValue: Int) = base.getCombinedLight(pos, lightValue)
+  override def getTileEntity(pos: BlockPos) = base.getTileEntity(pos)
   override def extendedLevelsInChunkCache() = base.extendedLevelsInChunkCache()
-
-  override def isAirBlock(x: Int, y: Int, z: Int) =
-    base.isAirBlock(x, y, z)
-
-  override def getBiomeGenForCoords(x: Int, z: Int) =
-    base.getBiomeGenForCoords(x, z)
+  override def isAirBlock(pos: BlockPos) = base.isAirBlock(pos)
+  override def getBiomeGenForCoords(pos: BlockPos) = base.getBiomeGenForCoords(pos)
+  override def getBlockState(pos: BlockPos) = base.getBlockState(pos)
+  override def getStrongPower(pos: BlockPos, direction: EnumFacing) = base.getStrongPower(pos, direction)
 }

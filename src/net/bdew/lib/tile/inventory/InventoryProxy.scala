@@ -17,8 +17,8 @@ import net.minecraft.tileentity.TileEntity
 trait InventoryProxy extends TileEntity with IInventory {
   def targetInventory: Option[IInventory]
 
-  override def openInventory() = targetInventory foreach (_.openInventory())
-  override def closeInventory() = targetInventory foreach (_.closeInventory())
+  override def openInventory(player: EntityPlayer) = targetInventory foreach (_.openInventory(player))
+  override def closeInventory(player: EntityPlayer) = targetInventory foreach (_.closeInventory(player))
 
   override def markDirty() = {
     targetInventory foreach (_.markDirty())
@@ -29,13 +29,20 @@ trait InventoryProxy extends TileEntity with IInventory {
   override def getInventoryStackLimit = targetInventory map (_.getInventoryStackLimit) getOrElse 64
 
   override def getStackInSlot(slot: Int) = targetInventory.map(_.getStackInSlot(slot)).orNull
-  override def getStackInSlotOnClosing(slot: Int) = targetInventory.map(_.getStackInSlotOnClosing(slot)).orNull
   override def setInventorySlotContents(slot: Int, item: ItemStack) = targetInventory.foreach(_.setInventorySlotContents(slot, item))
   override def decrStackSize(slot: Int, num: Int) = targetInventory.map(_.decrStackSize(slot, num)).orNull
+  override def removeStackFromSlot(slot: Int) = targetInventory.map(_.removeStackFromSlot(slot)).orNull
 
   override def isItemValidForSlot(slot: Int, item: ItemStack) = targetInventory.exists(_.isItemValidForSlot(slot, item))
   override def isUseableByPlayer(player: EntityPlayer) = targetInventory.exists(_.isUseableByPlayer(player))
 
-  override def getInventoryName = targetInventory.map(_.getInventoryName).getOrElse("")
-  override def hasCustomInventoryName = targetInventory.exists(_.hasCustomInventoryName)
+  override def clear() = targetInventory foreach (_.clear())
+
+  override def getFieldCount = targetInventory map (_.getFieldCount()) getOrElse 0
+  override def getField(id: Int) = targetInventory map (_.getField(id)) getOrElse 0
+  override def setField(id: Int, value: Int) = targetInventory foreach (_.setField(id, value))
+
+  override def getDisplayName = (targetInventory map (_.getDisplayName)).orNull
+  override def getName = (targetInventory map (_.getName)).orNull
+  override def hasCustomName = targetInventory exists (_.hasCustomName)
 }

@@ -9,12 +9,24 @@
 
 package net.bdew.lib.network
 
+import java.io.{BufferedInputStream, ByteArrayInputStream, ByteArrayOutputStream, DataInputStream}
+import java.util.zip.GZIPInputStream
+
 import net.minecraft.nbt.{CompressedStreamTools, NBTSizeTracker, NBTTagCompound}
 
 object NBTHelper {
-  def toBytes(t: NBTTagCompound): Array[Byte] =
-    CompressedStreamTools.compress(t)
+  def toBytes(t: NBTTagCompound): Array[Byte] = {
+    val bs = new ByteArrayOutputStream()
+    CompressedStreamTools.writeCompressed(t, bs)
+    bs.toByteArray
+  }
 
-  def fromBytes(v: Array[Byte], maxSize: Int = 1024 * 1024) =
-    CompressedStreamTools.func_152457_a(v, new NBTSizeTracker(maxSize))
+  def fromBytes(v: Array[Byte], maxSize: Int = 1024 * 1024) = {
+    val is = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(v))))
+    try {
+      CompressedStreamTools.read(is, new NBTSizeTracker(maxSize))
+    } finally {
+      is.close()
+    }
+  }
 }

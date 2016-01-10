@@ -9,25 +9,22 @@
 
 package net.bdew.lib.rotate
 
-import cpw.mods.fml.common.FMLCommonHandler
+import net.bdew.lib.block.HasTE
 import net.minecraft.block.ITileEntityProvider
+import net.minecraft.block.state.IBlockState
+import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
-import net.minecraftforge.common.util.ForgeDirection
 
 /**
- * Stores rotation data in tile entity. The TE should implement [[RotatableTile]]
- */
+  * Stores rotation data in tile entity. The TE should implement [[RotatableTile]]
+  */
 trait RotatableTileBlock extends BaseRotatableBlock with ITileEntityProvider {
-  def setFacing(world: World, x: Int, y: Int, z: Int, facing: ForgeDirection) {
-    world.getTileEntity(x, y, z).asInstanceOf[RotatableTile].rotation := facing
+  self: HasTE[_ <: RotatableTile] =>
+
+  override def setFacing(world: World, pos: BlockPos, facing: EnumFacing) = {
+    getTE(world, pos).rotation := facing
   }
 
-  def getFacing(world: IBlockAccess, x: Int, y: Int, z: Int): ForgeDirection = {
-    val te: RotatableTile = world.getTileEntity(x, y, z).asInstanceOf[RotatableTile]
-    if (te == null || te.rotation == null) {
-      FMLCommonHandler.instance().getFMLLogger.warn("Failed getting rotation for block at %d, %d, %d".format(x, y, z))
-      return getDefaultFacing
-    }
-    return te.rotation
-  }
+  override def getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos) =
+    state.withProperty(facingProperty, getTE(worldIn, pos).rotation.value)
 }

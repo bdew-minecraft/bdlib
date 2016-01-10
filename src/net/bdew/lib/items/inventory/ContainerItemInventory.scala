@@ -11,14 +11,13 @@ package net.bdew.lib.items.inventory
 
 import net.bdew.lib.gui.BaseContainer
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 
 class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) extends BaseContainer(inv) {
   override def slotClick(slotNum: Int, button: Int, modifiers: Int, player: EntityPlayer): ItemStack = {
     if (slotNum > 0 && slotNum < inventorySlots.size()) {
-      val slot = inventorySlots.asInstanceOf[java.util.List[Slot]].get(slotNum)
-      if (slot.isSlotInInventory(inv.player.inventory, inv.slot))
+      val slot = inventorySlots.get(slotNum)
+      if (slot.isHere(inv.player.inventory, inv.slot))
         return null
     }
     if (modifiers == 2 && button == inv.slot) return null

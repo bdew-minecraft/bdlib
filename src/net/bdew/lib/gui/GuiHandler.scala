@@ -9,9 +9,10 @@
 
 package net.bdew.lib.gui
 
-import cpw.mods.fml.common.network.IGuiHandler
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.fml.common.network.IGuiHandler
 
 import scala.collection.mutable
 
@@ -25,8 +26,8 @@ class GuiHandler extends IGuiHandler {
   }
 
   def getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef =
-    GUIs(ID).getContainer(world.getTileEntity(x, y, z), player)
+    GUIs(ID).getContainer(world.getTileEntity(new BlockPos(x, y, z)), player)
 
   def getClientGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef =
-    GUIs(ID).getGui(world.getTileEntity(x, y, z), player)
+    GUIs(ID).getGui(world.getTileEntity(new BlockPos(x, y, z)), player)
 }

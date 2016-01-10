@@ -11,66 +11,53 @@ package net.bdew.lib.rotate
 
 import java.util
 
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.minecraft.block.Block
+import net.minecraft.block.properties.PropertyDirection
+import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.item.ItemStack
-import net.minecraft.util.{IIcon, MathHelper}
+import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
-import net.minecraftforge.common.util.ForgeDirection
 
 /**
  * Basic logic for block rotation
  */
 trait BaseRotatableBlock extends Block {
-
-  /**
-   * Override this method to provide your textures, also called when rendering as item
-   */
-  def getIcon(meta: Int, kind: IconType.Value): IIcon
-
-  /**
-   * Override this method to provide your textures, if you need to check other state
-   */
-  def getIcon(world: IBlockAccess, x: Int, y: Int, z: Int, kind: IconType.Value): IIcon = getIcon(world.getBlockMetadata(x, y, z), kind)
+  val facingProperty: PropertyDirection
 
   /**
    * Set of valid rotations, default is all of them
    */
-  def getValidFacings: util.EnumSet[ForgeDirection] = {
-    return util.EnumSet.allOf(classOf[ForgeDirection])
+  def getValidFacings: util.EnumSet[EnumFacing] = {
+    return util.EnumSet.allOf(classOf[EnumFacing])
   }
 
   /**
    * Rotation to show when it's unavailable (like rendering item in inventory)
    */
-  def getDefaultFacing: ForgeDirection = ForgeDirection.UP
+  def getDefaultFacing: EnumFacing = EnumFacing.UP
 
   /**
-   * Those will be overridden to provide concrete storage
+    * Will be overriden to provide actual storage, along with getActualState
    */
-  def setFacing(world: World, x: Int, y: Int, z: Int, facing: ForgeDirection)
-  def getFacing(world: IBlockAccess, x: Int, y: Int, z: Int): ForgeDirection
+  def setFacing(world: World, pos: BlockPos, facing: EnumFacing)
 
-  override def rotateBlock(worldObj: World, x: Int, y: Int, z: Int, axis: ForgeDirection): Boolean = {
+  def getFacing(world: IBlockAccess, pos: BlockPos): EnumFacing =
+    world.getBlockState(pos).getValue(facingProperty)
+
+  override def rotateBlock(world: World, pos: BlockPos, axis: EnumFacing): Boolean = {
     if (getValidFacings.contains(axis)) {
-      setFacing(worldObj, x, y, z, axis)
+      setFacing(world, pos, axis)
       return true
     }
     return false
   }
 
-  @SideOnly(Side.CLIENT)
-  override def getIcon(side: Int, meta: Int): IIcon = getIcon(meta, IconType.fromSideAndDir(side, getDefaultFacing))
+  override def getValidRotations(worldObj: World, pos: BlockPos): Array[EnumFacing] = getValidFacings.toArray(Array.empty[EnumFacing])
 
-  @SideOnly(Side.CLIENT)
-  override def getIcon(world: IBlockAccess, x: Int, y: Int, z: Int, side: Int): IIcon = getIcon(world, x, y, z, IconType.fromSideAndDir(side, getFacing(world, x, y, z)))
-
-  override def getValidRotations(worldObj: World, x: Int, y: Int, z: Int): Array[ForgeDirection] = getValidFacings.toArray(Array.empty[ForgeDirection])
-
-  override def onBlockPlacedBy(world: World, x: Int, y: Int, z: Int, ent: EntityLivingBase, stack: ItemStack) {
-    val dir = RotatedHelper.getFacingFromEntity(ent, getValidFacings, getDefaultFacing)
-    setFacing(world, x, y, z, dir)
-    super.onBlockPlacedBy(world, x, y, z, ent, stack)
+  override def onBlockPlacedBy(world: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) = {
+    val dir = RotatedHelper.getFacingFromEntity(placer, getValidFacings, getDefaultFacing)
+    setFacing(world, pos, dir)
+    super.onBlockPlacedBy(world, pos, state, placer, stack)
   }
 }

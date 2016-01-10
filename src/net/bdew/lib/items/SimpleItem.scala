@@ -9,9 +9,7 @@
 
 package net.bdew.lib.items
 
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
-import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.item.Item
 
 trait NamedItem extends Item {
@@ -21,9 +19,5 @@ trait NamedItem extends Item {
 class SimpleItem(val name: String) extends Item with NamedItem {
   val modId = Misc.getActiveModId
   setUnlocalizedName(modId + "." + name)
-
-  @SideOnly(Side.CLIENT)
-  override def registerIcons(reg: IIconRegister) {
-    itemIcon = reg.registerIcon(Misc.iconName(modId, name))
-  }
+  setRegistryName(modId, name)
 }

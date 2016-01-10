@@ -11,8 +11,8 @@ package net.bdew.lib.gui
 
 import net.bdew.lib.Client
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.texture.TextureMap
-import net.minecraft.util.{IIcon, ResourceLocation}
+import net.minecraft.client.renderer.texture.{TextureAtlasSprite, TextureMap}
+import net.minecraft.util.ResourceLocation
 
 trait Texture {
   def u1: Float
@@ -30,12 +30,9 @@ class InterpolatedTexture(val texture: Texture, rect: Rect) extends Texture {
   def v2 = rect.y2 * (texture.v2 - texture.v1) + texture.v1
 }
 
-class IconWrapper(val resource: ResourceLocation, aIcon: IIcon) extends Texture {
-  val icon = if (aIcon == null) {
-    if (resource == Texture.ITEMS) Client.itemMissingIcon
-    else if (resource == Texture.BLOCKS) Client.blockMissingIcon
-    else sys.error("Attempt to create IconWrapper for null IIcon")
-  } else aIcon
+//TODO: Do we need this?
+class IconWrapper(val resource: ResourceLocation, aIcon: TextureAtlasSprite) extends Texture {
+  val icon = if (aIcon == null) Client.missingIcon else aIcon
 
   def u1 = icon.getMinU
   def u2 = icon.getMaxU
@@ -59,11 +56,13 @@ class ScaledResourceLocation(path: String, val scale: Int = 256) extends Resourc
 }
 
 object Texture {
-  val ITEMS = TextureMap.locationItemsTexture
   val BLOCKS = TextureMap.locationBlocksTexture
 
-  // From minecraft Icon
-  def apply(res: ResourceLocation, i: IIcon) = new IconWrapper(res, i)
+  // From minecraft Icon Todo: is this still useful?
+  def apply(res: ResourceLocation, i: TextureAtlasSprite) = new IconWrapper(res, i)
+
+  // Todo: Does that make sense?
+  def apply(res: ResourceLocation) = new Sprite(res, Rect(0, 0, 1, 1), 1)
 
   // From a ResourceLocation and position, scale optional
   def apply(res: ResourceLocation, r: Rect) = new Sprite(res, r)

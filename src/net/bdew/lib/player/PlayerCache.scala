@@ -9,11 +9,11 @@
 
 package net.bdew.lib.player
 
-import cpw.mods.fml.common.FMLCommonHandler
-import cpw.mods.fml.common.eventhandler.SubscribeEvent
-import cpw.mods.fml.common.gameevent.PlayerEvent._
 import net.bdew.lib.BdLib
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.PlayerEvent._
 
 import scala.collection.mutable
 
@@ -22,7 +22,8 @@ class PlayerCache[T] extends mutable.Map[EntityPlayer, T] {
 
   BdLib.onServerStarting.listen(x => map = map.empty)
   BdLib.onServerStopping.listen(x => map = map.empty)
-  FMLCommonHandler.instance().bus().register(this)
+
+  MinecraftForge.EVENT_BUS.register(this)
 
   def updateIfNeeded(p: EntityPlayer, v: T): Boolean = {
     if (map.get(p).contains(v)) {

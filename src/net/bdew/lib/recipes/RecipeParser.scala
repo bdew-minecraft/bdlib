@@ -52,7 +52,6 @@ class RecipeParser extends JavaTokenParsers {
   def specOD = "OD" ~> ":" ~> ident ^^ StackOreDict
   def specBlock = "B" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackBlock(m, n, i) }
   def specItem = "I" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackItem(m, n, i) }
-  def specGenericStack = "S" ~> ":" ~> str ~ ":" ~ str ^^ { case m ~ c ~ n => StackGeneric(m, n) }
   def specMacro = "$" ~> recipeChar ^^ StackMacro
 
   def specReflect = clsPath ~ ("[" ~> ident <~ "]") ~ maybeMeta ^^ {
@@ -63,7 +62,7 @@ class RecipeParser extends JavaTokenParsers {
     case (p ~ cl) ~ n ~ m => StackGetter(p.mkString("."), cl, n, m)
   }
 
-  def spec = specBlock | specItem | specOD | specGenericStack | specGetter | specReflect | specMacro
+  def spec = specBlock | specItem | specOD | specGetter | specReflect | specMacro
 
   // Spec with possible number of items
   def specWithCount = spec ~ ("*" ~> int).?

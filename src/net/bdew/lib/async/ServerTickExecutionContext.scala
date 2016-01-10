@@ -9,10 +9,10 @@
 
 package net.bdew.lib.async
 
-import cpw.mods.fml.common.FMLCommonHandler
-import cpw.mods.fml.common.eventhandler.SubscribeEvent
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent
 import net.bdew.lib.BdLib
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext
@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext
 object ServerTickExecutionContext extends ExecutionContext {
   private val queue = mutable.Queue.empty[Runnable]
 
-  FMLCommonHandler.instance.bus.register(this)
+  MinecraftForge.EVENT_BUS.register(this)
 
   BdLib.logDebug("Installed ServerTickExecutionContext")
 

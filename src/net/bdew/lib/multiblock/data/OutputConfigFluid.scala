@@ -9,6 +9,7 @@
 
 package net.bdew.lib.multiblock.data
 
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.multiblock.network.MsgOutputCfg
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
@@ -20,8 +21,6 @@ class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
   var rsMode = RSMode.ALWAYS
 
   final val ticks = 20
-
-  import net.bdew.lib.nbt._
 
   def avg = values.sum / values.size
 

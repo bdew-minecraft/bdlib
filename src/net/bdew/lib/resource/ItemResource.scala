@@ -9,17 +9,13 @@
 
 package net.bdew.lib.resource
 
-import net.bdew.lib.gui.{Color, IconWrapper, Texture}
 import net.bdew.lib.{DecFormat, Misc}
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
 
 case class ItemResource(item: Item, meta: Int) extends ResourceKind {
-  override def getTexture = new IconWrapper(
-    if (item.getSpriteNumber == 0) Texture.BLOCKS else Texture.ITEMS,
-    item.getIconFromDamageForRenderPass(meta, 0))
-
-  override def getColor = Color.fromInt(item.getColorFromItemStack(makeStack(1), 0))
+  //fixme: rendering stuff
+  //  override def getColor = Color.fromInt(item.getColorFromItemStack(makeStack(1), 0))
 
   override def getLocalizedName = item.getItemStackDisplayName(makeStack(1))
   override def getUnlocalizedName = item.getUnlocalizedName(makeStack(1))

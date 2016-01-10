@@ -10,15 +10,16 @@
 package net.bdew.lib.multiblock.block
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{BlockRef, BlockTooltip, HasTE}
+import net.bdew.lib.block.{BlockTooltip, HasTE}
 import net.bdew.lib.multiblock.tile.TileController
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
-import net.minecraft.util.EnumChatFormatting
+import net.minecraft.util.{BlockPos, EnumChatFormatting, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
 abstract class BlockController[T <: TileController](val name: String, material: Material, val TEClass: Class[T])
@@ -28,20 +29,18 @@ abstract class BlockController[T <: TileController](val name: String, material: 
 
   def resources: ResourceProvider
 
-  override def edgeIcon = resources.edge
-
-  override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
-    getTE(world, x, y, z).onBreak()
-    super.breakBlock(world, x, y, z, block, meta)
+  override def breakBlock(world: World, pos: BlockPos, state: IBlockState) = {
+    getTE(world, pos).onBreak()
+    super.breakBlock(world, pos, state)
   }
 
-  override def canConnect(world: IBlockAccess, origin: BlockRef, target: BlockRef) =
+  override def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos) =
     getTE(world, origin).modules.contains(target)
 
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
-    getTE(world, x, y, z).onClick(player)
+    getTE(world, pos).onClick(player)
     return true
   }
 

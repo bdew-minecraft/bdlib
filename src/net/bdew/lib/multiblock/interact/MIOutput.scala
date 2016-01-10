@@ -11,13 +11,13 @@ package net.bdew.lib.multiblock.interact
 
 import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.tile.TileModule
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.EnumFacing
 
 trait MIOutput[T <: OutputConfig] extends TileModule {
   val outputConfigType: Class[T]
   type OCType = T
 
-  def doOutput(face: ForgeDirection, cfg: OCType)
+  def doOutput(face: EnumFacing, cfg: OCType)
 
-  def makeCfgObject(face: ForgeDirection): OutputConfig
+  def makeCfgObject(face: EnumFacing): OutputConfig
 }

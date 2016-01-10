@@ -12,21 +12,22 @@ package net.bdew.lib.power
 import net.bdew.lib.data.DataSlotFloat
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.machine.ProcessorMachine
-import net.bdew.lib.tile.TileExtended
 import net.bdew.lib.tile.inventory.{PersistentInventoryTile, SidedInventory}
+import net.bdew.lib.tile.{TileExtended, TileTicking}
 
 abstract class TileBaseProcessor extends TileExtended
 with TileDataSlots
 with PersistentInventoryTile
 with SidedInventory
-with TilePoweredBase {
+with TilePoweredBase
+with TileTicking {
   def cfg: ProcessorMachine
   val power = DataSlotPower("power", this)
   val progress = DataSlotFloat("progress", this).setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
   configurePower(cfg)
 
-  override def tickServer() {
+  serverTick listen { () =>
     if (power.stored > cfg.activationEnergy) {
 
       if (!isWorking)
@@ -50,17 +51,17 @@ with TilePoweredBase {
   }
 
   /**
-   * Return true when an operation is in progress
-   */
+    * Return true when an operation is in progress
+    */
   def isWorking: Boolean
 
   /**
-   * Try starting a new operation, return true if successful
-   */
+    * Try starting a new operation, return true if successful
+    */
   def tryStart(): Boolean
 
   /**
-   * Perform output when operation is done, return true if successful
-   */
+    * Perform output when operation is done, return true if successful
+    */
   def tryFinish(): Boolean
 }

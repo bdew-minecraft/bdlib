@@ -10,14 +10,16 @@
 package net.bdew.lib.sensors.multiblock
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.BlockRef
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.multiblock.tile.{TileController, TileModule}
 import net.bdew.lib.sensors.{DataSlotSensor, RedstoneSensors, SensorPair}
-import net.minecraft.block.Block
+import net.bdew.lib.tile.TileTicking
+import net.minecraft.block.state.IBlockState
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.BlockPos
 import net.minecraft.world.World
 
-abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity], block: BlockRedstoneSensorModule[_]) extends TileModule {
+abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity], block: BlockRedstoneSensorModule[_]) extends TileModule with TileTicking {
   override val kind = "Sensor"
   override def getCore = getCoreAs[CIRedstoneSensors]
 
@@ -37,18 +39,18 @@ abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity],
     super.coreRemoved()
   }
 
-  override def canConnectToCore(br: BlockRef): Boolean =
-    br.getTile[CIRedstoneSensors](worldObj).exists(_.redstoneSensorSystem == system)
+  override def canConnectToCore(bp: BlockPos): Boolean =
+    worldObj.getTileSafe[CIRedstoneSensors](bp).exists(_.redstoneSensorSystem == system)
 
-  def isSignalOn = block.isSignalOn(worldObj, xCoord, yCoord, zCoord)
+  def isSignalOn = block.isSignalOn(worldObj, pos)
 
   serverTick.listen(() => {
     val act = getCore exists config.getResult
-    if (block.isSignalOn(worldObj, xCoord, yCoord, zCoord) != act) {
-      block.setSignal(worldObj, xCoord, yCoord, zCoord, act)
+    if (block.isSignalOn(worldObj, pos) != act) {
+      block.setSignal(worldObj, pos, act)
     }
   })
 
-  override def shouldRefresh(oldBlock: Block, newBlock: Block, oldMeta: Int, newMeta: Int, world: World, x: Int, y: Int, z: Int) =
-    newBlock != oldBlock
+  override def shouldRefresh(world: World, pos: BlockPos, oldState: IBlockState, newSate: IBlockState) =
+    oldState.getBlock != newSate.getBlock
 }

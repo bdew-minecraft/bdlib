@@ -9,12 +9,12 @@
 
 package net.bdew.lib
 
-import cpw.mods.fml.common.Mod.EventHandler
-import cpw.mods.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent, FMLServerStoppingEvent}
-import cpw.mods.fml.common.{FMLCommonHandler, Mod}
 import net.bdew.lib.multiblock.network.NetHandler
 import net.bdew.lib.tooltip.TooltipHandler
 import net.minecraft.command.CommandHandler
+import net.minecraftforge.fml.common.Mod.EventHandler
+import net.minecraftforge.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent, FMLServerStoppingEvent}
+import net.minecraftforge.fml.common.{FMLCommonHandler, Mod}
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")

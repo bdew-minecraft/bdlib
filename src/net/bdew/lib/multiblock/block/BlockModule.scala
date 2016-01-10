@@ -10,17 +10,19 @@
 package net.bdew.lib.multiblock.block
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{BlockRef, BlockTooltip, HasTE}
+import net.bdew.lib.PimpVanilla._
+import net.bdew.lib.block.{BlockTooltip, HasTE}
 import net.bdew.lib.config.MachineManagerMultiblock
 import net.bdew.lib.multiblock.tile.TileModule
 import net.bdew.lib.multiblock.{ResourceProvider, Tools}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
-import net.minecraft.util.{ChatComponentTranslation, EnumChatFormatting}
+import net.minecraft.util.{BlockPos, ChatComponentTranslation, EnumChatFormatting, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
 abstract class BlockModule[T <: TileModule](val name: String, val kind: String, material: Material, val TEClass: Class[T], val machines: MachineManagerMultiblock)
@@ -28,42 +30,38 @@ abstract class BlockModule[T <: TileModule](val name: String, val kind: String, 
 
   def resources: ResourceProvider
 
-  override def edgeIcon = resources.edge
+  override def canPlaceBlockAt(world: World, pos: BlockPos) =
+    Tools.findConnections(world, pos, kind).size <= 1
 
-  override def canPlaceBlockAt(world: World, x: Int, y: Int, z: Int): Boolean =
-    Tools.findConnections(world, BlockRef(x, y, z), kind).size <= 1
-
-  override def onBlockPlacedBy(world: World, x: Int, y: Int, z: Int, player: EntityLivingBase, stack: ItemStack) {
-    getTE(world, x, y, z).tryConnect()
+  override def onBlockPlacedBy(world: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) = {
+    getTE(world, pos).tryConnect()
   }
 
-  override def onNeighborBlockChange(world: World, x: Int, y: Int, z: Int, block: Block) {
-    getTE(world, x, y, z).tryConnect()
+  override def onNeighborBlockChange(world: World, pos: BlockPos, state: IBlockState, neighborBlock: Block) = {
+    getTE(world, pos).tryConnect()
   }
 
-  override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
-    getTE(world, x, y, z).onBreak()
-    super.breakBlock(world, x, y, z, block, meta)
+  override def breakBlock(world: World, pos: BlockPos, state: IBlockState) = {
+    getTE(world, pos).onBreak()
+    super.breakBlock(world, pos, state)
   }
 
-  override def canConnect(world: IBlockAccess, origin: BlockRef, target: BlockRef) = {
+  override def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos) = {
     val me = getTE(world, origin)
-    me.connected.contains(target) ||
-      (target.getTile[TileModule](world) exists { other =>
-        me.getCore.isDefined && other.getCore == me.getCore
-      })
+    me.connected.contains(target) || (world.getTileSafe[TileModule](target) exists { other =>
+      me.getCore.isDefined && other.getCore == me.getCore
+    })
   }
 
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
-    val te = getTE(world, x, y, z)
-    (for {
-      p <- te.connected.value
-      bl <- p.block(world)
-    } yield {
-        bl.onBlockActivated(world, p.x, p.y, p.z, player, meta, 0, 0, 0)
-      }) getOrElse {
+    val te = getTE(world, pos)
+    if (te.connected.isDefined) {
+      val p = te.connected.get
+      val bs = world.getBlockState(p)
+      bs.getBlock.onBlockActivated(world, p, bs, player, side, 0, 0, 0)
+    } else {
       player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.notconnected"))
     }
     true

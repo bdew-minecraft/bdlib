@@ -10,14 +10,15 @@
 package net.bdew.lib.multiblock.tile
 
 import net.bdew.lib.BdLib
-import net.bdew.lib.block.BlockRef
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.multiblock.data.DataSlotPosSet
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider, Tools}
+import net.bdew.lib.tile.TileTicking
 import net.minecraft.entity.player.EntityPlayer
 
-trait TileController extends TileDataSlots {
+trait TileController extends TileDataSlots with TileTicking {
   val modules = new DataSlotPosSet("modules", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE)
 
   def resources: ResourceProvider
@@ -27,53 +28,51 @@ trait TileController extends TileDataSlots {
   var revalidateOnNextTick = true
   var modulesChanged = true
 
-  lazy val myPos = BlockRef(xCoord, yCoord, zCoord)
-
-  def getNumOfModules(kind: String) = modules.flatMap(_.getTile[TileModule](getWorldObj)).count(_.kind == kind)
+  def getNumOfModules(kind: String) = modules.flatMap(mpos => getWorld.getTileSafe[TileModule](mpos)).count(_.kind == kind)
 
   def onModulesChanged()
   def onClick(player: EntityPlayer)
 
   def moduleConnected(module: TileModule): Boolean = {
     if (acceptNewModules) {
-      modules.add(BlockRef(module.xCoord, module.yCoord, module.zCoord))
-      getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+      modules.add(module.getPos)
+      getWorld.markBlockForUpdate(getPos)
       modulesChanged = true
       return true
     } else false
   }
 
   def moduleRemoved(module: TileModule) {
-    modules.remove(BlockRef(module.xCoord, module.yCoord, module.zCoord))
-    getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+    modules.remove(module.getPos)
+    getWorld.markBlockForUpdate(getPos)
     revalidateOnNextTick = true
     modulesChanged = true
   }
 
   def onBreak() {
     acceptNewModules = false
-    for (x <- modules.flatMap(_.getTile[TileModule](getWorldObj)))
-      x.coreRemoved()
+    modules.flatMap(mpos => getWorld.getTileSafe[TileModule](mpos)).foreach(_.coreRemoved())
     modules.clear()
   }
 
   def validateModules() {
     modules.filter(x => {
-      x.getTile[TileModule](getWorldObj).isEmpty || x.getBlock[BlockModule[TileModule]](getWorldObj).isEmpty
+      getWorld.getTileSafe[TileModule](x).isEmpty || getWorld.getBlockSafe[BlockModule[TileModule]](x).isEmpty
     }).foreach(x => {
-      BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %d,%d,%d", x, this.getClass.getSimpleName, xCoord, yCoord, zCoord)
+      BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %d,%d,%d", x, this.getClass.getSimpleName, getPos)
       modules.remove(x)
     })
-    val reachable = Tools.findReachableModules(getWorldObj, myPos)
-    val toRemove = modules.filterNot(reachable.contains).flatMap(_.getTile[TileModule](getWorldObj))
+    val reachable = Tools.findReachableModules(getWorld, getPos)
+    val toRemove = modules.filterNot(reachable.contains).flatMap(pos => getWorld.getTileSafe[TileModule](pos))
     acceptNewModules = false
     toRemove.foreach(moduleRemoved)
     toRemove.foreach(_.coreRemoved())
     acceptNewModules = true
     modulesChanged = true
-    modules.map(x =>
-      (x.getBlock[BlockModule[TileModule]](getWorldObj).orNull, x.getTile[TileModule](getWorldObj).orNull)
-    ).filter({ case (a, b) => a.kind != b.kind }).foreach({ case (a, b) => sys.error("Type mismatch between Block/Tile Block=%s(%s) Tile=%s(%s)".format(a.kind, a, b.kind, b)) })
+    modules
+      .map(mpos => (getWorld.getBlockSafe[BlockModule[TileModule]](mpos).orNull, getWorld.getTileSafe[TileModule](mpos).orNull))
+      .filter({ case (a, b) => a.kind != b.kind })
+      .foreach({ case (a, b) => sys.error("Type mismatch between Block/Tile Block=%s(%s) Tile=%s(%s)".format(a.kind, a, b.kind, b)) })
   }
 
   serverTick.listen(() => {
@@ -84,8 +83,8 @@ trait TileController extends TileDataSlots {
     if (modulesChanged) {
       modulesChanged = false
       onModulesChanged()
-      lastChange = getWorldObj.getTotalWorldTime
-      getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+      lastChange = getWorld.getTotalWorldTime
+      getWorld.markBlockForUpdate(getPos)
     }
   })
 }

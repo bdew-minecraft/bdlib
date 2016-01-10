@@ -13,19 +13,20 @@ import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.interact.{CIOutputFaces, MIOutput}
-import net.minecraftforge.common.util.ForgeDirection
+import net.bdew.lib.tile.TileTicking
+import net.minecraft.util.EnumFacing
 
-abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T] {
+abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T] with TileTicking {
   override def getCore = getCoreAs[CIOutputFaces]
 
-  def makeCfgObject(face: ForgeDirection): T
+  def makeCfgObject(face: EnumFacing): T
 
   var rescanFaces = false
 
-  def getCfg(dir: ForgeDirection): Option[T] =
+  def getCfg(dir: EnumFacing): Option[T] =
     for {
       core <- getCore
-      oNum <- core.outputFaces.get(BlockFace(myPos, dir))
+      oNum <- core.outputFaces.get(BlockFace(pos, dir))
       cfgGen <- core.outputConfig.get(oNum)
       cfg <- Misc.asInstanceOpt(cfgGen, outputConfigType)
     } yield cfg
@@ -42,25 +43,25 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
     if (connected.isDefined) rescanFaces = true
   }
 
-  def canConnectToFace(d: ForgeDirection): Boolean
+  def canConnectToFace(d: EnumFacing): Boolean
 
-  def onConnectionsChanged(added: Set[ForgeDirection], removed: Set[ForgeDirection]) {}
+  def onConnectionsChanged(added: Set[EnumFacing], removed: Set[EnumFacing]) {}
 
   def doRescanFaces() {
     getCore foreach { core =>
       val connections = (
-        ForgeDirection.VALID_DIRECTIONS
-          filterNot { dir => core.modules.contains(myPos.neighbour(dir)) }
+        EnumFacing.values()
+          filterNot { dir => core.modules.contains(pos.offset(dir)) }
           filter canConnectToFace
         ).toSet
-      val known = core.outputFaces.filter(_._1.origin == myPos).map(_._1.face).toSet
+      val known = core.outputFaces.filter(_._1.pos == pos).map(_._1.face).toSet
       val toAdd = connections -- known
       val toRemove = known -- connections
-      toRemove.foreach(x => core.removeOutput(myPos, x))
-      toAdd.foreach(x => core.newOutput(myPos, x, makeCfgObject(x)))
+      toRemove.foreach(x => core.removeOutput(pos, x))
+      toAdd.foreach(x => core.newOutput(pos, x, makeCfgObject(x)))
       if (toAdd.nonEmpty || toRemove.nonEmpty) {
         onConnectionsChanged(toAdd, toRemove)
-        getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+        getWorld.markBlockForUpdate(pos)
       }
     }
   }

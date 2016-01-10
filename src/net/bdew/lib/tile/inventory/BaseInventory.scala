@@ -16,23 +16,33 @@ import net.minecraft.item.ItemStack
 trait BaseInventory extends IInventory {
   var inv: Array[ItemStack] = new Array(getSizeInventory)
 
-  def getStackInSlot(i: Int): ItemStack = inv(i)
-
-  def getInventoryName = ""
-
-  def hasCustomInventoryName = false
-
   def getInventoryStackLimit = 64
 
-  def isUseableByPlayer(player: EntityPlayer) = true
+  override def hasCustomName = false
+  override def getDisplayName = null
+  override def getName = ""
 
-  def openInventory() {}
+  override def isUseableByPlayer(player: EntityPlayer) = true
+  override def closeInventory(player: EntityPlayer) = {}
+  override def openInventory(player: EntityPlayer) = {}
 
-  def closeInventory() {}
+  override def getStackInSlot(i: Int): ItemStack = inv(i)
 
-  def isItemValidForSlot(slot: Int, stack: ItemStack) = true
+  override def isItemValidForSlot(slot: Int, stack: ItemStack) = true
 
-  def decrStackSize(slot: Int, n: Int): ItemStack = {
+  override def setInventorySlotContents(slot: Int, stack: ItemStack) = {
+    inv(slot) = stack
+    markDirty()
+  }
+
+  override def removeStackFromSlot(slot: Int) = {
+    val st = inv(slot)
+    inv(slot) = null
+    markDirty()
+    st
+  }
+
+  override def decrStackSize(slot: Int, n: Int): ItemStack = {
     val item = inv(slot)
     if (item != null) {
       if (item.stackSize <= n) {
@@ -52,15 +62,12 @@ trait BaseInventory extends IInventory {
     }
   }
 
-  def getStackInSlotOnClosing(slot: Int): ItemStack = {
-    var tmp = inv(slot)
-    inv(slot) = null
+  override def clear() = {
+    inv = new Array(getSizeInventory)
     markDirty()
-    return tmp
   }
 
-  def setInventorySlotContents(slot: Int, stack: ItemStack) = {
-    inv(slot) = stack
-    markDirty()
-  }
+  override def getFieldCount = 0
+  override def getField(id: Int) = 0
+  override def setField(id: Int, value: Int) = {}
 }

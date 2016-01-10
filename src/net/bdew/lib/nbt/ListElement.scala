@@ -14,16 +14,18 @@ import net.minecraft.nbt.NBTTagList
 import scala.annotation.implicitNotFound
 
 @implicitNotFound("Type ${R} can't currently be retrieved from NBT lists")
-case class ListElement[R](definition: Type[R], fromList: (NBTTagList, Int) => R)
+case class ListElement[R](typeId: Int, definition: Type[R], fromList: (NBTTagList, Int) => R)
 
 object ListElement {
   def apply[R: ListElement] = implicitly[ListElement[R]]
 
   import Type._
 
-  implicit val stringInList = ListElement(TString, _.getStringTagAt(_))
-  implicit val compoundInList = ListElement(TCompound, _.getCompoundTagAt(_))
-  implicit val intArrayInList = ListElement(TIntArray, _.func_150306_c(_))
-  implicit val doubleInList = ListElement(TDouble, _.func_150309_d(_))
-  implicit val floatInList = ListElement(TFloat, _.func_150308_e(_))
+  private def mkListElement[R](td: TypeDef[_, R], fromList: (NBTTagList, Int) => R) = ListElement(td.id, td, fromList)
+
+  implicit val stringInList = mkListElement(TString, _.getStringTagAt(_))
+  implicit val compoundInList = mkListElement(TCompound, _.getCompoundTagAt(_))
+  implicit val intArrayInList = mkListElement(TIntArray, _.getIntArrayAt(_))
+  implicit val doubleInList = mkListElement(TDouble, _.getDoubleAt(_))
+  implicit val floatInList = mkListElement(TFloat, _.getFloatAt(_))
 }

@@ -11,12 +11,12 @@ package net.bdew.lib.network
 
 import java.util
 
-import cpw.mods.fml.common.network.{FMLEmbeddedChannel, FMLOutboundHandler, NetworkRegistry}
-import cpw.mods.fml.relauncher.Side
 import io.netty.channel.{ChannelFutureListener, ChannelHandler, ChannelHandlerContext, SimpleChannelInboundHandler}
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.network.NetHandlerPlayServer
+import net.minecraftforge.fml.common.network.{FMLEmbeddedChannel, FMLOutboundHandler, NetworkRegistry}
+import net.minecraftforge.fml.relauncher.Side
 
 class NetChannel(val name: String) {
   var channels: util.EnumMap[Side, FMLEmbeddedChannel] = null

@@ -65,13 +65,27 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
     }
   }
 
-  override def getStackInSlotOnClosing(slot: Int) = getStackInSlot(slot)
+  override def removeStackFromSlot(slot: Int) = {
+    val stack = getStackInSlot(slot)
+    setInventorySlotContents(slot, null)
+    stack
+  }
 
-  override def openInventory() {}
-  override def markDirty() {}
+  override def clear() = {
+    res.resource = None
+    markDirty()
+  }
 
+  override def closeInventory(player: EntityPlayer) = {}
+  override def openInventory(player: EntityPlayer) = {}
   override def isUseableByPlayer(player: EntityPlayer) = true
-  override def hasCustomInventoryName = false
-  override def getInventoryName = ""
-  override def closeInventory() {}
+
+  override def markDirty() = res.parent.dataSlotChanged(res)
+
+  override def getFieldCount = 0
+  override def getField(id: Int) = 0
+  override def setField(id: Int, value: Int) = {}
+  override def hasCustomName = false
+  override def getDisplayName = null
+  override def getName = ""
 }

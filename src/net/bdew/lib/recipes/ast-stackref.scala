@@ -29,15 +29,6 @@ abstract class StackRef
 case class StackOreDict(id: String) extends StackRef
 
 /**
- * Generic Reference
- * Syntax: S:{modId}:{name}
- * Parser: [[net.bdew.lib.recipes.RecipeParser.specGenericStack]]
- * @param mod modId of owner mod
- * @param name name of the stack
- */
-case class StackGeneric(mod: String, name: String) extends StackRef
-
-/**
  * Block reference
  * Syntax: B:[{modId}:]{name} [@ {meta}]
  * Parser: [[net.bdew.lib.recipes.RecipeParser.specBlock]]

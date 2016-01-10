@@ -9,14 +9,10 @@
 
 package net.bdew.lib.render.connected
 
-import net.bdew.lib.block.BlockRef
 import net.minecraft.block.Block
-import net.minecraft.util.IIcon
+import net.minecraft.util.BlockPos
 import net.minecraft.world.IBlockAccess
 
 trait ConnectedTextureBlock extends Block {
-  def edgeIcon: IIcon
-  def canConnect(world: IBlockAccess, origin: BlockRef, target: BlockRef): Boolean
-
-  override def getRenderType = ConnectedRenderer.id
+  def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos): Boolean
 }

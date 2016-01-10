@@ -15,9 +15,9 @@ import net.minecraft.tileentity.TileEntity
 
 trait BreakableInventoryTile extends TileEntity with BaseInventory {
   def dropItems() {
-    if (getWorldObj != null && !getWorldObj.isRemote) {
+    if (getWorld != null && !getWorld.isRemote) {
       for (stack <- inv if stack != null) {
-        ItemUtils.throwItemAt(getWorldObj, xCoord, yCoord, zCoord, stack)
+        ItemUtils.throwItemAt(getWorld, getPos, stack)
       }
       inv = new Array[ItemStack](inv.length)
     }

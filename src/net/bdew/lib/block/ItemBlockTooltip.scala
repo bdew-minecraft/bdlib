@@ -21,9 +21,9 @@ trait BlockTooltip extends Block with HasItemBlock {
 }
 
 class ItemBlockTooltip(b: Block) extends ItemBlock(b) {
-  override def addInformation(stack: ItemStack, player: EntityPlayer, list: util.List[_], advanced: Boolean): Unit = {
+  override def addInformation(stack: ItemStack, player: EntityPlayer, tooltip: util.List[String], advanced: Boolean) = {
     import scala.collection.JavaConversions._
     if (b.isInstanceOf[BlockTooltip])
-      list.asInstanceOf[util.List[String]].addAll(b.asInstanceOf[BlockTooltip].getTooltip(stack, player, advanced))
+      tooltip.addAll(b.asInstanceOf[BlockTooltip].getTooltip(stack, player, advanced))
   }
 }

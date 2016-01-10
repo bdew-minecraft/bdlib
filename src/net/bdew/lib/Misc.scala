@@ -12,16 +12,16 @@ package net.bdew.lib
 import java.util
 import java.util.Locale
 
-import cpw.mods.fml.common.registry.GameRegistry
-import cpw.mods.fml.common.versioning.VersionParser
-import cpw.mods.fml.common.{Loader, ModAPIManager, ModContainer}
+import net.bdew.lib.gui.Texture
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.{IIcon, StatCollector}
+import net.minecraft.util.{EnumFacing, StatCollector}
 import net.minecraft.world.biome.BiomeGenBase
-import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids.{Fluid, FluidStack}
+import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.fml.common.versioning.VersionParser
+import net.minecraftforge.fml.common.{Loader, ModAPIManager, ModContainer}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
@@ -85,7 +85,7 @@ object Misc {
   }
 
   // Because writing this every time is awkward
-  def forgeDirection(i: Int) = ForgeDirection.values()(i)
+  def forgeDirection(i: Int) = EnumFacing.values()(i)
 
   // Easy replacement for various "if(foo.isInstanceOf[Bar]) foo.asInstanceOf[Bar]" constructs
   def asInstanceOpt[T](v: Any, cls: Class[T]) =
@@ -95,9 +95,8 @@ object Misc {
   def asInstanceOpt[T](cls: Class[T])(v: Any) =
     if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
 
-  def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
-    Option(origin.getWorldObj.getTileEntity(origin.xCoord + dir.offsetX,
-      origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
+  def getNeighbourTile[T](origin: TileEntity, dir: EnumFacing, cls: Class[T]) =
+    Option(origin.getWorld.getTileEntity(origin.getPos.add(dir.getDirectionVec))) flatMap (asInstanceOpt(_, cls))
 
   @inline def applyMutator[T](f: (T) => Unit, init: T): T = {
     f(init)
@@ -125,14 +124,18 @@ object Misc {
       seq(pos - 1)
   }
 
-  def getFluidIcon(fs: FluidStack): IIcon =
-    if (fs != null && fs.getFluid != null && fs.getFluid.getIcon != null)
-      fs.getFluid.getIcon(fs)
+  // Todo: Is this sane?
+  def getFluidIcon(fs: FluidStack): Texture =
+    if (fs != null && fs.getFluid != null && fs.getFluid.getStill(fs) != null)
+      Texture(fs.getFluid.getStill(fs))
     else
-      Client.blockMissingIcon
+      Texture(Texture.BLOCKS, Client.missingIcon)
 
-  def getFluidIcon(f: Fluid): IIcon =
-    if (f != null) getFluidIcon(new FluidStack(f, 1)) else Client.blockMissingIcon
+  def getFluidIcon(f: Fluid): Texture =
+    if (f != null && f.getStill() != null)
+      Texture(f.getStill())
+    else
+      Texture(Texture.BLOCKS, Client.missingIcon)
 
   def getFluidColor(fs: FluidStack): Int =
     if (fs != null && fs.getFluid != null) fs.getFluid.getColor(fs) else 0xFFFFFF
@@ -143,8 +146,8 @@ object Misc {
   lazy val lineSeparator = System.getProperty("line.separator")
 
   /**
-   * Provides something like java try-with-resources in scala
-   */
+    * Provides something like java try-with-resources in scala
+    */
   def withAutoClose[T <: AutoCloseable, R](o: T)(f: T => R): R = {
     val res = try {
       f(o)

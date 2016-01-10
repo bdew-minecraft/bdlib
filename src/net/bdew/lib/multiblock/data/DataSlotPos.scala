@@ -9,23 +9,10 @@
 
 package net.bdew.lib.multiblock.data
 
-import net.bdew.lib.Misc
-import net.bdew.lib.block.BlockRef
-import net.bdew.lib.data.DataSlotOption
+import net.bdew.lib.data.DataSlotNBTOption
 import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.BlockPos
 
-case class DataSlotPos(name: String, parent: DataSlotContainer) extends DataSlotOption[BlockRef] {
+case class DataSlotPos(name: String, parent: DataSlotContainer) extends DataSlotNBTOption[BlockPos] {
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
-
-  def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    value foreach (x => t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
-  }
-
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) {
-    value = if (t.hasKey(name))
-      Some(BlockRef.fromNBT(t.getCompoundTag(name)))
-    else
-      None
-  }
 }

@@ -9,8 +9,8 @@
 
 package net.bdew.lib.multiblock.data
 
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.gui.Texture
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 abstract class SlotSet(val outputConfigId: String) {
   // outputConfigId should be registered in OutputConfigManager

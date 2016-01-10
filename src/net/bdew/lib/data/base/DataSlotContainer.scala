@@ -19,7 +19,7 @@ import scala.collection.mutable
  */
 trait DataSlotContainer {
 
-  // Can't use getWorldObj - it fails to get remapped and stuff breaks in obfuscated environment
+  // Can't use getWorld - it fails to get remapped and stuff breaks in obfuscated environment
   def getWorldObject: World
 
   /**

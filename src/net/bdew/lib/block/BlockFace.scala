@@ -9,14 +9,17 @@
 
 package net.bdew.lib.block
 
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.{BlockPos, EnumFacing}
 
-case class BlockFace(x: Int, y: Int, z: Int, face: ForgeDirection) {
-  def origin = BlockRef(x, y, z)
-  def target = origin.neighbour(face)
+case class BlockFace(pos: BlockPos, face: EnumFacing) {
+  def x = pos.getX
+  def y = pos.getY
+  def z = pos.getZ
+  def target = pos.add(face.getDirectionVec)
   def opposite = face.getOpposite
 }
 
 object BlockFace {
-  def apply(bp: BlockRef, face: ForgeDirection) = new BlockFace(bp.x, bp.y, bp.z, face)
+  def apply(x: Int, y: Int, z: Int, f: EnumFacing): BlockFace = BlockFace(new BlockPos(x, y, z), f)
 }
+

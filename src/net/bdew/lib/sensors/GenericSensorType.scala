@@ -9,11 +9,11 @@
 
 package net.bdew.lib.sensors
 
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.{DrawTarget, Rect}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
   def uid: String

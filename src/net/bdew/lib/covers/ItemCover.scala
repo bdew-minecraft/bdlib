@@ -11,8 +11,7 @@ package net.bdew.lib.covers
 
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.util.IIcon
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.EnumFacing
 
 trait ItemCover extends Item {
   /**
@@ -21,20 +20,12 @@ trait ItemCover extends Item {
   def isCoverTicking: Boolean
 
   /**
-   * @param te Host TileEntity
-   * @param side Side the cover is installed on
-   * @param cover Cover ItemStack
-   * @return Icon to render, MUST be on terrain sprite sheet (0), not item!
-   */
-  def getCoverIcon(te: TileCoverable, side: ForgeDirection, cover: ItemStack): IIcon
-
-  /**
    * Perform tick, called on server only
    * @param te Host TileEntity
    * @param side Side the cover is installed on
    * @param cover Cover ItemStack
    */
-  def tickCover(te: TileCoverable, side: ForgeDirection, cover: ItemStack): Unit = {}
+  def tickCover(te: TileCoverable, side: EnumFacing, cover: ItemStack): Unit = {}
 
   /**
    * Checks if this cover can be installed on a specific TE
@@ -52,7 +43,7 @@ trait ItemCover extends Item {
    * @param player Player clicking the cover
    * @return true if click was handled by cover
    */
-  def clickCover(te: TileCoverable, side: ForgeDirection, cover: ItemStack, player: EntityPlayer): Boolean = false
+  def clickCover(te: TileCoverable, side: EnumFacing, cover: ItemStack, player: EntityPlayer): Boolean = false
 
   /**
    * Check if cover is emitting RS signal
@@ -61,7 +52,7 @@ trait ItemCover extends Item {
    * @param cover Cover ItemStack
    * @return true if cover is emitting RS signal
    */
-  def isEmittingSignal(te: TileCoverable, side: ForgeDirection, cover: ItemStack): Boolean = false
+  def isEmittingSignal(te: TileCoverable, side: EnumFacing, cover: ItemStack): Boolean = false
 
   /**
    * Called when cover is installed on a block - called only on server
@@ -71,7 +62,7 @@ trait ItemCover extends Item {
    * @param player Player entity doing the installation
    * @return cover ItemStack - copy if modified
    */
-  def onInstall(te:TileCoverable, side: ForgeDirection, cover: ItemStack, player: EntityPlayerMP): ItemStack = cover
+  def onInstall(te: TileCoverable, side: EnumFacing, cover: ItemStack, player: EntityPlayerMP): ItemStack = cover
 
   /**
    * Called when cover is removed from block or block is destroyed - called only on server

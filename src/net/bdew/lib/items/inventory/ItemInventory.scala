@@ -9,13 +9,13 @@
 
 package net.bdew.lib.items.inventory
 
-import cpw.mods.fml.common.Loader
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.BdLib
 import net.bdew.lib.gui.GuiProvider
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.world.World
+import net.minecraftforge.fml.common.Loader
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 /**
  * Mixin for items that have an internal inventory
@@ -50,7 +50,7 @@ trait ItemInventory extends Item with GuiProvider {
     if (stack.getItem == this) {
       makeContainer(makeAdaptor(player), player)
     } else {
-      BdLib.logWarn("Attempt to open item container GUI without active item by '%s' (%s)", player.getCommandSenderName, this)
+      BdLib.logWarn("Attempt to open item container GUI without active item by '%s' (%s)", player.getName, this)
       null
     }
   }

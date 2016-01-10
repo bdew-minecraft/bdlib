@@ -12,20 +12,19 @@ package net.bdew.lib.rotate
 import java.util
 
 import net.minecraft.entity.EntityLivingBase
-import net.minecraft.util.MathHelper
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.{EnumFacing, MathHelper}
 
 object RotatedHelper {
-  def getFacingFromEntity(ent: EntityLivingBase, validRotations: util.EnumSet[ForgeDirection], default: ForgeDirection): ForgeDirection = {
+  def getFacingFromEntity(ent: EntityLivingBase, validRotations: util.EnumSet[EnumFacing], default: EnumFacing): EnumFacing = {
     val pitch = Math.round(ent.rotationPitch)
     val yaw = MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3
     yaw match {
-      case _ if pitch >= 50 && validRotations.contains(ForgeDirection.UP) => ForgeDirection.UP
-      case _ if pitch <= -50 && validRotations.contains(ForgeDirection.DOWN) => ForgeDirection.DOWN
-      case 0 if validRotations.contains(ForgeDirection.NORTH) => ForgeDirection.NORTH
-      case 1 if validRotations.contains(ForgeDirection.EAST) => ForgeDirection.EAST
-      case 2 if validRotations.contains(ForgeDirection.SOUTH) => ForgeDirection.SOUTH
-      case 3 if validRotations.contains(ForgeDirection.WEST) => ForgeDirection.WEST
+      case _ if pitch >= 50 && validRotations.contains(EnumFacing.UP) => EnumFacing.UP
+      case _ if pitch <= -50 && validRotations.contains(EnumFacing.DOWN) => EnumFacing.DOWN
+      case 0 if validRotations.contains(EnumFacing.NORTH) => EnumFacing.NORTH
+      case 1 if validRotations.contains(EnumFacing.EAST) => EnumFacing.EAST
+      case 2 if validRotations.contains(EnumFacing.SOUTH) => EnumFacing.SOUTH
+      case 3 if validRotations.contains(EnumFacing.WEST) => EnumFacing.WEST
       case _ => default
     }
   }

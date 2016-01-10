@@ -14,12 +14,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
 
 apply plugin: 'scala'
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 file "build.properties" withReader {
     def prop = new Properties()
@@ -44,6 +44,7 @@ archivesBaseName = "bdlib"
 
 minecraft {
     version = "${config.minecraft.version}-${config.forge.version}"
+    mappings = "${config.minecraft.mappings}"
     replace("BDLIB_VER", simpleVersion.toString())
 }
 
@@ -74,20 +75,20 @@ processResources {
     }
 }
 
-task sourceJar(type: Jar) {
-    classifier "sources"
-}
-
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier "dev"
     duplicatesStrategy "exclude"
 }
 
-afterEvaluate { project ->
+//task sourceJar(type: Jar) {
+//    classifier "sources"
+//}
+
+//afterEvaluate { project ->
     // Fudge the inputs of source jars so we get the version after replacements
-    tasks.getByPath(":sourceJar").from(tasks.getByPath(":sourceMainScala").outputs.files)
-}
+//    tasks.getByPath(":sourceJar").from(tasks.getByPath(":sourceMainScala").outputs.files)
+//}
 
 artifacts {
     archives sourceJar
@@ -110,16 +111,3 @@ publishing {
     }
 }
 
-apply plugin: 'curseforge'
-
-curse {
-    projectId = config.curseforge.id
-    apiKey = project.hasProperty("curseForgeApiKey") ? project.curseForgeApiKey : ""
-    releaseType = 'alpha'
-
-    artifact = jar
-    changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
-
-    additionalArtifact deobfJar
-    additionalArtifact sourceJar
-}

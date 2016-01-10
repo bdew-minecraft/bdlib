@@ -11,15 +11,14 @@ package net.bdew.lib.sensors.multiblock
 
 import java.util.Locale
 
-import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.Misc
 import net.bdew.lib.gui._
 import net.bdew.lib.multiblock.interact.CIOutputFaces
-import net.bdew.lib.render.connected.BlockAdditionalRender
 import net.bdew.lib.sensors.{GenericSensorParameter, GenericSensorType, SensorSystem}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
   def system: SensorSystem[TileEntity, Boolean]
@@ -83,13 +82,8 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
       val faces = te.outputFaces.inverted
       if (faces.isDefinedAt(output)) {
         val bf = faces(output)
-        bf.origin.block(te.getWorldObj) foreach { block =>
-          target.drawTexture(rect, Texture(Texture.BLOCKS, block.getIcon(te.getWorldObj, bf.origin.x, bf.origin.y, bf.origin.z, bf.face.ordinal())))
-          if (block.isInstanceOf[BlockAdditionalRender]) {
-            for (over <- block.asInstanceOf[BlockAdditionalRender].getFaceOverlays(te.getWorldObj, bf.origin.x, bf.origin.y, bf.origin.z, bf.face))
-              target.drawTexture(rect, Texture(Texture.BLOCKS, over.icon), over.color)
-          }
-        }
+        val block = te.getWorld.getBlockState(bf.pos).getBlock
+        // Todo: rendering
       }
 
     case _ => target.drawTexture(rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
@@ -102,10 +96,9 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
       list :+= Misc.toLocal(te.resources.unlocalizedOutputName(output))
       if (faces.isDefinedAt(output)) {
         val bf = faces(output)
-        bf.origin.block(te.getWorldObj) foreach { block =>
-          list :+= block.getLocalizedName
-          list :+= "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase(Locale.US)))
-        }
+        val block = te.getWorld.getBlockState(bf.pos).getBlock
+        list :+= block.getLocalizedName
+        list :+= "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase(Locale.US)))
       }
       list
     case _ => super.getParamTooltip(obj, param)

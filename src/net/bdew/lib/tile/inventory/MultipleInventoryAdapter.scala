@@ -32,20 +32,28 @@ class MultipleInventoryAdapter(val map: Map[Int, (IInventory, Int)]) extends IIn
   override def isItemValidForSlot(slot: Int, item: ItemStack) =
     run(slot, (i, s) => i.isItemValidForSlot(s, item)).getOrElse(false)
 
-  override def getStackInSlotOnClosing(slot: Int) =
-    run(slot, (i, s) => i.getStackInSlotOnClosing(s)).orNull
-
   override def setInventorySlotContents(slot: Int, stack: ItemStack) =
     run(slot, (i, s) => i.setInventorySlotContents(s, stack))
 
   override def getStackInSlot(slot: Int) =
     run(slot, (i, s) => i.getStackInSlot(s)).orNull
 
+  override def removeStackFromSlot(slot: Int) =
+    run(slot, (i, s) => i.removeStackFromSlot(s)).orNull
+
+  override def clear() =
+    for ((inv, slot) <- map.values)
+      inv.setInventorySlotContents(slot, null)
+
   override def markDirty() = inventories.foreach(_.markDirty())
-  override def closeInventory() = inventories.foreach(_.closeInventory())
-  override def openInventory() = inventories.foreach(_.openInventory())
+  override def closeInventory(player: EntityPlayer) = inventories.foreach(_.closeInventory(player))
+  override def openInventory(player: EntityPlayer) = inventories.foreach(_.openInventory(player))
   override def isUseableByPlayer(p: EntityPlayer) = inventories.exists(_.isUseableByPlayer(p))
 
-  override def hasCustomInventoryName = false
-  override def getInventoryName = ""
+  override def getFieldCount = 0
+  override def getField(id: Int) = 0
+  override def setField(id: Int, value: Int) = {}
+  override def getDisplayName = null
+  override def getName = ""
+  override def hasCustomName = false
 }

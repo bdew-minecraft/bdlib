@@ -10,17 +10,17 @@
 package net.bdew.lib.multiblock
 
 import net.bdew.lib.gui.{Color, Texture}
-import net.minecraft.util.IIcon
 
 trait ResourceProvider {
-  // Icons for rendering, *must* be on block sprite sheet
-  def edge: IIcon
-  def disabled: IIcon
-  def output: IIcon
-  def arrowTop: IIcon
-  def arrowRight: IIcon
-  def arrowBottom: IIcon
-  def arrowLeft: IIcon
+  // Todo: do we still need this?
+  //  // Icons for rendering, *must* be on block sprite sheet
+  //  def edge: IIcon
+  //  def disabled: IIcon
+  //  def output: IIcon
+  //  def arrowTop: IIcon
+  //  def arrowRight: IIcon
+  //  def arrowBottom: IIcon
+  //  def arrowLeft: IIcon
 
   // Textures for GUI stuff
   def btBase: Texture

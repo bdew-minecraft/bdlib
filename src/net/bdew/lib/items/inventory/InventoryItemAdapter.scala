@@ -9,6 +9,7 @@
 
 package net.bdew.lib.items.inventory
 
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.tile.inventory.BaseInventory
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -22,7 +23,6 @@ class InventoryItemAdapter(val player: EntityPlayer, val slot: Int, val size: In
     load()
 
   def load() {
-    import net.bdew.lib.nbt._
     val tag = getStack.getTagCompound
     for (nbtItem <- tag.getList[NBTTagCompound](tagName)) {
       val slot = nbtItem.getByte("Slot")

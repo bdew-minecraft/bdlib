@@ -31,5 +31,5 @@ object IStackBlock {
     if (x == null || x.getItem == null || !x.getItem.isInstanceOf[ItemBlock])
       None
     else
-      Some(x.getItem.asInstanceOf[ItemBlock].field_150939_a)
+      Some(x.getItem.asInstanceOf[ItemBlock].block)
 }

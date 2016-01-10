@@ -12,18 +12,19 @@ package net.bdew.lib.network
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.util
 
-import cpw.mods.fml.common.network.NetworkRegistry
-import cpw.mods.fml.common.network.internal.FMLProxyPacket
 import io.netty.buffer.{ByteBufInputStream, ByteBufOutputStream, Unpooled}
 import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageCodec
 import net.bdew.lib.BdLib
+import net.minecraft.network.PacketBuffer
+import net.minecraftforge.fml.common.network.NetworkRegistry
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket
 
 @Sharable
 class SerializedMessageCodec[T <: NetChannel] extends MessageToMessageCodec[FMLProxyPacket, BaseMessage[T]] {
   def encode(ctx: ChannelHandlerContext, msg: BaseMessage[T], out: util.List[AnyRef]) {
-    val buff = Unpooled.buffer()
+    val buff = new PacketBuffer(Unpooled.buffer())
     val writer = new ObjectOutputStream(new ByteBufOutputStream(buff))
     writer.writeObject(msg)
     val pkt = new FMLProxyPacket(buff, ctx.channel.attr(NetworkRegistry.FML_CHANNEL).get)

@@ -16,16 +16,16 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.{IInventory, ISidedInventory}
 import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.World
-import net.minecraftforge.common.util.ForgeDirection
 
 object ItemUtils {
-  def throwItemAt(world: World, x: Int, y: Int, z: Int, stack: ItemStack) {
+  def throwItemAt(world: World, pos: BlockPos, stack: ItemStack) {
     if ((stack == null) || world.isRemote) return
     val dx = world.rand.nextFloat * 0.8
     val dy = world.rand.nextFloat * 0.8
     val dz = world.rand.nextFloat * 0.8
-    val entity = new EntityItem(world, x + dx, y + dy, z + dz, stack)
+    val entity = new EntityItem(world, pos.getX + dx, pos.getY + dy, pos.getZ + dz, stack)
     entity.motionX = world.rand.nextGaussian * 0.05
     entity.motionY = world.rand.nextGaussian * 0.05 + 0.2
     entity.motionZ = world.rand.nextGaussian * 0.05
@@ -80,9 +80,9 @@ object ItemUtils {
     return stack
   }
 
-  def getAccessibleSlotsFromSide(inv: IInventory, side: ForgeDirection) =
+  def getAccessibleSlotsFromSide(inv: IInventory, side: EnumFacing) =
     (Misc.asInstanceOpt(inv, classOf[ISidedInventory])
-      map (_.getAccessibleSlotsFromSide(side.ordinal()).toList)
+      map (_.getSlotsForFace(side).toList)
       getOrElse (0 until inv.getSizeInventory))
 
   def findItemInInventory(inv: IInventory, item: Item) =

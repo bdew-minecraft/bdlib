@@ -12,17 +12,26 @@ package net.bdew.lib
 import java.io.{BufferedWriter, File, FileWriter}
 
 import com.google.common.collect.Table
-import cpw.mods.fml.common.registry.GameData
-import cpw.mods.fml.relauncher.FMLInjectionData
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.item.ItemStack
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fml.common.registry.GameData
+import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
 
 object CommandDumpRegistry extends CommandBase {
   def getCommandName = "dumpregistry"
   override def getRequiredPermissionLevel = 2
   def getCommandUsage(c: ICommandSender) = "dumpregistry"
+
+  implicit object ResourceLocationOrdering extends Ordering[ResourceLocation] {
+    override def compare(x: ResourceLocation, y: ResourceLocation) =
+      if (x.getResourceDomain == y.getResourceDomain)
+        x.getResourcePath.compareTo(x.getResourcePath)
+      else
+        x.getResourceDomain.compareTo(x.getResourceDomain)
+  }
 
   def processCommand(sender: ICommandSender, params: Array[String]) {
     val mcHome = FMLInjectionData.data()(6).asInstanceOf[File] //is there a better way to get this?
@@ -58,10 +67,10 @@ object CommandDumpRegistry extends CommandBase {
       dumpWriter.write(FluidRegistry.getRegisteredFluids.map(_._1).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
-      CommandBase.func_152373_a(sender, this, "Registry dumped to " + dumpFile.getCanonicalPath)
+      CommandBase.notifyOperators(sender, this, "Registry dumped to " + dumpFile.getCanonicalPath)
     } catch {
       case e: Throwable =>
-        CommandBase.func_152373_a(sender, this, "Failed to save registry dump: " + e)
+        CommandBase.notifyOperators(sender, this, "Failed to save registry dump: " + e)
         BdLib.logErrorException("Failed to save registry dump", e)
     } finally {
       dumpWriter.close()

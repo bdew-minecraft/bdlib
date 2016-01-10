@@ -10,14 +10,12 @@
 package net.bdew.lib.tile.inventory
 
 import net.bdew.lib.Misc
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.tile.TileExtended
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
 trait PersistentInventoryTile extends TileExtended with BaseInventory {
-
-  import net.bdew.lib.nbt._
-
   persistLoad.listen((tag: NBTTagCompound) => {
     inv = new Array[ItemStack](getSizeInventory)
     for (nbtItem <- tag.getList[NBTTagCompound]("Items")) {

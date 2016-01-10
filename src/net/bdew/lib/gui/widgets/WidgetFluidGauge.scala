@@ -33,7 +33,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dSlot: DataSlotTankBase
     val fStack = dSlot.getFluid
     if (fStack != null) {
       val color = Color.fromInt(Misc.getFluidColor(fStack))
-      val icon = Texture(Texture.BLOCKS, Misc.getFluidIcon(fStack))
+      val icon = Misc.getFluidIcon(fStack)
       var fillHeight = if (dSlot.getCapacity > 0) rect.h * fStack.amount / dSlot.getCapacity else 0
       var yStart: Int = 0
 

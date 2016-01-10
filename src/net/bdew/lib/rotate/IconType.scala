@@ -9,14 +9,14 @@
 
 package net.bdew.lib.rotate
 
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.EnumFacing
 
 object IconType extends Enumeration {
   val BACK = Value(0, "BACK")
   val FRONT = Value(1, "FRONT")
   val SIDE = Value(2, "SIDE")
 
-  def fromSideAndDir(side: Int, facing: ForgeDirection) = this(metaSideMap(side)(facing.ordinal))
+  def fromSideAndDir(side: Int, facing: EnumFacing) = this (metaSideMap(side)(facing.ordinal))
 
   val metaSideMap = Array(
     Array(1, 0, 2, 2, 2, 2),

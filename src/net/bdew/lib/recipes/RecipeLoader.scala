@@ -11,11 +11,11 @@ package net.bdew.lib.recipes
 
 import java.io.Reader
 
-import cpw.mods.fml.common.ModAPIManager
-import cpw.mods.fml.common.registry.GameRegistry
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
 import net.minecraft.item.{Item, ItemStack}
+import net.minecraftforge.fml.common.ModAPIManager
+import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.oredict.{OreDictionary, ShapelessOreRecipe}
 
 /**
@@ -175,8 +175,6 @@ class RecipeLoader {
       BdLib.logDebug("Concrete ItemStack for OD entry '%s' -> %s", id, s)
       return s
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)
-    case StackGeneric(mod, id) =>
-      notNull(GameRegistry.findItemStack(mod, id, cnt), "Stack not found %s:%s".format(mod, id))
     case StackBlock(mod, id, meta) =>
       val block = notNull(GameRegistry.findBlock(mod, id), "Block not found %s:%s".format(mod, id))
       if (Item.getItemFromBlock(block) == null)

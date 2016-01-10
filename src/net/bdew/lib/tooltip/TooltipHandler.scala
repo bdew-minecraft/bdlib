@@ -9,10 +9,10 @@
 
 package net.bdew.lib.tooltip
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import net.bdew.lib.{BdLib, Client}
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object TooltipHandler {
   var registry = List.empty[TooltipProvider]

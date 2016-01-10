@@ -9,37 +9,39 @@
 
 package net.bdew.lib.multiblock
 
-import net.bdew.lib.block.BlockRef
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.multiblock.tile.{TileController, TileModule}
+import net.minecraft.util.BlockPos
 import net.minecraft.world.World
 
 import scala.collection.mutable
 
 object Tools {
-  def canConnect(world: World, core: BlockRef, kind: String): Boolean = {
-    val t = core.getTile[TileController](world).getOrElse(return false)
+
+  def canConnect(world: World, core: BlockPos, kind: String): Boolean = {
+    val t = world.getTileSafe[TileController](core).getOrElse(return false)
     t.getNumOfModules(kind) < t.cfg.modules.getOrElse(kind, return false)
   }
 
-  def findConnections(world: World, start: BlockRef, kind: String) =
+  def findConnections(world: World, start: BlockPos, kind: String) =
     (start.neighbours.values flatMap { case pos =>
-      (pos.tile(world) flatMap {
+      (world.getTileEntity(pos) match {
         case t: TileModule => t.connected.value
         case t: TileController => Some(pos)
         case _ => None
       }) filter (x => canConnect(world, x, kind))
     }).toList.distinct
 
-  def getConnectedNeighbours(w: World, core: BlockRef, pos: BlockRef, seen: mutable.Set[BlockRef]) =
+  def getConnectedNeighbours(w: World, core: BlockPos, pos: BlockPos, seen: mutable.Set[BlockPos]) =
     pos.neighbours.values
       .filterNot(seen.contains)
-      .flatMap(_.getTile[TileModule](w))
+      .flatMap(p => w.getTileSafe[TileModule](p))
       .filter(x => x.connected.contains(core))
-      .map(_.myPos)
+      .map(_.getPos)
 
-  def findReachableModules(world: World, core: BlockRef): Set[BlockRef] = {
-    val seen = mutable.Set.empty[BlockRef]
-    val queue = mutable.Queue.empty[BlockRef]
+  def findReachableModules(world: World, core: BlockPos): Set[BlockPos] = {
+    val seen = mutable.Set.empty[BlockPos]
+    val queue = mutable.Queue.empty[BlockPos]
     queue ++= getConnectedNeighbours(world, core, core, seen)
     while (queue.nonEmpty) {
       val current = queue.dequeue()

@@ -11,6 +11,8 @@ package net.bdew.lib.gui
 
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import org.lwjgl.opengl.GL11
 
 trait DrawTarget {
   def getZLevel: Float
@@ -24,17 +26,18 @@ trait DrawTarget {
 }
 
 trait SimpleDrawTarget extends DrawTarget {
-  private final val T = Tessellator.instance
+  private final val T = Tessellator.getInstance()
 
   def drawTexture(r: Rect, t: Texture, color: Color = Color.white) {
     val z = getZLevel
     t.bind()
     color.activate()
-    T.startDrawingQuads()
-    T.addVertexWithUV(r.x1, r.y2, z, t.u1, t.v2)
-    T.addVertexWithUV(r.x2, r.y2, z, t.u2, t.v2)
-    T.addVertexWithUV(r.x2, r.y1, z, t.u2, t.v1)
-    T.addVertexWithUV(r.x1, r.y1, z, t.u1, t.v1)
+    val W = T.getWorldRenderer
+    W.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
+    W.pos(r.x1, r.y2, z).tex(t.u1, t.v2).endVertex()
+    W.pos(r.x2, r.y2, z).tex(t.u2, t.v2).endVertex()
+    W.pos(r.x2, r.y1, z).tex(t.u2, t.v1).endVertex()
+    W.pos(r.x1, r.y1, z).tex(t.u1, t.v1).endVertex()
     T.draw()
   }
 

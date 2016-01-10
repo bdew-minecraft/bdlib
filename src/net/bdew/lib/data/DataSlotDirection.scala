@@ -11,10 +11,10 @@ package net.bdew.lib.data
 
 import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.EnumFacing
 
-case class DataSlotDirection(name: String, parent: DataSlotContainer) extends DataSlotVal[ForgeDirection] {
-  var value = ForgeDirection.UP
+case class DataSlotDirection(name: String, parent: DataSlotContainer) extends DataSlotVal[EnumFacing] {
+  var value = EnumFacing.UP
   def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setByte(name, value.ordinal().toByte)
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = ForgeDirection.getOrientation(t.getByte(name))
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = EnumFacing.getFront(t.getByte(name))
 }
