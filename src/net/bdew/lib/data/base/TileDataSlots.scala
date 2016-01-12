@@ -9,7 +9,7 @@
 
 package net.bdew.lib.data.base
 
-import net.bdew.lib.tile.TileExtended
+import net.bdew.lib.tile.{TileExtended, TileTicking}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity
 
@@ -48,3 +48,5 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
     super.extDataPacket(id, data)
   }
 }
+
+trait TileDataSlotsTicking extends TileDataSlots with DataSlotContainerTicking with TileTicking

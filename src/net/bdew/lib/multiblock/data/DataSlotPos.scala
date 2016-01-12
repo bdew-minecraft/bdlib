@@ -9,6 +9,7 @@
 
 package net.bdew.lib.multiblock.data
 
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.DataSlotNBTOption
 import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
 import net.minecraft.util.BlockPos

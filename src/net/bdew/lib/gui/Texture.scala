@@ -63,6 +63,7 @@ object Texture {
 
   // Todo: Does that make sense?
   def apply(res: ResourceLocation) = new Sprite(res, Rect(0, 0, 1, 1), 1)
+  def apply(path: String) = new Sprite(new ResourceLocation(path), Rect(0, 0, 1, 1), 1)
 
   // From a ResourceLocation and position, scale optional
   def apply(res: ResourceLocation, r: Rect) = new Sprite(res, r)

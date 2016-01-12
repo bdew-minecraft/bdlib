@@ -11,14 +11,13 @@ package net.bdew.lib.multiblock.tile
 
 import net.bdew.lib.BdLib
 import net.bdew.lib.PimpVanilla._
-import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{TileDataSlotsTicking, UpdateKind}
 import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.multiblock.data.DataSlotPosSet
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider, Tools}
-import net.bdew.lib.tile.TileTicking
 import net.minecraft.entity.player.EntityPlayer
 
-trait TileController extends TileDataSlots with TileTicking {
+trait TileController extends TileDataSlotsTicking {
   val modules = new DataSlotPosSet("modules", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE)
 
   def resources: ResourceProvider

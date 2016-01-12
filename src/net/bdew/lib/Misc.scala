@@ -84,9 +84,6 @@ object Misc {
     cont.getModId + " " + cont.getVersion
   }
 
-  // Because writing this every time is awkward
-  def forgeDirection(i: Int) = EnumFacing.values()(i)
-
   // Easy replacement for various "if(foo.isInstanceOf[Bar]) foo.asInstanceOf[Bar]" constructs
   def asInstanceOpt[T](v: Any, cls: Class[T]) =
     if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None

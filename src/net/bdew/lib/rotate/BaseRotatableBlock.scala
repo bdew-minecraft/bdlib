@@ -11,6 +11,7 @@ package net.bdew.lib.rotate
 
 import java.util
 
+import net.bdew.lib.PimpVanilla._
 import net.minecraft.block.Block
 import net.minecraft.block.properties.PropertyDirection
 import net.minecraft.block.state.IBlockState
@@ -20,27 +21,27 @@ import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
 /**
- * Basic logic for block rotation
- */
+  * Basic logic for block rotation
+  */
 trait BaseRotatableBlock extends Block {
   val facingProperty: PropertyDirection
 
   /**
-   * Set of valid rotations, default is all of them
-   */
+    * Set of valid rotations, default is all of them
+    */
   def getValidFacings: util.EnumSet[EnumFacing] = {
     return util.EnumSet.allOf(classOf[EnumFacing])
   }
 
   /**
-   * Rotation to show when it's unavailable (like rendering item in inventory)
-   */
+    * Rotation to show when it's unavailable (like rendering item in inventory)
+    */
   def getDefaultFacing: EnumFacing = EnumFacing.UP
 
-  /**
-    * Will be overriden to provide actual storage, along with getActualState
-   */
-  def setFacing(world: World, pos: BlockPos, facing: EnumFacing)
+  def setFacing(world: World, pos: BlockPos, facing: EnumFacing) =
+    world.changeBlockState(pos, 3) { state =>
+      state.withProperty(facingProperty, facing)
+    }
 
   def getFacing(world: IBlockAccess, pos: BlockPos): EnumFacing =
     world.getBlockState(pos).getValue(facingProperty)

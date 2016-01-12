@@ -9,42 +9,38 @@
 
 package net.bdew.lib.data.base
 
+import net.bdew.lib.Event0
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 
 import scala.collection.mutable
 
 /**
- * Base Trait for objects that can contain Data Slots, this allows implementing them on things that aren't TEs
- */
+  * Base Trait for objects that can contain Data Slots, this allows implementing them on things that aren't TEs
+  */
 trait DataSlotContainer {
 
   // Can't use getWorld - it fails to get remapped and stuff breaks in obfuscated environment
   def getWorldObject: World
 
   /**
-   * Called when a dataslot value changes
-   */
+    * Called when a dataslot value changes
+    */
   def dataSlotChanged(slot: DataSlot): Unit
 
   /**
-   * Register a function to run on every server tick
-   */
-  def onServerTick(f: () => Unit): Unit
-
-  /**
-   * List of dataslots in this container
-   */
+    * List of dataslots in this container
+    */
   val dataSlots = mutable.HashMap.empty[String, DataSlot]
 
   /**
-   * The value of getTotalWorldTime when the last change happened
-   */
+    * The value of getTotalWorldTime when the last change happened
+    */
   var lastChange = 0L
 
   /**
-   * The value of getTotalWorldTime when the last GUI packet was sent happened
-   */
+    * The value of getTotalWorldTime when the last GUI packet was sent happened
+    */
   var lastGuiPacket = 0L
 
   final val TRACE = false
@@ -73,5 +69,16 @@ trait DataSlotContainer {
     }
   }
 }
+
+/**
+  * Traits for container that support ticks.
+  * Register handler with server/clientTick.listen(...)
+  */
+trait DataSlotContainerTicking extends DataSlotContainer {
+  val serverTick: Event0
+  val clientTick: Event0
+}
+
+
 
 

@@ -9,25 +9,23 @@
 
 package net.bdew.lib.data
 
-import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
+import net.bdew.lib.data.base.{DataSlotContainerTicking, DataSlotTicking, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids._
 
-abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlot {
+abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlotTicking {
   var oldStack: FluidStack = null
-
-  parent.onServerTick(checkUpdate)
 
   updateKind = Set(UpdateKind.GUI, UpdateKind.SAVE)
 
   val sendCapacityOnUpdateKind = Set(UpdateKind.GUI)
 
-  def checkUpdate() {
+  parent.serverTick.listen(() => {
     if (!isSame(oldStack, fluid)) {
       oldStack = if (fluid == null) null else fluid.copy()
       parent.dataSlotChanged(this)
     }
-  }
+  })
 
   def isSame(v1: FluidStack, v2: FluidStack): Boolean = {
     if (v1 == null && v2 == null) return true
@@ -67,9 +65,9 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
       super.fill(resource, false)
 }
 
-case class DataSlotTank(name: String, parent: DataSlotContainer, size: Int) extends DataSlotTankBase(size)
+case class DataSlotTank(name: String, parent: DataSlotContainerTicking, size: Int) extends DataSlotTankBase(size)
 
-case class DataSlotTankRestricted(name: String, parent: DataSlotContainer, var size: Int, filterFluid: Fluid) extends DataSlotTankBase(size) {
+case class DataSlotTankRestricted(name: String, parent: DataSlotContainerTicking, var size: Int, filterFluid: Fluid) extends DataSlotTankBase(size) {
   def fill(amount: Int, doFill: Boolean) = super.fill(new FluidStack(filterFluid, amount), doFill)
 
   override def fill(resource: FluidStack, doFill: Boolean): Int = {

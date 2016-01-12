@@ -50,7 +50,7 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
     state.getValue(facingProperty).ordinal() | (if (state.getValue(stateProperty)) 8 else 0)
   }
 
-  def isSignalOn(world: IBlockAccess, pos: BlockPos) =
+  def isSignalOn(world: IBlockAccess, pos: BlockPos): Boolean =
     world.getBlockState(pos).getValue(stateProperty)
 
   def setSignal(world: World, pos: BlockPos, signal: Boolean): Unit = {

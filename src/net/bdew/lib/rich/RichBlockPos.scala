@@ -18,16 +18,18 @@ class RichBlockPos(val v: BlockPos) extends AnyVal {
 
   def to(that: BlockPos) =
     for {
-      x <- v.getX to that.getX
-      y <- v.getY to that.getZ
-      z <- v.getY to that.getZ
+      x <- v.getX to that.getX by (if (v.getX <= that.getX) 1 else -1)
+      y <- v.getY to that.getY by (if (v.getY <= that.getY) 1 else -1)
+      z <- v.getZ to that.getZ by (if (v.getZ <= that.getZ) 1 else -1)
     } yield new BlockPos(x, y, z)
 
   def until(that: BlockPos) =
     for {
-      x <- v.getX until that.getX
-      y <- v.getY until that.getZ
-      z <- v.getY until that.getZ
+      x <- v.getX until that.getX by (if (v.getX <= that.getX) 1 else -1)
+      y <- v.getY until that.getY by (if (v.getY <= that.getY) 1 else -1)
+      z <- v.getZ until that.getZ by (if (v.getZ <= that.getZ) 1 else -1)
     } yield new BlockPos(x, y, z)
+
+  def copy(x: Int = v.getX, y: Int = v.getY, z: Int = v.getZ) = new BlockPos(x, y, z)
 }
 
