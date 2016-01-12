@@ -11,7 +11,7 @@ package net.bdew.lib.multiblock.block
 
 import net.bdew.lib.Misc
 import net.bdew.lib.PimpVanilla._
-import net.bdew.lib.block.{BlockTooltip, HasTE}
+import net.bdew.lib.block.{BaseBlock, BlockTooltip, HasTE}
 import net.bdew.lib.config.MachineManagerMultiblock
 import net.bdew.lib.multiblock.tile.TileModule
 import net.bdew.lib.multiblock.{ResourceProvider, Tools}
@@ -25,8 +25,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.{BlockPos, ChatComponentTranslation, EnumChatFormatting, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
-abstract class BlockModule[T <: TileModule](val name: String, val kind: String, material: Material, val TEClass: Class[T], val machines: MachineManagerMultiblock)
-  extends Block(material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
+abstract class BlockModule[T <: TileModule](name: String, val kind: String, material: Material, val TEClass: Class[T], val machines: MachineManagerMultiblock)
+  extends BaseBlock(name, material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
 
   def resources: ResourceProvider
 

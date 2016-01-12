@@ -12,14 +12,17 @@ package net.bdew.lib.block
 import net.bdew.lib.Misc
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
 
-import scala.language.implicitConversions
-
-trait NamedBlock extends Block {
-  def name: String
-}
-
-class SimpleBlock(val name: String, material: Material) extends Block(material) with NamedBlock {
+class BaseBlock(val name: String, material: Material) extends Block(material) {
   val modId = Misc.getActiveModId
   setRegistryName(modId, name)
+  setUnlocalizedName(modId + "." + name)
+
+  /**
+    * Called before a block is registered to do any late setup
+    */
+  def preRegistration(): Unit = {}
+
+  def setDefaultBlockState(bs: IBlockState) = super.setDefaultState(bs)
 }

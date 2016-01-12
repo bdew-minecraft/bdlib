@@ -11,7 +11,6 @@ package net.bdew.lib.rotate
 
 import net.bdew.lib.block.HasTE
 import net.minecraft.block.ITileEntityProvider
-import net.minecraft.block.state.IBlockState
 import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
@@ -24,7 +23,6 @@ trait RotatableTileBlock extends BaseRotatableBlock with ITileEntityProvider {
   override def setFacing(world: World, pos: BlockPos, facing: EnumFacing) = {
     getTE(world, pos).rotation := facing
   }
-
-  override def getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos) =
-    state.withProperty(facingProperty, getTE(worldIn, pos).rotation.value)
+  override def getFacing(world: IBlockAccess, pos: BlockPos): EnumFacing =
+    getTE(world, pos).rotation
 }

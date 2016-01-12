@@ -12,8 +12,7 @@ package net.bdew.lib.rotate
 import java.util
 
 import net.bdew.lib.PimpVanilla._
-import net.minecraft.block.Block
-import net.minecraft.block.properties.PropertyDirection
+import net.bdew.lib.block.BaseBlock
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.item.ItemStack
@@ -23,9 +22,7 @@ import net.minecraft.world.{IBlockAccess, World}
 /**
   * Basic logic for block rotation
   */
-trait BaseRotatableBlock extends Block {
-  val facingProperty: PropertyDirection
-
+trait BaseRotatableBlock extends BaseBlock {
   /**
     * Set of valid rotations, default is all of them
     */
@@ -38,13 +35,11 @@ trait BaseRotatableBlock extends Block {
     */
   def getDefaultFacing: EnumFacing = EnumFacing.UP
 
-  def setFacing(world: World, pos: BlockPos, facing: EnumFacing) =
-    world.changeBlockState(pos, 3) { state =>
-      state.withProperty(facingProperty, facing)
-    }
-
-  def getFacing(world: IBlockAccess, pos: BlockPos): EnumFacing =
-    world.getBlockState(pos).getValue(facingProperty)
+  /**
+    * Those will be overridden to provide concrete storage
+    */
+  def setFacing(world: World, pos: BlockPos, facing: EnumFacing)
+  def getFacing(world: IBlockAccess, pos: BlockPos): EnumFacing
 
   override def rotateBlock(world: World, pos: BlockPos, axis: EnumFacing): Boolean = {
     if (getValidFacings.contains(axis)) {

@@ -10,11 +10,10 @@
 package net.bdew.lib.multiblock.block
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{BlockTooltip, HasTE}
+import net.bdew.lib.block.{BaseBlock, BlockTooltip, HasTE}
 import net.bdew.lib.multiblock.tile.TileController
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
-import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -22,8 +21,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.{BlockPos, EnumChatFormatting, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
-abstract class BlockController[T <: TileController](val name: String, material: Material, val TEClass: Class[T])
-  extends Block(material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
+abstract class BlockController[T <: TileController](name: String, material: Material, val TEClass: Class[T])
+  extends BaseBlock(name, material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
 
   var machine: MachineCore = null
 

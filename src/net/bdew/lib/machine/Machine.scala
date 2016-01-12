@@ -10,14 +10,13 @@
 package net.bdew.lib.machine
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{HasItemBlock, HasTE}
+import net.bdew.lib.block.{BaseBlock, HasItemBlock, HasTE}
 import net.bdew.lib.recipes.gencfg.ConfigSection
-import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraftforge.fml.common.registry.GameRegistry
 
-abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
+abstract class Machine[T <: BaseBlock](val name: String, blockConstruct: => T) {
   var block: T = null.asInstanceOf[T]
   var tuning: ConfigSection = null
   var enabled = false
@@ -30,6 +29,8 @@ abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
       block.asInstanceOf[HasItemBlock].ItemBlockClass
     else
       classOf[ItemBlock]
+
+    block.preRegistration()
 
     GameRegistry.registerBlock(block, itemClass, name)
 
