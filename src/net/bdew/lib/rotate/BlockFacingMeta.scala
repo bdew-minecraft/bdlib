@@ -11,8 +11,7 @@ package net.bdew.lib.rotate
 
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.block.BaseBlock
-import net.minecraft.block.properties.PropertyDirection
-import net.minecraft.block.state.{BlockState, IBlockState}
+import net.minecraft.block.state.IBlockState
 import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
@@ -20,14 +19,9 @@ import net.minecraft.world.{IBlockAccess, World}
   * Mixin that stores rotation in metadata
   */
 trait BlockFacingMeta extends BaseBlock with BaseRotatableBlock {
-
-  object Properties {
-    val FACING = PropertyDirection.create("facing")
-  }
-
   setDefaultBlockState(getDefaultState.withProperty(Properties.FACING, getDefaultFacing))
 
-  override def createBlockState(): BlockState = new BlockState(this, Properties.FACING)
+  override def getProperties = super.getProperties :+ Properties.FACING
 
   override def setFacing(world: World, pos: BlockPos, facing: EnumFacing): Unit =
     world.changeBlockState(pos, 3) {

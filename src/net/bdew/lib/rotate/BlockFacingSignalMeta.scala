@@ -11,8 +11,7 @@ package net.bdew.lib.rotate
 
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.block.BaseBlock
-import net.minecraft.block.properties.{PropertyBool, PropertyDirection}
-import net.minecraft.block.state.{BlockState, IBlockState}
+import net.minecraft.block.state.IBlockState
 import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.{IBlockAccess, World}
 
@@ -20,18 +19,12 @@ import net.minecraft.world.{IBlockAccess, World}
   * Mixin that stores rotation + boolean value in metadata
   */
 trait BlockFacingSignalMeta extends BaseBlock with BaseRotatableBlock {
-
-  object Properties {
-    val SIGNAL = PropertyBool.create("signal")
-    val FACING = PropertyDirection.create("facing")
-  }
-
   setDefaultBlockState(getDefaultState
     .withProperty(Properties.FACING, getDefaultFacing)
     .withProperty(Properties.SIGNAL, Boolean.box(false))
   )
 
-  override def createBlockState(): BlockState = new BlockState(this, Properties.FACING, Properties.SIGNAL)
+  override def getProperties = super.getProperties :+ Properties.FACING :+ Properties.SIGNAL
 
   override def setFacing(world: World, pos: BlockPos, facing: EnumFacing): Unit =
     world.changeBlockState(pos, 3) {
