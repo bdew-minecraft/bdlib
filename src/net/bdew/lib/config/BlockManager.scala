@@ -11,11 +11,13 @@ package net.bdew.lib.config
 
 import net.bdew.lib.Misc
 import net.bdew.lib.block.{BaseBlock, HasItemBlock, HasTE}
+import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.ItemBlock
+import net.minecraft.item.{Item, ItemBlock}
 import net.minecraft.tileentity.TileEntity
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper
+import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.fml.common.{FMLCommonHandler, ObfuscationReflectionHelper}
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: BaseBlock](block: T, skipTileEntityReg: Boolean = false): T = {
@@ -33,6 +35,10 @@ class BlockManager(creativeTab: CreativeTabs) {
     if (block.isInstanceOf[HasTE[_]] && !skipTileEntityReg)
       GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
         "%s.%s".format(Misc.getActiveModId, block.name))
+
+    if (FMLCommonHandler.instance().getSide.isClient) {
+      ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName, "inventory"))
+    }
 
     return block
   }
