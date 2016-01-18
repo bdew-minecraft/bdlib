@@ -12,14 +12,20 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        maven {
+            name = "gradle plugins"
+            url = "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.7"
     }
 }
 
 apply plugin: 'scala'
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle'
 
 file "build.properties" withReader {
     def prop = new Properties()
@@ -45,6 +51,7 @@ archivesBaseName = "bdlib"
 minecraft {
     version = "${config.minecraft.version}-${config.forge.version}"
     mappings = "${config.minecraft.mappings}"
+    makeObfSourceJar = false
     replace("BDLIB_VER", simpleVersion.toString())
 }
 
@@ -59,7 +66,6 @@ sourceSets {
         resources {
             srcDir 'resources'
         }
-        output.resourcesDir = output.classesDir // Hack for IDEA
     }
 }
 
@@ -78,20 +84,20 @@ processResources {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier "dev"
-    duplicatesStrategy "exclude"
 }
 
-//task sourceJar(type: Jar) {
-//    classifier "sources"
-//}
+task sourceJarReal(type: Jar) {
+    // FG has a task named sourceJar that seems to be borked
+    classifier "sources"
+}
 
-//afterEvaluate { project ->
-    // Fudge the inputs of source jars so we get the version after replacements
-//    tasks.getByPath(":sourceJar").from(tasks.getByPath(":sourceMainScala").outputs.files)
-//}
+afterEvaluate { project ->
+    // Use sources after replacements
+    tasks.getByPath(":sourceJarReal").from(tasks.getByPath(":sourceMainScala").outputs.files)
+}
 
 artifacts {
-    archives sourceJar
+    archives sourceJarReal
     archives deobfJar
 }
 
@@ -101,7 +107,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifact deobfJar
-            artifact sourceJar
+            artifact sourceJarReal
         }
     }
     repositories {
@@ -111,3 +117,26 @@ publishing {
     }
 }
 
+curseforge {
+    apiKey = project.hasProperty("curseForgeApiKey") ? project.curseForgeApiKey : ""
+    project {
+        id = config.curseforge.id
+
+        releaseType = "alpha"
+        changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
+
+        addGameVersion config.minecraft.version
+
+        mainArtifact(jar) {
+            displayName = "BDLib ${simpleVersion} (MC ${config.minecraft.version})"
+        }
+
+        addArtifact(deobfJar) {
+            displayName = "BDLib ${simpleVersion} Source (MC ${config.minecraft.version})"
+        }
+
+        addArtifact(sourceJarReal) {
+            displayName = "BDLib ${simpleVersion} Deobfuscated (MC ${config.minecraft.version})"
+        }
+    }
+}
