@@ -12,17 +12,18 @@ package net.bdew.lib.model
 import java.util
 
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.client.resources.model.IBakedModel
 import net.minecraft.util.EnumFacing
+import net.minecraftforge.client.model.IFlexibleBakedModel
 
 import scala.collection.JavaConversions._
 
 /**
   * Simple wrapper around IBakedModel that adds additional face quads
+  *
   * @param base base model
   * @param add map of face quads to add
   */
-class BakedModelAdditionalFaceQuads(base: IBakedModel, add: Map[EnumFacing, List[BakedQuad]]) extends BakedModelProxy(base) {
+class BakedModelAdditionalFaceQuads(base: IFlexibleBakedModel, add: Map[EnumFacing, List[BakedQuad]]) extends FlexibleBakedModelProxy(base) {
   override def getFaceQuads(face: EnumFacing): util.List[BakedQuad] =
     if (add.isDefinedAt(face)) super.getFaceQuads(face) ++ add(face) else super.getFaceQuads(face)
 }
