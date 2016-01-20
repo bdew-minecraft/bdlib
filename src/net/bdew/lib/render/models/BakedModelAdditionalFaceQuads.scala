@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.lib.model
+package net.bdew.lib.render.models
 
 import java.util
 

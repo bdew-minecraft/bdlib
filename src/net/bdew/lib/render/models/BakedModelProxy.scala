@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.lib.model
+package net.bdew.lib.render.models
 
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms
 import net.minecraft.client.resources.model.IBakedModel
@@ -16,6 +16,7 @@ import net.minecraftforge.client.model.IFlexibleBakedModel
 
 /**
   * Base class for wrappers around IBakedModel
+  *
   * @param base base model
   */
 class BakedModelProxy(val base: IBakedModel) extends IBakedModel {
@@ -35,6 +36,7 @@ class BakedModelProxy(val base: IBakedModel) extends IBakedModel {
 
 /**
   * Base class for wrappers around IFlexibleBakedModel
+  *
   * @param base base model
   */
 class FlexibleBakedModelProxy(override val base: IFlexibleBakedModel) extends BakedModelProxy(base) with IFlexibleBakedModel {

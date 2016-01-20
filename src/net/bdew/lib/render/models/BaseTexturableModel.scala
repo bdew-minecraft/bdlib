@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.lib.model
+package net.bdew.lib.render.models
 
 import com.google.common.base.Function
 import com.google.common.collect.ImmutableMap
