@@ -121,16 +121,15 @@ object Misc {
       seq(pos - 1)
   }
 
-  // Todo: Is this sane?
   def getFluidIcon(fs: FluidStack): Texture =
     if (fs != null && fs.getFluid != null && fs.getFluid.getStill(fs) != null)
-      Texture(fs.getFluid.getStill(fs))
+      Texture(Texture.BLOCKS, Client.textureMapBlocks.getAtlasSprite(fs.getFluid.getStill(fs).toString))
     else
       Texture(Texture.BLOCKS, Client.missingIcon)
 
   def getFluidIcon(f: Fluid): Texture =
     if (f != null && f.getStill() != null)
-      Texture(f.getStill())
+      Texture(Texture.BLOCKS, Client.textureMapBlocks.getAtlasSprite(f.getStill.toString))
     else
       Texture(Texture.BLOCKS, Client.missingIcon)
 

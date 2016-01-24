@@ -30,7 +30,6 @@ class InterpolatedTexture(val texture: Texture, rect: Rect) extends Texture {
   def v2 = rect.y2 * (texture.v2 - texture.v1) + texture.v1
 }
 
-//TODO: Do we need this?
 class IconWrapper(val resource: ResourceLocation, aIcon: TextureAtlasSprite) extends Texture {
   val icon = if (aIcon == null) Client.missingIcon else aIcon
 
@@ -58,7 +57,7 @@ class ScaledResourceLocation(path: String, val scale: Int = 256) extends Resourc
 object Texture {
   val BLOCKS = TextureMap.locationBlocksTexture
 
-  // From minecraft Icon Todo: is this still useful?
+  // From minecraft sprite
   def apply(res: ResourceLocation, i: TextureAtlasSprite) = new IconWrapper(res, i)
 
   // Todo: Does that make sense?
