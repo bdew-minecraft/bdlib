@@ -27,16 +27,17 @@ abstract class ModelEnhancer {
   /**
     * Override to specify additional textures
     */
-  val additionalTextures = List.empty[ResourceLocation]
+  val additionalTextureLocations = List.empty[ResourceLocation]
 
   /**
     * Implement logic here
     *
-    * @param base  baked version of base model
-    * @param state current block state
+    * @param base     baked version of base model
+    * @param state    current block state
+    * @param textures contains textures from additionalTextureLocations
     * @return modified baked model (or base if nothing is changed)
     */
-  def handleState(base: IFlexibleBakedModel, state: IBlockState): IFlexibleBakedModel
+  def handleState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]): IFlexibleBakedModel
 
   /**
     * Wrap around basic model
@@ -47,7 +48,7 @@ abstract class ModelEnhancer {
   def wrap(base: IModel): IRetexturableModel = new SmartUnbakedWrapper(base)
 
   private class SmartUnbakedWrapper(base: IModel) extends IRetexturableModel {
-    override def getTextures = base.getTextures ++ additionalTextures
+    override def getTextures = base.getTextures ++ additionalTextureLocations
     override def getDefaultState = base.getDefaultState
     override def getDependencies = base.getDependencies
 
@@ -58,8 +59,9 @@ abstract class ModelEnhancer {
 
     override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function[ResourceLocation, TextureAtlasSprite]) = {
       val baked = base.bake(state, format, bakedTextureGetter)
+      val additionalSprites = additionalTextureLocations.map(res => res -> bakedTextureGetter(res)).toMap
       new FlexibleBakedModelProxy(baked) with ISmartBlockModel {
-        override def handleBlockState(state: IBlockState): IBakedModel = handleState(baked, state)
+        override def handleBlockState(state: IBlockState): IBakedModel = handleState(baked, state, additionalSprites)
       }
     }
   }
@@ -73,9 +75,9 @@ object ModelEnhancer {
     * @return combined enhancer that will apply both e1 and e2
     */
   def compose(e1: ModelEnhancer, e2: ModelEnhancer) = new ModelEnhancer {
-    override val additionalTextures: List[ResourceLocation] = e1.additionalTextures ++ e2.additionalTextures
-    override def handleState(base: IFlexibleBakedModel, state: IBlockState) = {
-      e2.handleState(e1.handleState(base, state), state)
+    override val additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
+    override def handleState(base: IFlexibleBakedModel, state: IBlockState, additionalSprites: Map[ResourceLocation, TextureAtlasSprite]) = {
+      e2.handleState(e1.handleState(base, state, additionalSprites), state, additionalSprites)
     }
   }
 }
