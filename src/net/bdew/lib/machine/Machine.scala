@@ -12,8 +12,11 @@ package net.bdew.lib.machine
 import net.bdew.lib.Misc
 import net.bdew.lib.block.{BaseBlock, HasItemBlock, HasTE}
 import net.bdew.lib.recipes.gencfg.ConfigSection
+import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.ItemBlock
+import net.minecraft.item.{Item, ItemBlock}
+import net.minecraftforge.client.model.ModelLoader
+import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.registry.GameRegistry
 
 abstract class Machine[T <: BaseBlock](val name: String, blockConstruct: => T) {
@@ -33,6 +36,10 @@ abstract class Machine[T <: BaseBlock](val name: String, blockConstruct: => T) {
     block.preRegistration()
 
     GameRegistry.registerBlock(block, itemClass, name)
+
+    if (FMLCommonHandler.instance().getSide.isClient) {
+      ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName, "inventory"))
+    }
 
     block.setCreativeTab(creativeTab)
     if (block.isInstanceOf[HasTE[_]]) {
