@@ -14,8 +14,8 @@ import net.bdew.lib.data.base.{DataSlotVal, UpdateKind}
 import net.bdew.lib.sensors.multiblock.TileRedstoneSensorModule
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotSensor[T, R](registry: SensorSystem[T, R], name: String, parent: TileRedstoneSensorModule, default: GenericSensorType[T, R]) extends DataSlotVal[SensorPair[T, R]] {
-  override var value = SensorPair(default, default.defaultParameter)
+case class DataSlotSensor[T, R](registry: SensorSystem[T, R], name: String, parent: TileRedstoneSensorModule, sensorType: GenericSensorType[T, R]) extends DataSlotVal[SensorPair[T, R]] {
+  override def default = SensorPair(sensorType, sensorType.defaultParameter)
 
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
@@ -29,7 +29,7 @@ case class DataSlotSensor[T, R](registry: SensorSystem[T, R], name: String, pare
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) = {
     value = registry.get(t.getCompoundTag(name).getString("uid"))
       .map(x => SensorPair(x, x.loadParameter(t.getCompoundTag(name))))
-      .getOrElse(SensorPair(default, default.defaultParameter))
+      .getOrElse(default)
   }
 
   def ensureValid(obj: T): Unit = {

@@ -9,7 +9,7 @@
 
 package net.bdew.lib.resource
 
-import net.bdew.lib.Misc
+import net.bdew.lib.nbt.NBT
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.FluidStack
@@ -46,7 +46,7 @@ object ResourceManager {
   }
 
   def saveToNBT(r: Resource) = {
-    Misc.applyMutator(new NBTTagCompound) { tag =>
+    NBT.from { tag =>
       r.kind.helperObject.saveToNBT(tag, r.kind)
       tag.setDouble("amount", r.amount)
       tag.setString("kind", r.kind.helperObject.id)

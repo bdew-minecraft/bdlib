@@ -9,18 +9,26 @@
 
 package net.bdew.lib.power
 
-import net.bdew.lib.data.DataSlotItemStack
+import net.bdew.lib.PimpVanilla._
+import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.UpdateKind
 import net.bdew.lib.items.ItemUtils
+import net.minecraft.item.ItemStack
 
 abstract class TileItemProcessor extends TileBaseProcessor {
-  val output = DataSlotItemStack("output", this).setUpdate(UpdateKind.SAVE)
+  val output = DataSlotOption[ItemStack]("output", this).setUpdate(UpdateKind.SAVE)
   val outputSlots: Seq[Int]
 
-  def isWorking = output :!= null
+  def isWorking = output.isDefined
 
   def tryFinish(): Boolean = {
-    output := ItemUtils.addStackToSlots(output, this, outputSlots, false)
-    return output :== null
+    output foreach { stack =>
+      val left = ItemUtils.addStackToSlots(stack, this, outputSlots, false)
+      if (left == null || left.stackSize <= 0)
+        output.unset()
+      else
+        output.set(left)
+    }
+    return output.isEmpty
   }
 }

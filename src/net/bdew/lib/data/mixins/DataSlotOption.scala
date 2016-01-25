@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2013 - 2014
+ * Copyright (c) bdew, 2013 - 2016
  * https://github.com/bdew/bdlib
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -7,12 +7,12 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.lib.data
+package net.bdew.lib.data.mixins
 
 import net.bdew.lib.data.base.DataSlotVal
 
 abstract class DataSlotOption[T] extends DataSlotVal[Option[T]] {
-  override var value: Option[T] = None
+  override val default = None
 
   def set(v: T) {
     if (v == null) sys.error("Null should never be used with DataSlotOption")

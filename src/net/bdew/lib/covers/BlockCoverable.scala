@@ -25,7 +25,7 @@ trait BlockCoverable extends Block {
   private def getCoverItem(w: IBlockAccess, pos: BlockPos, side: EnumFacing): Option[(ItemCover, ItemStack, TileCoverable)] = {
     val te = getTE(w, pos)
     for {
-      coverStack <- Option(te.covers(side).value)
+      coverStack <- te.covers(side)
       coverItemMaybe <- Option(coverStack.getItem)
       coverItem <- Misc.asInstanceOpt(coverItemMaybe, classOf[ItemCover])
     } yield (coverItem, coverStack, te)
@@ -37,7 +37,7 @@ trait BlockCoverable extends Block {
     // Shift+RightClick with empty hand should remove cover
     if (player.getCurrentEquippedItem == null && player.isSneaking) {
       for {
-        cover <- Option(te.covers(side).value)
+        cover <- te.covers(side)
         coverItem <- Misc.asInstanceOpt(cover.getItem, classOf[ItemCover])
       } {
         if (!world.isRemote) {
@@ -59,13 +59,13 @@ trait BlockCoverable extends Block {
     } {
       if (!world.isRemote && player.isInstanceOf[EntityPlayerMP]) {
         for {
-          oldCover <- Option(te.covers(side).value)
+          oldCover <- te.covers(side)
           oldItem <- Misc.asInstanceOpt(oldCover.getItem, classOf[ItemCover])
         } {
           ItemUtils.throwItemAt(world, pos.offset(side), oldItem.onRemove(oldCover))
         }
 
-        te.covers(side) := coverItem.onInstall(te, side, activeStack.splitStack(1), player.asInstanceOf[EntityPlayerMP])
+        te.covers(side).set(coverItem.onInstall(te, side, activeStack.splitStack(1), player.asInstanceOf[EntityPlayerMP]))
 
         if (activeStack.stackSize <= 0)
           player.inventory.setInventorySlotContents(player.inventory.currentItem, null)
@@ -102,8 +102,8 @@ trait BlockCoverable extends Block {
     if (!world.isRemote) {
       val te = getTE(world, pos)
       for {
-        (dir, covOpt) <- te.covers
-        cover <- Option(covOpt.value)
+        (dir, slot) <- te.covers
+        cover <- slot
         item <- Misc.asInstanceOpt(cover.getItem, classOf[ItemCover])
       } {
         te.covers(dir) := null

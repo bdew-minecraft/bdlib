@@ -9,9 +9,9 @@
 
 package net.bdew.lib.resource
 
-import net.bdew.lib.Misc
-import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
+import net.bdew.lib.data.mixins.DataSlotOption
+import net.bdew.lib.nbt.NBT
 import net.minecraft.nbt.NBTTagCompound
 
 case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) extends DataSlotOption[ResourceKind] {
@@ -19,12 +19,10 @@ case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) e
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     value foreach { r =>
-      t.setTag(name,
-        Misc.applyMutator(new NBTTagCompound) { tag =>
-          r.helperObject.saveToNBT(tag, r)
-          tag.setString("kind", r.helperObject.id)
-        }
-      )
+      t.setTag(name, NBT.from { tag =>
+        r.helperObject.saveToNBT(tag, r)
+        tag.setString("kind", r.helperObject.id)
+      })
     }
   }
 

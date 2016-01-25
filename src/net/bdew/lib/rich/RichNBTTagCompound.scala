@@ -9,7 +9,7 @@
 
 package net.bdew.lib.rich
 
-import net.bdew.lib.nbt.{ListElement, Type}
+import net.bdew.lib.nbt.Type
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
@@ -17,10 +17,10 @@ import scala.language.implicitConversions
 
 class RichNBTTagCompound(val tag: NBTTagCompound) extends AnyVal {
 
-  def getList[T: ListElement](name: String): Iterable[T] = {
-    val tDef = ListElement[T]
-    val list = tag.getTagList(name, tDef.typeId)
-    for (i <- 0 until list.tagCount()) yield tDef.fromList(list, i)
+  def getList[T: Type](name: String): Iterable[T] = {
+    val vtype = Type[T]
+    val list = tag.getTagList(name, vtype.id)
+    for (i <- 0 until list.tagCount(); element <- vtype.toVal(list.get(i))) yield element
   }
 
   def setList[T: Type](name: String, v: Iterable[T]): Unit = {
@@ -32,14 +32,14 @@ class RichNBTTagCompound(val tag: NBTTagCompound) extends AnyVal {
   def toItemStack = Option(ItemStack.loadItemStackFromNBT(tag))
 
   def get[T: Type](name: String): Option[T] = {
-    implicitly[Type[T]].fromCompound(tag, name)
+    val vtype = Type[T]
+    Option(tag.getTag(name)) flatMap (v => vtype.toVal(v))
   }
 
-  def get[T: Type](name: String, default: => T): T = {
-    implicitly[Type[T]].fromCompound(tag, name).getOrElse(default)
-  }
+  def get[T: Type](name: String, default: => T): T =
+    get(name).getOrElse(default)
 
   def set[T: Type](name: String, value: T): Unit = {
-    tag.setTag(name, implicitly[Type[T]].toNBT(value))
+    tag.setTag(name, Type[T].toNBT(value))
   }
 }

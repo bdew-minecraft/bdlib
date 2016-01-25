@@ -9,7 +9,6 @@
 
 package net.bdew.lib.data.base
 
-import net.bdew.lib.Event0
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 
@@ -70,14 +69,7 @@ trait DataSlotContainer {
   }
 }
 
-/**
-  * Traits for container that support ticks.
-  * Register handler with server/clientTick.listen(...)
-  */
-trait DataSlotContainerTicking extends DataSlotContainer {
-  val serverTick: Event0
-  val clientTick: Event0
-}
+
 
 
 

@@ -12,7 +12,8 @@ package net.bdew.lib.covers
 import java.util.Locale
 
 import net.bdew.lib.Misc
-import net.bdew.lib.data.DataSlotItemStack
+import net.bdew.lib.PimpVanilla._
+import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.tile.TileTicking
 import net.minecraft.item.ItemStack
@@ -20,23 +21,23 @@ import net.minecraft.util.EnumFacing
 
 trait TileCoverable extends TileDataSlots with TileTicking {
   val covers = (EnumFacing.values() map { x =>
-    x -> DataSlotItemStack("cover_" + x.toString.toLowerCase(Locale.US), this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
+    x -> DataSlotOption[ItemStack]("cover_" + x.toString.toLowerCase(Locale.US), this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
   }).toMap
 
   /**
-   * Checks if a specific cover can be installed here
-   */
+    * Checks if a specific cover can be installed here
+    */
   def isValidCover(side: EnumFacing, cover: ItemStack): Boolean
 
   /**
-   * Called when new covers are installed
-   */
+    * Called when new covers are installed
+    */
   def onCoversChanged() {}
 
   def tickCovers() =
     for {
       (dir, coverSlot) <- covers
-      coverStack <- Option(coverSlot.value)
+      coverStack <- coverSlot
       coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
     } {
       coverItem.tickCover(this, dir, coverStack)

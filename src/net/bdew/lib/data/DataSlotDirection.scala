@@ -9,12 +9,11 @@
 
 package net.bdew.lib.data
 
-import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
-import net.minecraft.nbt.NBTTagCompound
+import net.bdew.lib.data.base.DataSlotContainer
+import net.bdew.lib.data.mixins.DataSlotNBT
+import net.bdew.lib.nbt.converters.TEnumFacing
 import net.minecraft.util.EnumFacing
 
-case class DataSlotDirection(name: String, parent: DataSlotContainer) extends DataSlotVal[EnumFacing] {
-  var value = EnumFacing.UP
-  def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setByte(name, value.ordinal().toByte)
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = EnumFacing.getFront(t.getByte(name))
+case class DataSlotDirection(name: String, parent: DataSlotContainer, default: EnumFacing = EnumFacing.UP) extends DataSlotNBT[EnumFacing] {
+  override def nbtType = TEnumFacing
 }

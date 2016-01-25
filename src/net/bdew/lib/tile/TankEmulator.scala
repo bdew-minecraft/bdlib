@@ -10,7 +10,7 @@
 package net.bdew.lib.tile
 
 import net.bdew.lib.Misc
-import net.bdew.lib.data.base.DataSlotNumeric
+import net.bdew.lib.data.mixins.DataSlotNumeric
 import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTankInfo, IFluidTank}
 
 case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capacity: Int) extends IFluidTank {

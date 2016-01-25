@@ -7,17 +7,26 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.lib.data
+package net.bdew.lib.data.mixins
 
 import net.bdew.lib.PimpVanilla._
-import net.bdew.lib.data.base.UpdateKind
+import net.bdew.lib.data.base.{DataSlotVal, UpdateKind}
 import net.bdew.lib.nbt.Type
 import net.minecraft.nbt.NBTTagCompound
 
-abstract class DataSlotNBTOption[T: Type] extends DataSlotOption[T] {
+trait DataSlotNBT[T] extends DataSlotVal[T] {
+  implicit def nbtType: Type[T]
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) =
-    value foreach (v => t.set(name, v))
+    t.set(name, value)
+  override def load(t: NBTTagCompound, kind: UpdateKind.Value) =
+    value = t.get[T](name).getOrElse(default)
+}
 
+trait DataSlotNBTOption[T] extends DataSlotOption[T] {
+  implicit def nbtType: Type[T]
+  override def save(t: NBTTagCompound, kind: UpdateKind.Value) =
+    value.foreach(v => t.set(name, v))
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) =
     value = t.get[T](name)
 }
+

@@ -54,9 +54,4 @@ trait DataSlot {
   }
 }
 
-/**
-  * Trait for data slots that need ticks
-  */
-trait DataSlotTicking extends DataSlot {
-  val parent: DataSlotContainerTicking
-}
+
