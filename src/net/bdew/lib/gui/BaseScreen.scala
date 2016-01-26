@@ -11,8 +11,9 @@ package net.bdew.lib.gui
 
 import net.bdew.lib.Client
 import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.{GlStateManager, RenderHelper}
 import net.minecraft.inventory.Container
+import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
 
@@ -44,8 +45,19 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
     if (!widgets.keyTyped(c, i))
       super.keyTyped(c, i)
 
-  protected override def drawGuiContainerForegroundLayer(x: Int, y: Int) =
+  protected override def drawGuiContainerForegroundLayer(x: Int, y: Int) = {
+    GlStateManager.pushAttrib()
+    RenderHelper.disableStandardItemLighting()
+    GlStateManager.disableDepth()
+    GlStateManager.enableAlpha()
+    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
+    GlStateManager.enableBlend()
+    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+    GlStateManager.color(1F, 1F, 1F, 1F)
     widgets.draw(Point(x, y) - rect.origin)
+    GlStateManager.color(1F, 1F, 1F, 1F)
+    GlStateManager.popAttrib()
+  }
 
   protected override def drawScreen(x: Int, y: Int, f: Float) {
     super.drawScreen(x, y, f)
