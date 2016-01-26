@@ -58,6 +58,13 @@ abstract class ModelEnhancer {
     */
   def wrap(base: IModel): IRetexturableModel = new SmartUnbakedWrapper(base)
 
+  /**
+    * Combines this with another ModelEnhancer
+    *
+    * @return combined enhancer
+    */
+  def compose(that: ModelEnhancer) = new ComposedModelEnhancer(this, that)
+
   private class SmartUnbakedWrapper(base: IModel) extends IRetexturableModel {
     override def getTextures = base.getTextures ++ additionalTextureLocations
     override def getDefaultState = base.getDefaultState
@@ -80,21 +87,15 @@ abstract class ModelEnhancer {
 
 }
 
-object ModelEnhancer {
-  /**
-    * Combines 2 ModelEnhancer's
-    *
-    * @return combined enhancer that will apply both e1 and e2
-    */
-  def compose(e1: ModelEnhancer, e2: ModelEnhancer) = new ModelEnhancer {
-    override val additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
+class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelEnhancer {
+  override val additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
 
-    override def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
-      e2.handleBlockState(e1.handleBlockState(base, state, textures), state, textures)
-    }
+  override def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+    e2.handleBlockState(e1.handleBlockState(base, state, textures), state, textures)
+  }
 
-    override def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
-      e2.handleItemState(e1.handleItemState(base, stack, textures), stack, textures)
-    }
+  override def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+    e2.handleItemState(e1.handleItemState(base, stack, textures), stack, textures)
   }
 }
+
