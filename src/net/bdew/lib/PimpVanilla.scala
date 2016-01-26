@@ -10,10 +10,12 @@
 package net.bdew.lib
 
 import net.bdew.lib.nbt.converters._
-import net.bdew.lib.rich.{RichBlockAccess, RichBlockPos, RichNBTTagCompound, RichWorld}
+import net.bdew.lib.rich._
+import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.BlockPos
 import net.minecraft.world.{IBlockAccess, World}
+import net.minecraftforge.common.property.IExtendedBlockState
 
 import scala.language.implicitConversions
 
@@ -26,6 +28,8 @@ object PimpVanilla {
   implicit def pimpWorld(p: World): RichWorld = new RichWorld(p)
   implicit def pimpBlockAccess(p: IBlockAccess): RichBlockAccess = new RichBlockAccess(p)
   implicit def pimpNBT(p: NBTTagCompound): RichNBTTagCompound = new RichNBTTagCompound(p)
+  implicit def pimpIBlockSTate(p: IBlockState): RichBlockState = new RichBlockState(p)
+  implicit def pimpIExBlockSTate(p: IExtendedBlockState): RichExtendedBlockState = new RichExtendedBlockState(p)
 
   // Helpers for NBT stuff
 
