@@ -12,6 +12,7 @@ package net.bdew.lib.gui.widgets
 import net.bdew.lib.data.DataSlotTankBase
 import net.bdew.lib.gui.{Color, Point, Rect, Texture}
 import net.bdew.lib.{DecFormat, Misc}
+import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
@@ -27,8 +28,8 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dSlot: DataSlotTankBase
   }
 
   override def draw(mouse: Point) {
-    GL11.glEnable(GL11.GL_BLEND)
-    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+    GlStateManager.enableBlend()
+    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
     val fStack = dSlot.getFluid
     if (fStack != null) {
@@ -49,8 +50,8 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dSlot: DataSlotTankBase
       }
     }
 
-    GL11.glColor3d(1, 1, 1)
-    GL11.glDisable(GL11.GL_BLEND)
+    GlStateManager.color(1, 1, 1)
+    GlStateManager.disableBlend()
 
     if (overlay != null)
       parent.drawTexture(rect, overlay)

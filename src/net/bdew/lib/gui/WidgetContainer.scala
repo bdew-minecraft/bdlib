@@ -11,7 +11,7 @@ package net.bdew.lib.gui
 
 import net.bdew.lib.gui.widgets.BaseWidget
 import net.minecraft.client.gui.FontRenderer
-import org.lwjgl.opengl.GL11
+import net.minecraft.client.renderer.GlStateManager
 
 import scala.collection.mutable
 
@@ -48,22 +48,22 @@ trait WidgetContainer extends DrawTarget {
 
   def drawBackground(mouse: Point) {
     val p = mouse - rect.origin
-    GL11.glPushMatrix()
-    GL11.glTranslatef(rect.origin.x, rect.origin.y, 0)
+    GlStateManager.pushMatrix()
+    GlStateManager.translate(rect.origin.x, rect.origin.y, 0)
     for (w <- activeWidgets) {
       w.drawBackground(p)
     }
-    GL11.glPopMatrix()
+    GlStateManager.popMatrix()
   }
 
   def draw(mouse: Point) {
     val p = mouse - rect.origin
-    GL11.glPushMatrix()
-    GL11.glTranslatef(rect.origin.x, rect.origin.y, 0)
+    GlStateManager.pushMatrix()
+    GlStateManager.translate(rect.origin.x, rect.origin.y, 0)
     for (w <- activeWidgets) {
       w.draw(p)
     }
-    GL11.glPopMatrix()
+    GlStateManager.popMatrix()
   }
 
   def handleTooltip(p: Point, tip: mutable.MutableList[String]) {

@@ -11,8 +11,8 @@ package net.bdew.lib.gui
 
 import net.bdew.lib.Client
 import net.minecraft.client.gui.inventory.GuiContainer
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.inventory.Container
-import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
 
@@ -64,9 +64,9 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
     if (background != null)
       widgets.drawTexture(rect, background)
 
-    GL11.glPushMatrix()
-    GL11.glTranslatef(rect.x, rect.y, 0)
+    GlStateManager.pushMatrix()
+    GlStateManager.translate(rect.x, rect.y, 0)
     widgets.drawBackground(Point(x, y) - rect.origin)
-    GL11.glPopMatrix()
+    GlStateManager.popMatrix()
   }
 }
