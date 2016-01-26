@@ -9,8 +9,10 @@
 
 package net.bdew.lib.multiblock.block
 
+import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.tile.TileOutput
+import net.minecraft.world.IBlockAccess
 
 trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] {
-
+  override def getOverlays(world: IBlockAccess, face: BlockFace) = List.empty //fixme: add overlays
 }

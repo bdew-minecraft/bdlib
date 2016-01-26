@@ -10,7 +10,7 @@
 package net.bdew.lib.multiblock.block
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{BaseBlock, BlockTooltip, HasTE}
+import net.bdew.lib.block.{BaseBlock, BlockFace, BlockTooltip, HasTE}
 import net.bdew.lib.multiblock.tile.TileController
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
@@ -35,6 +35,8 @@ abstract class BlockController[T <: TileController](name: String, material: Mate
 
   override def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos) =
     getTE(world, origin).modules.contains(target)
+
+  override def getOverlays(world: IBlockAccess, face: BlockFace) = List.empty
 
   override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
