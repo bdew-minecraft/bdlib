@@ -17,7 +17,8 @@ import net.minecraft.nbt.NBTTagCompound
 trait DataSlotNBT[T] extends DataSlotVal[T] {
   implicit def nbtType: Type[T]
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) =
-    t.set(name, value)
+    if (value != null)
+      t.set(name, value)
   override def loadValue(t: NBTTagCompound, kind: UpdateKind.Value) =
     t.get[T](name).getOrElse(default)
 }
