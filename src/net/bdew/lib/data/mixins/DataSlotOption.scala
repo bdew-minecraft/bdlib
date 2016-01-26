@@ -12,7 +12,7 @@ package net.bdew.lib.data.mixins
 import net.bdew.lib.data.base.DataSlotVal
 
 abstract class DataSlotOption[T] extends DataSlotVal[Option[T]] {
-  override val default = None
+  override def default = None
 
   def set(v: T) {
     if (v == null) sys.error("Null should never be used with DataSlotOption")
