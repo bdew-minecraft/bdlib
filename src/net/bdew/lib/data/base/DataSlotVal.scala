@@ -9,6 +9,8 @@
 
 package net.bdew.lib.data.base
 
+import net.minecraft.nbt.NBTTagCompound
+
 import scala.language.implicitConversions
 
 /**
@@ -19,7 +21,9 @@ import scala.language.implicitConversions
 trait DataSlotVal[T] extends DataSlot {
   def default: T
 
-  var value = default
+  private var realValue = default
+
+  def value = realValue
 
   def isSame(v: T) = v == value
 
@@ -28,9 +32,13 @@ trait DataSlotVal[T] extends DataSlot {
   def :!=(that: T) = value != that
   def :==(that: T) = value == that
 
+  def loadValue(t: NBTTagCompound, kind: UpdateKind.Value): T
+
+  final override def load(t: NBTTagCompound, kind: UpdateKind.Value): Unit = realValue = loadValue(t, kind)
+
   def update(v: T) {
     if (!isSame(v)) {
-      value = v
+      realValue = v
       parent.dataSlotChanged(this)
     }
   }

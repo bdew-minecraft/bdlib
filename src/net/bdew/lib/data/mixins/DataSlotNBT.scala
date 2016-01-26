@@ -18,15 +18,15 @@ trait DataSlotNBT[T] extends DataSlotVal[T] {
   implicit def nbtType: Type[T]
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) =
     t.set(name, value)
-  override def load(t: NBTTagCompound, kind: UpdateKind.Value) =
-    value = t.get[T](name).getOrElse(default)
+  override def loadValue(t: NBTTagCompound, kind: UpdateKind.Value) =
+    t.get[T](name).getOrElse(default)
 }
 
 trait DataSlotNBTOption[T] extends DataSlotOption[T] {
   implicit def nbtType: Type[T]
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) =
     value.foreach(v => t.set(name, v))
-  override def load(t: NBTTagCompound, kind: UpdateKind.Value) =
-    value = t.get[T](name)
+  override def loadValue(t: NBTTagCompound, kind: UpdateKind.Value) =
+    t.get[T](name)
 }
 

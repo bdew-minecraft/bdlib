@@ -26,8 +26,8 @@ case class DataSlotSensor[T, R](registry: SensorSystem[T, R], name: String, pare
     })
   }
 
-  override def load(t: NBTTagCompound, kind: UpdateKind.Value) = {
-    value = registry.get(t.getCompoundTag(name).getString("uid"))
+  override def loadValue(t: NBTTagCompound, kind: UpdateKind.Value) = {
+    registry.get(t.getCompoundTag(name).getString("uid"))
       .map(x => SensorPair(x, x.loadParameter(t.getCompoundTag(name))))
       .getOrElse(default)
   }

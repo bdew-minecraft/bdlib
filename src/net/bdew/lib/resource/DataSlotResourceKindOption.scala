@@ -26,12 +26,12 @@ case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) e
     }
   }
 
-  override def load(t: NBTTagCompound, kind: UpdateKind.Value) {
+  override def loadValue(t: NBTTagCompound, kind: UpdateKind.Value) = {
     if (t.hasKey(name)) {
       val tag = t.getCompoundTag(name)
-      value = if (tag.hasKey("kind")) {
+      if (tag.hasKey("kind")) {
         ResourceManager.resourceHelpers.get(tag.getString("kind")).flatMap(_.loadFromNBT(tag))
       } else None
-    } else unset()
+    } else None
   }
 }

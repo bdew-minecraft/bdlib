@@ -16,11 +16,11 @@ abstract class DataSlotOption[T] extends DataSlotVal[Option[T]] {
 
   def set(v: T) {
     if (v == null) sys.error("Null should never be used with DataSlotOption")
-    value = Some(v)
+    update(Some(v))
   }
 
   def unset() {
-    value = None
+    update(None)
   }
 
   override def isSame(v: Option[T]) = {

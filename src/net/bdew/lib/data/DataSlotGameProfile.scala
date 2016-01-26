@@ -16,8 +16,8 @@ import net.minecraft.nbt.{NBTTagCompound, NBTUtil}
 case class DataSlotGameProfile(name: String, parent: DataSlotContainer) extends DataSlotVal[GameProfile] {
   override val default = null
 
-  override def load(t: NBTTagCompound, kind: UpdateKind.Value) = {
-    value = if (t.hasKey(name))
+  override def loadValue(t: NBTTagCompound, kind: UpdateKind.Value) = {
+    if (t.hasKey(name))
       NBTUtil.readGameProfileFromNBT(t.getCompoundTag(name))
     else
       null
