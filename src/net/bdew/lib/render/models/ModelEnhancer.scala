@@ -15,6 +15,7 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.client.resources.model.IBakedModel
+import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model._
 
@@ -37,7 +38,17 @@ abstract class ModelEnhancer {
     * @param textures contains textures from additionalTextureLocations
     * @return modified baked model (or base if nothing is changed)
     */
-  def handleState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]): IFlexibleBakedModel
+  def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]): IFlexibleBakedModel
+
+  /**
+    * Override for special logic for items
+    *
+    * @param base     baked version of base model
+    * @param stack    item stack
+    * @param textures contains textures from additionalTextureLocations
+    * @return modified baked model (or base if nothing is changed)
+    */
+  def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]): IFlexibleBakedModel
 
   /**
     * Wrap around basic model
@@ -60,8 +71,9 @@ abstract class ModelEnhancer {
     override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function[ResourceLocation, TextureAtlasSprite]) = {
       val baked = base.bake(state, format, bakedTextureGetter)
       val additionalSprites = additionalTextureLocations.map(res => res -> bakedTextureGetter(res)).toMap
-      new FlexibleBakedModelProxy(baked) with ISmartBlockModel {
-        override def handleBlockState(state: IBlockState): IBakedModel = handleState(baked, state, additionalSprites)
+      new FlexibleBakedModelProxy(baked) with ISmartBlockModel with ISmartItemModel {
+        override def handleBlockState(state: IBlockState): IBakedModel = ModelEnhancer.this.handleBlockState(baked, state, additionalSprites)
+        override def handleItemState(stack: ItemStack) = ModelEnhancer.this.handleItemState(baked, stack, additionalSprites)
       }
     }
   }
@@ -76,8 +88,13 @@ object ModelEnhancer {
     */
   def compose(e1: ModelEnhancer, e2: ModelEnhancer) = new ModelEnhancer {
     override val additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
-    override def handleState(base: IFlexibleBakedModel, state: IBlockState, additionalSprites: Map[ResourceLocation, TextureAtlasSprite]) = {
-      e2.handleState(e1.handleState(base, state, additionalSprites), state, additionalSprites)
+
+    override def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+      e2.handleBlockState(e1.handleBlockState(base, state, textures), state, textures)
+    }
+
+    override def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+      e2.handleItemState(e1.handleItemState(base, stack, textures), stack, textures)
     }
   }
 }

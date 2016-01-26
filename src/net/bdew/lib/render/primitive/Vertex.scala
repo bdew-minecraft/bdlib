@@ -37,6 +37,10 @@ case class Vertex(x: Float, y: Float, z: Float) {
     if (Math.abs(tmp.w - 1f) > 1e-5) tmp.scale(1f / tmp.w)
     Vertex(tmp.x, tmp.y, tmp.z)
   }
+
+  def transform(transformation: (Float) => Float) = {
+    Vertex(transformation(x), transformation(y), transformation(z))
+  }
 }
 
 /**
