@@ -17,18 +17,18 @@ import net.minecraftforge.client.model.pipeline.{LightUtil, UnpackedBakedQuad}
 
 import scala.collection.JavaConversions._
 
-class QuadBaker(format: VertexFormat, shading: Boolean = false) {
+class QuadBaker(format: VertexFormat) {
   def bakeList(quads: List[TQuad]): List[BakedQuad] = quads map bakeQuad
   def bakeMap[T](quads: Map[T, TQuad]): Map[T, BakedQuad] = quads mapValues bakeQuad
   def bakeListMap[T](quads: Map[T, List[TQuad]]): Map[T, List[BakedQuad]] = quads mapValues bakeList
 
   def bakeQuad(quad: TQuad): BakedQuad = {
     val array = new Array[Array[Array[Float]]](4)
-    quad.vertexes.mapIntoArray(array, x => vertexToRaw(x, quad.face))
+    quad.vertexes.mapIntoArray(array, x => vertexToRaw(x, quad.face, quad.shading))
     new UnpackedBakedQuad(array, quad.tint, quad.face, format)
   }
 
-  private def vertexToRaw(v: TVertex, face: EnumFacing): Array[Array[Float]] = {
+  private def vertexToRaw(v: TVertex, face: EnumFacing, shading: Boolean): Array[Array[Float]] = {
     val unpackedData = new Array[Array[Float]](format.getElementCount)
     val light = if (shading) LightUtil.diffuseLight(face) else 1f
     for ((element, index) <- format.getElements.zipWithIndex) {

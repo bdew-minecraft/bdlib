@@ -13,6 +13,8 @@ import java.util
 
 import com.google.common.collect.ImmutableList
 import net.bdew.lib.Client
+import net.bdew.lib.render.QuadBaker
+import net.bdew.lib.render.primitive.TQuad
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.{BakedQuad, ItemCameraTransforms}
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
@@ -37,28 +39,29 @@ case class SimpleBakedModel(generalQuads: util.List[BakedQuad],
   override def getItemCameraTransforms = ItemCameraTransforms.DEFAULT
 }
 
-class SimpleBakedModelBuilder {
+class SimpleBakedModelBuilder(format: VertexFormat) {
   val faceQuads = EnumFacing.values().map(f => f -> mutable.ListBuffer.empty[BakedQuad]).toMap
   var generalQuads = mutable.ListBuffer.empty[BakedQuad]
   var texture: TextureAtlasSprite = Client.missingIcon
-  var format: VertexFormat = null
   var isAmbientOcclusion = true
   var isGui3d = false
   var isBuiltInRenderer = false
 
-  def addQuad(face: EnumFacing, quad: BakedQuad) = faceQuads(face) += quad
+  lazy val baker = new QuadBaker(format)
 
-  def addQuads(face: EnumFacing, quads: List[BakedQuad]) = faceQuads(face) ++= quads
+  def addQuad(face: EnumFacing, quad: TQuad) = faceQuads(face) += baker.bakeQuad(quad)
 
-  def addQuadMap(map: Map[EnumFacing, BakedQuad]) =
-    for ((face, quad) <- map) faceQuads(face) += quad
+  def addQuads(face: EnumFacing, quads: List[TQuad]) = faceQuads(face) ++= baker.bakeList(quads)
 
-  def addQuadListMap(map: Map[EnumFacing, List[BakedQuad]]) =
-    for ((face, quads) <- map) faceQuads(face) ++= quads
+  def addQuadMap(map: Map[EnumFacing, TQuad]) =
+    for ((face, quad) <- map) faceQuads(face) += baker.bakeQuad(quad)
 
-  def addQuadGeneral(face: EnumFacing, quad: BakedQuad) = generalQuads += quad
+  def addQuadListMap(map: Map[EnumFacing, List[TQuad]]) =
+    for ((face, quads) <- map) faceQuads(face) ++= baker.bakeList(quads)
 
-  def addQuadsGeneral(face: EnumFacing, quads: List[BakedQuad]) = generalQuads ++= quads
+  def addQuadGeneral(face: EnumFacing, quad: TQuad) = generalQuads += baker.bakeQuad(quad)
+
+  def addQuadsGeneral(face: EnumFacing, quads: List[TQuad]) = generalQuads ++= baker.bakeList(quads)
 
   def build(): IFlexibleBakedModel = {
     import scala.collection.JavaConversions._
@@ -75,7 +78,7 @@ class SimpleBakedModelBuilder {
   }
 }
 
-class SmartBakedModelBuilder extends SimpleBakedModelBuilder {
+class SmartBakedModelBuilder(format: VertexFormat) extends SimpleBakedModelBuilder(format) {
   var logic = List.empty[(IFlexibleBakedModel, IBlockState) => IFlexibleBakedModel]
 
   def addLogic(f: (IFlexibleBakedModel, IBlockState) => IFlexibleBakedModel) = logic :+= f
