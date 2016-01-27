@@ -14,11 +14,15 @@ import net.minecraft.block.{Block, ITileEntityProvider}
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.BlockPos
 import net.minecraft.world.{ChunkCache, IBlockAccess, World}
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 trait HasTE[T] extends Block with ITileEntityProvider {
   val TEClass: Class[_ <: TileEntity]
 
   def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
+
+  @SideOnly(Side.CLIENT)
+  private def getClientWorld: World = Client.world
 
   def getTE(w: IBlockAccess, pos: BlockPos): T = {
     var t = w.getTileEntity(pos)
@@ -31,7 +35,7 @@ trait HasTE[T] extends Block with ITileEntityProvider {
         case ww: ChunkCache =>
           // This is in client, TE probably didn't arrive from server yet, make a fake one and hope for the best
           t = TEClass.newInstance()
-          t.setWorldObj(Client.world)
+          t.setWorldObj(getClientWorld)
         case _ =>
           sys.error("Something is broken. Report to mod author. TileEntity type %s for block %s, world is %s".format(TEClass.getName, getRegistryName, w.getClass.getName))
       }
