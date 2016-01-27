@@ -13,7 +13,7 @@ import java.util
 
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.IFlexibleBakedModel
+import net.minecraftforge.client.model.IPerspectiveAwareModel
 
 import scala.collection.JavaConversions._
 
@@ -23,7 +23,7 @@ import scala.collection.JavaConversions._
   * @param base base model
   * @param add map of face quads to add
   */
-class BakedModelAdditionalFaceQuads(base: IFlexibleBakedModel, add: Map[EnumFacing, List[BakedQuad]]) extends FlexibleBakedModelProxy(base) {
+class BakedModelAdditionalFaceQuads(base: IPerspectiveAwareModel, add: Map[EnumFacing, List[BakedQuad]]) extends BakedModelProxy(base) {
   override def getFaceQuads(face: EnumFacing): util.List[BakedQuad] =
     if (add.isDefinedAt(face)) super.getFaceQuads(face) ++ add(face) else super.getFaceQuads(face)
 }

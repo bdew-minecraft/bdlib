@@ -10,16 +10,18 @@
 package net.bdew.lib.render.models
 
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
 import net.minecraft.client.resources.model.IBakedModel
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.IFlexibleBakedModel
+import net.minecraftforge.client.model.IPerspectiveAwareModel
+import org.apache.commons.lang3.tuple.Pair
 
 /**
   * Base class for wrappers around IBakedModel
-  *
-  * @param base base model
   */
-class BakedModelProxy(val base: IBakedModel) extends IBakedModel {
+class BakedModelProxy(aBase: IBakedModel) extends IPerspectiveAwareModel {
+  val base = ModelUtils.makePerspectiveAware(aBase)
+
   override def isBuiltInRenderer = base.isBuiltInRenderer
   override def isAmbientOcclusion = base.isAmbientOcclusion
   override def isGui3d = base.isGui3d
@@ -32,14 +34,9 @@ class BakedModelProxy(val base: IBakedModel) extends IBakedModel {
 
   //noinspection ScalaDeprecation
   override def getItemCameraTransforms: ItemCameraTransforms = base.getItemCameraTransforms
-}
 
-/**
-  * Base class for wrappers around IFlexibleBakedModel
-  *
-  * @param base base model
-  */
-class FlexibleBakedModelProxy(override val base: IFlexibleBakedModel) extends BakedModelProxy(base) with IFlexibleBakedModel {
   override def getFormat = base.getFormat
-}
 
+  override def handlePerspective(cameraTransformType: TransformType) =
+    Pair.of(this, base.handlePerspective(cameraTransformType).getRight)
+}

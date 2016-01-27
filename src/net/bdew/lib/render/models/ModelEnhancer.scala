@@ -38,7 +38,7 @@ abstract class ModelEnhancer {
     * @param textures contains textures from additionalTextureLocations
     * @return modified baked model (or base if nothing is changed)
     */
-  def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]): IFlexibleBakedModel
+  def handleBlockState(base: IPerspectiveAwareModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]): IPerspectiveAwareModel
 
   /**
     * Override for special logic for items
@@ -48,7 +48,7 @@ abstract class ModelEnhancer {
     * @param textures contains textures from additionalTextureLocations
     * @return modified baked model (or base if nothing is changed)
     */
-  def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]): IFlexibleBakedModel
+  def handleItemState(base: IPerspectiveAwareModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]): IPerspectiveAwareModel
 
   /**
     * Wrap around basic model
@@ -76,9 +76,9 @@ abstract class ModelEnhancer {
       } else this
 
     override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function[ResourceLocation, TextureAtlasSprite]) = {
-      val baked = base.bake(state, format, bakedTextureGetter)
+      val baked = ModelUtils.makePerspectiveAware(base.bake(state, format, bakedTextureGetter))
       val additionalSprites = additionalTextureLocations.map(res => res -> bakedTextureGetter(res)).toMap
-      new FlexibleBakedModelProxy(baked) with ISmartBlockModel with ISmartItemModel {
+      new BakedModelProxy(baked) with ISmartBlockModel with ISmartItemModel {
         override def handleBlockState(state: IBlockState): IBakedModel = ModelEnhancer.this.handleBlockState(baked, state, additionalSprites)
         override def handleItemState(stack: ItemStack) = ModelEnhancer.this.handleItemState(baked, stack, additionalSprites)
       }
@@ -90,11 +90,11 @@ abstract class ModelEnhancer {
 class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelEnhancer {
   override val additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
 
-  override def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+  override def handleBlockState(base: IPerspectiveAwareModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
     e2.handleBlockState(e1.handleBlockState(base, state, textures), state, textures)
   }
 
-  override def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+  override def handleItemState(base: IPerspectiveAwareModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
     e2.handleItemState(e1.handleItemState(base, stack, textures), stack, textures)
   }
 }

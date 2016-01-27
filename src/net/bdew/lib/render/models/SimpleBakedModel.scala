@@ -10,17 +10,20 @@
 package net.bdew.lib.render.models
 
 import java.util
+import javax.vecmath.Matrix4f
 
 import com.google.common.collect.ImmutableList
 import net.bdew.lib.Client
 import net.bdew.lib.render.QuadBaker
 import net.bdew.lib.render.primitive.TQuad
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
 import net.minecraft.client.renderer.block.model.{BakedQuad, ItemCameraTransforms}
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.{IFlexibleBakedModel, ISmartBlockModel}
+import net.minecraftforge.client.model._
+import org.apache.commons.lang3.tuple.Pair
 
 import scala.collection.mutable
 
@@ -28,15 +31,25 @@ case class SimpleBakedModel(generalQuads: util.List[BakedQuad],
                             faceQuads: Map[EnumFacing, util.List[BakedQuad]],
                             texture: TextureAtlasSprite,
                             format: VertexFormat,
+                            transforms: (IFlexibleBakedModel, TransformType) => (IFlexibleBakedModel, Matrix4f),
                             isAmbientOcclusion: Boolean,
                             isGui3d: Boolean,
                             isBuiltInRenderer: Boolean
-                           ) extends IFlexibleBakedModel {
+                           ) extends IPerspectiveAwareModel {
   override def getFormat = format
   override def getParticleTexture = texture
   override def getGeneralQuads = generalQuads
   override def getFaceQuads(face: EnumFacing) = faceQuads(face)
   override def getItemCameraTransforms = ItemCameraTransforms.DEFAULT
+  override def handlePerspective(cameraTransformType: TransformType) = {
+    val (model, matrix) = transforms(this, cameraTransformType)
+    Pair.of(model, matrix)
+  }
+}
+
+object NoCameraTransforms extends ((IFlexibleBakedModel, TransformType) => (IFlexibleBakedModel, Matrix4f)) {
+  lazy val matrix = TRSRTransformation.identity().getMatrix
+  override def apply(m: IFlexibleBakedModel, t: TransformType) = (m, matrix)
 }
 
 class SimpleBakedModelBuilder(format: VertexFormat) {
@@ -46,6 +59,7 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
   var isAmbientOcclusion = true
   var isGui3d = false
   var isBuiltInRenderer = false
+  var cameraTransforms: ((IFlexibleBakedModel, TransformType) => (IFlexibleBakedModel, Matrix4f)) = NoCameraTransforms
 
   lazy val baker = new QuadBaker(format)
 
@@ -63,7 +77,11 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
 
   def addQuadsGeneral(face: EnumFacing, quads: List[TQuad]) = generalQuads ++= baker.bakeList(quads)
 
-  def build(): IFlexibleBakedModel = {
+  def inheritCameraTransformsFrom(model: IPerspectiveAwareModel): Unit = {
+    cameraTransforms = { (m, t) => m -> model.handlePerspective(t).getRight }
+  }
+
+  def build(): IPerspectiveAwareModel = {
     import scala.collection.JavaConversions._
     if (format == null) throw new RuntimeException("Format not specified")
     new SimpleBakedModel(
@@ -71,6 +89,7 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
       faceQuads = faceQuads.mapValues(x => ImmutableList.copyOf(x.toIterable)),
       texture = texture,
       format = format,
+      transforms = cameraTransforms,
       isAmbientOcclusion = isAmbientOcclusion,
       isGui3d = isGui3d,
       isBuiltInRenderer = isBuiltInRenderer
@@ -79,13 +98,13 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
 }
 
 class SmartBakedModelBuilder(format: VertexFormat) extends SimpleBakedModelBuilder(format) {
-  var logic = List.empty[(IFlexibleBakedModel, IBlockState) => IFlexibleBakedModel]
+  var logic = List.empty[(IPerspectiveAwareModel, IBlockState) => IPerspectiveAwareModel]
 
-  def addLogic(f: (IFlexibleBakedModel, IBlockState) => IFlexibleBakedModel) = logic :+= f
+  def addLogic(f: (IPerspectiveAwareModel, IBlockState) => IPerspectiveAwareModel) = logic :+= f
 
   override def build() = {
     val base = super.build()
-    new FlexibleBakedModelProxy(base) with ISmartBlockModel {
+    new BakedModelProxy(base) with ISmartBlockModel {
       override def handleBlockState(state: IBlockState) =
         logic.foldLeft((base, state))((s, f) => f.tupled(s) -> s._2)._1
     }

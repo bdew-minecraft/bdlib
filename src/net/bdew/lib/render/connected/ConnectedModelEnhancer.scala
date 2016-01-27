@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.item.ItemStack
 import net.minecraft.util.{EnumFacing, EnumWorldBlockLayer, ResourceLocation, Vec3i}
 import net.minecraftforge.client.MinecraftForgeClient
-import net.minecraftforge.client.model.IFlexibleBakedModel
+import net.minecraftforge.client.model.IPerspectiveAwareModel
 
 class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
   override val additionalTextureLocations = List(frame)
@@ -25,7 +25,7 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
   //why the fuck is that not part of the class?!?
   def addVec(v1: Vec3i, v2: Vec3i) = new Vec3i(v1.getX + v2.getX, v1.getY + v2.getY, v1.getZ + v2.getZ)
 
-  override def handleItemState(base: IFlexibleBakedModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+  override def handleItemState(base: IPerspectiveAwareModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
     val baker = new QuadBaker(base.getFormat)
     val frameSprite = textures(frame)
     val quads = EnumFacing.values().map(face =>
@@ -37,11 +37,12 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
     new BakedModelAdditionalFaceQuads(base, baker.bakeListMap(quads))
   }
 
-  override def handleBlockState(base: IFlexibleBakedModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+  override def handleBlockState(base: IPerspectiveAwareModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
     if (MinecraftForgeClient.getRenderLayer == EnumWorldBlockLayer.CUTOUT) {
       val frameSprite = textures(frame)
       val builder = new SmartBakedModelBuilder(base.getFormat)
       builder.texture = base.getParticleTexture
+      builder.inheritCameraTransformsFrom(base)
 
       for {
         connections <- ConnectedTextureBlock.CONNECTIONS.get(state)
