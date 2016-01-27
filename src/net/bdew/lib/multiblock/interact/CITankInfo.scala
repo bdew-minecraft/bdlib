@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2013 - 2014
+ * Copyright (c) bdew, 2013 - 2016
  * https://github.com/bdew/bdlib
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -10,9 +10,8 @@
 package net.bdew.lib.multiblock.interact
 
 import net.bdew.lib.multiblock.tile.TileController
-import net.minecraftforge.fluids.{Fluid, FluidStack}
+import net.minecraftforge.fluids.FluidTankInfo
 
-trait CIFluidInput extends TileController with CITankInfo {
-  def inputFluid(resource: FluidStack, doFill: Boolean): Int
-  def canInputFluid(fluid: Fluid): Boolean
+trait CITankInfo extends TileController {
+  def getTankInfo: Array[FluidTankInfo]
 }
