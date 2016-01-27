@@ -32,6 +32,16 @@ case class List4[+T](v1: T, v2: T, v3: T, v4: T) {
   def map[X](f: (T) => X): List4[X] = new List4(f(v1), f(v2), f(v3), f(v4))
 
   /**
+    * Converts values to a new list using function f
+    */
+  def foreach(f: (T) => Unit) = {
+    f(v1)
+    f(v2)
+    f(v3)
+    f(v4)
+  }
+
+  /**
     * Fill an array (that must be at least offset+4 long) with the result of calling f on elements
     * This is faster than returning a new array since that would require a ClassTag and runtime reflection
     */
