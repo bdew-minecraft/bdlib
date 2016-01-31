@@ -15,14 +15,13 @@ import net.bdew.lib.machine.Machine
 import net.bdew.lib.multiblock.MachineCore
 import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.recipes.gencfg.ConfigSection
-import net.minecraft.creativetab.CreativeTabs
 
-class MachineManager(val tuning: ConfigSection, guiHandler: GuiHandler, creativeTab: CreativeTabs) {
+class MachineManager(val tuning: ConfigSection, guiHandler: GuiHandler, blocks: BlockManager) {
   def registerMachine[R <: Machine[_]](machine: R): R = {
     machine.tuning = tuning.getSection(machine.name)
     if (machine.tuning.getBoolean("Enabled")) {
       machine.enabled = true
-      machine.regBlock(creativeTab)
+      machine.regBlock(blocks)
       if (machine.isInstanceOf[GuiProvider])
         guiHandler.register(machine.asInstanceOf[GuiProvider])
     }

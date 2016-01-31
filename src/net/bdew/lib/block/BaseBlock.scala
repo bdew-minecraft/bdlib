@@ -14,7 +14,11 @@ import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.IProperty
 import net.minecraft.block.state.{BlockState, IBlockState}
+import net.minecraft.client.resources.model.ModelResourceLocation
+import net.minecraft.item.Item
+import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.common.property.{ExtendedBlockState, IUnlistedProperty}
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 import scala.language.existentials
 
@@ -42,5 +46,17 @@ class BaseBlock(val name: String, material: Material) extends Block(material) {
     */
   def preRegistration(): Unit = {}
 
+  /**
+    * Non-protected version of setDefaultState to use in mixins
+    */
   def setDefaultBlockState(bs: IBlockState) = super.setDefaultState(bs)
+
+  /**
+    * Registers item model. Called from BlockManager or Machine after inserting into registry
+    * Override to provide custom models.
+    */
+  @SideOnly(Side.CLIENT)
+  def registerItemModels(): Unit = {
+    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName, "inventory"))
+  }
 }
