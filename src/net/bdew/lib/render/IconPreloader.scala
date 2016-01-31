@@ -18,7 +18,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 /**
-  * Allows loading of texture that don't belong to specific block or item into vanilla block/item atlas
+  * Allows loading of texture that don't belong to specific block or item into vanilla block texture atlas
   */
 class IconPreloader {
   lazy val map = {
@@ -37,7 +37,7 @@ class IconPreloader {
 
   import scala.language.implicitConversions
 
-  implicit def entry2texture(v: TextureLoc): IconWrapper = v.texture
+  implicit def entry2texture(v: TextureLoc): IconWrapper = if (v.texture != null) v.texture else sys.error("Accessing unloaded texture in IconPreloader")
 
   def registerIcons(reg: TextureMap) {}
 
