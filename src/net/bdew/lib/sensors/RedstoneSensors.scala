@@ -9,21 +9,20 @@
 
 package net.bdew.lib.sensors
 
-import net.bdew.lib.Misc
-import net.bdew.lib.gui.{DrawTarget, Rect}
+import net.bdew.lib.gui.{DrawTarget, Rect, Texture}
+import net.bdew.lib.{Client, Misc}
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 abstract class RedstoneSensors[T] extends SensorSystem[T, Boolean](false) {
-  //FIXME: rendering
-  //  lazy val rsOn = new IconWrapper(Texture.BLOCKS, Blocks.redstone_torch.getIcon(0, 0))
-  //  lazy val rsOff = new IconWrapper(Texture.BLOCKS, Blocks.unlit_redstone_torch.getIcon(0, 0))
+  lazy val rsOn = Texture(Texture.BLOCKS, Client.textureMapBlocks.getAtlasSprite("minecraft:blocks/redstone_torch_on"))
+  lazy val rsOff = Texture(Texture.BLOCKS, Client.textureMapBlocks.getAtlasSprite("minecraft:blocks/redstone_torch_off"))
 
   @SideOnly(Side.CLIENT)
   override def drawResult(result: Boolean, rect: Rect, target: DrawTarget): Unit = {
-    //    if (result)
-    //      target.drawTexture(rect, rsOn)
-    //    else
-    //      target.drawTexture(rect, rsOff)
+    if (result)
+      target.drawTexture(rect, rsOn)
+    else
+      target.drawTexture(rect, rsOff)
   }
 
   @SideOnly(Side.CLIENT)
