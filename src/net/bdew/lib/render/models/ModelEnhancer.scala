@@ -31,7 +31,7 @@ abstract class ModelEnhancer {
   val additionalTextureLocations = List.empty[ResourceLocation]
 
   /**
-    * Implement logic here
+    * Implement block logic here
     *
     * @param base     baked version of base model
     * @param state    current block state
@@ -41,7 +41,7 @@ abstract class ModelEnhancer {
   def handleBlockState(base: IPerspectiveAwareModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]): IPerspectiveAwareModel
 
   /**
-    * Override for special logic for items
+    * Implement item logic here
     *
     * @param base     baked version of base model
     * @param stack    item stack

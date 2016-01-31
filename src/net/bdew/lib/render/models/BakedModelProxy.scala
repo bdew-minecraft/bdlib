@@ -9,11 +9,13 @@
 
 package net.bdew.lib.render.models
 
+import javax.vecmath.Matrix4f
+
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
 import net.minecraft.client.resources.model.IBakedModel
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.IPerspectiveAwareModel
+import net.minecraftforge.client.model.{IFlexibleBakedModel, IPerspectiveAwareModel}
 import org.apache.commons.lang3.tuple.Pair
 
 /**
@@ -37,6 +39,6 @@ class BakedModelProxy(aBase: IBakedModel) extends IPerspectiveAwareModel {
 
   override def getFormat = base.getFormat
 
-  override def handlePerspective(cameraTransformType: TransformType) =
+  override def handlePerspective(cameraTransformType: TransformType): Pair[_ <: IFlexibleBakedModel, Matrix4f] =
     Pair.of(this, base.handlePerspective(cameraTransformType).getRight)
 }
