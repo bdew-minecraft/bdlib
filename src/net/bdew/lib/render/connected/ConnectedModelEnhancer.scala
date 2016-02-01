@@ -45,9 +45,8 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
       builder.inheritCameraTransformsFrom(base)
 
       for {
-        connections <- ConnectedTextureBlock.CONNECTIONS.get(state)
+        connections <- ConnectionsProperty.get(state)
         face <- EnumFacing.values()
-        overlays <- ConnectedTextureBlock.OVERLAYS(face).get(state)
       } {
         val sides = BlockFace.neighbourFaces(face)
 
@@ -79,15 +78,6 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
           builder.addQuad(face,
             ConnectedModelHelper.faceQuads((corner, face))
               .withTexture(ConnectedModelHelper.faceEdges(corner).texture(frameSprite))
-          )
-        }
-
-        for (overlay <- overlays) {
-          builder.addQuad(face,
-            ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, face))
-              .withTexture(
-                ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(textures(overlay.texture)),
-                tint = overlay.tint, shading = overlay.shading)
           )
         }
       }

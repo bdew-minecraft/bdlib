@@ -11,7 +11,7 @@ package net.bdew.lib.multiblock.block
 
 import net.bdew.lib.Misc
 import net.bdew.lib.PimpVanilla._
-import net.bdew.lib.block.{BaseBlock, BlockFace, BlockTooltip, HasTE}
+import net.bdew.lib.block.{BaseBlock, BlockTooltip, HasTE}
 import net.bdew.lib.config.MachineManagerMultiblock
 import net.bdew.lib.multiblock.tile.TileModule
 import net.bdew.lib.multiblock.{ResourceProvider, Tools}
@@ -52,8 +52,6 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
       me.getCore.isDefined && other.getCore == me.getCore
     })
   }
-
-  override def getOverlays(world: IBlockAccess, face: BlockFace) = List.empty
 
   override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
