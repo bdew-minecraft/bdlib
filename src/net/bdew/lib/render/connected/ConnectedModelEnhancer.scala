@@ -11,16 +11,15 @@ package net.bdew.lib.render.connected
 
 import net.bdew.lib.block.BlockFace
 import net.bdew.lib.render.QuadBaker
-import net.bdew.lib.render.models.{BakedModelAdditionalFaceQuads, ModelEnhancer, SmartBakedModelBuilder}
+import net.bdew.lib.render.models._
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.item.ItemStack
 import net.minecraft.util.{EnumFacing, EnumWorldBlockLayer, ResourceLocation, Vec3i}
-import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.client.model.IPerspectiveAwareModel
 
-class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
-  override val additionalTextureLocations = List(frame)
+class ConnectedModelEnhancer(frame: ResourceLocation) extends OverlayModelEnhancer(EnumWorldBlockLayer.CUTOUT) {
+  override def additionalTextureLocations = super.additionalTextureLocations ++ List(frame)
 
   //why the fuck is that not part of the class?!?
   def addVec(v1: Vec3i, v2: Vec3i) = new Vec3i(v1.getX + v2.getX, v1.getY + v2.getY, v1.getZ + v2.getZ)
@@ -37,52 +36,44 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
     new BakedModelAdditionalFaceQuads(base, baker.bakeListMap(quads))
   }
 
-  override def handleBlockState(base: IPerspectiveAwareModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
-    if (MinecraftForgeClient.getRenderLayer == EnumWorldBlockLayer.CUTOUT) {
-      val frameSprite = textures(frame)
-      val builder = new SmartBakedModelBuilder(base.getFormat)
-      builder.texture = base.getParticleTexture
-      builder.inheritCameraTransformsFrom(base)
+  override def generateBlockOverlay(builder: SimpleBakedModelBuilder, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+    val frameSprite = textures(frame)
+    for {
+      connections <- ConnectionsProperty.get(state)
+      face <- EnumFacing.values()
+    } {
+      val sides = BlockFace.neighbourFaces(face)
 
-      for {
-        connections <- ConnectionsProperty.get(state)
-        face <- EnumFacing.values()
-      } {
-        val sides = BlockFace.neighbourFaces(face)
+      var corners = Set.empty[ConnectedModelHelper.Corner.Value]
 
-        var corners = Set.empty[ConnectedModelHelper.Corner.Value]
+      val U = !connections(sides.top.getDirectionVec)
+      val D = !connections(sides.bottom.getDirectionVec)
+      val L = !connections(sides.left.getDirectionVec)
+      val R = !connections(sides.right.getDirectionVec)
 
-        val U = !connections(sides.top.getDirectionVec)
-        val D = !connections(sides.bottom.getDirectionVec)
-        val L = !connections(sides.left.getDirectionVec)
-        val R = !connections(sides.right.getDirectionVec)
+      if (!U && !R && !connections(addVec(sides.top.getDirectionVec, sides.right.getDirectionVec)))
+        corners += ConnectedModelHelper.Corner.TR
 
-        if (!U && !R && !connections(addVec(sides.top.getDirectionVec, sides.right.getDirectionVec)))
-          corners += ConnectedModelHelper.Corner.TR
+      if (!U && !L && !connections(addVec(sides.top.getDirectionVec, sides.left.getDirectionVec)))
+        corners += ConnectedModelHelper.Corner.TL
 
-        if (!U && !L && !connections(addVec(sides.top.getDirectionVec, sides.left.getDirectionVec)))
-          corners += ConnectedModelHelper.Corner.TL
+      if (!D && !R && !connections(addVec(sides.bottom.getDirectionVec, sides.right.getDirectionVec)))
+        corners += ConnectedModelHelper.Corner.BR
 
-        if (!D && !R && !connections(addVec(sides.bottom.getDirectionVec, sides.right.getDirectionVec)))
-          corners += ConnectedModelHelper.Corner.BR
+      if (!D && !L && !connections(addVec(sides.bottom.getDirectionVec, sides.left.getDirectionVec)))
+        corners += ConnectedModelHelper.Corner.BL
 
-        if (!D && !L && !connections(addVec(sides.bottom.getDirectionVec, sides.left.getDirectionVec)))
-          corners += ConnectedModelHelper.Corner.BL
+      if (U) corners += ConnectedModelHelper.Corner.T
+      if (D) corners += ConnectedModelHelper.Corner.B
+      if (R) corners += ConnectedModelHelper.Corner.R
+      if (L) corners += ConnectedModelHelper.Corner.L
 
-        if (U) corners += ConnectedModelHelper.Corner.T
-        if (D) corners += ConnectedModelHelper.Corner.B
-        if (R) corners += ConnectedModelHelper.Corner.R
-        if (L) corners += ConnectedModelHelper.Corner.L
-
-        for (corner <- corners) {
-          builder.addQuad(face,
-            ConnectedModelHelper.faceQuads((corner, face))
-              .withTexture(ConnectedModelHelper.faceEdges(corner).texture(frameSprite))
-          )
-        }
+      for (corner <- corners) {
+        builder.addQuad(face,
+          ConnectedModelHelper.faceQuads((corner, face))
+            .withTexture(ConnectedModelHelper.faceEdges(corner).texture(frameSprite))
+        )
       }
-
-      builder.build()
-    } else base
+    }
   }
 }

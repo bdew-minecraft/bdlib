@@ -28,7 +28,7 @@ abstract class ModelEnhancer {
   /**
     * Override to specify additional textures
     */
-  val additionalTextureLocations = List.empty[ResourceLocation]
+  def additionalTextureLocations = List.empty[ResourceLocation]
 
   /**
     * Implement block logic here
@@ -88,7 +88,7 @@ abstract class ModelEnhancer {
 }
 
 class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelEnhancer {
-  override val additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
+  override def additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
 
   override def handleBlockState(base: IPerspectiveAwareModel, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
     e2.handleBlockState(e1.handleBlockState(base, state, textures), state, textures)

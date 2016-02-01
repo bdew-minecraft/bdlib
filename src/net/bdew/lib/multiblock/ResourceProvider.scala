@@ -10,17 +10,14 @@
 package net.bdew.lib.multiblock
 
 import net.bdew.lib.gui.{Color, Texture}
+import net.minecraft.util.ResourceLocation
 
 trait ResourceProvider {
-  // Todo: do we still need this?
-  //  // Icons for rendering, *must* be on block sprite sheet
-  //  def edge: IIcon
-  //  def disabled: IIcon
-  //  def output: IIcon
-  //  def arrowTop: IIcon
-  //  def arrowRight: IIcon
-  //  def arrowBottom: IIcon
-  //  def arrowLeft: IIcon
+  // Icons for rendering
+  def edge: ResourceLocation
+  def output: ResourceLocation
+  def arrow: ResourceLocation
+  def disabled: ResourceLocation
 
   // Textures for GUI stuff
   def btBase: Texture
