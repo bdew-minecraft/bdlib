@@ -11,7 +11,6 @@ package net.bdew.lib.gui
 
 import net.bdew.lib.Client
 import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.client.renderer.{GlStateManager, RenderHelper}
 import net.minecraft.inventory.Container
 import org.lwjgl.opengl.GL11
 
@@ -46,17 +45,15 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
       super.keyTyped(c, i)
 
   protected override def drawGuiContainerForegroundLayer(x: Int, y: Int) = {
-    GlStateManager.pushAttrib()
-    RenderHelper.disableStandardItemLighting()
-    GlStateManager.disableDepth()
-    GlStateManager.enableAlpha()
-    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
-    GlStateManager.enableBlend()
-    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-    GlStateManager.color(1F, 1F, 1F, 1F)
+    GL11.glPushAttrib(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT)
+    GL11.glDisable(GL11.GL_DEPTH_TEST)
+    GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f)
+    GL11.glEnable(GL11.GL_ALPHA_TEST)
+    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+    GL11.glEnable(GL11.GL_BLEND)
+    GL11.glColor4f(1, 1, 1, 1)
     widgets.draw(Point(x, y) - rect.origin)
-    GlStateManager.color(1F, 1F, 1F, 1F)
-    GlStateManager.popAttrib()
+    GL11.glPopAttrib()
   }
 
   protected override def drawScreen(x: Int, y: Int, f: Float) {
@@ -76,9 +73,9 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
     if (background != null)
       widgets.drawTexture(rect, background)
 
-    GlStateManager.pushMatrix()
-    GlStateManager.translate(rect.x, rect.y, 0)
+    GL11.glPushMatrix()
+    GL11.glTranslatef(rect.x, rect.y, 0)
     widgets.drawBackground(Point(x, y) - rect.origin)
-    GlStateManager.popMatrix()
+    GL11.glPopMatrix()
   }
 }
