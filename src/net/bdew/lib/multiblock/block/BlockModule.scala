@@ -47,10 +47,11 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
   }
 
   override def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos) = {
-    val me = getTE(world, origin)
-    me.connected.contains(target) || (world.getTileSafe[TileModule](target) exists { other =>
-      me.getCore.isDefined && other.getCore == me.getCore
-    })
+    getTE(world, origin) exists { me =>
+      me.connected.contains(target) || (world.getTileSafe[TileModule](target) exists { other =>
+        me.getCore.isDefined && other.getCore == me.getCore
+      })
+    }
   }
 
   override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {

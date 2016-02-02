@@ -34,7 +34,7 @@ trait BlockKeepData extends Block with HasItemBlock {
 
   def getSavedBlock(world: IBlockAccess, pos: BlockPos, state: IBlockState) = {
     val stack = new ItemStack(getItemDropped(state, new Random(), 0), 1, damageDropped(state))
-    getTE(world, pos).saveToItem(stack)
+    getTE(world, pos).foreach(_.saveToItem(stack))
     stack
   }
 
@@ -75,6 +75,7 @@ trait BlockKeepData extends Block with HasItemBlock {
 trait TileKeepData extends TileExtended {
   /**
     * Override to modify data that will be stored in an item
+    *
     * @param t Automatically serialized data
     * @return Modified serialized data
     */
@@ -83,6 +84,7 @@ trait TileKeepData extends TileExtended {
   /**
     * Override to modify data that will be load from an item
     * After the tile entity is fully constructed and added to world
+    *
     * @param t Automatically serialized data
     * @return Modified serialized data
     */

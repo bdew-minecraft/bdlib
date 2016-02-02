@@ -24,5 +24,5 @@ trait RotatableTileBlock extends BaseRotatableBlock with ITileEntityProvider {
     getTE(world, pos).rotation := facing
   }
   override def getFacing(world: IBlockAccess, pos: BlockPos): EnumFacing =
-    getTE(world, pos).rotation
+    getTE(world, pos).map(_.rotation.value).getOrElse(getDefaultFacing)
 }

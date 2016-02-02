@@ -23,8 +23,8 @@ trait BlockCoverable extends Block {
   self: HasTE[_ <: TileCoverable] =>
 
   private def getCoverItem(w: IBlockAccess, pos: BlockPos, side: EnumFacing): Option[(ItemCover, ItemStack, TileCoverable)] = {
-    val te = getTE(w, pos)
     for {
+      te <- getTE(w, pos)
       coverStack <- te.covers(side)
       coverItemMaybe <- Option(coverStack.getItem)
       coverItem <- Misc.asInstanceOpt(coverItemMaybe, classOf[ItemCover])

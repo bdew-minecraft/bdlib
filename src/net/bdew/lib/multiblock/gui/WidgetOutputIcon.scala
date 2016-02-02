@@ -13,7 +13,7 @@ import java.util.Locale
 
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.widgets.Widget
-import net.bdew.lib.gui.{Point, Rect}
+import net.bdew.lib.gui.{Point, Rect, Texture}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 
 import scala.collection.mutable
@@ -25,9 +25,10 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
     val faces = te.outputFaces.inverted
     if (faces.isDefinedAt(output)) {
       val bf = faces(output)
+
       //TODO: Render stuff here
     } else {
-      //parent.drawTexture(rect, Texture(Texture.BLOCKS, te.resources.disabled), te.resources.outputColors(output))
+      parent.drawTexture(rect, Texture(te.resources.disabled), te.resources.outputColors(output))
     }
   }
 

@@ -9,37 +9,61 @@
 
 package net.bdew.lib.block
 
-import net.bdew.lib.{BdLib, Client}
+import net.bdew.lib.BdLib
+import net.minecraft.block.state.IBlockState
 import net.minecraft.block.{Block, ITileEntityProvider}
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.BlockPos
-import net.minecraft.world.{ChunkCache, IBlockAccess, World}
-import net.minecraftforge.fml.relauncher.{Side, SideOnly}
+import net.minecraft.world.{IBlockAccess, World}
+import net.minecraftforge.common.property.IExtendedBlockState
+import net.minecraftforge.fml.common.FMLCommonHandler
 
+/**
+  * Mixin for blocks that have a TileEntity
+  *
+  * @tparam T type of TE
+  */
 trait HasTE[T] extends Block with ITileEntityProvider {
+  /**
+    * Class of TE - must override in implementing blocks
+    */
   val TEClass: Class[_ <: TileEntity]
 
-  def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
+  override def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
 
-  @SideOnly(Side.CLIENT)
-  private def getClientWorld: World = Client.world
+  override def getExtendedState(state: IBlockState, world: IBlockAccess, pos: BlockPos): IBlockState = {
+    val stateEx = state.asInstanceOf[IExtendedBlockState]
+    getTE(world, pos).map(x => getExtendedStateFromTE(stateEx, world, pos, x)).getOrElse(stateEx)
+  }
 
-  def getTE(w: IBlockAccess, pos: BlockPos): T = {
+  /**
+    * Get TE for a block
+    */
+  def getTE(w: World, pos: BlockPos): T = {
     var t = w.getTileEntity(pos)
     if ((t == null) || !TEClass.isInstance(t)) {
       BdLib.logWarn("Tile entity for block %s at (%d,%d,%d) is corrupt or missing - recreating", this, pos.getX, pos.getY, pos.getZ)
-      w match {
-        case ww: World =>
-          t = createNewTileEntity(ww, getMetaFromState(w.getBlockState(pos)))
-          ww.setTileEntity(pos, t)
-        case ww: ChunkCache =>
-          // This is in client, TE probably didn't arrive from server yet, make a fake one and hope for the best
-          t = TEClass.newInstance()
-          t.setWorldObj(getClientWorld)
-        case _ =>
-          sys.error("Something is broken. Report to mod author. TileEntity type %s for block %s, world is %s".format(TEClass.getName, getRegistryName, w.getClass.getName))
-      }
+      t = createNewTileEntity(w, getMetaFromState(w.getBlockState(pos)))
+      w.setTileEntity(pos, t)
     }
     return t.asInstanceOf[T]
   }
+
+  /**
+    * Get TE for a block, if available. If this is in client it might not be available yet.
+    */
+  def getTE(w: IBlockAccess, pos: BlockPos): Option[T] = {
+    val t = w.getTileEntity(pos)
+    if ((t == null) || !TEClass.isInstance(t)) {
+      w match {
+        case ww: World if FMLCommonHandler.instance().getEffectiveSide.isServer => Some(getTE(ww, pos))
+        case _ => None
+      }
+    } else Some(t.asInstanceOf[T])
+  }
+
+  /**
+    * Override to provide IExtendedBlockState from TE data
+    */
+  def getExtendedStateFromTE(state: IExtendedBlockState, world: IBlockAccess, pos: BlockPos, te: T): IExtendedBlockState = state
 }
