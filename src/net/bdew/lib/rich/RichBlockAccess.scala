@@ -9,8 +9,9 @@
 
 package net.bdew.lib.rich
 
-import net.minecraft.util.BlockPos
+import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.IBlockAccess
+import net.minecraftforge.common.capabilities.Capability
 
 import scala.reflect.ClassTag
 
@@ -27,6 +28,14 @@ class RichBlockAccess(val v: IBlockAccess) extends AnyVal {
     val block = v.getBlockState(p).getBlock
     if (block != null && implicitly[ClassTag[T]].runtimeClass.isInstance(block))
       Some(block.asInstanceOf[T])
+    else
+      None
+  }
+
+  def getCapSafe[T](p: BlockPos, side: EnumFacing, cap: Capability[T]): Option[T] = {
+    val te = v.getTileEntity(p)
+    if (v != null)
+      Option(te.getCapability(cap, side))
     else
       None
   }
