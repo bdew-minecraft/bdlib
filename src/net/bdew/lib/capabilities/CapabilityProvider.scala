@@ -16,7 +16,7 @@ import net.minecraftforge.common.capabilities.{Capability, ICapabilityProvider}
   * Mix in for defining capabilities in a nicer, type safe way
   */
 trait CapabilityProvider extends ICapabilityProvider {
-  private[capabilities] var caps = Map.empty[Capability[_], PartialFunction[EnumFacing, _]].withDefault(PartialFunction.empty)
+  private[capabilities] var caps = Map.empty[Capability[_], PartialFunction[EnumFacing, _]].withDefaultValue(PartialFunction.empty)
 
   /**
     * Add capability (using Partial Function)
