@@ -32,8 +32,9 @@ trait HasTE[T] extends Block with ITileEntityProvider {
   override def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
 
   override def getExtendedState(state: IBlockState, world: IBlockAccess, pos: BlockPos): IBlockState = {
-    val stateEx = state.asInstanceOf[IExtendedBlockState]
-    getTE(world, pos).map(x => getExtendedStateFromTE(stateEx, world, pos, x)).getOrElse(stateEx)
+    if (state.isInstanceOf[IExtendedBlockState]) {
+      getTE(world, pos).map(x => getExtendedStateFromTE(state.asInstanceOf[IExtendedBlockState], world, pos, x)).getOrElse(state)
+    } else state // if block has no unlisted properties, it will use the non-extended version of BlockState and there's no point in calling this
   }
 
   /**
