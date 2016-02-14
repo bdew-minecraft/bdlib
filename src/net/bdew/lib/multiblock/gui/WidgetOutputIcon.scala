@@ -13,21 +13,21 @@ import java.util.Locale
 
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.widgets.Widget
-import net.bdew.lib.gui.{Point, Rect, Texture}
+import net.bdew.lib.gui.{ModelDrawHelper, Point, Rect, Texture}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 
 import scala.collection.mutable
 
 class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget {
   val rect = new Rect(p, 16, 16)
+  val drawRect = Rect(p.x + 1, p.y + 1, 14, 14)
 
   override def draw(mouse: Point) {
     val faces = te.outputFaces.inverted
-    if (faces.isDefinedAt(output)) {
-      val bf = faces(output)
-
-      //TODO: Render stuff here
-    } else {
+    faces.get(output).map { bf =>
+      //noinspection UnitInMap
+      ModelDrawHelper.renderWorldBlockIntoGUI(te.getWorld, bf.pos, bf.face, drawRect)
+    } getOrElse {
       parent.drawTexture(rect, Texture(te.resources.disabled), te.resources.outputColors(output))
     }
   }
