@@ -60,9 +60,14 @@ object Texture {
   // From minecraft sprite
   def apply(res: ResourceLocation, i: TextureAtlasSprite) = new IconWrapper(res, i)
 
-  // Todo: Does that make sense?
-  def apply(res: ResourceLocation) = new Sprite(res, Rect(0, 0, 1, 1), 1)
-  def apply(path: String) = new Sprite(new ResourceLocation(path), Rect(0, 0, 1, 1), 1)
+  // From a ResourceLocation - use full file
+  def apply(res: ResourceLocation) =
+    if (res.getResourcePath.endsWith(".png"))
+      new Sprite(res, Rect(0, 0, 1, 1), 1)
+    else // If it's not a full file name, add base path and extension like TextureMap does
+      new Sprite(new ResourceLocation(res.getResourceDomain, "textures/" + res.getResourcePath + ".png"), Rect(0, 0, 1, 1), 1)
+
+  def apply(path: String): Texture = apply(new ResourceLocation(path))
 
   // From a ResourceLocation and position, scale optional
   def apply(res: ResourceLocation, r: Rect) = new Sprite(res, r)
