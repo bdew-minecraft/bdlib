@@ -9,14 +9,14 @@
 
 package net.bdew.lib.resource
 
+import net.bdew.lib.gui.{Color, Texture}
 import net.bdew.lib.{DecFormat, Misc}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.{Fluid, FluidRegistry, FluidStack}
 
 case class FluidResource(fluid: Fluid) extends ResourceKind {
-  //fixme: rendering stuff
-  //  override def getTexture = Texture(fluid.getStill())
-  //  override def getColor = Color.fromInt(fluid.getColor)
+  override def getTexture = Texture(fluid.getStill())
+  override def getColor = Color.fromInt(fluid.getColor)
   override def getLocalizedName = fluid.getLocalizedName(new FluidStack(fluid, 1))
   override def getUnlocalizedName = fluid.getUnlocalizedName
   override def getFormattedString(amount: Double, capacity: Double) =

@@ -9,15 +9,15 @@
 
 package net.bdew.lib.resource
 
+import net.bdew.lib.gui.{Color, Texture}
 import net.bdew.lib.nbt.NBT
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.FluidStack
 
 trait ResourceKind {
-  // todo: replace with something sane
-  //  def getTexture: Texture
-  //  def getColor: Color
+  def getTexture: Texture
+  def getColor: Color
   def getLocalizedName: String
   def getUnlocalizedName: String
   def getFormattedString(amount: Double, capacity: Double): String
