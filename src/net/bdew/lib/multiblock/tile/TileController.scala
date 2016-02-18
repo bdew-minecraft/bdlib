@@ -16,6 +16,9 @@ import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.multiblock.data.DataSlotPosSet
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider, Tools}
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.BlockPos
+
+import scala.reflect.ClassTag
 
 trait TileController extends TileDataSlotsTicking {
   val modules = new DataSlotPosSet("modules", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE)
@@ -27,7 +30,13 @@ trait TileController extends TileDataSlotsTicking {
   var revalidateOnNextTick = true
   var modulesChanged = true
 
-  def getNumOfModules(kind: String) = modules.flatMap(mpos => getWorld.getTileSafe[TileModule](mpos)).count(_.kind == kind)
+  def getNumOfModules(kind: String) = getModuleTiles[TileModule].count(_.kind == kind)
+
+  def getModuleTiles[T: ClassTag]: Set[T] = modules.flatMap(pos => getWorld.getTileSafe[T](pos)).toSet
+
+  def getModuleBlocks[T: ClassTag]: Map[BlockPos, T] = modules.flatMap(pos => getWorld.getBlockSafe[T](pos) map (pos -> _)).toMap
+
+  def getModulePositions(block: BlockModule[_]): Set[BlockPos] = modules.filter(pos => getWorld.getBlockState(pos).getBlock == block).toSet
 
   def onModulesChanged()
   def onClick(player: EntityPlayer)
@@ -50,7 +59,7 @@ trait TileController extends TileDataSlotsTicking {
 
   def onBreak() {
     acceptNewModules = false
-    modules.flatMap(mpos => getWorld.getTileSafe[TileModule](mpos)).foreach(_.coreRemoved())
+    getModuleTiles[TileModule].foreach(_.coreRemoved())
     modules.clear()
   }
 
