@@ -47,6 +47,6 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
 
   override def isSideSolid(world: IBlockAccess, pos: BlockPos, side: EnumFacing) = true
 
-  override def getWeakPower(worldIn: IBlockAccess, pos: BlockPos, state: IBlockState, side: EnumFacing) =
-    if (getSignal(worldIn, pos)) 15 else 0
+  override def getWeakPower(world: IBlockAccess, pos: BlockPos, state: IBlockState, side: EnumFacing) =
+    if (side == getFacing(state).getOpposite && getSignal(world, pos)) 15 else 0
 }
