@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.{EnumFacing, StatCollector}
 import net.minecraft.world.biome.BiomeGenBase
+import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.common.versioning.VersionParser
@@ -93,7 +94,13 @@ object Misc {
     if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
 
   def getNeighbourTile[T](origin: TileEntity, dir: EnumFacing, cls: Class[T]) =
-    Option(origin.getWorld.getTileEntity(origin.getPos.add(dir.getDirectionVec))) flatMap (asInstanceOpt(_, cls))
+    Option(origin.getWorld.getTileEntity(origin.getPos.offset(dir))) flatMap (asInstanceOpt(_, cls))
+
+  def getNeighbourTileCapability[T](origin: TileEntity, dir: EnumFacing, cap: Capability[T]) =
+    Option(origin.getWorld.getTileEntity(origin.getPos.offset(dir))) flatMap (tile => Option(tile.getCapability(cap, dir.getOpposite)))
+
+  def neighbourTileHasCapability[T](origin: TileEntity, dir: EnumFacing, cap: Capability[T]) =
+    Option(origin.getWorld.getTileEntity(origin.getPos.offset(dir))) exists (tile => tile.hasCapability(cap, dir.getOpposite))
 
   @inline def applyMutator[T](f: (T) => Unit, init: T): T = {
     f(init)

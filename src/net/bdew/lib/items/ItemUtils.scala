@@ -18,6 +18,7 @@ import net.minecraft.inventory.{IInventory, ISidedInventory}
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.util.{BlockPos, EnumFacing}
 import net.minecraft.world.World
+import net.minecraftforge.items.IItemHandler
 
 object ItemUtils {
   def throwItemAt(world: World, pos: BlockPos, stack: ItemStack) {
@@ -47,6 +48,7 @@ object ItemUtils {
     return ItemStack.areItemStackTagsEqual(stack2, stack1)
   }
 
+  @deprecated("Use IItemHandler instead", "Minecraft 1.8.9")
   def addStackToSlots(stack: ItemStack, inv: IInventory, slots: Iterable[Int], checkValid: Boolean): ItemStack = {
     if (stack == null) return null
 
@@ -79,6 +81,29 @@ object ItemUtils {
 
     return stack
   }
+
+  def addStackToHandler(stack: ItemStack, inv: IItemHandler, slots: Iterable[Int]): ItemStack = {
+    if (stack == null) return null
+
+    var left = stack.copy()
+
+    // Try merging into existing slots
+    for (slot <- slots if isSameItem(stack, inv.getStackInSlot(slot))) {
+      left = inv.insertItem(slot, left, false)
+      if (left == null) return null
+    }
+
+    // Now find empty slots and stick any leftovers there
+    for (slot <- slots if inv.getStackInSlot(slot) == null) {
+      left = inv.insertItem(slot, left, false)
+      if (left == null) return null
+    }
+
+    return left
+  }
+
+  def addStackToHandler(stack: ItemStack, inv: IItemHandler): ItemStack =
+    addStackToHandler(stack, inv, 0 until inv.getSlots)
 
   def getAccessibleSlotsFromSide(inv: IInventory, side: EnumFacing) =
     (Misc.asInstanceOpt(inv, classOf[ISidedInventory])
