@@ -9,7 +9,7 @@
 
 package net.bdew.lib.block
 
-import net.bdew.lib.Misc
+import net.bdew.lib.{BdLib, Client, Misc}
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.IProperty
@@ -58,5 +58,10 @@ class BaseBlock(val name: String, material: Material) extends Block(material) {
   @SideOnly(Side.CLIENT)
   def registerItemModels(): Unit = {
     ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName, "inventory"))
+    // If this is called late (after preinit) register manually with ItemModelMesher - as forge won't do it
+    if (Client.minecraft.getRenderItem != null) {
+      BdLib.logDebug("Registering late item model for " + getRegistryName)
+      Client.minecraft.getRenderItem.getItemModelMesher.register(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName, "inventory"))
+    }
   }
 }

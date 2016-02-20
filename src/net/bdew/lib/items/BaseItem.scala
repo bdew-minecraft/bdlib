@@ -9,7 +9,7 @@
 
 package net.bdew.lib.items
 
-import net.bdew.lib.Misc
+import net.bdew.lib.{BdLib, Client, Misc}
 import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraftforge.client.model.ModelLoader
@@ -27,5 +27,10 @@ class BaseItem(val name: String) extends Item {
   @SideOnly(Side.CLIENT)
   def registerItemModels(): Unit = {
     ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName, "inventory"))
+    // If this is called late (after preinit) register manually with ItemModelMesher - as forge won't do it
+    if (Client.minecraft.getRenderItem != null) {
+      BdLib.logDebug("Registering late item model for " + getRegistryName)
+      Client.minecraft.getRenderItem.getItemModelMesher.register(this, 0, new ModelResourceLocation(getRegistryName, "inventory"))
+    }
   }
 }
