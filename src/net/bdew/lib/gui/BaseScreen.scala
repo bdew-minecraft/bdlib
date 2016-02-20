@@ -45,7 +45,7 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
       super.keyTyped(c, i)
 
   protected override def drawGuiContainerForegroundLayer(x: Int, y: Int) = {
-    GL11.glPushAttrib(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_TEXTURE_BIT)
+    GL11.glPushAttrib(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT)
     GL11.glDisable(GL11.GL_DEPTH_TEST)
     GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f)
     GL11.glEnable(GL11.GL_ALPHA_TEST)
