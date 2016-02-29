@@ -73,9 +73,9 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
   def addQuadListMap(map: Map[EnumFacing, List[TQuad]]) =
     for ((face, quads) <- map) faceQuads(face) ++= baker.bakeList(quads)
 
-  def addQuadGeneral(face: EnumFacing, quad: TQuad) = generalQuads += baker.bakeQuad(quad)
+  def addQuadGeneral(quad: TQuad) = generalQuads += baker.bakeQuad(quad)
 
-  def addQuadsGeneral(face: EnumFacing, quads: List[TQuad]) = generalQuads ++= baker.bakeList(quads)
+  def addQuadsGeneral(quads: List[TQuad]) = generalQuads ++= baker.bakeList(quads)
 
   def inheritCameraTransformsFrom(model: IPerspectiveAwareModel): Unit = {
     cameraTransforms = { (m, t) => m -> model.handlePerspective(t).getRight }
