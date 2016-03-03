@@ -13,6 +13,7 @@ import java.io.Reader
 
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
+import net.minecraft.init.Blocks
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraftforge.fml.common.ModAPIManager
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -29,7 +30,8 @@ class RecipeLoader {
 
   /**
    * Create a new parser, override in subclasses to use an extended parser
-   * @return New ConfigParser (or subclass) instance
+    *
+    * @return New ConfigParser (or subclass) instance
    */
   def newParser() = new RecipeParser()
 
@@ -55,7 +57,8 @@ class RecipeLoader {
 
   /**
    * Looks up a recipe component
-   * @param s Parser ItemStack reference
+    *
+    * @param s Parser ItemStack reference
    * @return ItemStack or String that can be used as recipe components in MC functions
    */
   def getRecipeComponent(s: StackRef): AnyRef = s match {
@@ -74,7 +77,8 @@ class RecipeLoader {
   }
   /**
    * Sanitize items from reflection
-   * @param x The item
+    *
+    * @param x     The item
    * @param source Human readable source (used in errors and warnings)
    * @param meta Metadata or damage
    * @param cnt Stack size
@@ -100,7 +104,8 @@ class RecipeLoader {
   /**
    * Fetches an ItemStack using reflection from static fields
    * Item and Block instances are converted to ItemStacks
-   * @param clsName Name of class to fetch from (can be a class macro)
+    *
+    * @param clsName Name of class to fetch from (can be a class macro)
    * @param fldName Field name
    * @param meta Metadata or damage
    * @param cnt Stack size
@@ -115,7 +120,8 @@ class RecipeLoader {
   /**
    * Fetches an ItemStack using reflection from static getters
    * Item and Block instances are converted to ItemStacks
-   * @param clsName Name of class to fetch from (can be a class macro)
+    *
+    * @param clsName Name of class to fetch from (can be a class macro)
    * @param method Method name
    * @param param Parameter to method
    * @param meta Metadata or damage
@@ -144,7 +150,8 @@ class RecipeLoader {
   /**
    * Returns all possible ItemStacks that match a reference
    * Currently everything except OreDictionary references just returns one item
-   * @param s Parser ItemStack reference
+    *
+    * @param s  Parser ItemStack reference
    * @param cnt Stack size
    * @return List of matching ItemStacks
    */
@@ -162,7 +169,8 @@ class RecipeLoader {
   /**
    * Returns an ItemStack that match a reference
    * This is the main StackRef resolution method
-   * @param s Parser ItemStack reference
+    *
+    * @param s  Parser ItemStack reference
    * @param cnt Stack size
    * @return A matching ItemStack
    */
@@ -177,6 +185,8 @@ class RecipeLoader {
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)
     case StackBlock(mod, id, meta) =>
       val block = notNull(GameRegistry.findBlock(mod, id), "Block not found %s:%s".format(mod, id))
+      if (block == Blocks.air)
+        error("Block name '%s:%s' resolved to Air. This probably means that it isn't registered.", mod, id)
       if (Item.getItemFromBlock(block) == null)
         error("The block '%s:%s' does not have a valid matching item registered and thus can't be used in recipes", mod, id)
       new ItemStack(block, cnt, meta)
@@ -188,7 +198,8 @@ class RecipeLoader {
 
   /**
    * Looks up all characters used in the recipe
-   * @param s The pattern
+    *
+    * @param s The pattern
    * @return Map from character to recipe components and a boolean that means OD-aware methods should be used
    */
   def resolveRecipeComponents(s: Iterable[Char]): (Map[Char, AnyRef], Boolean) = {
@@ -206,7 +217,8 @@ class RecipeLoader {
 
   /**
    * Helper to remove recipes from lists
-   * @param list list to check
+    *
+    * @param list list to check
    * @param res crafting result to remove
    * @return cleaned list
    */
@@ -244,7 +256,8 @@ class RecipeLoader {
 
   /**
    * Process a single statement, override this to add more statements
-   * @param s The statement
+    *
+    * @param s The statement
    */
   def processConfigStatement(s: ConfigStatement): Unit = s match {
     case CsConditionalConfig(cnd, thn, els) =>
@@ -269,7 +282,8 @@ class RecipeLoader {
 
   /**
    * Process a single recipe statement
-   * @param st The statement
+    *
+    * @param st The statement
    */
   def processRecipeStatement(st: RecipeStatement) = st match {
     case RsCharAssign(c, r) =>
@@ -379,7 +393,8 @@ class RecipeLoader {
 
   /**
    * Process a list of recipe statements and catch all exceptions
-   * @param list The list to process
+    *
+    * @param list The list to process
    */
   def processRecipeStatementsSafe(list: List[RecipeStatement]) {
     for (s <- list) {
@@ -396,7 +411,8 @@ class RecipeLoader {
 
   /**
    * Process a list of config statements and catch all exceptions
-   * @param r The list to process
+    *
+    * @param r The list to process
    */
   def processConfigStatementsSafe(r: List[ConfigStatement]): Unit = {
     for (s <- r) {
