@@ -56,9 +56,11 @@ case class List4[+T](v1: T, v2: T, v3: T, v4: T) {
 object List4 {
   def apply[T](x: IndexedSeq[T]): List4[T] = {
     if (x.length == 4)
-      List4(x(0), x(1), x(2), x(3))
+      from(x)
     else
-      throw new RuntimeException("Wrong number of elements for Vector4")
+      throw new RuntimeException("Wrong number of elements for List4")
   }
+
+  def from[T](f: (Int) => T) = List4(f(0), f(1), f(2), f(3))
 }
 
