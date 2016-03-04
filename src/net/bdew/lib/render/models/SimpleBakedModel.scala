@@ -12,6 +12,7 @@ package net.bdew.lib.render.models
 import java.util
 import javax.vecmath.Matrix4f
 
+import com.google.common.base.Optional
 import com.google.common.collect.ImmutableList
 import net.bdew.lib.Client
 import net.bdew.lib.render.QuadBaker
@@ -79,6 +80,16 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
 
   def inheritCameraTransformsFrom(model: IPerspectiveAwareModel): Unit = {
     cameraTransforms = { (m, t) => m -> model.handlePerspective(t).getRight }
+  }
+
+  def setTransformsFromState(state: IModelState): Unit = {
+    cameraTransforms = { (m, t) =>
+      val tr = state.apply(Optional.of(t)).or(TRSRTransformation.identity)
+      if (tr != TRSRTransformation.identity)
+        (m, TRSRTransformation.blockCornerToCenter(tr).getMatrix)
+      else
+        (m, null)
+    }
   }
 
   def build(): IPerspectiveAwareModel = {
