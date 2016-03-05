@@ -79,7 +79,7 @@ object CommandOreDistribution extends CommandBase {
     val kinds = mutable.Map.empty[String, Set[(Item, Int)]].withDefaultValue(Set.empty)
 
     for {
-      bp <- new BlockPos(startX - radius, minY, startZ - radius) to new BlockPos(startX + radius, minY, startZ + radius)
+      bp <- new BlockPos(startX - radius, minY, startZ - radius) to new BlockPos(startX + radius, maxY, startZ + radius)
       if !world.isAirBlock(bp)
     } {
       val block = world.getBlockState(bp).getBlock
