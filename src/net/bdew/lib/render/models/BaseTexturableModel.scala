@@ -21,7 +21,7 @@ import scala.collection.JavaConversions._
 /**
   * Base class for custom models that can accept textures from forge block states definition
   */
-abstract class BaseTexturableModel extends IRetexturableModel {
+abstract class BaseTexturableModel extends IRetexturableModel[BaseTexturableModel] {
   val textures = Map.empty[String, String]
   override def getTextures = textures.values.map(x => new ResourceLocation(x))
   override def retexture(textures: ImmutableMap[String, String]) = new RetexturedModel(this, textures.toMap)

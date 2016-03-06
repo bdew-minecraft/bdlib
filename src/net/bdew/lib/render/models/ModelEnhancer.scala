@@ -50,13 +50,15 @@ abstract class ModelEnhancer {
     */
   def handleItemState(base: IPerspectiveAwareModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]): IPerspectiveAwareModel
 
+  trait SmartWrappedModel extends IRetexturableModel[SmartWrappedModel]
+
   /**
     * Wrap around basic model
     *
     * @param base base model
     * @return wrapped model, that will bake into a ISmartBlockModel with our logic
     */
-  def wrap(base: IModel): IRetexturableModel = new SmartUnbakedWrapper(base)
+  def wrap(base: IModel): IRetexturableModel[SmartWrappedModel] = new SmartUnbakedWrapper(base)
 
   /**
     * Combines this with another ModelEnhancer
@@ -65,14 +67,14 @@ abstract class ModelEnhancer {
     */
   def compose(that: ModelEnhancer) = new ComposedModelEnhancer(this, that)
 
-  private class SmartUnbakedWrapper(base: IModel) extends IRetexturableModel {
+  private class SmartUnbakedWrapper[T](base: IModel) extends SmartWrappedModel {
     override def getTextures = base.getTextures ++ additionalTextureLocations
     override def getDefaultState = base.getDefaultState
     override def getDependencies = base.getDependencies
 
     override def retexture(textures: ImmutableMap[String, String]) =
-      if (base.isInstanceOf[IRetexturableModel]) {
-        new SmartUnbakedWrapper(base.asInstanceOf[IRetexturableModel].retexture(textures))
+      if (base.isInstanceOf[IRetexturableModel[_]]) {
+        new SmartUnbakedWrapper(base.asInstanceOf[IRetexturableModel[_]].retexture(textures))
       } else this
 
     override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function[ResourceLocation, TextureAtlasSprite]) = {
