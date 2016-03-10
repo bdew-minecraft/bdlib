@@ -67,7 +67,7 @@ trait TileController extends TileDataSlotsTicking {
     modules.filter(x => {
       getWorld.getTileSafe[TileModule](x).isEmpty || getWorld.getBlockSafe[BlockModule[TileModule]](x).isEmpty
     }).foreach(x => {
-      BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %d,%d,%d", x, this.getClass.getSimpleName, getPos)
+      BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %s", x, this.getClass.getSimpleName, getPos)
       modules.remove(x)
     })
     val reachable = Tools.findReachableModules(getWorld, getPos)
