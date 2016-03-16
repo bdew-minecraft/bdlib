@@ -64,6 +64,8 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
 
   lazy val baker = new QuadBaker(format)
 
+  // Unbaked versions
+
   def addQuad(face: EnumFacing, quad: TQuad) = faceQuads(face) += baker.bakeQuad(quad)
 
   def addQuads(face: EnumFacing, quads: List[TQuad]) = faceQuads(face) ++= baker.bakeList(quads)
@@ -77,6 +79,22 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
   def addQuadGeneral(quad: TQuad) = generalQuads += baker.bakeQuad(quad)
 
   def addQuadsGeneral(quads: List[TQuad]) = generalQuads ++= baker.bakeList(quads)
+
+  // Baked versions
+
+  def addBakedQuad(face: EnumFacing, quad: BakedQuad) = faceQuads(face) += quad
+
+  def addBakedQuads(face: EnumFacing, quads: List[BakedQuad]) = faceQuads(face) ++= quads
+
+  def addBakedQuadMap(map: Map[EnumFacing, BakedQuad]) =
+    for ((face, quad) <- map) faceQuads(face) += quad
+
+  def addBakedQuadListMap(map: Map[EnumFacing, List[BakedQuad]]) =
+    for ((face, quads) <- map) faceQuads(face) ++= quads
+
+  def addBakedQuadGeneral(quad: BakedQuad) = generalQuads += quad
+
+  def addBakedQuadsGeneral(quads: List[BakedQuad]) = generalQuads ++= quads
 
   def inheritCameraTransformsFrom(model: IPerspectiveAwareModel): Unit = {
     cameraTransforms = { (m, t) => m -> model.handlePerspective(t).getRight }
