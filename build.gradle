@@ -132,11 +132,11 @@ curseforge {
         }
 
         addArtifact(deobfJar) {
-            displayName = "BDLib ${simpleVersion} Source (MC ${config.minecraft.version})"
+            displayName = "BDLib ${simpleVersion} Deobfuscated (MC ${config.minecraft.version})"
         }
 
         addArtifact(sourceJarReal) {
-            displayName = "BDLib ${simpleVersion} Deobfuscated (MC ${config.minecraft.version})"
+            displayName = "BDLib ${simpleVersion} Source (MC ${config.minecraft.version})"
         }
     }
 }
