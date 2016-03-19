@@ -10,6 +10,7 @@
 package net.bdew.lib.property
 
 import java.util
+import java.util.Locale
 
 import com.google.common.base.Optional
 import net.bdew.lib.Misc
@@ -22,10 +23,10 @@ import scala.collection.JavaConversions._
 object EnumerationProperty {
   def create[T <: Enumeration](enum: T, name: String) = {
     new SimpleProperty[enum.Value](name, classOf[enum.Value]) {
-      override def getName(value: enum.Value): String = value.toString
+      override def getName(value: enum.Value): String = value.toString.toLowerCase(Locale.US)
       override def getAllowedValues: util.Collection[enum.Value] = enum.values.toList
       override def parseValue(value: String): Optional[enum.Value] =
-        Misc.toOptional(enum.values.find(_.toString == value))
+        Misc.toOptional(enum.values.find(_.toString.toLowerCase(Locale.US) == value))
     }
   }
 
