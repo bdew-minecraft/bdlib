@@ -10,10 +10,11 @@
 package net.bdew.lib
 
 import net.bdew.lib.multiblock.network.NetHandler
+import net.bdew.lib.render.ColorHandlers
 import net.bdew.lib.tooltip.TooltipHandler
 import net.minecraft.command.CommandHandler
 import net.minecraftforge.fml.common.Mod.EventHandler
-import net.minecraftforge.fml.common.event.{FMLPreInitializationEvent, FMLServerStartingEvent, FMLServerStoppingEvent}
+import net.minecraftforge.fml.common.event.{FMLInitializationEvent, FMLPreInitializationEvent, FMLServerStartingEvent, FMLServerStoppingEvent}
 import net.minecraftforge.fml.common.{FMLCommonHandler, Mod}
 import org.apache.logging.log4j.Logger
 
@@ -40,6 +41,13 @@ object BdLib {
     NetHandler.init()
     if (ev.getSide.isClient) {
       TooltipHandler.init()
+    }
+  }
+
+  @EventHandler
+  def init(ev: FMLInitializationEvent): Unit = {
+    if (ev.getSide.isClient) {
+      ColorHandlers.addDelayed()
     }
   }
 

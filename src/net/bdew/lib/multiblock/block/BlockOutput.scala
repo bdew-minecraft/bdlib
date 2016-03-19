@@ -9,10 +9,10 @@
 
 package net.bdew.lib.multiblock.block
 
-import net.bdew.lib.Client
 import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.render.OutputFaceProperty
 import net.bdew.lib.multiblock.tile.TileOutput
+import net.bdew.lib.render.ColorHandlers
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
@@ -34,6 +34,6 @@ trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] {
   @SideOnly(Side.CLIENT)
   override def registerItemModels(): Unit = {
     super.registerItemModels()
-    Client.blockColors.registerBlockColorHandler(new ColorHandler(resources), this)
+    ColorHandlers.register(this, new ColorHandler(resources))
   }
 }
