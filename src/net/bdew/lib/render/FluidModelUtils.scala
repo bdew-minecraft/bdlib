@@ -11,8 +11,8 @@ package net.bdew.lib.render
 
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.ItemMeshDefinition
+import net.minecraft.client.renderer.block.model.{ModelBakery, ModelResourceLocation}
 import net.minecraft.client.renderer.block.statemap.StateMapperBase
-import net.minecraft.client.resources.model.{ModelBakery, ModelResourceLocation}
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.fluids.BlockFluidBase

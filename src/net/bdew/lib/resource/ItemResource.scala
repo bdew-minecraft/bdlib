@@ -13,12 +13,14 @@ import net.bdew.lib.gui.{Color, IconWrapper, Texture}
 import net.bdew.lib.{Client, DecFormat, Misc}
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 case class ItemResource(item: Item, meta: Int) extends ResourceKind {
   override def getTexture: Texture =
     new IconWrapper(Texture.BLOCKS, Client.minecraft.getRenderItem.getItemModelMesher.getParticleIcon(item, meta))
 
-  override def getColor: Color = Color.fromInt(item.getColorFromItemStack(makeStack(1), 0))
+  @SideOnly(Side.CLIENT)
+  override def getColor: Color = Color.fromInt(Client.itemColors.getColorFromItemstack(makeStack(1), 0))
 
   override def getLocalizedName = item.getItemStackDisplayName(makeStack(1))
   override def getUnlocalizedName = item.getUnlocalizedName(makeStack(1))

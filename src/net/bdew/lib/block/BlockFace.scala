@@ -9,7 +9,8 @@
 
 package net.bdew.lib.block
 
-import net.minecraft.util.{BlockPos, EnumFacing}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 
 case class BlockFace(pos: BlockPos, face: EnumFacing) {
   def x = pos.getX

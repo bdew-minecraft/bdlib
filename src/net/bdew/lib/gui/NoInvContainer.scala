@@ -11,7 +11,7 @@ package net.bdew.lib.gui
 
 import net.bdew.lib.Misc
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP, InventoryPlayer}
-import net.minecraft.inventory.{Container, Slot}
+import net.minecraft.inventory.{ClickType, Container, Slot}
 import net.minecraft.item.ItemStack
 
 abstract class NoInvContainer extends Container {
@@ -28,13 +28,14 @@ abstract class NoInvContainer extends Container {
       addSlotToContainer(new Slot(inv, i, xOffs + i * 18, yOffsHotbar))
   }
 
-  override def slotClick(slotNum: Int, button: Int, modifiers: Int, player: EntityPlayer): ItemStack = {
+  //slotClick
+  override def func_184996_a(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
     if (inventorySlots.isDefinedAt(slotNum)) {
       val slot = getSlot(slotNum)
       if (slot != null && slot.isInstanceOf[SlotClickable])
-        return slot.asInstanceOf[SlotClickable].onClick(button, modifiers, player)
+        return slot.asInstanceOf[SlotClickable].onClick(clickType, dragType, player)
     }
-    return super.slotClick(slotNum, button, modifiers, player)
+    super.func_184996_a(slotNum, dragType, clickType, player)
   }
 
   override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = null

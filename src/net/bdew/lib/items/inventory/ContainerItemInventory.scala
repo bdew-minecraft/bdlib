@@ -11,16 +11,19 @@ package net.bdew.lib.items.inventory
 
 import net.bdew.lib.gui.BaseContainer
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.inventory.ClickType
 import net.minecraft.item.ItemStack
 
 class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) extends BaseContainer(inv) {
-  override def slotClick(slotNum: Int, button: Int, modifiers: Int, player: EntityPlayer): ItemStack = {
+  //slotClick
+  override def func_184996_a(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
     if (slotNum > 0 && slotNum < inventorySlots.size()) {
       val slot = inventorySlots.get(slotNum)
       if (slot.isHere(inv.player.inventory, inv.slot))
         return null
     }
-    if (modifiers == 2 && button == inv.slot) return null
-    return super.slotClick(slotNum, button, modifiers, player)
+    // Fixme: update to new system
+    //if (modifiers == 2 && button == inv.slot) return null
+    super.func_184996_a(slotNum, dragType, clickType, player)
   }
 }

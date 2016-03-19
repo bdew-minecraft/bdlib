@@ -12,12 +12,13 @@ package net.bdew.lib
 import java.util
 import java.util.Locale
 
+import com.google.common.base.Optional
 import net.bdew.lib.gui.Texture
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.{EnumFacing, StatCollector}
-import net.minecraft.world.biome.BiomeGenBase
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.text.translation.I18n
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -28,9 +29,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe
 object Misc {
   def getActiveModId = Option(Loader.instance().activeModContainer().getModId) getOrElse "<UNKNOWN>"
 
-  def toLocal(s: String) = StatCollector.translateToLocal(s)
-  def toLocalF(s: String, params: Any*) = StatCollector.translateToLocal(s).format(params: _*)
-  def hasLocal(s: String) = StatCollector.canTranslate(s)
+  def toLocal(s: String) = I18n.translateToLocal(s)
+  def toLocalF(s: String, params: Any*) = I18n.translateToLocal(s).format(params: _*)
+  def hasLocal(s: String) = I18n.canTranslate(s)
 
   def flattenRecipe(pattern: Seq[String], items: Map[Char, AnyRef]) =
     pattern ++ items.flatMap {
@@ -58,8 +59,6 @@ object Misc {
   def iterSomeEnum[T](list: Seq[T], indexes: Iterable[Int]): Iterable[(Int, T)] = for (i <- indexes) yield i -> list(i)
 
   def filterType[T](from: Iterable[_], cls: Class[T]) = from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
-
-  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(x => x != null && x.biomeName == name).orNull
 
   private lazy val modLookup = {
     val mods = new util.ArrayList[ModContainer]
@@ -177,5 +176,9 @@ object Misc {
     else
       "%s:%s/%s".format(domain, name, path.mkString("/")).toLowerCase(Locale.US)
 
+  def toOptional[T](o: Option[T]): Optional[T] = o match {
+    case Some(v) => Optional.of(v)
+    case None => Optional.absent()
+  }
 }
 

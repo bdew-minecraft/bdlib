@@ -12,7 +12,7 @@ package net.bdew.lib.gui.widgets
 import net.bdew.lib.gui.{Point, Rect, Texture}
 import net.minecraft.client.Minecraft
 import net.minecraft.client.audio.PositionedSoundRecord
-import net.minecraft.util.ResourceLocation
+import net.minecraft.init.SoundEvents
 
 import scala.collection.mutable
 
@@ -39,7 +39,7 @@ class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Tex
   }
 
   override def mouseClicked(p: Point, button: Int) {
-    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F))
+    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F))
     clicked(this)
   }
 }

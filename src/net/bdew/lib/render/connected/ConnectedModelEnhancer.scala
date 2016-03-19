@@ -9,40 +9,43 @@
 
 package net.bdew.lib.render.connected
 
+import java.util
+
+import com.google.common.collect.ImmutableList
 import net.bdew.lib.block.BlockFace
-import net.bdew.lib.render.QuadBaker
+import net.bdew.lib.render.QuadBakerDefault
 import net.bdew.lib.render.models._
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.item.ItemStack
-import net.minecraft.util.{EnumFacing, EnumWorldBlockLayer, ResourceLocation, Vec3i}
-import net.minecraftforge.client.model.IPerspectiveAwareModel
+import net.minecraft.util.math.Vec3i
+import net.minecraft.util.{BlockRenderLayer, EnumFacing, ResourceLocation}
 
-class ConnectedModelEnhancer(frame: ResourceLocation) extends OverlayModelEnhancer(EnumWorldBlockLayer.CUTOUT) {
+class ConnectedModelEnhancer(frame: ResourceLocation) extends OverlayModelEnhancer(BlockRenderLayer.CUTOUT) {
   override def additionalTextureLocations = super.additionalTextureLocations ++ List(frame)
 
   //why the fuck is that not part of the class?!?
   def addVec(v1: Vec3i, v2: Vec3i) = new Vec3i(v1.getX + v2.getX, v1.getY + v2.getY, v1.getZ + v2.getZ)
 
-  override def handleItemState(base: IPerspectiveAwareModel, stack: ItemStack, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
-    val baker = new QuadBaker(base.getFormat)
-    val frameSprite = textures(frame)
-    val quads = EnumFacing.values().map(face =>
-      face -> List(
-        ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, face))
-          .withTexture(ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(frameSprite))
-      )
-    ).toMap
-    new BakedModelAdditionalFaceQuads(base, baker.bakeListMap(quads))
+  override def getOverlayQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite]): util.List[BakedQuad] = {
+    if (side != null) {
+      if (state == null) {
+        val frameSprite = textures(frame)
+        ImmutableList.of(
+          QuadBakerDefault.bakeQuad(
+            ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, side))
+              .withTexture(ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(frameSprite))
+          )
+        )
+      } else getBlockOverlayQuads(state, side, rand, textures)
+    } else ImmutableList.of()
   }
 
-  override def generateBlockOverlay(builder: SimpleBakedModelBuilder, state: IBlockState, textures: Map[ResourceLocation, TextureAtlasSprite]) = {
+  def getBlockOverlayQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite]): util.List[BakedQuad] = {
     val frameSprite = textures(frame)
-    for {
-      connections <- ConnectionsProperty.get(state)
-      face <- EnumFacing.values()
-    } {
-      val sides = BlockFace.neighbourFaces(face)
+    val list = new util.LinkedList[BakedQuad]()
+    for (connections <- ConnectionsProperty.get(state)) {
+      val sides = BlockFace.neighbourFaces(side)
 
       var corners = Set.empty[ConnectedModelHelper.Corner.Value]
 
@@ -68,12 +71,12 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends OverlayModelEnhanc
       if (R) corners += ConnectedModelHelper.Corner.R
       if (L) corners += ConnectedModelHelper.Corner.L
 
-      for (corner <- corners) {
-        builder.addQuad(face,
-          ConnectedModelHelper.faceQuads((corner, face))
+      for (corner <- corners)
+        list.add(QuadBakerDefault.bakeQuad(
+          ConnectedModelHelper.faceQuads((corner, side))
             .withTexture(ConnectedModelHelper.faceEdges(corner).texture(frameSprite))
-        )
-      }
+        ))
     }
+    list
   }
 }

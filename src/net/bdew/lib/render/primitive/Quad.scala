@@ -9,6 +9,7 @@
 
 package net.bdew.lib.render.primitive
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.ITransformation
 
@@ -33,10 +34,10 @@ case class Quad(vertexes: List4[Vertex], face: EnumFacing) {
     * @param tint    tint index (if any) - used for coloring blocks via Block.colorMultiplier
     * @return
     */
-  def withTexture(texture: Texture, tint: Int = -1, shading: Boolean = true) =
+  def withTexture(texture: Texture, tint: Int = -1, shading: Boolean = true, diffuseLighting: Boolean = true) =
     TQuad(vertexes.combine(texture.uv) { (vertex, uv) =>
       vertex.withTexture(texture.sprite, uv)
-    }, face, tint = tint, shading = shading)
+    }, face, texture.sprite, tint = tint, shading = shading, diffuseLighting = diffuseLighting)
 }
 
 /**
@@ -45,7 +46,7 @@ case class Quad(vertexes: List4[Vertex], face: EnumFacing) {
   * @param face face to which this quad belongs
   * @param tint tint index (if any) - used for coloring blocks via Block.colorMultiplier
   */
-case class TQuad(vertexes: List4[TVertex], face: EnumFacing, tint: Int = -1, shading: Boolean = true) {
+case class TQuad(vertexes: List4[TVertex], face: EnumFacing, sprite: TextureAtlasSprite, tint: Int = -1, shading: Boolean = true, diffuseLighting: Boolean = true) {
   /**
     * Applies a transformation function to the quad
     */

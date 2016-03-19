@@ -11,7 +11,7 @@ package net.bdew.lib.data.base
 
 import net.bdew.lib.tile.TileExtended
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity
+import net.minecraft.network.play.server.SPacketUpdateTileEntity
 
 trait TileDataSlots extends TileExtended with DataSlotContainer {
   persistSave.listen(doSave(UpdateKind.SAVE, _))
@@ -30,7 +30,7 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
       if (slot.updateKind.contains(UpdateKind.GUI))
         lastChange = getWorld.getTotalWorldTime
       if (!getWorld.isRemote && slot.updateKind.contains(UpdateKind.WORLD))
-        getWorld.markBlockForUpdate(getPos)
+        sendUpdateToClients()
       if (slot.updateKind.contains(UpdateKind.SAVE))
         getWorld.markChunkDirty(getPos, this)
     }
@@ -39,7 +39,7 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
   def getDataSlotPacket = {
     val tag = new NBTTagCompound()
     doSave(UpdateKind.GUI, tag)
-    new S35PacketUpdateTileEntity(getPos, ACT_GUI, tag)
+    new SPacketUpdateTileEntity(getPos, ACT_GUI, tag)
   }
 
   override protected def extDataPacket(id: Int, data: NBTTagCompound) {

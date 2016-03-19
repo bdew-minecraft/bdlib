@@ -13,6 +13,7 @@ import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.block.BaseBlock
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util._
+import net.minecraft.util.math.{BlockPos, Vec3i}
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.property.IExtendedBlockState
 
@@ -29,8 +30,8 @@ trait ConnectedTextureBlock extends BaseBlock {
       vector -> canConnect(world, pos, pos.add(vector))
     }
 
-  override def canRenderInLayer(layer: EnumWorldBlockLayer) =
-    layer == EnumWorldBlockLayer.SOLID || layer == EnumWorldBlockLayer.CUTOUT
+  override def canRenderInLayer(layer: BlockRenderLayer) =
+    layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.CUTOUT
 
   def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos): Boolean
 }

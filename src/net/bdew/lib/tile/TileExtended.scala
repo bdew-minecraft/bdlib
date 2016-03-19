@@ -12,7 +12,7 @@ package net.bdew.lib.tile
 import net.bdew.lib.Event
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.NetworkManager
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity
+import net.minecraft.network.play.server.SPacketUpdateTileEntity
 import net.minecraft.tileentity.TileEntity
 
 class TileExtended extends TileEntity {
@@ -34,15 +34,20 @@ class TileExtended extends TileEntity {
     persistLoad.trigger(tag)
   }
 
+  def sendUpdateToClients() = {
+    val state = getWorld.getBlockState(getPos)
+    getWorld.notifyBlockUpdate(getPos, state, state, 3)
+  }
+
   override final def getDescriptionPacket = {
     if (sendClientUpdate.hasListeners) {
       val tag = new NBTTagCompound
       sendClientUpdate.trigger(tag)
-      new S35PacketUpdateTileEntity(pos, ACT_CLIENT, tag)
+      new SPacketUpdateTileEntity(pos, ACT_CLIENT, tag)
     } else null
   }
 
-  override final def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity) {
+  override final def onDataPacket(net: NetworkManager, pkt: SPacketUpdateTileEntity) {
     if (pkt.getTileEntityType == ACT_CLIENT)
       handleClientUpdate.trigger(pkt.getNbtCompound)
     else

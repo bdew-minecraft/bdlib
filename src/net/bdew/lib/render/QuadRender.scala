@@ -17,12 +17,10 @@ import org.lwjgl.opengl.GL11
 object QuadRender {
   def renderQuads(quads: Traversable[TQuad]): Unit = {
     val T = Tessellator.getInstance()
-    val W = T.getWorldRenderer
-    W.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
-
+    val B = T.getBuffer
+    B.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
     for (quad <- quads; vertex <- quad.vertexes)
-      W.pos(vertex.x, vertex.y, vertex.z).tex(vertex.u, vertex.v).endVertex()
-
+      B.pos(vertex.x, vertex.y, vertex.z).tex(vertex.u, vertex.v).endVertex()
     T.draw()
   }
 }

@@ -23,6 +23,9 @@ object Client {
   def player = Minecraft.getMinecraft.thePlayer
   def textureManager = Minecraft.getMinecraft.getTextureManager
   def textureMapBlocks = Minecraft.getMinecraft.getTextureMapBlocks
+  def blockColors = Minecraft.getMinecraft.getBlockColors
+  def itemColors = Minecraft.getMinecraft.getItemColors
+
   def missingIcon = textureMapBlocks.getAtlasSprite("missingno")
 
   def shiftDown: Boolean = {

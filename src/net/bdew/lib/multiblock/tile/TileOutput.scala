@@ -61,7 +61,7 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
       toAdd.foreach(x => core.newOutput(pos, x, makeCfgObject(x)))
       if (toAdd.nonEmpty || toRemove.nonEmpty) {
         onConnectionsChanged(toAdd, toRemove)
-        getWorld.markBlockForUpdate(pos)
+        sendUpdateToClients()
       }
     }
   }

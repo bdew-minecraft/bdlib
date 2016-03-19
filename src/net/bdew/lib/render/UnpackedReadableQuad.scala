@@ -10,6 +10,7 @@
 package net.bdew.lib.render
 
 import net.bdew.lib.render.primitive._
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.pipeline.{IVertexConsumer, UnpackedBakedQuad}
@@ -38,24 +39,15 @@ trait ReadableQuad extends UnpackedBakedQuad {
   }
 
   def getQuad(shaded: Boolean = true) = {
-    TQuad(List4.from(getVertex), getFace, getTintIndex, shaded)
+    TQuad(List4.from(getVertex), getFace, getSprite, getTintIndex, shaded, shouldApplyDiffuseLighting())
   }
 }
 
 /**
   * UnpackedBakedQuad subclass with accessible data
   */
-class UnpackedReadableQuad(unpackedData: Array[Array[Array[Float]]], tint: Int, orientation: EnumFacing, format: VertexFormat) extends UnpackedBakedQuad(unpackedData, tint, orientation, format) with ReadableQuad {
+class UnpackedReadableQuad(unpackedData: Array[Array[Array[Float]]], tint: Int, orientation: EnumFacing, texture: TextureAtlasSprite, applyDiffuseLighting: Boolean, format: VertexFormat) extends UnpackedBakedQuad(unpackedData, tint, orientation, texture, applyDiffuseLighting, format) with ReadableQuad {
   def getUnpackedData = unpackedData
-  def getFormat = format
-}
-
-/**
-  * UnpackedBakedQuad.Colored subclass with accessible data
-  */
-class ColoredReadableQuad(unpackedData: Array[Array[Array[Float]]], tint: Int, orientation: EnumFacing, format: VertexFormat) extends UnpackedBakedQuad.Colored(unpackedData, tint, orientation, format) with ReadableQuad {
-  def getUnpackedData = unpackedData
-  def getFormat = format
 }
 
 /**
@@ -69,6 +61,8 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
   var vertices = 0
   var elements = 0
   var full = false
+  var texture: TextureAtlasSprite = null
+  var applyDiffuseLighting = false
 
   def reset(): Unit = {
     unpackedData = Array.fill(4, format.getElementCount, 4)(0f)
@@ -78,17 +72,19 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
     vertices = 0
     elements = 0
     full = false
+    texture = null
+    applyDiffuseLighting = false
   }
 
-  def getVertexFormat: VertexFormat = {
+  override def getVertexFormat: VertexFormat = {
     return format
   }
 
-  def setQuadTint(tint: Int) {
+  override def setQuadTint(tint: Int) {
     this.tint = tint
   }
 
-  def setQuadOrientation(orientation: EnumFacing) {
+  override def setQuadOrientation(orientation: EnumFacing) {
     this.orientation = orientation
   }
 
@@ -96,7 +92,15 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
     this.isColored = true
   }
 
-  def put(element: Int, data: Float*) {
+  def setTexture(texture: TextureAtlasSprite) {
+    this.texture = texture
+  }
+
+  override def setApplyDiffuseLighting(diffuse: Boolean) {
+    this.applyDiffuseLighting = diffuse
+  }
+
+  override def put(element: Int, data: Float*) {
     for (i <- 0 until 4)
       unpackedData(vertices)(element)(i) = if (i < data.length) data(i) else 0
     elements += 1
@@ -111,10 +115,7 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
 
   def build: ReadableQuad = {
     if (!full) throw new IllegalStateException("not enough data")
-    if (isColored)
-      new ColoredReadableQuad(unpackedData, tint, orientation, format)
-    else
-      return new UnpackedReadableQuad(unpackedData, tint, orientation, format)
+    return new UnpackedReadableQuad(unpackedData, tint, orientation, texture, applyDiffuseLighting, format)
   }
 
   def buildAndReset() = {

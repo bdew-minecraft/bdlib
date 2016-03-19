@@ -13,7 +13,8 @@ import net.bdew.lib.Client
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.util.{BlockPos, EnumFacing, EnumWorldBlockLayer}
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.{BlockRenderLayer, EnumFacing}
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.ForgeHooksClient
 import org.lwjgl.opengl.GL11
@@ -38,7 +39,7 @@ object ModelDrawHelper {
     val textures = Client.textureManager
     val blockState = world.getBlockState(pos)
     val tessellator = Tessellator.getInstance()
-    val renderer = tessellator.getWorldRenderer
+    val buffer = tessellator.getBuffer
 
     // Make sure that block atlas is selected
 
@@ -77,24 +78,24 @@ object ModelDrawHelper {
     GL11.glTranslatef(-0.5f, -0.5f, -0.5f)
 
     // No idea what vertex format i should be using or if it even matters
-    renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM)
+    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM)
 
     // If blocks renders in multiple layers - go through all
-    for (layer <- EnumWorldBlockLayer.values() if blockState.getBlock.canRenderInLayer(layer)) {
+    for (layer <- BlockRenderLayer.values() if blockState.getBlock.canRenderInLayer(layer)) {
 
       // This is thread local so will hopefully not break anything else. No other way to pass the current layer to the model
       ForgeHooksClient.setRenderLayer(layer)
 
       // This needs to be done for every layer, as smart models can change based on layer
-      val model = dispatcher.getModelFromBlockState(blockState, world, pos)
+      val model = dispatcher.getModelForState(blockState)
 
       // Grab all relevant quads
-      for (quad <- model.getGeneralQuads ++ model.getFaceQuads(face)) {
+      for (quad <- model.getQuads(blockState, face, 0)) {
         if (quad.hasTintIndex) // Apply color from block
-          net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, quad,
-            0xFF000000 | blockState.getBlock.colorMultiplier(world, pos, quad.getTintIndex))
+          net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad,
+            0xFF000000 | Client.blockColors.colorMultiplier(blockState, world, pos, quad.getTintIndex))
         else // default to white
-          net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, quad, -1)
+          net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad, -1)
       }
     }
 

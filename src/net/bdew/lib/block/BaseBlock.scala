@@ -13,8 +13,8 @@ import net.bdew.lib.{BdLib, Client, Misc}
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.IProperty
-import net.minecraft.block.state.{BlockState, IBlockState}
-import net.minecraft.client.resources.model.ModelResourceLocation
+import net.minecraft.block.state.{BlockStateContainer, IBlockState}
+import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.common.property.{ExtendedBlockState, IUnlistedProperty}
@@ -31,11 +31,11 @@ class BaseBlock(val name: String, material: Material) extends Block(material) {
   def getProperties = List.empty[IProperty[T] forSome {type T <: Comparable[T]}]
   def getUnlistedProperties = List.empty[IUnlistedProperty[_]]
 
-  final override def createBlockState(): BlockState = {
+  final override def createBlockState(): BlockStateContainer = {
     val normal = getProperties
     val unlisted = getUnlistedProperties
     if (unlisted.isEmpty) {
-      new BlockState(this, normal.toSeq: _*)
+      new BlockStateContainer(this, normal.toSeq: _*)
     } else {
       new ExtendedBlockState(this, normal.toArray, unlisted.toArray)
     }

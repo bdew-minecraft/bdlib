@@ -16,7 +16,7 @@ import net.bdew.lib.sensors.{DataSlotSensor, RedstoneSensors, SensorPair}
 import net.bdew.lib.tile.TileTicking
 import net.minecraft.block.state.IBlockState
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity], block: BlockRedstoneSensorModule[_]) extends TileModule with TileTicking {

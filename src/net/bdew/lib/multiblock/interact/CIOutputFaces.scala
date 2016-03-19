@@ -13,7 +13,9 @@ import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.data._
 import net.bdew.lib.multiblock.tile.{TileController, TileModule}
-import net.minecraft.util.{BlockPos, ChatComponentTranslation, EnumFacing}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextComponentTranslation
 
 trait CIOutputFaces extends TileController {
   val maxOutputs: Int
@@ -34,8 +36,8 @@ trait CIOutputFaces extends TileController {
       outputFaces.updated()
       return i
     }
-    val pl = getWorld.getClosestPlayer(bf.x, bf.y, bf.z, 10)
-    if (pl != null) pl.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.toomanyoutputs"))
+    val pl = getWorld.func_184137_a(bf.x, bf.y, bf.z, 10, false) //getClosestPlayer
+    if (pl != null) pl.addChatMessage(new TextComponentTranslation("bdlib.multiblock.toomanyoutputs"))
     return -1
   }
 

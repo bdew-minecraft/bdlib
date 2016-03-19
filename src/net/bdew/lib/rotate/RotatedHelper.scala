@@ -12,7 +12,8 @@ package net.bdew.lib.rotate
 import java.util
 
 import net.minecraft.entity.EntityLivingBase
-import net.minecraft.util.{EnumFacing, MathHelper}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.MathHelper
 
 object RotatedHelper {
   def getFacingFromEntity(ent: EntityLivingBase, validRotations: util.EnumSet[EnumFacing], default: EnumFacing): EnumFacing = {

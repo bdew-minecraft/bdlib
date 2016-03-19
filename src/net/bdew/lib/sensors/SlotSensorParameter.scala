@@ -11,12 +11,13 @@ package net.bdew.lib.sensors
 
 import net.bdew.lib.gui.SlotClickable
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.{IInventory, Slot}
+import net.minecraft.inventory.{ClickType, IInventory, Slot}
+import net.minecraft.item.ItemStack
 
 class SlotSensorParameter[T, R](inv: IInventory, index: Int, x: Int, y: Int, ds: DataSlotSensor[T, R], obj: => Option[T]) extends Slot(inv, index, x, y) with SlotClickable {
-  override def onClick(button: Int, mods: Int, player: EntityPlayer) = {
+  def onClick(clickType: ClickType, dragType: Int, player: EntityPlayer): ItemStack = {
     obj foreach { x =>
-      val newParam = ds.sensor.paramClicked(ds.param, player.inventory.getItemStack, button, mods, x)
+      val newParam = ds.sensor.paramClicked(ds.param, player.inventory.getItemStack, clickType, dragType, x)
       ds := ds.value.copy(param = newParam)
     }
     player.inventory.getItemStack

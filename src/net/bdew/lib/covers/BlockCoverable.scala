@@ -16,7 +16,8 @@ import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.item.ItemStack
-import net.minecraft.util.{BlockPos, EnumFacing}
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.{EnumFacing, EnumHand}
 import net.minecraft.world.{IBlockAccess, World}
 
 trait BlockCoverable extends Block {
@@ -31,11 +32,11 @@ trait BlockCoverable extends Block {
     } yield (coverItem, coverStack, te)
   }
 
-  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     val te = getTE(world, pos)
 
     // Shift+RightClick with empty hand should remove cover
-    if (player.getCurrentEquippedItem == null && player.isSneaking) {
+    if (heldItem == null && player.isSneaking) {
       for {
         cover <- te.covers(side)
         coverItem <- Misc.asInstanceOpt(cover.getItem, classOf[ItemCover])
@@ -52,7 +53,7 @@ trait BlockCoverable extends Block {
 
     // If held item is cover - try to install it
     for {
-      activeStack <- Option(player.getCurrentEquippedItem)
+      activeStack <- Option(heldItem)
       activeItem <- Option(activeStack.getItem)
       coverItem <- Misc.asInstanceOpt(activeItem, classOf[ItemCover])
       if te.isValidCover(side, activeStack) && coverItem.isValidTile(te, activeStack)
@@ -68,7 +69,7 @@ trait BlockCoverable extends Block {
         te.covers(side).set(coverItem.onInstall(te, side, activeStack.splitStack(1), player.asInstanceOf[EntityPlayerMP]))
 
         if (activeStack.stackSize <= 0)
-          player.inventory.setInventorySlotContents(player.inventory.currentItem, null)
+          player.setHeldItem(hand, null)
 
         te.onCoversChanged()
         coverChanged(world, pos, side)
@@ -81,13 +82,13 @@ trait BlockCoverable extends Block {
       if (item.clickCover(te, side, stack, player)) return true
     }
 
-    super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ)
+    super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ)
   }
 
-  override def canProvidePower = true
+  override def canProvidePower(state: IBlockState): Boolean = true
 
-  override def getWeakPower(world: IBlockAccess, pos: BlockPos, state: IBlockState, side: EnumFacing): Int = {
-    for ((item, stack, te) <- getCoverItem(world, pos, side.getOpposite)) {
+  override def getWeakPower(blockState: IBlockState, blockAccess: IBlockAccess, pos: BlockPos, side: EnumFacing): Int = {
+    for ((item, stack, te) <- getCoverItem(blockAccess, pos, side.getOpposite)) {
       if (item.isEmittingSignal(te, side.getOpposite, stack)) return 15
     }
     0

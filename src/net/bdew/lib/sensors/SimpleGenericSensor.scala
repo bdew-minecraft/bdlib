@@ -9,8 +9,8 @@
 
 package net.bdew.lib.sensors
 
-import net.bdew.lib.Misc
 import net.bdew.lib.gui._
+import net.minecraft.inventory.ClickType
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
@@ -30,12 +30,13 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
 
   lazy val parameterMap = (parameters map (x => x.uid -> x)).toMap
 
-  override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T) =
-    if (item == null && button == 0 && mod == 0)
-      Misc.nextInSeq(parameters, current)
-    else if (item == null && button == 1 && mod == 0)
-      Misc.prevInSeq(parameters, current)
-    else
+  override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, dragType: Int, obj: T): GenericSensorParameter =
+  //  Todo: update click stuff
+  //    if (item == null && button == 0 && mod == 0)
+  //      Misc.nextInSeq(parameters, current)
+  //    else if (item == null && button == 1 && mod == 0)
+  //      Misc.prevInSeq(parameters, current)
+  //    else
       current
 
   override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound) = tag.setString("param", p.uid)

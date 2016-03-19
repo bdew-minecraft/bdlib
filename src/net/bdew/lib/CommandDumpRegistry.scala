@@ -14,6 +14,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 import com.google.common.collect.Table
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.item.ItemStack
+import net.minecraft.server.MinecraftServer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.registry.GameData
@@ -33,7 +34,7 @@ object CommandDumpRegistry extends CommandBase {
         x.getResourceDomain.compareTo(x.getResourceDomain)
   }
 
-  def processCommand(sender: ICommandSender, params: Array[String]) {
+  override def execute(server: MinecraftServer, sender: ICommandSender, params: Array[String]): Unit = {
     val mcHome = FMLInjectionData.data()(6).asInstanceOf[File] //is there a better way to get this?
     val dumpFile = new File(mcHome, "registry.dump")
     val dumpWriter = new BufferedWriter(new FileWriter(dumpFile))

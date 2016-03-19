@@ -12,7 +12,7 @@ package net.bdew.lib.tile.inventory
 import net.bdew.lib.block.HasTE
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 trait BreakableInventoryBlock extends Block {

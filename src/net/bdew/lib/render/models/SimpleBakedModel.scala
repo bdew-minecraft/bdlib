@@ -19,9 +19,9 @@ import net.bdew.lib.render.QuadBaker
 import net.bdew.lib.render.primitive.TQuad
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
-import net.minecraft.client.renderer.block.model.{BakedQuad, ItemCameraTransforms}
+import net.minecraft.client.renderer.block.model.{BakedQuad, IBakedModel, ItemCameraTransforms, ItemOverrideList}
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.client.renderer.vertex.VertexFormat
+import net.minecraft.client.renderer.vertex.{DefaultVertexFormats, VertexFormat}
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model._
 import org.apache.commons.lang3.tuple.Pair
@@ -32,15 +32,20 @@ case class SimpleBakedModel(generalQuads: util.List[BakedQuad],
                             faceQuads: Map[EnumFacing, util.List[BakedQuad]],
                             texture: TextureAtlasSprite,
                             format: VertexFormat,
-                            transforms: (IFlexibleBakedModel, TransformType) => (IFlexibleBakedModel, Matrix4f),
+                            transforms: (IBakedModel, TransformType) => (IBakedModel, Matrix4f),
+                            processing: ModelProcessing.Processor,
+                            itemOverrideList: ItemOverrideList,
                             isAmbientOcclusion: Boolean,
                             isGui3d: Boolean,
                             isBuiltInRenderer: Boolean
                            ) extends IPerspectiveAwareModel {
-  override def getFormat = format
+
+  override def getOverrides: ItemOverrideList = itemOverrideList
+
+  override def getQuads(state: IBlockState, side: EnumFacing, rand: Long): util.List[BakedQuad] =
+    processing(state, side, rand, if (side == null) generalQuads else faceQuads(side))
+
   override def getParticleTexture = texture
-  override def getGeneralQuads = generalQuads
-  override def getFaceQuads(face: EnumFacing) = faceQuads(face)
   override def getItemCameraTransforms = ItemCameraTransforms.DEFAULT
   override def handlePerspective(cameraTransformType: TransformType) = {
     val (model, matrix) = transforms(this, cameraTransformType)
@@ -48,19 +53,34 @@ case class SimpleBakedModel(generalQuads: util.List[BakedQuad],
   }
 }
 
-object NoCameraTransforms extends ((IFlexibleBakedModel, TransformType) => (IFlexibleBakedModel, Matrix4f)) {
-  lazy val matrix = TRSRTransformation.identity().getMatrix
-  override def apply(m: IFlexibleBakedModel, t: TransformType) = (m, matrix)
+object ModelProcessing {
+  type Processor = (IBlockState, EnumFacing, Long, util.List[BakedQuad]) => util.List[BakedQuad]
+  val NOOP: Processor = (_, _, _, l) => l
+  def combine(list: List[Processor]): Processor = {
+    if (list.isEmpty) NOOP
+    else if (list.length == 1) list.head
+    else list.tail.foldLeft(list.head)((p1, p2) => (s, f, r, l) => p1(s, f, r, p2(s, f, r, l)))
+  }
 }
 
-class SimpleBakedModelBuilder(format: VertexFormat) {
+object NoCameraTransforms extends ((IBakedModel, TransformType) => (IBakedModel, Matrix4f)) {
+  lazy val matrix = TRSRTransformation.identity().getMatrix
+  override def apply(m: IBakedModel, t: TransformType) = (m, matrix)
+}
+
+class SimpleBakedModelBuilder(format: VertexFormat = DefaultVertexFormats.ITEM) {
   val faceQuads = EnumFacing.values().map(f => f -> mutable.ListBuffer.empty[BakedQuad]).toMap
   var generalQuads = mutable.ListBuffer.empty[BakedQuad]
   var texture: TextureAtlasSprite = Client.missingIcon
   var isAmbientOcclusion = true
   var isGui3d = false
   var isBuiltInRenderer = false
-  var cameraTransforms: ((IFlexibleBakedModel, TransformType) => (IFlexibleBakedModel, Matrix4f)) = NoCameraTransforms
+  var itemOverrides = ItemOverrideList.NONE
+  var cameraTransforms: ((IBakedModel, TransformType) => (IBakedModel, Matrix4f)) = NoCameraTransforms
+  var processing = List.empty[ModelProcessing.Processor]
+
+  def compose(f1: (IBlockState, EnumFacing, Long, util.List[BakedQuad]) => util.List[BakedQuad], f2: (IBlockState, EnumFacing, Long, util.List[BakedQuad]) => util.List[BakedQuad]): (IBlockState, EnumFacing, Long, util.List[BakedQuad]) => util.List[BakedQuad] =
+    (s: IBlockState, f: EnumFacing, r: Long, l: util.List[BakedQuad]) => f1(s, f, r, f2(s, f, r, l))
 
   lazy val baker = new QuadBaker(format)
 
@@ -110,6 +130,8 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
     }
   }
 
+  def addProcessing(p: ModelProcessing.Processor) = processing :+= p
+
   def build(): IPerspectiveAwareModel = {
     import scala.collection.JavaConversions._
     if (format == null) throw new RuntimeException("Format not specified")
@@ -119,23 +141,11 @@ class SimpleBakedModelBuilder(format: VertexFormat) {
       texture = texture,
       format = format,
       transforms = cameraTransforms,
+      processing = ModelProcessing.combine(processing),
+      itemOverrideList = itemOverrides,
       isAmbientOcclusion = isAmbientOcclusion,
       isGui3d = isGui3d,
       isBuiltInRenderer = isBuiltInRenderer
     )
-  }
-}
-
-class SmartBakedModelBuilder(format: VertexFormat) extends SimpleBakedModelBuilder(format) {
-  var logic = List.empty[(IPerspectiveAwareModel, IBlockState) => IPerspectiveAwareModel]
-
-  def addLogic(f: (IPerspectiveAwareModel, IBlockState) => IPerspectiveAwareModel) = logic :+= f
-
-  override def build() = {
-    val base = super.build()
-    new BakedModelProxy(base) with ISmartBlockModel {
-      override def handleBlockState(state: IBlockState) =
-        logic.foldLeft((base, state))((s, f) => f.tupled(s) -> s._2)._1
-    }
   }
 }

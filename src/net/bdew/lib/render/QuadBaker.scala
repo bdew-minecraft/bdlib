@@ -11,7 +11,7 @@ package net.bdew.lib.render
 
 import net.bdew.lib.render.primitive.{TQuad, TVertex}
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.client.renderer.vertex.{VertexFormat, VertexFormatElement}
+import net.minecraft.client.renderer.vertex.{DefaultVertexFormats, VertexFormat, VertexFormatElement}
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.pipeline.{LightUtil, UnpackedBakedQuad}
 
@@ -25,7 +25,7 @@ class QuadBaker(format: VertexFormat) {
   def bakeQuad(quad: TQuad): BakedQuad = {
     val array = new Array[Array[Array[Float]]](4)
     quad.vertexes.mapIntoArray(array, x => vertexToRaw(x, quad.face, quad.shading))
-    new UnpackedBakedQuad(array, quad.tint, quad.face, format)
+    new UnpackedBakedQuad(array, quad.tint, quad.face, quad.sprite, quad.diffuseLighting, format)
   }
 
   private def vertexToRaw(v: TVertex, face: EnumFacing, shading: Boolean): Array[Array[Float]] = {
@@ -49,3 +49,5 @@ object QuadBaker {
     f -> Array[Float](f.getFrontOffsetX, f.getFrontOffsetY, f.getFrontOffsetZ, 0)
   }).toMap
 }
+
+object QuadBakerDefault extends QuadBaker(DefaultVertexFormats.ITEM)

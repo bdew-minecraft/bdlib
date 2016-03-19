@@ -11,6 +11,7 @@ package net.bdew.lib.sensors
 
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.{DrawTarget, Rect}
+import net.minecraft.inventory.ClickType
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
@@ -27,7 +28,7 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
 
   def defaultParameter: GenericSensorParameter
 
-  def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T): GenericSensorParameter
+  def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, dragType: Int, obj: T): GenericSensorParameter
 
   def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound)
   def loadParameter(tag: NBTTagCompound): GenericSensorParameter

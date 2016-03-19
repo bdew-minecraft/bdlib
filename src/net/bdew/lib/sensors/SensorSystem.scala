@@ -11,6 +11,7 @@ package net.bdew.lib.sensors
 
 import net.bdew.lib.gui._
 import net.bdew.lib.{BdLib, Misc}
+import net.minecraft.inventory.ClickType
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
@@ -55,7 +56,7 @@ abstract class SensorSystem[T, R](defaultResult: R) {
     override def parameters = Vector(DisabledParameter)
     override def uid = "disabled"
 
-    override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T): GenericSensorParameter = DisabledParameter
+    override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, dragType: Int, obj: T): GenericSensorParameter = DisabledParameter
     override def getResult(param: GenericSensorParameter, obj: T): R = defaultResult
 
     @SideOnly(Side.CLIENT)

@@ -9,19 +9,19 @@
 
 package net.bdew.lib.helpers
 
-import net.minecraft.util._
+import net.minecraft.util.text._
 
 import scala.language.implicitConversions
 
-class RichChatComponent(v: IChatComponent) {
-  def &(that: IChatComponent) = v.appendSibling(that)
+class RichChatComponent(v: ITextComponent) {
+  def &(that: ITextComponent) = v.appendSibling(that)
 
-  private def applyStyle(f: ChatStyle => Unit) = {
+  private def applyStyle(f: Style => Unit) = {
     f(v.getChatStyle)
     v
   }
 
-  def setColor(c: EnumChatFormatting) = applyStyle(_.setColor(c))
+  def setColor(c: TextFormatting) = applyStyle(_.setColor(c))
   def setBold(b: Boolean) = applyStyle(_.setBold(b))
   def setItalic(b: Boolean) = applyStyle(_.setItalic(b))
   def setObfuscated(b: Boolean) = applyStyle(_.setObfuscated(b))
@@ -33,28 +33,28 @@ class RichChatComponent(v: IChatComponent) {
 object ChatHelper {
 
   object Color {
-    val BLACK = EnumChatFormatting.BLACK
-    val DARK_BLUE = EnumChatFormatting.DARK_BLUE
-    val DARK_GREEN = EnumChatFormatting.DARK_GREEN
-    val DARK_AQUA = EnumChatFormatting.DARK_AQUA
-    val DARK_RED = EnumChatFormatting.DARK_RED
-    val DARK_PURPLE = EnumChatFormatting.DARK_PURPLE
-    val GOLD = EnumChatFormatting.GOLD
-    val GRAY = EnumChatFormatting.GRAY
-    val DARK_GRAY = EnumChatFormatting.DARK_GRAY
-    val BLUE = EnumChatFormatting.BLUE
-    val GREEN = EnumChatFormatting.GREEN
-    val AQUA = EnumChatFormatting.AQUA
-    val RED = EnumChatFormatting.RED
-    val LIGHT_PURPLE = EnumChatFormatting.LIGHT_PURPLE
-    val YELLOW = EnumChatFormatting.YELLOW
-    val WHITE = EnumChatFormatting.WHITE
+    val BLACK = TextFormatting.BLACK
+    val DARK_BLUE = TextFormatting.DARK_BLUE
+    val DARK_GREEN = TextFormatting.DARK_GREEN
+    val DARK_AQUA = TextFormatting.DARK_AQUA
+    val DARK_RED = TextFormatting.DARK_RED
+    val DARK_PURPLE = TextFormatting.DARK_PURPLE
+    val GOLD = TextFormatting.GOLD
+    val GRAY = TextFormatting.GRAY
+    val DARK_GRAY = TextFormatting.DARK_GRAY
+    val BLUE = TextFormatting.BLUE
+    val GREEN = TextFormatting.GREEN
+    val AQUA = TextFormatting.AQUA
+    val RED = TextFormatting.RED
+    val LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE
+    val YELLOW = TextFormatting.YELLOW
+    val WHITE = TextFormatting.WHITE
   }
 
-  implicit def str2chat(s: String): ChatComponentText = new ChatComponentText(s)
-  implicit def str2rich(s: String): RichChatComponent = new RichChatComponent(new ChatComponentText(s))
-  implicit def pimpIChatComponent(v: IChatComponent): RichChatComponent = new RichChatComponent(v)
+  implicit def str2chat(s: String): TextComponentString = new TextComponentString(s)
+  implicit def str2rich(s: String): RichChatComponent = new RichChatComponent(new TextComponentString(s))
+  implicit def pimpITextComponent(v: ITextComponent): RichChatComponent = new RichChatComponent(v)
 
-  def C(s: String) = new ChatComponentText(s)
-  def L(s: String, params: IChatComponent*) = new ChatComponentTranslation(s, params: _*)
+  def C(s: String) = new TextComponentString(s)
+  def L(s: String, params: ITextComponent*) = new TextComponentTranslation(s, params: _*)
 }

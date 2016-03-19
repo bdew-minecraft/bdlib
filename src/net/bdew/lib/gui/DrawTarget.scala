@@ -32,12 +32,12 @@ trait SimpleDrawTarget extends DrawTarget {
     val z = getZLevel
     t.bind()
     color.activate()
-    val W = T.getWorldRenderer
-    W.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
-    W.pos(r.x1, r.y2, z).tex(t.u1, t.v2).endVertex()
-    W.pos(r.x2, r.y2, z).tex(t.u2, t.v2).endVertex()
-    W.pos(r.x2, r.y1, z).tex(t.u2, t.v1).endVertex()
-    W.pos(r.x1, r.y1, z).tex(t.u1, t.v1).endVertex()
+    val B = T.getBuffer
+    B.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
+    B.pos(r.x1, r.y2, z).tex(t.u1, t.v2).endVertex()
+    B.pos(r.x2, r.y2, z).tex(t.u2, t.v2).endVertex()
+    B.pos(r.x2, r.y1, z).tex(t.u2, t.v1).endVertex()
+    B.pos(r.x1, r.y1, z).tex(t.u1, t.v1).endVertex()
     T.draw()
   }
 

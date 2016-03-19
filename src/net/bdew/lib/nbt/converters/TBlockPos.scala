@@ -12,7 +12,7 @@ package net.bdew.lib.nbt.converters
 import net.bdew.lib.nbt.Type.TInt
 import net.bdew.lib.nbt.{ConvertedType, NBT}
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 
 object TBlockPos extends ConvertedType[BlockPos, NBTTagCompound] {
   override def encode(v: BlockPos) =

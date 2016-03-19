@@ -15,7 +15,9 @@ import net.bdew.lib.PimpVanilla._
 import net.minecraft.command.{CommandBase, ICommandSender, WrongUsageException}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.Item
-import net.minecraft.util.{BlockPos, EnumChatFormatting}
+import net.minecraft.server.MinecraftServer
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fml.common.registry.GameData
 import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
@@ -34,9 +36,9 @@ object CommandOreDistribution extends CommandBase {
       case e: NumberFormatException => throw new WrongUsageException("bdlib.oredistribution.usage")
     }
 
-  def wrapColor(s: String, c: EnumChatFormatting) = c + s + EnumChatFormatting.RESET
+  def wrapColor(s: String, c: TextFormatting) = c + s + TextFormatting.RESET
 
-  def processCommand(sender: ICommandSender, baseParams: Array[String]) {
+  override def execute(server: MinecraftServer, sender: ICommandSender, baseParams: Array[String]): Unit = {
     val (flags, params) = baseParams.partition(_.startsWith("--"))
 
     if (params.length < 1 || params.length > 3)
@@ -59,7 +61,7 @@ object CommandOreDistribution extends CommandBase {
 
     // why java, WHY?
     CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.start1",
-      Array[Integer](startX - radius, minY, startZ - radius, startX + radius, maxY, startZ + radius, world.provider.getDimensionId): _*)
+      Array[Integer](startX - radius, minY, startZ - radius, startX + radius, maxY, startZ + radius, world.provider.getDimension): _*)
 
     CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.start2")
 
@@ -82,8 +84,8 @@ object CommandOreDistribution extends CommandBase {
       bp <- new BlockPos(startX - radius, minY, startZ - radius) to new BlockPos(startX + radius, maxY, startZ + radius)
       if !world.isAirBlock(bp)
     } {
-      val block = world.getBlockState(bp).getBlock
-      val key = (Item.getItemFromBlock(block), block.getDamageValue(world, bp))
+      val state = world.getBlockState(bp)
+      val key = (Item.getItemFromBlock(state.getBlock), state.getBlock.damageDropped(state))
       for (ore <- ores.get(key)) {
         distribution(ore) += 1
         kinds(ore) += key
@@ -100,7 +102,7 @@ object CommandOreDistribution extends CommandBase {
       val dumpWriter = new BufferedWriter(new FileWriter(dumpFile))
       try {
         dumpWriter.write("Ore distribution report - (%d,%d,%d) to (%d,%d,%d) dim %d".format(
-          startX - radius, minY, startZ - radius, startX + radius, maxY, startZ + radius, world.provider.getDimensionId
+          startX - radius, minY, startZ - radius, startX + radius, maxY, startZ + radius, world.provider.getDimension
         ))
         dumpWriter.newLine()
         dumpWriter.newLine()
@@ -134,13 +136,13 @@ object CommandOreDistribution extends CommandBase {
       // === OUTPUT TO CHAT ===
       for ((id, types) <- warnings.toList.sortBy(_._1)) {
         CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.warn",
-          wrapColor(" !", EnumChatFormatting.RED), wrapColor(id, EnumChatFormatting.RED))
+          wrapColor(" !", TextFormatting.RED), wrapColor(id, TextFormatting.RED))
         for ((item, dmg) <- types)
-          CommandBase.notifyOperators(sender, this, wrapColor(" - ", EnumChatFormatting.RED) + GameData.getItemRegistry.getNameForObject(item) + "@" + dmg)
+          CommandBase.notifyOperators(sender, this, wrapColor(" - ", TextFormatting.RED) + GameData.getItemRegistry.getNameForObject(item) + "@" + dmg)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
         CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.entry",
-          " *", wrapColor(id, EnumChatFormatting.YELLOW),
+          " *", wrapColor(id, TextFormatting.YELLOW),
           DecFormat.round(num), DecFormat.short(100F * num / total))
       }
     }

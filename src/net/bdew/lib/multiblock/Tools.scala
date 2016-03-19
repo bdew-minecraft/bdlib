@@ -11,7 +11,7 @@ package net.bdew.lib.multiblock
 
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.multiblock.tile.{TileController, TileModule}
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 import scala.collection.mutable

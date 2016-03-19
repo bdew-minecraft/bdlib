@@ -22,7 +22,9 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
-import net.minecraft.util.{BlockPos, ChatComponentTranslation, EnumChatFormatting, EnumFacing}
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.{TextComponentTranslation, TextFormatting}
+import net.minecraft.util.{EnumFacing, EnumHand}
 import net.minecraft.world.{IBlockAccess, World}
 
 abstract class BlockModule[T <: TileModule](name: String, val kind: String, material: Material, val TEClass: Class[T], val machines: MachineManagerMultiblock)
@@ -54,16 +56,16 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
     }
   }
 
-  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     val te = getTE(world, pos)
     if (te.connected.isDefined) {
       val p = te.connected.get
       val bs = world.getBlockState(p)
-      bs.getBlock.onBlockActivated(world, p, bs, player, side, 0, 0, 0)
+      bs.getBlock.onBlockActivated(world, p, bs, player, hand, heldItem, side, 0, 0, 0)
     } else {
-      player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.notconnected"))
+      player.addChatMessage(new TextComponentTranslation("bdlib.multiblock.notconnected"))
     }
     true
   }
@@ -74,13 +76,13 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
         val name = machine.getController.getLocalizedName
         if (min > 0) {
           Misc.toLocalF("bdlib.multiblock.tip.module.range",
-            EnumChatFormatting.YELLOW + name + EnumChatFormatting.RESET,
-            EnumChatFormatting.YELLOW + min.toString + EnumChatFormatting.RESET,
-            EnumChatFormatting.YELLOW + max.toString + EnumChatFormatting.RESET)
+            TextFormatting.YELLOW + name + TextFormatting.RESET,
+            TextFormatting.YELLOW + min.toString + TextFormatting.RESET,
+            TextFormatting.YELLOW + max.toString + TextFormatting.RESET)
         } else {
           Misc.toLocalF("bdlib.multiblock.tip.module.max",
-            EnumChatFormatting.YELLOW + name + EnumChatFormatting.RESET,
-            EnumChatFormatting.YELLOW + max.toString + EnumChatFormatting.RESET)
+            TextFormatting.YELLOW + name + TextFormatting.RESET,
+            TextFormatting.YELLOW + max.toString + TextFormatting.RESET)
         }
       })
   }

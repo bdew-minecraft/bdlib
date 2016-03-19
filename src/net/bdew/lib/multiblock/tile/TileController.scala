@@ -16,7 +16,7 @@ import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.multiblock.data.DataSlotPosSet
 import net.bdew.lib.multiblock.{MachineCore, ResourceProvider, Tools}
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 
 import scala.reflect.ClassTag
 
@@ -44,7 +44,7 @@ trait TileController extends TileDataSlotsTicking {
   def moduleConnected(module: TileModule): Boolean = {
     if (acceptNewModules) {
       modules.add(module.getPos)
-      getWorld.markBlockForUpdate(getPos)
+      sendUpdateToClients()
       modulesChanged = true
       return true
     } else false
@@ -52,7 +52,7 @@ trait TileController extends TileDataSlotsTicking {
 
   def moduleRemoved(module: TileModule) {
     modules.remove(module.getPos)
-    getWorld.markBlockForUpdate(getPos)
+    sendUpdateToClients()
     revalidateOnNextTick = true
     modulesChanged = true
   }
@@ -92,7 +92,7 @@ trait TileController extends TileDataSlotsTicking {
       modulesChanged = false
       onModulesChanged()
       lastChange = getWorld.getTotalWorldTime
-      getWorld.markBlockForUpdate(getPos)
+      sendUpdateToClients()
     }
   })
 }

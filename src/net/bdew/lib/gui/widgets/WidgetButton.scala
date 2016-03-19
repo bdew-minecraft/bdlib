@@ -13,13 +13,13 @@ import net.bdew.lib.gui.{Point, Rect}
 import net.minecraft.client.Minecraft
 import net.minecraft.client.audio.PositionedSoundRecord
 import net.minecraft.client.gui.GuiButton
-import net.minecraft.util.ResourceLocation
+import net.minecraft.init.SoundEvents
 
 class WidgetButton(val rect: Rect, text: String, clicked: WidgetButton => Unit)
   extends GuiButton(0, rect.x.round, rect.y.round, rect.w.round, rect.h.round, text) with Widget {
 
   override def mouseClicked(p: Point, button: Int) {
-    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F))
+    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F))
     clicked(this)
   }
 

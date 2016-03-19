@@ -12,7 +12,8 @@ package net.bdew.lib.rotate
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.block.BaseBlock
 import net.minecraft.block.state.IBlockState
-import net.minecraft.util.{BlockPos, EnumFacing}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.{IBlockAccess, World}
 
 /**

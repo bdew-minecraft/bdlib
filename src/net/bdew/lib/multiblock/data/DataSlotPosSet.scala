@@ -12,7 +12,7 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 
 import scala.collection.mutable
 

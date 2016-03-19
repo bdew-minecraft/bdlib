@@ -10,7 +10,7 @@
 package net.bdew.lib.render.connected
 
 import net.bdew.lib.property.SimpleUnlistedProperty
-import net.minecraft.util.Vec3i
+import net.minecraft.util.math.Vec3i
 
 /**
   * Used for rendering borders.

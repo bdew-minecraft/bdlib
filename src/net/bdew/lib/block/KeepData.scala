@@ -20,7 +20,8 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.{BlockPos, EnumFacing, MovingObjectPosition}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.{BlockPos, RayTraceResult}
 import net.minecraft.world.{IBlockAccess, World}
 
 /**
@@ -44,19 +45,19 @@ trait BlockKeepData extends Block with HasItemBlock {
     drops
   }
 
-  override def removedByPlayer(world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean) =
+  override def removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean =
     if (willHarvest)
       true
     else
-      super.removedByPlayer(world, pos, player, willHarvest)
+      super.removedByPlayer(state, world, pos, player, willHarvest)
 
-  override def harvestBlock(world: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity): Unit = {
-    super.harvestBlock(world, player, pos, state, te)
+  override def harvestBlock(world: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity, stack: ItemStack): Unit = {
+    super.harvestBlock(world, player, pos, state, te, stack)
     world.setBlockToAir(pos)
   }
 
-  override def getPickBlock(target: MovingObjectPosition, world: World, pos: BlockPos, player: EntityPlayer) = {
-    getSavedBlock(world, pos, world.getBlockState(pos))
+  override def getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer) = {
+    getSavedBlock(world, pos, state)
   }
 
   /**

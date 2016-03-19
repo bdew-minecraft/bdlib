@@ -9,13 +9,14 @@
 
 package net.bdew.lib.render.models
 
+import java.util
 import javax.vecmath.Matrix4f
 
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
-import net.minecraft.client.resources.model.IBakedModel
+import net.minecraft.client.renderer.block.model.{BakedQuad, IBakedModel, ItemCameraTransforms, ItemOverrideList}
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.{IFlexibleBakedModel, IPerspectiveAwareModel}
+import net.minecraftforge.client.model.IPerspectiveAwareModel
 import org.apache.commons.lang3.tuple.Pair
 
 /**
@@ -28,17 +29,15 @@ class BakedModelProxy(aBase: IBakedModel) extends IPerspectiveAwareModel {
   override def isAmbientOcclusion = base.isAmbientOcclusion
   override def isGui3d = base.isGui3d
 
+  override def getOverrides: ItemOverrideList = base.getOverrides
+
+  override def getQuads(state: IBlockState, side: EnumFacing, rand: Long): util.List[BakedQuad] = base.getQuads(state, side, rand)
+
   override def getParticleTexture = base.getParticleTexture
-
-  override def getGeneralQuads = base.getGeneralQuads
-
-  override def getFaceQuads(face: EnumFacing) = base.getFaceQuads(face)
 
   //noinspection ScalaDeprecation
   override def getItemCameraTransforms: ItemCameraTransforms = base.getItemCameraTransforms
 
-  override def getFormat = base.getFormat
-
-  override def handlePerspective(cameraTransformType: TransformType): Pair[_ <: IFlexibleBakedModel, Matrix4f] =
+  override def handlePerspective(cameraTransformType: TransformType): Pair[_ <: IBakedModel, Matrix4f] =
     Pair.of(this, base.handlePerspective(cameraTransformType).getRight)
 }

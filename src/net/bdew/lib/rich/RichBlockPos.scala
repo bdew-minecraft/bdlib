@@ -9,7 +9,8 @@
 
 package net.bdew.lib.rich
 
-import net.minecraft.util.{BlockPos, EnumFacing}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 
 import scala.language.implicitConversions
 

@@ -15,11 +15,15 @@ import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.rotate.BlockFacingSignalMeta
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.{BlockPos, ChatComponentTranslation, EnumFacing}
+import net.minecraft.item.ItemStack
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextComponentTranslation
+import net.minecraft.util.{EnumFacing, EnumHand}
 import net.minecraft.world.{IBlockAccess, World}
 
 trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModule[T] with BlockFacingSignalMeta with GuiProvider {
-  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
+
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     val te = getTE(world, pos)
@@ -27,7 +31,7 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
       te.config.ensureValid(te.getCore.get)
       doOpenGui(world, pos, player)
     } else {
-      player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.notconnected"))
+      player.addChatMessage(new TextComponentTranslation("bdlib.multiblock.notconnected"))
     }
     true
   }
@@ -43,10 +47,10 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
     notifyTarget(world, pos)
   }
 
-  override def canProvidePower = true
+  override def canProvidePower(state: IBlockState) = true
 
-  override def isSideSolid(world: IBlockAccess, pos: BlockPos, side: EnumFacing) = true
+  override def isSideSolid(state: IBlockState, world: IBlockAccess, pos: BlockPos, side: EnumFacing) = true
 
-  override def getWeakPower(world: IBlockAccess, pos: BlockPos, state: IBlockState, side: EnumFacing) =
-    if (side == getFacing(state).getOpposite && getSignal(world, pos)) 15 else 0
+  override def getWeakPower(state: IBlockState, world: IBlockAccess, pos: BlockPos, side: EnumFacing): Int =
+    if (side == getFacing(state).getOpposite && getSignal(state)) 15 else 0
 }

@@ -9,13 +9,15 @@
 
 package net.bdew.lib.multiblock.block
 
+import net.bdew.lib.Client
 import net.bdew.lib.block.BlockFace
-import net.bdew.lib.gui.Color
 import net.bdew.lib.multiblock.render.OutputFaceProperty
 import net.bdew.lib.multiblock.tile.TileOutput
-import net.minecraft.util.{BlockPos, EnumFacing}
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.property.IExtendedBlockState
+import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] {
   override def getUnlistedProperties = super.getUnlistedProperties :+ OutputFaceProperty
@@ -29,6 +31,9 @@ trait BlockOutput[T <: TileOutput[_]] extends BlockModule[T] {
     super.getExtendedStateFromTE(state, world, pos, te).withProperty(OutputFaceProperty, faces.toMap)
   }
 
-  override def colorMultiplier(worldIn: IBlockAccess, pos: BlockPos, index: Int) =
-    resources.outputColors.getOrElse(index, Color.white).asRGB
+  @SideOnly(Side.CLIENT)
+  override def registerItemModels(): Unit = {
+    super.registerItemModels()
+    Client.blockColors.registerBlockColorHandler(new ColorHandler(resources), this)
+  }
 }

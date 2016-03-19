@@ -13,7 +13,7 @@ import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.multiblock.Tools
 import net.bdew.lib.multiblock.data.DataSlotPos
-import net.minecraft.util.BlockPos
+import net.minecraft.util.math.BlockPos
 
 import scala.reflect.ClassTag
 
@@ -28,14 +28,14 @@ trait TileModule extends TileDataSlots {
   def connect(target: TileController) {
     if (target.moduleConnected(this)) {
       connected.set(target.getPos)
-      getWorld.markBlockForUpdate(getPos)
+      sendUpdateToClients()
       getWorld.notifyNeighborsOfStateChange(getPos, getBlockType)
     }
   }
 
   def coreRemoved() {
     connected.unset()
-    getWorld.markBlockForUpdate(getPos)
+    sendUpdateToClients()
     getWorld.notifyNeighborsOfStateChange(getPos, getBlockType)
   }
 
