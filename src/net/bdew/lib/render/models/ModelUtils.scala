@@ -9,8 +9,12 @@
 
 package net.bdew.lib.render.models
 
-import net.minecraft.client.renderer.block.model.IBakedModel
+import net.minecraft.block.state.IBlockState
+import net.minecraft.client.renderer.block.model.{BakedQuad, IBakedModel}
+import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.IPerspectiveAwareModel
+
+import scala.collection.JavaConversions._
 
 object ModelUtils {
   /**
@@ -24,4 +28,8 @@ object ModelUtils {
       model.asInstanceOf[IPerspectiveAwareModel]
     else
       new IPerspectiveAwareModel.MapWrapper(model, IPerspectiveAwareModel.MapWrapper.getTransforms(model.getItemCameraTransforms))
+
+  def getAllQuads(model: IBakedModel, bs: IBlockState): List[BakedQuad] = {
+    EnumFacing.values().toList.flatMap(f => model.getQuads(bs, f, 0)) ++ model.getQuads(bs, null, 0)
+  }
 }
