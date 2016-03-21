@@ -12,7 +12,7 @@ package net.bdew.lib.render.primitive
 import javax.vecmath.Vector4f
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraftforge.client.model.ITransformation
+import net.minecraftforge.common.model.ITransformation
 
 /**
   * Vertex coordinates

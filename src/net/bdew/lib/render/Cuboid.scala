@@ -11,7 +11,7 @@ package net.bdew.lib.render
 
 import net.bdew.lib.render.primitive._
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.{ITransformation, TRSRTransformation}
+import net.minecraftforge.common.model.{ITransformation, TRSRTransformation}
 
 /**
   * Generates quads for a cuboid of the given size

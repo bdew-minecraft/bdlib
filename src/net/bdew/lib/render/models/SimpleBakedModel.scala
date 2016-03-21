@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.{DefaultVertexFormats, VertexFormat}
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model._
+import net.minecraftforge.common.model.{IModelState, TRSRTransformation}
 import org.apache.commons.lang3.tuple.Pair
 
 import scala.collection.mutable

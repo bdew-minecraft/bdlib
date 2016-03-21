@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.util.{EnumFacing, ResourceLocation}
 import net.minecraftforge.client.model._
+import net.minecraftforge.common.model.IModelState
 
 import scala.collection.JavaConversions._
 

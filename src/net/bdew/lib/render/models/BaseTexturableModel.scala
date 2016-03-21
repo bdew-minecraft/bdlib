@@ -15,7 +15,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.util.ResourceLocation
-import net.minecraftforge.client.model.{IModelState, IRetexturableModel}
+import net.minecraftforge.client.model.IRetexturableModel
+import net.minecraftforge.common.model.IModelState
 
 import scala.collection.JavaConversions._
 

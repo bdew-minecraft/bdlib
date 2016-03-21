@@ -11,7 +11,7 @@ package net.bdew.lib.render.primitive
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.ITransformation
+import net.minecraftforge.common.model.ITransformation
 
 case class Quad(vertexes: List4[Vertex], face: EnumFacing) {
   /**
