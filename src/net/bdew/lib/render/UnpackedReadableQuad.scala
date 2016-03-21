@@ -10,6 +10,7 @@
 package net.bdew.lib.render
 
 import net.bdew.lib.render.primitive._
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.util.EnumFacing
@@ -57,7 +58,6 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
   var unpackedData = Array.fill(4, format.getElementCount, 4)(0f)
   var tint = -1
   var orientation: EnumFacing = null
-  var isColored = false
   var vertices = 0
   var elements = 0
   var full = false
@@ -68,7 +68,6 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
     unpackedData = Array.fill(4, format.getElementCount, 4)(0f)
     tint = -1
     orientation = null
-    isColored = false
     vertices = 0
     elements = 0
     full = false
@@ -86,10 +85,6 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
 
   override def setQuadOrientation(orientation: EnumFacing) {
     this.orientation = orientation
-  }
-
-  def setQuadColored() {
-    this.isColored = true
   }
 
   def setTexture(texture: TextureAtlasSprite) {
@@ -113,14 +108,16 @@ class Unpacker(format: VertexFormat) extends IVertexConsumer {
     }
   }
 
-  def build: ReadableQuad = {
+  def build(): ReadableQuad = {
     if (!full) throw new IllegalStateException("not enough data")
     return new UnpackedReadableQuad(unpackedData, tint, orientation, texture, applyDiffuseLighting, format)
   }
 
-  def buildAndReset() = {
-    val tmp = build
+  def unpack(quad: BakedQuad): ReadableQuad = {
     reset()
-    tmp
+    applyDiffuseLighting = quad.shouldApplyDiffuseLighting()
+    texture = quad.getSprite
+    quad.pipe(this)
+    build()
   }
 }
