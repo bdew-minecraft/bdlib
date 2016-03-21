@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack
 
 class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) extends BaseContainer(inv) {
   //slotClick
-  override def func_184996_a(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
+  override def slotClick(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
     if (slotNum > 0 && slotNum < inventorySlots.size()) {
       val slot = inventorySlots.get(slotNum)
       if (slot.isHere(inv.player.inventory, inv.slot))
@@ -24,6 +24,6 @@ class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) ex
     }
     // Fixme: update to new system
     //if (modifiers == 2 && button == inv.slot) return null
-    super.func_184996_a(slotNum, dragType, clickType, player)
+    super.slotClick(slotNum, dragType, clickType, player)
   }
 }

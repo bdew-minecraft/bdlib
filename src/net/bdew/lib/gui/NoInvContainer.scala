@@ -28,14 +28,13 @@ abstract class NoInvContainer extends Container {
       addSlotToContainer(new Slot(inv, i, xOffs + i * 18, yOffsHotbar))
   }
 
-  //slotClick
-  override def func_184996_a(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
+  override def slotClick(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
     if (inventorySlots.isDefinedAt(slotNum)) {
       val slot = getSlot(slotNum)
       if (slot != null && slot.isInstanceOf[SlotClickable])
         return slot.asInstanceOf[SlotClickable].onClick(clickType, dragType, player)
     }
-    super.func_184996_a(slotNum, dragType, clickType, player)
+    super.slotClick(slotNum, dragType, clickType, player)
   }
 
   override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = null
