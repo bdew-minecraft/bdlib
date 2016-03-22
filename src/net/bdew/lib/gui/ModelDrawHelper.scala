@@ -10,6 +10,7 @@
 package net.bdew.lib.gui
 
 import net.bdew.lib.Client
+import net.bdew.lib.render.models.ModelUtils
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
@@ -18,8 +19,6 @@ import net.minecraft.util.{BlockRenderLayer, EnumFacing}
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.ForgeHooksClient
 import org.lwjgl.opengl.GL11
-
-import scala.collection.JavaConversions._
 
 object ModelDrawHelper {
 
@@ -77,8 +76,10 @@ object ModelDrawHelper {
     // And go back to corner
     GL11.glTranslatef(-0.5f, -0.5f, -0.5f)
 
-    // No idea what vertex format i should be using or if it even matters
     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM)
+
+    val model = dispatcher.getModelForState(blockState)
+    val fullState = blockState.getBlock.getExtendedState(blockState, world, pos)
 
     // If blocks renders in multiple layers - go through all
     for (layer <- BlockRenderLayer.values() if blockState.getBlock.canRenderInLayer(layer)) {
@@ -86,14 +87,11 @@ object ModelDrawHelper {
       // This is thread local so will hopefully not break anything else. No other way to pass the current layer to the model
       ForgeHooksClient.setRenderLayer(layer)
 
-      // This needs to be done for every layer, as smart models can change based on layer
-      val model = dispatcher.getModelForState(blockState)
-
       // Grab all relevant quads
-      for (quad <- model.getQuads(blockState, face, 0)) {
+      for (quad <- ModelUtils.getAllQuads(model, fullState)) {
         if (quad.hasTintIndex) // Apply color from block
           net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad,
-            0xFF000000 | Client.blockColors.colorMultiplier(blockState, world, pos, quad.getTintIndex))
+            0xFF000000 | Client.blockColors.colorMultiplier(fullState, world, pos, quad.getTintIndex))
         else // default to white
           net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad, -1)
       }

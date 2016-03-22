@@ -14,9 +14,10 @@ import java.util
 import com.google.common.base.Function
 import com.google.common.collect.ImmutableMap
 import net.minecraft.block.state.IBlockState
-import net.minecraft.client.renderer.block.model.{BakedQuad, ItemOverrideList}
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
+import net.minecraft.item.ItemStack
 import net.minecraft.util.{EnumFacing, ResourceLocation}
 import net.minecraftforge.client.model._
 import net.minecraftforge.common.model.IModelState
@@ -33,16 +34,28 @@ abstract class ModelEnhancer {
   def additionalTextureLocations = List.empty[ResourceLocation]
 
   /**
-    * Implement quad processing logic here
+    * Implement quad processing logic for blocks here
     *
-    * @param state    Block state when rendering block, null for item
+    * @param state    Block state
     * @param side     Side when rendering side, null for general quads
-    * @param rand     ???
+    * @param rand     Random seed for variable models
     * @param textures Map of resolved textures
     * @param base     Original list of quads
     * @return Modified list of quads
     */
-  def processQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => util.List[BakedQuad]): util.List[BakedQuad]
+  def processBlockQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
+
+  /**
+    * Implement quad processing logic for items here
+    *
+    * @param stack    Item stack
+    * @param side     Side when rendering side, null for general quads
+    * @param rand     Random seed for variable models
+    * @param textures Map of resolved textures
+    * @param base     Original list of quads
+    * @return Modified list of quads
+    */
+  def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
 
   /**
     * Wrap around basic model
@@ -51,8 +64,6 @@ abstract class ModelEnhancer {
     * @return wrapped model, that will bake into a ISmartBlockModel with our logic
     */
   def wrap(base: IModel): IRetexturableModel = new SmartUnbakedWrapper(base)
-
-  val itemOverrideList = ItemOverrideList.NONE
 
   /**
     * Combines this with another ModelEnhancer
@@ -74,17 +85,22 @@ abstract class ModelEnhancer {
     override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function[ResourceLocation, TextureAtlasSprite]) = {
       val baked = ModelUtils.makePerspectiveAware(base.bake(state, format, bakedTextureGetter))
       val additionalSprites = additionalTextureLocations.map(res => res -> bakedTextureGetter(res)).toMap
-      new BakedModelProxy(baked) {
+      new BakedModelProxy(baked) with SmartItemModel {
         override def getQuads(state: IBlockState, side: EnumFacing, rand: Long): util.List[BakedQuad] =
-          processQuads(state, side, rand, additionalSprites, () => super.getQuads(state, side, rand))
+          processBlockQuads(state, side, rand, additionalSprites, () => super.getQuads(state, side, rand).toList)
+        override def getItemQuads(stack: ItemStack, side: EnumFacing, rand: Long): util.List[BakedQuad] =
+          processItemQuads(stack, side, rand, additionalSprites, () => super.getQuads(null, side, rand).toList)
       }
     }
   }
+
 }
 
 class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelEnhancer {
   override def additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
-  def processQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => util.List[BakedQuad]) =
-    e1.processQuads(state, side, rand, textures, () => e2.processQuads(state, side, rand, textures, base))
+  override def processBlockQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]) =
+    e1.processBlockQuads(state, side, rand, textures, () => e2.processBlockQuads(state, side, rand, textures, base))
+  override def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]) =
+    e1.processItemQuads(stack, side, rand, textures, () => e2.processItemQuads(stack, side, rand, textures, base))
 }
 
