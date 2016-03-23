@@ -84,8 +84,7 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
       val faces = te.outputFaces.inverted
       if (faces.isDefinedAt(output)) {
         val bf = faces(output)
-        val block = te.getWorld.getBlockState(bf.pos).getBlock
-        // Todo: rendering
+        ModelDrawHelper.renderWorldBlockIntoGUI(te.getWorld, bf.pos, bf.face, rect)
       }
 
     case _ => target.drawTexture(rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
