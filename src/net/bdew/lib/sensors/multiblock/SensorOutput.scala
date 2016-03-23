@@ -55,29 +55,28 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
     case _ => false
   }
 
-  override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, dragType: Int, obj: TileEntity): GenericSensorParameter =
-  //  todo: update click stuff
-  //    if (mod == 0 && (button == 0 || button == 1) && item == null)
-  //      (current, obj) match {
-  //        case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
-  //          val outputs = x.outputFaces.map.values.toList.sorted
-  //          if (outputs.nonEmpty)
-  //            if (button == 0)
-  //              SensorOutputFlowParameter(Misc.nextInSeq(outputs, n))
-  //            else
-  //              SensorOutputFlowParameter(Misc.prevInSeq(outputs, n))
-  //          else
-  //            system.DisabledParameter
-  //        case (_, x: CIOutputFaces) =>
-  //          if (button == 0)
-  //            x.outputFaces.map.values.toList.sorted.headOption map SensorOutputFlowParameter getOrElse system.DisabledParameter
-  //          else
-  //            x.outputFaces.map.values.toList.sorted.reverse.headOption map SensorOutputFlowParameter getOrElse system.DisabledParameter
-  //        case _ =>
-  //          system.DisabledParameter
-  //      }
-  //    else
-    current
+  override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: TileEntity): GenericSensorParameter =
+    if (clickType == ClickType.PICKUP && (button == 0 || button == 1) && item == null)
+      (current, obj) match {
+        case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
+          val outputs = x.outputFaces.map.values.toList.sorted
+          if (outputs.nonEmpty)
+            if (button == 0)
+              SensorOutputFlowParameter(Misc.nextInSeq(outputs, n))
+            else
+              SensorOutputFlowParameter(Misc.prevInSeq(outputs, n))
+          else
+            system.DisabledParameter
+        case (_, x: CIOutputFaces) =>
+          if (button == 0)
+            x.outputFaces.map.values.toList.sorted.headOption map SensorOutputFlowParameter getOrElse system.DisabledParameter
+          else
+            x.outputFaces.map.values.toList.sorted.reverse.headOption map SensorOutputFlowParameter getOrElse system.DisabledParameter
+        case _ =>
+          system.DisabledParameter
+      }
+    else
+      current
 
   @SideOnly(Side.CLIENT)
   override def drawParameter(rect: Rect, target: DrawTarget, obj: TileEntity, param: GenericSensorParameter): Unit = (param, obj) match {

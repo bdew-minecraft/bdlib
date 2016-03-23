@@ -56,7 +56,7 @@ abstract class SensorSystem[T, R](defaultResult: R) {
     override def parameters = Vector(DisabledParameter)
     override def uid = "disabled"
 
-    override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, dragType: Int, obj: T): GenericSensorParameter = DisabledParameter
+    override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: T): GenericSensorParameter = DisabledParameter
     override def getResult(param: GenericSensorParameter, obj: T): R = defaultResult
 
     @SideOnly(Side.CLIENT)

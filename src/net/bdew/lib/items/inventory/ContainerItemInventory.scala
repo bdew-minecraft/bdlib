@@ -16,14 +16,13 @@ import net.minecraft.item.ItemStack
 
 class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) extends BaseContainer(inv) {
   //slotClick
-  override def slotClick(slotNum: Int, dragType: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
+  override def slotClick(slotNum: Int, button: Int, clickType: ClickType, player: EntityPlayer): ItemStack = {
     if (slotNum > 0 && slotNum < inventorySlots.size()) {
       val slot = inventorySlots.get(slotNum)
       if (slot.isHere(inv.player.inventory, inv.slot))
         return null
     }
-    // Fixme: update to new system
-    //if (modifiers == 2 && button == inv.slot) return null
-    super.slotClick(slotNum, dragType, clickType, player)
+    if (clickType == ClickType.SWAP && button == inv.slot) return null
+    super.slotClick(slotNum, button, clickType, player)
   }
 }

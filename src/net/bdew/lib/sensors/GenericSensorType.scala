@@ -28,7 +28,7 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
 
   def defaultParameter: GenericSensorParameter
 
-  def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, dragType: Int, obj: T): GenericSensorParameter
+  def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: T): GenericSensorParameter
 
   def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound)
   def loadParameter(tag: NBTTagCompound): GenericSensorParameter
