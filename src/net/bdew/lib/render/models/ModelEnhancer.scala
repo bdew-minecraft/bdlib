@@ -15,6 +15,7 @@ import com.google.common.base.Function
 import com.google.common.collect.ImmutableMap
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.item.ItemStack
@@ -55,7 +56,7 @@ abstract class ModelEnhancer {
     * @param base     Original list of quads
     * @return Modified list of quads
     */
-  def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
+  def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
 
   /**
     * Wrap around basic model
@@ -88,8 +89,8 @@ abstract class ModelEnhancer {
       new BakedModelProxy(baked) with SmartItemModel {
         override def getQuads(state: IBlockState, side: EnumFacing, rand: Long): util.List[BakedQuad] =
           processBlockQuads(state, side, rand, additionalSprites, () => super.getQuads(state, side, rand).toList)
-        override def getItemQuads(stack: ItemStack, side: EnumFacing, rand: Long): util.List[BakedQuad] =
-          processItemQuads(stack, side, rand, additionalSprites, () => super.getQuads(null, side, rand).toList)
+        override def getItemQuads(stack: ItemStack, side: EnumFacing, mode: TransformType, rand: Long): util.List[BakedQuad] =
+          processItemQuads(stack, side, rand, mode, additionalSprites, () => super.getQuads(null, side, rand).toList)
       }
     }
   }
@@ -100,7 +101,7 @@ class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelE
   override def additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
   override def processBlockQuads(state: IBlockState, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]) =
     e1.processBlockQuads(state, side, rand, textures, () => e2.processBlockQuads(state, side, rand, textures, base))
-  override def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]) =
-    e1.processItemQuads(stack, side, rand, textures, () => e2.processItemQuads(stack, side, rand, textures, base))
+  override def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]) =
+    e1.processItemQuads(stack, side, rand, mode, textures, () => e2.processItemQuads(stack, side, rand, mode, textures, base))
 }
 

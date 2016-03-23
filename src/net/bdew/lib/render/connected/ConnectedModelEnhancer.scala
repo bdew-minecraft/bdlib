@@ -14,6 +14,7 @@ import net.bdew.lib.render.QuadBakerDefault
 import net.bdew.lib.render.models._
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.Vec3i
@@ -64,14 +65,14 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
     } else super.processBlockQuads(state, side, rand, textures, base)
   }
 
-  override def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+  override def processItemQuads(stack: ItemStack, side: EnumFacing, rand: Long, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     if (stack != null && side != null) {
       val frameSprite = textures(frame)
-      super.processItemQuads(stack, side, rand, textures, base) :+
+      super.processItemQuads(stack, side, rand, mode, textures, base) :+
         QuadBakerDefault.bakeQuad(
           ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, side))
             .withTexture(ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(frameSprite))
         )
-    } else super.processItemQuads(stack, side, rand, textures, base)
+    } else super.processItemQuads(stack, side, rand, mode, textures, base)
   }
 }
