@@ -25,12 +25,12 @@ object TooltipHandler {
 
   @SubscribeEvent
   def handleTooltipEvent(ev: ItemTooltipEvent): Unit = {
-    if (ev.itemStack == null || ev.itemStack.getItem == null) return
+    if (ev.getItemStack == null || ev.getItemStack.getItem == null) return
 
     val toAdd = for (provider <- registry) yield {
       try {
-        if (provider.shouldHandleTooltip(ev.itemStack))
-          Some(provider.handleTooltip(ev.itemStack, ev.showAdvancedItemTooltips, Client.shiftDown))
+        if (provider.shouldHandleTooltip(ev.getItemStack))
+          Some(provider.handleTooltip(ev.getItemStack, ev.isShowAdvancedItemTooltips, Client.shiftDown))
         else
           None
       } catch {
@@ -42,6 +42,6 @@ object TooltipHandler {
 
     import scala.collection.JavaConversions._
 
-    ev.toolTip ++= toAdd.flatten.flatten
+    ev.getToolTip ++= toAdd.flatten.flatten
   }
 }

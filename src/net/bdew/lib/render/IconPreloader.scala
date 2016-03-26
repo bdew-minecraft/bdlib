@@ -47,7 +47,7 @@ class IconPreloader {
 
   @SubscribeEvent
   def preTextureStitch(ev: TextureStitchEvent.Pre) {
-    for (x <- icons) x.texture = Texture(Texture.BLOCKS, ev.map.registerSprite(new ResourceLocation(x.loc)))
-    registerIcons(ev.map)
+    for (x <- icons) x.texture = Texture(Texture.BLOCKS, ev.getMap.registerSprite(new ResourceLocation(x.loc)))
+    registerIcons(ev.getMap)
   }
 }
