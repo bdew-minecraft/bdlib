@@ -15,8 +15,10 @@ import net.minecraft.item.Item
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
-class BaseItem(val name: String) extends Item {
+trait BaseItemMixin extends Item {
+  val name: String
   val modId = Misc.getActiveModId
+
   setUnlocalizedName(modId + "." + name)
   setRegistryName(modId, name)
 
@@ -34,3 +36,5 @@ class BaseItem(val name: String) extends Item {
     }
   }
 }
+
+class BaseItem(val name: String) extends Item with BaseItemMixin

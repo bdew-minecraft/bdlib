@@ -9,7 +9,7 @@
 
 package net.bdew.lib.config
 
-import net.bdew.lib.items.BaseItem
+import net.bdew.lib.items.{BaseItem, BaseItemMixin}
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraftforge.fml.common.FMLCommonHandler
@@ -22,8 +22,8 @@ class ItemManager(creativeTab: CreativeTabs) {
     GameRegistry.register(item)
     item.setCreativeTab(creativeTab)
 
-    if (FMLCommonHandler.instance().getSide.isClient && item.isInstanceOf[BaseItem]) {
-      item.asInstanceOf[BaseItem].registerItemModels()
+    if (FMLCommonHandler.instance().getSide.isClient && item.isInstanceOf[BaseItemMixin]) {
+      item.asInstanceOf[BaseItemMixin].registerItemModels()
     }
 
     return item

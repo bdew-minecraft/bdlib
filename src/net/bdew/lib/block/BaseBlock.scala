@@ -22,7 +22,8 @@ import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 import scala.language.existentials
 
-class BaseBlock(val name: String, material: Material) extends Block(material) {
+trait BaseBlockMixin extends Block {
+  val name: String
   val modId = Misc.getActiveModId
   setRegistryName(modId, name)
   setUnlocalizedName(modId + "." + name)
@@ -60,3 +61,5 @@ class BaseBlock(val name: String, material: Material) extends Block(material) {
     }
   }
 }
+
+class BaseBlock(val name: String, material: Material) extends Block(material) with BaseBlockMixin

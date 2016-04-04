@@ -9,7 +9,7 @@
 
 package net.bdew.lib.config
 
-import net.bdew.lib.block.{BaseBlock, HasItemBlock, HasTE}
+import net.bdew.lib.block.{BaseBlockMixin, HasItemBlock, HasTE}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
@@ -36,8 +36,8 @@ class BlockManager(creativeTab: CreativeTabs) {
       GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
         "%s.%s".format(block.getRegistryName.getResourceDomain, block.getRegistryName.getResourcePath))
 
-    if (FMLCommonHandler.instance().getSide.isClient && block.isInstanceOf[BaseBlock]) {
-      block.asInstanceOf[BaseBlock].registerItemModels()
+    if (FMLCommonHandler.instance().getSide.isClient && block.isInstanceOf[BaseBlockMixin]) {
+      block.asInstanceOf[BaseBlockMixin].registerItemModels()
     }
 
     return block
