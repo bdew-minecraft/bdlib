@@ -10,17 +10,16 @@
 package net.bdew.lib.power
 
 import net.bdew.lib.data.DataSlotFloat
-import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
+import net.bdew.lib.data.base.{TileDataSlotsTicking, UpdateKind}
 import net.bdew.lib.machine.ProcessorMachine
+import net.bdew.lib.tile.TileExtended
 import net.bdew.lib.tile.inventory.{PersistentInventoryTile, SidedInventory}
-import net.bdew.lib.tile.{TileExtended, TileTicking}
 
 abstract class TileBaseProcessor extends TileExtended
-with TileDataSlots
+  with TileDataSlotsTicking
 with PersistentInventoryTile
 with SidedInventory
-with TilePoweredBase
-with TileTicking {
+  with TilePoweredBase {
   def cfg: ProcessorMachine
   val power = DataSlotPower("power", this)
   val progress = DataSlotFloat("progress", this).setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
