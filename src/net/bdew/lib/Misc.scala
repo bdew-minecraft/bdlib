@@ -17,8 +17,8 @@ import net.bdew.lib.gui.Texture
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.EnumFacing
 import net.minecraft.util.text.translation.I18n
+import net.minecraft.util.{EnumFacing, ResourceLocation}
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -171,10 +171,12 @@ object Misc {
   }
 
   def iconName(domain: String, name: String, path: String*) =
-    if (path.isEmpty)
-      "%s:%s".format(domain, name).toLowerCase(Locale.US)
-    else
-      "%s:%s/%s".format(domain, name, path.mkString("/")).toLowerCase(Locale.US)
+    new ResourceLocation(domain,
+      if (path.isEmpty)
+        name.toLowerCase(Locale.US)
+      else
+        "%s/%s".format(name, path.mkString("/")).toLowerCase(Locale.US)
+    )
 
   def toOptional[T](o: Option[T]): Optional[T] = o match {
     case Some(v) => Optional.of(v)
