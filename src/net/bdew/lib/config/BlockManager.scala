@@ -10,7 +10,7 @@
 package net.bdew.lib.config
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{BaseBlock, HasItemBlock, HasTE}
+import net.bdew.lib.block.{BaseBlockMixin, HasItemBlock, HasTE}
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.common.{FMLCommonHandler, ObfuscationReflectionHelper}
 
 class BlockManager(creativeTab: CreativeTabs) {
-  def regBlock[T <: BaseBlock](block: T, skipTileEntityReg: Boolean = false): T = {
+  def regBlock[T <: BaseBlockMixin](block: T, skipTileEntityReg: Boolean = false): T = {
     val itemClass: Class[_ <: ItemBlock] = if (block.isInstanceOf[HasItemBlock])
       block.asInstanceOf[HasItemBlock].ItemBlockClass
     else

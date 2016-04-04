@@ -9,7 +9,7 @@
 
 package net.bdew.lib.config
 
-import net.bdew.lib.items.BaseItem
+import net.bdew.lib.items.{BaseItem, BaseItemMixin}
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 class ItemManager(creativeTab: CreativeTabs) {
   def regSimpleItem(name: String): BaseItem = regItem(new BaseItem(name))
 
-  def regItem[T <: BaseItem](item: T): T = {
+  def regItem[T <: BaseItemMixin](item: T): T = {
     GameRegistry.registerItem(item, item.name)
     item.setCreativeTab(creativeTab)
 
