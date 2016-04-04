@@ -16,7 +16,7 @@ import net.bdew.lib.gui.Texture
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.{EnumFacing, StatCollector}
+import net.minecraft.util.{EnumFacing, ResourceLocation, StatCollector}
 import net.minecraft.world.biome.BiomeGenBase
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.{Fluid, FluidStack}
@@ -172,10 +172,12 @@ object Misc {
   }
 
   def iconName(domain: String, name: String, path: String*) =
-    if (path.isEmpty)
-      "%s:%s".format(domain, name).toLowerCase(Locale.US)
-    else
-      "%s:%s/%s".format(domain, name, path.mkString("/")).toLowerCase(Locale.US)
+    new ResourceLocation(domain,
+      if (path.isEmpty)
+        name.toLowerCase(Locale.US)
+      else
+        "%s/%s".format(name, path.mkString("/")).toLowerCase(Locale.US)
+    )
 
 }
 
