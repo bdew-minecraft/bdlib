@@ -11,13 +11,14 @@ package net.bdew.lib.tile.inventory
 
 import net.minecraft.inventory.ISidedInventory
 import net.minecraft.item.ItemStack
+import net.minecraft.util.EnumFacing
 
 trait SidedInventory extends BaseInventory with ISidedInventory {
   var allowSided = false
 
-  def getAccessibleSlotsFromSide(side: Int): Array[Int] = inv.indices.toArray
+  override def getSlotsForFace(side: EnumFacing): Array[Int] = inv.indices.toArray
 
-  def canInsertItem(slot: Int, stack: ItemStack, side: Int) = allowSided && isItemValidForSlot(slot, stack)
+  override def canExtractItem(slot: Int, stack: ItemStack, direction: EnumFacing): Boolean = allowSided && isItemValidForSlot(slot, stack)
 
-  def canExtractItem(slot: Int, stack: ItemStack, side: Int) = allowSided
+  override def canInsertItem(slot: Int, itemStackIn: ItemStack, direction: EnumFacing): Boolean = allowSided
 }
