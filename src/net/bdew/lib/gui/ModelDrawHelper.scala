@@ -82,7 +82,7 @@ object ModelDrawHelper {
     val fullState = blockState.getBlock.getExtendedState(blockState, world, pos)
 
     // If blocks renders in multiple layers - go through all
-    for (layer <- BlockRenderLayer.values() if blockState.getBlock.canRenderInLayer(layer)) {
+    for (layer <- BlockRenderLayer.values() if blockState.getBlock.canRenderInLayer(blockState, layer)) {
 
       // This is thread local so will hopefully not break anything else. No other way to pass the current layer to the model
       ForgeHooksClient.setRenderLayer(layer)

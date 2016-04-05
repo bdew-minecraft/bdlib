@@ -16,11 +16,12 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.{ItemBlock, ItemStack}
 
 trait BlockTooltip extends Block with HasItemBlock {
-  override val ItemBlockClass: Class[_ <: ItemBlock] = classOf[ItemBlockTooltip]
+  override val itemBlockInstance: ItemBlock = new ItemBlockTooltip(this)
   def getTooltip(stack: ItemStack, player: EntityPlayer, advanced: Boolean): List[String]
 }
 
 class ItemBlockTooltip(b: Block) extends ItemBlock(b) {
+  setRegistryName(b.getRegistryName)
   override def addInformation(stack: ItemStack, player: EntityPlayer, tooltip: util.List[String], advanced: Boolean) = {
     import scala.collection.JavaConversions._
     if (b.isInstanceOf[BlockTooltip])

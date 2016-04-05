@@ -17,7 +17,7 @@ import net.bdew.lib.tile.TileExtended
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.ItemStack
+import net.minecraft.item.{ItemBlock, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
@@ -31,7 +31,7 @@ import net.minecraft.world.{IBlockAccess, World}
 trait BlockKeepData extends Block with HasItemBlock {
   this: HasTE[_ <: TileKeepData] =>
 
-  override val ItemBlockClass: Class[_ <: ItemBlockKeepData] = classOf[ItemBlockKeepData]
+  override val itemBlockInstance: ItemBlock = new ItemBlockKeepData(this)
 
   def getSavedBlock(world: IBlockAccess, pos: BlockPos, state: IBlockState) = {
     val stack = new ItemStack(getItemDropped(state, new Random(), 0), 1, damageDropped(state))
@@ -107,7 +107,6 @@ trait TileKeepData extends TileExtended {
   * Custom ItemBlock that handles loading data to the Tile Entity
   */
 class ItemBlockKeepData(b: Block) extends ItemBlockTooltip(b) {
-
   override def placeBlockAt(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState) = {
     if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState)) {
       if (!world.isRemote && b.isInstanceOf[BlockKeepData])

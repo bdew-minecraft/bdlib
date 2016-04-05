@@ -9,8 +9,8 @@
 
 package net.bdew.lib.config
 
-import net.bdew.lib.Misc
 import net.bdew.lib.block.{BaseBlock, HasItemBlock, HasTE}
+import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
@@ -18,24 +18,26 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.common.{FMLCommonHandler, ObfuscationReflectionHelper}
 
 class BlockManager(creativeTab: CreativeTabs) {
-  def regBlock[T <: BaseBlock](block: T, skipTileEntityReg: Boolean = false): T = {
-    val itemClass: Class[_ <: ItemBlock] = if (block.isInstanceOf[HasItemBlock])
-      block.asInstanceOf[HasItemBlock].ItemBlockClass
+  def regBlock[T <: Block](block: T, skipTileEntityReg: Boolean = false): T = {
+    val itemBlock = if (block.isInstanceOf[HasItemBlock])
+      block.asInstanceOf[HasItemBlock].itemBlockInstance
     else
-      classOf[ItemBlock]
+      new ItemBlock(block).setRegistryName(block.getRegistryName)
 
-    block.preRegistration()
+    if (block.getRegistryName != itemBlock.getRegistryName)
+      sys.error("Registry name mismatch between block/item for %s (%s)".format(block.getRegistryName, block.getClass.getName))
 
-    GameRegistry.registerBlock(block, itemClass, block.name)
+    GameRegistry.register(block)
+    GameRegistry.register(itemBlock)
 
     block.setCreativeTab(creativeTab)
 
     if (block.isInstanceOf[HasTE[_]] && !skipTileEntityReg)
       GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
-        "%s.%s".format(Misc.getActiveModId, block.name))
+        "%s.%s".format(block.getRegistryName.getResourceDomain, block.getRegistryName.getResourcePath))
 
-    if (FMLCommonHandler.instance().getSide.isClient) {
-      block.registerItemModels()
+    if (FMLCommonHandler.instance().getSide.isClient && block.isInstanceOf[BaseBlock]) {
+      block.asInstanceOf[BaseBlock].registerItemModels()
     }
 
     return block

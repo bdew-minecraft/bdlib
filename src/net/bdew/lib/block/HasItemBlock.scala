@@ -17,5 +17,5 @@ import net.minecraft.item.ItemBlock
  * Supported by BlockManager and Machine
  */
 trait HasItemBlock extends Block {
-  def ItemBlockClass: Class[_ <: ItemBlock]
+  val itemBlockInstance: ItemBlock
 }

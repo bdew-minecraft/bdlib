@@ -11,18 +11,19 @@ package net.bdew.lib.config
 
 import net.bdew.lib.items.BaseItem
 import net.minecraft.creativetab.CreativeTabs
+import net.minecraft.item.Item
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.registry.GameRegistry
 
 class ItemManager(creativeTab: CreativeTabs) {
   def regSimpleItem(name: String): BaseItem = regItem(new BaseItem(name))
 
-  def regItem[T <: BaseItem](item: T): T = {
-    GameRegistry.registerItem(item, item.name)
+  def regItem[T <: Item](item: T): T = {
+    GameRegistry.register(item)
     item.setCreativeTab(creativeTab)
 
-    if (FMLCommonHandler.instance().getSide.isClient) {
-      item.registerItemModels()
+    if (FMLCommonHandler.instance().getSide.isClient && item.isInstanceOf[BaseItem]) {
+      item.asInstanceOf[BaseItem].registerItemModels()
     }
 
     return item

@@ -42,11 +42,6 @@ class BaseBlock(val name: String, material: Material) extends Block(material) {
   }
 
   /**
-    * Called before a block is registered to do any late setup
-    */
-  def preRegistration(): Unit = {}
-
-  /**
     * Non-protected version of setDefaultState to use in mixins
     */
   def setDefaultBlockState(bs: IBlockState) = super.setDefaultState(bs)

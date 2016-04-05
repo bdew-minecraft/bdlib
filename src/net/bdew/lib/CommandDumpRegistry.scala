@@ -11,13 +11,12 @@ package net.bdew.lib
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import com.google.common.collect.Table
+import net.minecraft.block.Block
 import net.minecraft.command.{CommandBase, ICommandSender}
-import net.minecraft.item.ItemStack
+import net.minecraft.item.Item
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.FluidRegistry
-import net.minecraftforge.fml.common.registry.GameData
 import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
 
@@ -41,18 +40,11 @@ object CommandDumpRegistry extends CommandBase {
     import scala.collection.JavaConversions._
     try {
       dumpWriter.write("==== BLOCKS ====\n")
-      dumpWriter.write(GameData.getBlockRegistry.map(GameData.getBlockRegistry.getNameForObject).toList.sorted.mkString("\n"))
+      dumpWriter.write(Block.blockRegistry.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ITEMS ====\n")
-      dumpWriter.write(GameData.getItemRegistry.map(GameData.getItemRegistry.getNameForObject).toList.sorted.mkString("\n"))
-      dumpWriter.write("\n\n")
-
-      dumpWriter.write("==== CUSTOM STACKS ====\n")
-      val stacksField = classOf[GameData].getDeclaredField("customItemStacks")
-      stacksField.setAccessible(true)
-      val stacksData = stacksField.get(null).asInstanceOf[Table[String, String, ItemStack]]
-      dumpWriter.write(stacksData.cellSet().map(x => x.getRowKey + ":" + x.getColumnKey).toList.sorted.mkString("\n"))
+      dumpWriter.write(Item.itemRegistry.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ORE DICT ====\n")

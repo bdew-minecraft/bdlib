@@ -18,7 +18,6 @@ import net.minecraft.item.Item
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextFormatting
-import net.minecraftforge.fml.common.registry.GameData
 import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
 
@@ -111,7 +110,7 @@ object CommandOreDistribution extends CommandBase {
             dumpWriter.write("Warning: %s has multiple variants generated:".format(id))
             dumpWriter.newLine()
             for ((item, dmg) <- types) {
-              dumpWriter.write(" - %s@%s".format(GameData.getItemRegistry.getNameForObject(item), dmg))
+              dumpWriter.write(" - %s@%s".format(item.getRegistryName, dmg))
               dumpWriter.newLine()
             }
             dumpWriter.newLine()
@@ -138,7 +137,7 @@ object CommandOreDistribution extends CommandBase {
         CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.warn",
           wrapColor(" !", TextFormatting.RED), wrapColor(id, TextFormatting.RED))
         for ((item, dmg) <- types)
-          CommandBase.notifyOperators(sender, this, wrapColor(" - ", TextFormatting.RED) + GameData.getItemRegistry.getNameForObject(item) + "@" + dmg)
+          CommandBase.notifyOperators(sender, this, wrapColor(" - ", TextFormatting.RED) + item.getRegistryName + "@" + dmg)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
         CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.entry",
