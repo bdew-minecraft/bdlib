@@ -47,13 +47,6 @@ object CommandDumpRegistry extends CommandBase {
       dumpWriter.write(GameData.getItemRegistry.map(GameData.getItemRegistry.getNameForObject).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
-      dumpWriter.write("==== CUSTOM STACKS ====\n")
-      val stacksField = classOf[GameData].getDeclaredField("customItemStacks")
-      stacksField.setAccessible(true)
-      val stacksData = stacksField.get(null).asInstanceOf[Table[String, String, ItemStack]]
-      dumpWriter.write(stacksData.cellSet().map(x => x.getRowKey + ":" + x.getColumnKey).toList.sorted.mkString("\n"))
-      dumpWriter.write("\n\n")
-
       dumpWriter.write("==== ORE DICT ====\n")
       dumpWriter.write((OreDictionary.getOreNames.sorted flatMap { name =>
         List(name) ++
