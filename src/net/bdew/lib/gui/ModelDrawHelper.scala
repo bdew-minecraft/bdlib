@@ -42,8 +42,8 @@ object ModelDrawHelper {
 
     // Make sure that block atlas is selected
 
-    textures.bindTexture(TextureMap.locationBlocksTexture)
-    textures.getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false)
+    textures.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+    textures.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false)
 
     GL11.glPushMatrix()
 
@@ -101,7 +101,7 @@ object ModelDrawHelper {
 
     tessellator.draw()
 
-    textures.getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap()
+    textures.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap()
 
     GL11.glPopMatrix()
   }

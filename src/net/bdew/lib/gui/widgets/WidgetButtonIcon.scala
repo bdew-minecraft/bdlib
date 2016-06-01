@@ -39,7 +39,7 @@ class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Tex
   }
 
   override def mouseClicked(p: Point, button: Int) {
-    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F))
+    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F))
     clicked(this)
   }
 }

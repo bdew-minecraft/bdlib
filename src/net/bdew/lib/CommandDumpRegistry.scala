@@ -40,11 +40,11 @@ object CommandDumpRegistry extends CommandBase {
     import scala.collection.JavaConversions._
     try {
       dumpWriter.write("==== BLOCKS ====\n")
-      dumpWriter.write(Block.blockRegistry.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
+      dumpWriter.write(Block.REGISTRY.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ITEMS ====\n")
-      dumpWriter.write(Item.itemRegistry.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
+      dumpWriter.write(Item.REGISTRY.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ORE DICT ====\n")
@@ -60,10 +60,10 @@ object CommandDumpRegistry extends CommandBase {
       dumpWriter.write(FluidRegistry.getRegisteredFluids.map(_._1).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
-      CommandBase.notifyOperators(sender, this, "Registry dumped to " + dumpFile.getCanonicalPath)
+      CommandBase.notifyCommandListener(sender, this, "Registry dumped to " + dumpFile.getCanonicalPath)
     } catch {
       case e: Throwable =>
-        CommandBase.notifyOperators(sender, this, "Failed to save registry dump: " + e)
+        CommandBase.notifyCommandListener(sender, this, "Failed to save registry dump: " + e)
         BdLib.logErrorException("Failed to save registry dump", e)
     } finally {
       dumpWriter.close()

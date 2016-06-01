@@ -185,14 +185,14 @@ class RecipeLoader {
       return s
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)
     case StackBlock(mod, id, meta) =>
-      val block = notNull(Block.blockRegistry.getObject(new ResourceLocation(mod, id)), "Block not found %s:%s".format(mod, id))
-      if (block == Blocks.air)
+      val block = notNull(Block.REGISTRY.getObject(new ResourceLocation(mod, id)), "Block not found %s:%s".format(mod, id))
+      if (block == Blocks.AIR)
         error("Block name '%s:%s' resolved to Air. This probably means that it isn't registered.", mod, id)
       if (Item.getItemFromBlock(block) == null)
         error("The block '%s:%s' does not have a valid matching item registered and thus can't be used in recipes", mod, id)
       new ItemStack(block, cnt, meta)
     case StackItem(mod, id, meta) =>
-      new ItemStack(notNull(Item.itemRegistry.getObject(new ResourceLocation(mod, id)), "Item not found %s:%s".format(mod, id)), cnt, meta)
+      new ItemStack(notNull(Item.REGISTRY.getObject(new ResourceLocation(mod, id)), "Item not found %s:%s".format(mod, id)), cnt, meta)
     case StackReflect(cls, field, meta) => reflectStack(cls, field, meta, cnt)
     case StackGetter(cls, method, param, meta) => reflectStackGetter(cls, method, param, meta, cnt)
   }

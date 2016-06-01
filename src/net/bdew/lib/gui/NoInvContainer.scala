@@ -18,7 +18,7 @@ abstract class NoInvContainer extends Container {
 
   import scala.collection.JavaConversions._
 
-  def players = Misc.filterType(crafters, classOf[EntityPlayerMP])
+  def players = Misc.filterType(listeners, classOf[EntityPlayerMP])
 
   protected def bindPlayerInventory(inv: InventoryPlayer, xOffs: Int, yOffsInv: Int, yOffsHotbar: Int) {
     for (i <- 0 until 3; j <- 0 until 9)

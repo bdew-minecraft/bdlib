@@ -17,7 +17,7 @@ class RichChatComponent(v: ITextComponent) {
   def &(that: ITextComponent) = v.appendSibling(that)
 
   private def applyStyle(f: Style => Unit) = {
-    f(v.getChatStyle)
+    f(v.getStyle)
     v
   }
 

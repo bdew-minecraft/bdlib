@@ -39,7 +39,7 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
     getTE(world, pos).tryConnect()
   }
 
-  override def onNeighborBlockChange(world: World, pos: BlockPos, state: IBlockState, neighborBlock: Block) = {
+  override def neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block): Unit = {
     getTE(world, pos).tryConnect()
   }
 

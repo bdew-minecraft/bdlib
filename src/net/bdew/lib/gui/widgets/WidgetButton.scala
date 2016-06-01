@@ -19,7 +19,7 @@ class WidgetButton(val rect: Rect, text: String, clicked: WidgetButton => Unit)
   extends GuiButton(0, rect.x.round, rect.y.round, rect.w.round, rect.h.round, text) with Widget {
 
   override def mouseClicked(p: Point, button: Int) {
-    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F))
+    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F))
     clicked(this)
   }
 

@@ -11,17 +11,17 @@ package net.bdew.lib.data.base
 
 import net.bdew.lib.gui.NoInvContainer
 import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.inventory.ICrafting
+import net.minecraft.inventory.IContainerListener
 
 trait ContainerDataSlots extends NoInvContainer {
   val dataSource: TileDataSlots
   var lastSentChange = dataSource.lastChange
 
-  override def onCraftGuiOpened(crafter: ICrafting) {
-    super.onCraftGuiOpened(crafter)
+  override def addListener(crafter: IContainerListener) {
+    super.addListener(crafter)
     if (crafter.isInstanceOf[EntityPlayerMP]) {
       val pkt = dataSource.getDataSlotPacket
-      crafter.asInstanceOf[EntityPlayerMP].playerNetServerHandler.sendPacket(pkt)
+      crafter.asInstanceOf[EntityPlayerMP].connection.sendPacket(pkt)
     }
   }
 
@@ -33,7 +33,7 @@ trait ContainerDataSlots extends NoInvContainer {
       val pkt = dataSource.getDataSlotPacket
 
       for (player <- players)
-        player.playerNetServerHandler.sendPacket(pkt)
+        player.connection.sendPacket(pkt)
     }
   }
 }

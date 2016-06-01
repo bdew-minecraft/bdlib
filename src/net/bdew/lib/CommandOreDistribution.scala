@@ -58,11 +58,10 @@ object CommandOreDistribution extends CommandBase {
 
     val toFile = flags.contains("--file")
 
-    // why java, WHY?
-    CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.start1",
+    CommandBase.notifyCommandListener(sender, this, "bdlib.oredistribution.start1",
       Array[Integer](startX - radius, minY, startZ - radius, startX + radius, maxY, startZ + radius, world.provider.getDimension): _*)
 
-    CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.start2")
+    CommandBase.notifyCommandListener(sender, this, "bdlib.oredistribution.start2")
 
     import scala.collection.JavaConversions._
 
@@ -123,10 +122,10 @@ object CommandOreDistribution extends CommandBase {
           dumpWriter.write("%s - %s (%s%%)".format(id, DecFormat.round(num), DecFormat.short(100F * num / total)))
           dumpWriter.newLine()
         }
-        CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.saved", dumpFile.getCanonicalPath)
+        CommandBase.notifyCommandListener(sender, this, "bdlib.oredistribution.saved", dumpFile.getCanonicalPath)
       } catch {
         case e: Throwable =>
-          CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.error", e.toString)
+          CommandBase.notifyCommandListener(sender, this, "bdlib.oredistribution.error", e.toString)
           BdLib.logErrorException("Failed to save ore distribution dump", e)
       } finally {
         dumpWriter.close()
@@ -134,13 +133,13 @@ object CommandOreDistribution extends CommandBase {
     } else {
       // === OUTPUT TO CHAT ===
       for ((id, types) <- warnings.toList.sortBy(_._1)) {
-        CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.warn",
+        CommandBase.notifyCommandListener(sender, this, "bdlib.oredistribution.warn",
           wrapColor(" !", TextFormatting.RED), wrapColor(id, TextFormatting.RED))
         for ((item, dmg) <- types)
-          CommandBase.notifyOperators(sender, this, wrapColor(" - ", TextFormatting.RED) + item.getRegistryName + "@" + dmg)
+          CommandBase.notifyCommandListener(sender, this, wrapColor(" - ", TextFormatting.RED) + item.getRegistryName + "@" + dmg)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
-        CommandBase.notifyOperators(sender, this, "bdlib.oredistribution.entry",
+        CommandBase.notifyCommandListener(sender, this, "bdlib.oredistribution.entry",
           " *", wrapColor(id, TextFormatting.YELLOW),
           DecFormat.round(num), DecFormat.short(100F * num / total))
       }

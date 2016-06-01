@@ -27,6 +27,7 @@ class TileExtended extends TileEntity {
   override final def writeToNBT(tag: NBTTagCompound) = {
     super.writeToNBT(tag)
     persistSave.trigger(tag)
+    tag
   }
 
   override final def readFromNBT(tag: NBTTagCompound) = {
@@ -39,7 +40,7 @@ class TileExtended extends TileEntity {
     getWorld.notifyBlockUpdate(getPos, state, state, 3)
   }
 
-  override final def getDescriptionPacket = {
+  override final def getUpdatePacket = {
     if (sendClientUpdate.hasListeners) {
       val tag = new NBTTagCompound
       sendClientUpdate.trigger(tag)

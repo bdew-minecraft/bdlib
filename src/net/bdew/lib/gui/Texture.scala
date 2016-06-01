@@ -55,7 +55,7 @@ class ScaledResourceLocation(path: String, val scale: Int = 256) extends Resourc
 }
 
 object Texture {
-  val BLOCKS = TextureMap.locationBlocksTexture
+  val BLOCKS = TextureMap.LOCATION_BLOCKS_TEXTURE
 
   // From minecraft sprite
   def apply(res: ResourceLocation, i: TextureAtlasSprite) = new IconWrapper(res, i)
