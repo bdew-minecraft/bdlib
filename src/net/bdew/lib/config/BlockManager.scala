@@ -19,6 +19,8 @@ import net.minecraftforge.fml.common.{FMLCommonHandler, ObfuscationReflectionHel
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: Block](block: T, skipTileEntityReg: Boolean = false): T = {
+    require(block.getRegistryName != null, "Attempting to register block with null name")
+
     val itemBlock = if (block.isInstanceOf[HasItemBlock])
       block.asInstanceOf[HasItemBlock].itemBlockInstance
     else

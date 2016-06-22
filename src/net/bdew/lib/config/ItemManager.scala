@@ -16,9 +16,12 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.registry.GameRegistry
 
 class ItemManager(creativeTab: CreativeTabs) {
+
   def regSimpleItem(name: String): BaseItem = regItem(new BaseItem(name))
 
   def regItem[T <: Item](item: T): T = {
+    require(item.getRegistryName != null, "Attempting to register item with null name")
+
     GameRegistry.register(item)
     item.setCreativeTab(creativeTab)
 
