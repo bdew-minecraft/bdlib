@@ -36,11 +36,16 @@ trait DataSlotVal[T] extends DataSlot {
 
   final override def load(t: NBTTagCompound, kind: UpdateKind.Value): Unit = realValue = loadValue(t, kind)
 
-  def update(v: T) {
+  def update(v: T, notify: Boolean = true) {
     if (!isSame(v)) {
       realValue = v
-      parent.dataSlotChanged(this)
+      if (notify)
+        changed()
     }
+  }
+
+  def changed(): Unit = {
+    parent.dataSlotChanged(this)
   }
 }
 

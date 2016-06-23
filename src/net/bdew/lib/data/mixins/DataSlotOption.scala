@@ -15,7 +15,7 @@ abstract class DataSlotOption[T] extends DataSlotVal[Option[T]] {
   override def default = None
 
   def set(v: T) {
-    if (v == null) sys.error("Null should never be used with DataSlotOption")
+    require(v != null, "Null should never be used with DataSlotOption")
     update(Some(v))
   }
 
@@ -24,23 +24,27 @@ abstract class DataSlotOption[T] extends DataSlotVal[Option[T]] {
   }
 
   override def isSame(v: Option[T]) = {
-    if (v == null) sys.error("Null should never be used with DataSlotOption")
+    require(v != null, "Null should never be used with DataSlotOption")
     super.isSame(v)
   }
+
   override def :=(that: Option[T]) = {
-    if (that == null) sys.error("Null should never be used with DataSlotOption")
+    require(that != null, "Null should never be used with DataSlotOption")
     super.:=(that)
   }
+
   override def :!=(that: Option[T]) = {
-    if (that == null) sys.error("Null should never be used with DataSlotOption")
+    require(that != null, "Null should never be used with DataSlotOption")
     super.:!=(that)
   }
+
   override def :==(that: Option[T]) = {
-    if (that == null) sys.error("Null should never be used with DataSlotOption")
+    require(that != null, "Null should never be used with DataSlotOption")
     super.:==(that)
   }
-  override def update(v: Option[T]) = {
-    if (v == null) sys.error("Null should never be used with DataSlotOption")
-    super.update(v)
+
+  override def update(v: Option[T], notify: Boolean = true) = {
+    require(v != null, "Null should never be used with DataSlotOption")
+    super.update(v, notify)
   }
 }
