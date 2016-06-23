@@ -9,11 +9,12 @@
 
 package net.bdew.lib.covers
 
+import net.bdew.lib.items.BaseItem
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
-import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
-trait ItemCover extends Item {
+trait ItemCover extends BaseItem {
   /**
    * @return true if tickCover should be called
    */
@@ -21,7 +22,8 @@ trait ItemCover extends Item {
 
   /**
    * Perform tick, called on server only
-   * @param te Host TileEntity
+    *
+    * @param te Host TileEntity
    * @param side Side the cover is installed on
    * @param cover Cover ItemStack
    */
@@ -29,7 +31,8 @@ trait ItemCover extends Item {
 
   /**
    * Checks if this cover can be installed on a specific TE
-   * @param te Potential host TileEntity
+    *
+    * @param te Potential host TileEntity
    * @param cover Cover ItemStack
    * @return true if can be installed
    */
@@ -37,7 +40,8 @@ trait ItemCover extends Item {
 
   /**
    * Handle click on covered side - called on both client and server
-   * @param te Host TileEntity
+    *
+    * @param te Host TileEntity
    * @param side Side the cover is installed on
    * @param cover Cover ItemStack
    * @param player Player clicking the cover
@@ -47,7 +51,8 @@ trait ItemCover extends Item {
 
   /**
    * Check if cover is emitting RS signal
-   * @param te Host TileEntity
+    *
+    * @param te Host TileEntity
    * @param side Side the cover is installed on
    * @param cover Cover ItemStack
    * @return true if cover is emitting RS signal
@@ -56,7 +61,8 @@ trait ItemCover extends Item {
 
   /**
    * Called when cover is installed on a block - called only on server
-   * @param te Host TileEntity
+    *
+    * @param te Host TileEntity
    * @param side Side the cover is installed on
    * @param cover Cover ItemStack - do not modify!
    * @param player Player entity doing the installation
@@ -66,7 +72,8 @@ trait ItemCover extends Item {
 
   /**
    * Called when cover is removed from block or block is destroyed - called only on server
-   * @param cover Cover ItemStack - do not modify!
+    *
+    * @param cover Cover ItemStack - do not modify!
    * @return cover ItemStack - copy if modified
    */
   def onRemove(cover: ItemStack): ItemStack = cover

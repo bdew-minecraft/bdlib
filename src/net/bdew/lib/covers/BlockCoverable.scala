@@ -10,18 +10,32 @@
 package net.bdew.lib.covers
 
 import net.bdew.lib.Misc
-import net.bdew.lib.block.HasTE
+import net.bdew.lib.block.{BaseBlock, HasTE}
 import net.bdew.lib.items.ItemUtils
-import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.{EnumFacing, EnumHand}
+import net.minecraft.util.{BlockRenderLayer, EnumFacing, EnumHand}
 import net.minecraft.world.{IBlockAccess, World}
+import net.minecraftforge.common.property.{IExtendedBlockState, IUnlistedProperty}
 
-trait BlockCoverable extends Block {
+trait BlockCoverable extends BaseBlock {
   self: HasTE[_ <: TileCoverable] =>
+
+  override def getUnlistedProperties: List[IUnlistedProperty[_]] = super.getUnlistedProperties :+ CoversProperty
+
+  override def getExtendedState(state: IBlockState, world: IBlockAccess, pos: BlockPos): IBlockState = {
+    getTE(world, pos) map { tile =>
+      super.getExtendedState(state, world, pos).asInstanceOf[IExtendedBlockState].withProperty(CoversProperty,
+        tile.covers flatMap { case (side, cover) =>
+          cover.map(stack => side -> stack)
+        })
+    } getOrElse state
+  }
+
+  override def canRenderInLayer(layer: BlockRenderLayer) =
+    layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.CUTOUT
 
   private def getCoverItem(w: IBlockAccess, pos: BlockPos, side: EnumFacing): Option[(ItemCover, ItemStack, TileCoverable)] = {
     for {
@@ -42,7 +56,7 @@ trait BlockCoverable extends Block {
         coverItem <- Misc.asInstanceOpt(cover.getItem, classOf[ItemCover])
       } {
         if (!world.isRemote) {
-          te.covers(side) := null
+          te.covers(side).unset()
           te.onCoversChanged()
           coverChanged(world, pos, side)
           ItemUtils.dropItemToPlayer(world, player, coverItem.onRemove(cover))
