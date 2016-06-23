@@ -25,7 +25,7 @@ case class DataSlotGameProfile(name: String, parent: DataSlotContainer) extends 
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) = {
     if (value != null) {
-      t.setTag(name, NBTUtil.writeGameProfile(t, value))
+      t.setTag(name, NBTUtil.writeGameProfile(new NBTTagCompound, value))
     }
   }
 }
