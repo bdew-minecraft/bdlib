@@ -42,10 +42,14 @@ class TileExtended extends TileEntity {
 
   override final def getUpdatePacket = {
     if (sendClientUpdate.hasListeners) {
-      val tag = new NBTTagCompound
-      sendClientUpdate.trigger(tag)
-      new SPacketUpdateTileEntity(pos, ACT_CLIENT, tag)
+      new SPacketUpdateTileEntity(pos, ACT_CLIENT, getUpdateTag)
     } else null
+  }
+
+  override def getUpdateTag: NBTTagCompound = {
+    val tag = super.getUpdateTag
+    sendClientUpdate.trigger(tag)
+    tag
   }
 
   override final def onDataPacket(net: NetworkManager, pkt: SPacketUpdateTileEntity) {
@@ -53,6 +57,10 @@ class TileExtended extends TileEntity {
       handleClientUpdate.trigger(pkt.getNbtCompound)
     else
       extDataPacket(pkt.getTileEntityType, pkt.getNbtCompound)
+  }
+
+  override def handleUpdateTag(tag: NBTTagCompound): Unit = {
+    handleClientUpdate.trigger(tag)
   }
 
   protected def extDataPacket(id: Int, data: NBTTagCompound) {}
