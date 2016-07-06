@@ -16,65 +16,75 @@ import net.minecraft.util.EnumFacing
 
 trait ItemCover extends BaseItem {
   /**
-   * @return true if tickCover should be called
-   */
+    * @return true if tickCover should be called
+    */
   def isCoverTicking: Boolean
 
   /**
-   * Perform tick, called on server only
+    * Perform tick, called on server only
     *
-    * @param te Host TileEntity
-   * @param side Side the cover is installed on
-   * @param cover Cover ItemStack
-   */
+    * @param te    Host TileEntity
+    * @param side  Side the cover is installed on
+    * @param cover Cover ItemStack
+    */
   def tickCover(te: TileCoverable, side: EnumFacing, cover: ItemStack): Unit = {}
 
   /**
-   * Checks if this cover can be installed on a specific TE
+    * Checks if this cover can be installed on a specific TE
     *
-    * @param te Potential host TileEntity
-   * @param cover Cover ItemStack
-   * @return true if can be installed
-   */
+    * @param te    Potential host TileEntity
+    * @param cover Cover ItemStack
+    * @return true if can be installed
+    */
   def isValidTile(te: TileCoverable, cover: ItemStack): Boolean
 
   /**
-   * Handle click on covered side - called on both client and server
+    * Handle click on covered side - called on both client and server
     *
-    * @param te Host TileEntity
-   * @param side Side the cover is installed on
-   * @param cover Cover ItemStack
-   * @param player Player clicking the cover
-   * @return true if click was handled by cover
-   */
+    * @param te     Host TileEntity
+    * @param side   Side the cover is installed on
+    * @param cover  Cover ItemStack
+    * @param player Player clicking the cover
+    * @return true if click was handled by cover
+    */
   def clickCover(te: TileCoverable, side: EnumFacing, cover: ItemStack, player: EntityPlayer): Boolean = false
 
   /**
-   * Check if cover is emitting RS signal
+    * Check if cover is emitting RS signal
     *
-    * @param te Host TileEntity
-   * @param side Side the cover is installed on
-   * @param cover Cover ItemStack
-   * @return true if cover is emitting RS signal
-   */
+    * @param te    Host TileEntity
+    * @param side  Side the cover is installed on
+    * @param cover Cover ItemStack
+    * @return true if cover is emitting RS signal
+    */
   def isEmittingSignal(te: TileCoverable, side: EnumFacing, cover: ItemStack): Boolean = false
 
   /**
-   * Called when cover is installed on a block - called only on server
+    * Called when cover is installed on a block - called only on server
     *
-    * @param te Host TileEntity
-   * @param side Side the cover is installed on
-   * @param cover Cover ItemStack - do not modify!
-   * @param player Player entity doing the installation
-   * @return cover ItemStack - copy if modified
-   */
+    * @param te     Host TileEntity
+    * @param side   Side the cover is installed on
+    * @param cover  Cover ItemStack - do not modify!
+    * @param player Player entity doing the installation
+    * @return cover ItemStack - copy if modified
+    */
   def onInstall(te: TileCoverable, side: EnumFacing, cover: ItemStack, player: EntityPlayerMP): ItemStack = cover
 
   /**
-   * Called when cover is removed from block or block is destroyed - called only on server
+    * Called when cover is removed from block or block is destroyed - called only on server
     *
     * @param cover Cover ItemStack - do not modify!
-   * @return cover ItemStack - copy if modified
-   */
+    * @return cover ItemStack - copy if modified
+    */
   def onRemove(cover: ItemStack): ItemStack = cover
+
+  /**
+    * Called when rendering cover, override to change what item is used for display
+    *
+    * @param te    Host TileEntity
+    * @param side  Side the cover is installed on
+    * @param cover Cover ItemStack - do not modify!
+    * @return
+    */
+  def getDisplayItem(te: TileCoverable, side: EnumFacing, cover: ItemStack): ItemStack = cover
 }

@@ -29,7 +29,12 @@ trait BlockCoverable extends BaseBlock {
     getTE(world, pos) map { tile =>
       super.getExtendedState(state, world, pos).asInstanceOf[IExtendedBlockState].withProperty(CoversProperty,
         tile.covers flatMap { case (side, cover) =>
-          cover.map(stack => side -> stack)
+          cover flatMap { stack =>
+            if (stack.getItem != null && stack.getItem.isInstanceOf[ItemCover])
+              Some(side -> stack.getItem.asInstanceOf[ItemCover].getDisplayItem(tile, side, stack))
+            else
+              None
+          }
         })
     } getOrElse state
   }

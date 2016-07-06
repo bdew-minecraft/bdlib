@@ -20,7 +20,7 @@ object CoverModelEnhancer extends ModelEnhancer {
         (face, stack) <- faces if face == side
         quad <- Client.minecraft.getRenderItem.getItemModelMesher.getItemModel(stack).getQuads(null, null, rand)
       } yield {
-        QuadBakerDefault.bakeQuad(faceQuads(side).withTexture(Texture(quad.getSprite)))
+        QuadBakerDefault.bakeQuad(faceQuads(side).withTexture(Texture(quad.getSprite), shading = false))
       }
     } else super.processBlockQuads(state, side, rand, textures, base)
   }
