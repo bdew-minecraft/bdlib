@@ -12,6 +12,8 @@ package net.bdew.lib.tile.inventory
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
+import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.text.ITextComponent
 
 trait BaseInventory extends IInventory {
   var inv: Array[ItemStack] = new Array(getSizeInventory)
@@ -19,7 +21,7 @@ trait BaseInventory extends IInventory {
   def getInventoryStackLimit = 64
 
   override def hasCustomName = false
-  override def getDisplayName = null
+  override def getDisplayName: ITextComponent = null
   override def getName = ""
 
   override def isUseableByPlayer(player: EntityPlayer) = true
@@ -70,4 +72,9 @@ trait BaseInventory extends IInventory {
   override def getFieldCount = 0
   override def getField(id: Int) = 0
   override def setField(id: Int, value: Int) = {}
+}
+
+trait InventoryTile extends TileEntity with BaseInventory {
+  // To make the compiler happy
+  override def getDisplayName: ITextComponent = super.getDisplayName
 }

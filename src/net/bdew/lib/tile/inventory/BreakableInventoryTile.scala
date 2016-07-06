@@ -11,9 +11,8 @@ package net.bdew.lib.tile.inventory
 
 import net.bdew.lib.items.ItemUtils
 import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntity
 
-trait BreakableInventoryTile extends TileEntity with BaseInventory {
+trait BreakableInventoryTile extends InventoryTile {
   def dropItems() {
     if (getWorld != null && !getWorld.isRemote) {
       for (stack <- inv if stack != null) {
