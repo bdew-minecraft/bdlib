@@ -10,12 +10,10 @@
 package net.bdew.lib.multiblock.interact
 
 import net.bdew.lib.multiblock.data.SlotSet
-import net.minecraftforge.fluids.{Fluid, FluidStack}
+import net.minecraftforge.fluids.capability.IFluidHandler
 
-trait CIFluidOutputSelect extends CIOutputFaces with CITankInfo {
+trait CIFluidOutputSelect extends CIOutputFaces {
   val outputSlotsDef: SlotSet
-  def outputFluid(slot: outputSlotsDef.Slot, resource: FluidStack, doDrain: Boolean): FluidStack
-  def outputFluid(slot: outputSlotsDef.Slot, amount: Int, doDrain: Boolean): FluidStack
-  def canOutputFluid(slot: outputSlotsDef.Slot, fluid: Fluid): Boolean
+  def getOutputTanksForSlot(slot: outputSlotsDef.Slot): List[IFluidHandler]
 }
 

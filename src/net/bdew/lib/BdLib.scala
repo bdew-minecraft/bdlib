@@ -9,6 +9,7 @@
 
 package net.bdew.lib
 
+import net.bdew.lib.capabilities.CapAdapters
 import net.bdew.lib.multiblock.network.NetHandler
 import net.bdew.lib.render.ColorHandlers
 import net.bdew.lib.tooltip.TooltipHandler
@@ -39,6 +40,7 @@ object BdLib {
     log.debug("List of loaded APIs: " + ApiReporter.APIs)
     FMLCommonHandler.instance().registerCrashCallable(ApiReporter)
     NetHandler.init()
+    CapAdapters.init()
     if (ev.getSide.isClient) {
       TooltipHandler.init()
     }

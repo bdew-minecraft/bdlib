@@ -9,10 +9,8 @@
 
 package net.bdew.lib.multiblock.interact
 
-import net.minecraftforge.fluids.{Fluid, FluidStack}
+import net.minecraftforge.fluids.capability.IFluidHandler
 
-trait CIFluidOutput extends CIOutputFaces with CITankInfo {
-  def outputFluid(resource: FluidStack, doDrain: Boolean): FluidStack
-  def outputFluid(amount: Int, doDrain: Boolean): FluidStack
-  def canOutputFluid(fluid: Fluid): Boolean
+trait CIFluidOutput extends CIOutputFaces {
+  def getOutputTanks: List[IFluidHandler]
 }

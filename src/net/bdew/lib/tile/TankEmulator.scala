@@ -11,9 +11,10 @@ package net.bdew.lib.tile
 
 import net.bdew.lib.Misc
 import net.bdew.lib.data.mixins.DataSlotNumeric
+import net.minecraftforge.fluids.capability.{IFluidHandler, IFluidTankProperties}
 import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTankInfo, IFluidTank}
 
-case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capacity: Int) extends IFluidTank {
+case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capacity: Int) extends IFluidTank with IFluidHandler {
   val num = implicitly[Numeric[T]]
 
   override def getFluidAmount: Int = num.toDouble(ds).floor.toInt
@@ -38,4 +39,21 @@ case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capaci
       canFill
     } else 0
   }
+
+  override def drain(resource: FluidStack, doDrain: Boolean): FluidStack = {
+    if (resource != null && resource.getFluid == fluid) {
+      drain(resource.amount, doDrain)
+    } else null
+  }
+
+  override def getTankProperties: Array[IFluidTankProperties] = Array(new IFluidTankProperties {
+    override def canFill: Boolean = true
+    override def canDrain: Boolean = true
+
+    override def getCapacity: Int = capacity
+    override def getContents: FluidStack = drain(Int.MaxValue, false)
+
+    override def canFillFluidType(fluidStack: FluidStack): Boolean = fluidStack != null && fluidStack.getFluid == fluid
+    override def canDrainFluidType(fluidStack: FluidStack): Boolean = fluidStack != null && fluidStack.getFluid == fluid
+  })
 }

@@ -28,6 +28,12 @@ trait CapabilityProvider extends ICapabilityProvider {
     caps += (cap -> f.orElse(caps(cap)))
 
   /**
+    * Add capability to all faces
+    */
+  def addCapability[T](cap: Capability[T], handler: T): Unit =
+    caps += (cap -> { case _ => handler })
+
+  /**
     * Add capability (using Options)
     *
     * Usage: addCapabilityOption(SomeCap) { face => if (face==EnumFacing.UP) Some(myImplementation) else None }

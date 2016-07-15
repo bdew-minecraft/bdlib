@@ -10,9 +10,8 @@
 package net.bdew.lib.multiblock.interact
 
 import net.bdew.lib.multiblock.tile.TileController
-import net.minecraftforge.fluids.{Fluid, FluidStack}
+import net.minecraftforge.fluids.capability.IFluidHandler
 
-trait CIFluidInput extends TileController with CITankInfo {
-  def inputFluid(resource: FluidStack, doFill: Boolean): Int
-  def canInputFluid(fluid: Fluid): Boolean
+trait CIFluidInput extends TileController {
+  def getInputTanks: List[IFluidHandler]
 }

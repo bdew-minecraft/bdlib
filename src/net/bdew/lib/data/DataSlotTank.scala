@@ -11,9 +11,10 @@ package net.bdew.lib.data
 
 import net.bdew.lib.data.base.{DataSlotContainerTicking, DataSlotTicking, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraftforge.fluids._
+import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTank, IFluidTank}
 
-abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlotTicking {
+abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with IFluidHandler with DataSlotTicking {
   var oldStack: FluidStack = null
 
   updateKind = Set(UpdateKind.GUI, UpdateKind.SAVE)
@@ -65,13 +66,14 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
       super.fill(resource, false)
 }
 
-case class DataSlotTank(name: String, parent: DataSlotContainerTicking, size: Int) extends DataSlotTankBase(size)
+case class DataSlotTank(name: String, parent: DataSlotContainerTicking, size: Int, canFillExternal: Boolean = true, canDrainExternal: Boolean = true) extends DataSlotTankBase(size) {
+  canFill = canFillExternal
+  canDrain = canDrainExternal
+}
 
-case class DataSlotTankRestricted(name: String, parent: DataSlotContainerTicking, var size: Int, filterFluid: Fluid) extends DataSlotTankBase(size) {
-  def fill(amount: Int, doFill: Boolean) = super.fill(new FluidStack(filterFluid, amount), doFill)
-
-  override def fill(resource: FluidStack, doFill: Boolean): Int = {
-    if ((resource != null) && (resource.getFluid != filterFluid)) return 0
-    return super.fill(resource, doFill)
-  }
+case class DataSlotTankRestricted(name: String, parent: DataSlotContainerTicking, var size: Int, filterFluid: Fluid, canFillExternal: Boolean = true, canDrainExternal: Boolean = true) extends DataSlotTankBase(size) {
+  canFill = canFillExternal
+  canDrain = canDrainExternal
+  override def canFillFluidType(fluid: FluidStack): Boolean = canFill && fluid.getFluid == filterFluid
+  def fillInternal(amount: Int, doFill: Boolean) = super.fillInternal(new FluidStack(filterFluid, amount), doFill)
 }

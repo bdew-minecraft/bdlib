@@ -41,11 +41,11 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
     if (slot == 0) {
       (for {
         (kind, stored) <- getResource
-        drained <- res.rawDrain(amt, true, false)
+        drained <- res.drainInternal(amt, true, false)
       } yield {
         val stackSize = Misc.clamp(drained.amount.floor.toInt, 0, kind.makeStack(1).getMaxStackSize)
         if (stackSize > 0) {
-          res.rawDrain(stackSize, true, true)
+          res.drainInternal(stackSize, true, true)
           kind.makeStack(stackSize)
         } else null
       }).orNull
@@ -59,7 +59,7 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
       } else {
         val stackRes = Resource.from(stack)
         for ((kind, stored) <- getResource if kind == stackRes.kind && stackRes.amount < stored) {
-          res.rawDrain(stored - stackRes.amount, true, true)
+          res.drainInternal(stored - stackRes.amount, true, true)
         }
       }
     }
