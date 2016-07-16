@@ -109,7 +109,10 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
     }
 
     override def fill(resource: FluidStack, doFill: Boolean): Int =
-      fillInternal(Resource.from(resource), onlyRound = true, doFill).toInt
+      if (canAccept(FluidResource(resource.getFluid)))
+        fillInternal(Resource.from(resource), onlyRound = true, doFill).toInt
+      else
+        0
   }
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) {
