@@ -17,6 +17,7 @@ import net.minecraft.item.Item
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry
 import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
 
@@ -33,6 +34,19 @@ object CommandDumpRegistry extends CommandBase {
         x.getResourceDomain.compareTo(x.getResourceDomain)
   }
 
+  def sanitize(x: IForgeRegistryEntry[_]): Option[String] = {
+    Option(x.getRegistryName) orElse {
+      if (x.isInstanceOf[Item]) {
+        BdLib.logWarn("Item with null name in registry! Key=%s Unlocalized=%s Class=%s",
+          Item.REGISTRY.getNameForObject(x.asInstanceOf[Item]), x.asInstanceOf[Item].getUnlocalizedName, x.getClass.getName)
+      } else if (x.isInstanceOf[Block]) {
+        BdLib.logWarn("Block with null name in registry! Key=%s Unlocalized=%s Class=%s",
+          Block.REGISTRY.getNameForObject(x.asInstanceOf[Block]), x.asInstanceOf[Block].getUnlocalizedName, x.getClass.getName)
+      } else BdLib.logWarn("Entry with null name in registry! Class=%s", x.getClass.getName)
+      None
+    } map (_.toString)
+  }
+
   override def execute(server: MinecraftServer, sender: ICommandSender, params: Array[String]): Unit = {
     val mcHome = FMLInjectionData.data()(6).asInstanceOf[File] //is there a better way to get this?
     val dumpFile = new File(mcHome, "registry.dump")
@@ -40,11 +54,11 @@ object CommandDumpRegistry extends CommandBase {
     import scala.collection.JavaConversions._
     try {
       dumpWriter.write("==== BLOCKS ====\n")
-      dumpWriter.write(Block.REGISTRY.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
+      dumpWriter.write(Block.REGISTRY.flatMap(sanitize).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ITEMS ====\n")
-      dumpWriter.write(Item.REGISTRY.map(_.getRegistryName.toString).toList.sorted.mkString("\n"))
+      dumpWriter.write(Item.REGISTRY.flatMap(sanitize).toList.sorted.mkString("\n"))
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ORE DICT ====\n")
