@@ -85,7 +85,7 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
     override def getTankProperties: Array[IFluidTankProperties] = Array(tankProperties)
 
     override def drain(resource: FluidStack, doDrain: Boolean): FluidStack = {
-      if (tankProperties.getContents.isFluidEqual(resource)) {
+      if (tankProperties.getContents != null && tankProperties.getContents.isFluidEqual(resource)) {
         (for {
           res <- drainInternal(resource.amount, true, false)
           rKind <- Misc.asInstanceOpt(res.kind, classOf[FluidResource])
