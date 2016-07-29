@@ -9,7 +9,7 @@
 
 package net.bdew.lib.capabilities
 
-import net.bdew.lib.capabilities.adapters.{FluidContainerAdapter, FluidItemAdapter, OldFluidHandlerAdapter}
+import net.bdew.lib.capabilities.adapters.{FluidContainerAdapter, FluidItemAdapter, InventoryAdapter, OldFluidHandlerAdapter}
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
@@ -53,5 +53,6 @@ object CapAdapters {
     add(Capabilities.CAP_FLUID_HANDLER, FluidContainerAdapter)
     add(Capabilities.CAP_FLUID_HANDLER, FluidItemAdapter)
     add(Capabilities.CAP_FLUID_HANDLER, OldFluidHandlerAdapter)
+    add(Capabilities.CAP_ITEM_HANDLER, InventoryAdapter)
   }
 }

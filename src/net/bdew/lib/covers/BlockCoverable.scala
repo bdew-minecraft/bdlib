@@ -75,7 +75,7 @@ trait BlockCoverable extends BaseBlock {
       activeStack <- Option(heldItem)
       activeItem <- Option(activeStack.getItem)
       coverItem <- Misc.asInstanceOpt(activeItem, classOf[ItemCover])
-      if te.isValidCover(side, activeStack) && coverItem.isValidTile(te, activeStack)
+      if te.isValidCover(side, activeStack) && coverItem.isValidTile(te, side, activeStack)
     } {
       if (!world.isRemote && player.isInstanceOf[EntityPlayerMP]) {
         for {

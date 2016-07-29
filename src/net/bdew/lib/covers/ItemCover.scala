@@ -30,13 +30,14 @@ trait ItemCover extends BaseItem {
   def tickCover(te: TileCoverable, side: EnumFacing, cover: ItemStack): Unit = {}
 
   /**
-    * Checks if this cover can be installed on a specific TE
+    * Checks if this cover can be installed on a specific TE on a specific side
     *
     * @param te    Potential host TileEntity
     * @param cover Cover ItemStack
+    * @param side  Side that the cover is going to be on
     * @return true if can be installed
     */
-  def isValidTile(te: TileCoverable, cover: ItemStack): Boolean
+  def isValidTile(te: TileCoverable, side: EnumFacing, cover: ItemStack): Boolean
 
   /**
     * Handle click on covered side - called on both client and server

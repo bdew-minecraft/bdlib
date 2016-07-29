@@ -9,11 +9,13 @@
 
 package net.bdew.lib.tile.inventory
 
+import net.bdew.lib.capabilities.{Capabilities, CapabilityProvider}
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.IInventory
+import net.minecraft.inventory.{IInventory, ISidedInventory}
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.text.ITextComponent
+import net.minecraftforge.items.wrapper.SidedInvWrapper
 
 trait BaseInventory extends IInventory {
   var inv: Array[ItemStack] = new Array(getSizeInventory)
@@ -74,7 +76,9 @@ trait BaseInventory extends IInventory {
   override def setField(id: Int, value: Int) = {}
 }
 
-trait InventoryTile extends TileEntity with BaseInventory {
+trait InventoryTile extends TileEntity with CapabilityProvider with BaseInventory with ISidedInventory {
   // To make the compiler happy
   override def getDisplayName: ITextComponent = super.getDisplayName
+
+  addCachedSidedCapability(Capabilities.CAP_ITEM_HANDLER, new SidedInvWrapper(this, _))
 }

@@ -9,13 +9,17 @@
 
 package net.bdew.lib.tile.inventory
 
+import net.bdew.lib.capabilities.{Capabilities, CapabilityProvider}
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.IInventory
+import net.minecraft.inventory.{IInventory, ISidedInventory}
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
+import net.minecraftforge.items.wrapper.SidedInvWrapper
 
-trait InventoryProxy extends TileEntity with IInventory {
+trait InventoryProxy extends TileEntity with CapabilityProvider with ISidedInventory {
   def targetInventory: Option[IInventory]
+
+  addCachedSidedCapability(Capabilities.CAP_ITEM_HANDLER, new SidedInvWrapper(this, _))
 
   override def openInventory(player: EntityPlayer) = targetInventory foreach (_.openInventory(player))
   override def closeInventory(player: EntityPlayer) = targetInventory foreach (_.closeInventory(player))

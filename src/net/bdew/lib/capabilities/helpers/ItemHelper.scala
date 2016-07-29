@@ -55,4 +55,25 @@ object ItemHelper {
     }
     CapAdapters.get(CAP_ITEM_HANDLER).wrap(stack)
   }
+
+  def pushItems(from: IItemHandler, to: IItemHandler, maxItems: Int = Int.MaxValue, filter: (ItemStack) => Boolean = _ != null): Unit = {
+    var itemsPushed = 0
+    for {
+      fromSlot <- 0 until from.getSlots if filter(from.getStackInSlot(fromSlot))
+      toSlot <- 0 until to.getSlots
+    } {
+      val canExtract = from.extractItem(fromSlot, maxItems - itemsPushed, true)
+      if (canExtract != null) {
+        val leftAfterInsert = to.insertItem(toSlot, canExtract, false)
+        if (leftAfterInsert == null) {
+          from.extractItem(fromSlot, canExtract.stackSize, false)
+          itemsPushed += canExtract.stackSize
+        } else {
+          from.extractItem(fromSlot, canExtract.stackSize - leftAfterInsert.stackSize, false)
+          itemsPushed += canExtract.stackSize - leftAfterInsert.stackSize
+        }
+        if (itemsPushed >= maxItems) return
+      }
+    }
+  }
 }

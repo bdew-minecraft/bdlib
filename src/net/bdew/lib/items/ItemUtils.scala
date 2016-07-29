@@ -49,7 +49,6 @@ object ItemUtils {
     return ItemStack.areItemStackTagsEqual(stack2, stack1)
   }
 
-  @deprecated("Use IItemHandler instead", "Minecraft 1.8.9")
   def addStackToSlots(stack: ItemStack, inv: IInventory, slots: Iterable[Int], checkValid: Boolean): ItemStack = {
     if (stack == null) return null
 
