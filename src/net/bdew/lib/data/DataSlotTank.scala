@@ -74,6 +74,6 @@ case class DataSlotTank(name: String, parent: DataSlotContainerTicking, size: In
 case class DataSlotTankRestricted(name: String, parent: DataSlotContainerTicking, var size: Int, filterFluid: Fluid, canFillExternal: Boolean = true, canDrainExternal: Boolean = true) extends DataSlotTankBase(size) {
   canFill = canFillExternal
   canDrain = canDrainExternal
-  override def canFillFluidType(fluid: FluidStack): Boolean = canFill && fluid.getFluid == filterFluid
+  override def canFillFluidType(fluid: FluidStack): Boolean = canFill && fluid != null && fluid.getFluid == filterFluid
   def fillInternal(amount: Int, doFill: Boolean) = super.fillInternal(new FluidStack(filterFluid, amount), doFill)
 }
