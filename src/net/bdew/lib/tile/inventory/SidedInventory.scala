@@ -18,7 +18,7 @@ trait SidedInventory extends BaseInventory with ISidedInventory {
 
   override def getSlotsForFace(side: EnumFacing): Array[Int] = inv.indices.toArray
 
-  override def canExtractItem(slot: Int, stack: ItemStack, direction: EnumFacing): Boolean = allowSided && isItemValidForSlot(slot, stack)
+  override def canExtractItem(slot: Int, stack: ItemStack, direction: EnumFacing): Boolean = allowSided
 
-  override def canInsertItem(slot: Int, itemStackIn: ItemStack, direction: EnumFacing): Boolean = allowSided
+  override def canInsertItem(slot: Int, stack: ItemStack, direction: EnumFacing): Boolean = allowSided && isItemValidForSlot(slot, stack)
 }
