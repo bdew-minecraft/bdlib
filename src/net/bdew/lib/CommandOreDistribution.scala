@@ -83,7 +83,8 @@ object CommandOreDistribution extends CommandBase {
       if !world.isAirBlock(bp)
     } {
       val state = world.getBlockState(bp)
-      val key = (Item.getItemFromBlock(state.getBlock), state.getBlock.damageDropped(state))
+      val stack = state.getBlock.getItem(world, bp, state)
+      val key = (stack.getItem, stack.getItemDamage)
       for (ore <- ores.get(key)) {
         distribution(ore) += 1
         kinds(ore) += key
