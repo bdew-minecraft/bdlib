@@ -43,6 +43,11 @@ class RecipeMatcher(inv: InventoryCrafting) {
     def matchLeft = at(x - 1, y)
 
     def matchAdjacent = matchAbove or matchBelow or matchLeft or matchRight
+
+    /**
+      * @return a search rule that matches the same stack
+      */
+    def same = Rule(that => ItemStack.areItemStackTagsEqual(this.stack, that.stack))
   }
 
   /**
@@ -79,6 +84,13 @@ class RecipeMatcher(inv: InventoryCrafting) {
       * @return All entries matching this rule that were not matched earlier
       */
     def all() = items filter f flatMap mark
+
+    /**
+      * Verifies that the rule matches at-least one item that was not matched earlier and marks all as matched
+      *
+      * @return true if any items match
+      */
+    def verify() = all().nonEmpty
   }
 
   /**
