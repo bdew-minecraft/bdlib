@@ -15,6 +15,8 @@ import net.bdew.lib.Misc
 import net.bdew.lib.gui.widgets.Widget
 import net.bdew.lib.gui.{ModelDrawHelper, Point, Rect, Texture}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
 import scala.collection.mutable
 
@@ -32,13 +34,19 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
     }
   }
 
+  def getSafeBlockName(world: World, pos: BlockPos) = {
+    val state = world.getBlockState(pos)
+    Option(state.getBlock.getItem(te.getWorld, pos, state))
+      .map(_.getDisplayName)
+      .getOrElse(state.getBlock.getLocalizedName)
+  }
+
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) {
     val faces = te.outputFaces.inverted
     tip += Misc.toLocal(te.resources.unlocalizedOutputName(output))
     if (faces.isDefinedAt(output)) {
       val bf = faces(output)
-      val block = te.getWorld.getBlockState(bf.target).getBlock
-      tip += block.getLocalizedName
+      tip += getSafeBlockName(te.getWorld, bf.target)
       tip += "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase(Locale.US)))
     } else {
       tip += Misc.toLocal("bdlib.multiblock.disabled")
