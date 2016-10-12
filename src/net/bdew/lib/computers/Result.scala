@@ -37,6 +37,8 @@ object Result {
   object Null extends Result
 
   def apply(v: Result) = v
+  def apply[T](v: List[T])(implicit f: T => Result) = ResList(v.map(f))
+  def apply[T](v: Map[String, T])(implicit f: T => Result) = ResMap(v.mapValues(f))
 
   def List(vals: Result*): Result = vals.toList
   def Map(vals: (String, Result)*): Result = vals.toMap

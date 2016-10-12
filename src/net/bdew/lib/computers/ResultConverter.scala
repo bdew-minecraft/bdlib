@@ -38,7 +38,7 @@ abstract class SimpleResultConverter extends ResultConverter {
     case ResMap(v) => v.mapValues(encode).asJava
     case ResList(v) => v.zipWithIndex.map({ case (vv, kk) => kk + 1 -> encode(vv) }).toMap.asJava
     case ResFuture(v) => handleFuture(v)
-    case Null => Array(null)
+    case Null => null
     case a: ResArray => wrap(a)
 
   }
