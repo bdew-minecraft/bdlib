@@ -18,6 +18,8 @@ import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fml.common.FMLCommonHandler
 
+import scala.util.{Failure, Success, Try}
+
 /**
   * Mixin for blocks that have a TileEntity
   *
@@ -54,13 +56,20 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     * Get TE for a block, if available. If this is in client it might not be available yet.
     */
   def getTE(w: IBlockAccess, pos: BlockPos): Option[T] = {
-    val t = w.getTileEntity(pos)
-    if ((t == null) || !TEClass.isInstance(t)) {
-      w match {
-        case ww: World if FMLCommonHandler.instance().getEffectiveSide.isServer => Some(getTE(ww, pos))
-        case _ => None
-      }
-    } else Some(t.asInstanceOf[T])
+    Try(w.getTileEntity(pos)) match {
+      case Success(te) if TEClass.isInstance(te) =>
+        // Everything is fine
+        Some(te.asInstanceOf[T])
+      case Success(_) if FMLCommonHandler.instance().getEffectiveSide.isServer && w.isInstanceOf[World] =>
+        // We are on the server and the TE got somehow fucked up, this will recreate it
+        Some(getTE(w.asInstanceOf[World], pos))
+      case Failure(e) =>
+        // Something is borked. Possibly CME because getTileEntity might not be thread safe and this is often called from render threads.
+        BdLib.logWarnException("Error retrieving TE", e)
+        None
+      case _ =>
+        None
+    }
   }
 
   /**
