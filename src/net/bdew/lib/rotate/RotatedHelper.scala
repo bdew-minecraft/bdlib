@@ -18,7 +18,7 @@ import net.minecraft.util.math.MathHelper
 object RotatedHelper {
   def getFacingFromEntity(ent: EntityLivingBase, validRotations: util.EnumSet[EnumFacing], default: EnumFacing): EnumFacing = {
     val pitch = Math.round(ent.rotationPitch)
-    val yaw = MathHelper.floor_double(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3
+    val yaw = MathHelper.floor(ent.rotationYaw * 4.0F / 360.0F + 0.5D) & 3
     yaw match {
       case _ if pitch >= 50 && validRotations.contains(EnumFacing.UP) => EnumFacing.UP
       case _ if pitch <= -50 && validRotations.contains(EnumFacing.DOWN) => EnumFacing.DOWN

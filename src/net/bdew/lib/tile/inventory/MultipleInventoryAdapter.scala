@@ -27,7 +27,7 @@ class MultipleInventoryAdapter(val map: Map[Int, (IInventory, Int)]) extends IIn
     map.get(slot).map(f.tupled)
 
   override def decrStackSize(slot: Int, num: Int) =
-    run(slot, (i, s) => i.decrStackSize(s, num)).orNull
+    run(slot, (i, s) => i.decrStackSize(s, num)).getOrElse(ItemStack.EMPTY)
 
   override def isItemValidForSlot(slot: Int, item: ItemStack) =
     run(slot, (i, s) => i.isItemValidForSlot(s, item)).getOrElse(false)
@@ -36,19 +36,18 @@ class MultipleInventoryAdapter(val map: Map[Int, (IInventory, Int)]) extends IIn
     run(slot, (i, s) => i.setInventorySlotContents(s, stack))
 
   override def getStackInSlot(slot: Int) =
-    run(slot, (i, s) => i.getStackInSlot(s)).orNull
+    run(slot, (i, s) => i.getStackInSlot(s)).getOrElse(ItemStack.EMPTY)
 
   override def removeStackFromSlot(slot: Int) =
-    run(slot, (i, s) => i.removeStackFromSlot(s)).orNull
+    run(slot, (i, s) => i.removeStackFromSlot(s)).getOrElse(ItemStack.EMPTY)
 
-  override def clear() =
-    for ((inv, slot) <- map.values)
-      inv.setInventorySlotContents(slot, null)
+  override def clear() = inventories.foreach(_.clear())
+  override def isEmpty: Boolean = inventories.forall(_.isEmpty)
 
   override def markDirty() = inventories.foreach(_.markDirty())
   override def closeInventory(player: EntityPlayer) = inventories.foreach(_.closeInventory(player))
   override def openInventory(player: EntityPlayer) = inventories.foreach(_.openInventory(player))
-  override def isUseableByPlayer(p: EntityPlayer) = inventories.exists(_.isUseableByPlayer(p))
+  override def isUsableByPlayer(p: EntityPlayer) = inventories.exists(_.isUsableByPlayer(p))
 
   override def getFieldCount = 0
   override def getField(id: Int) = 0

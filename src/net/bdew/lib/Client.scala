@@ -19,8 +19,8 @@ object Client {
   def minecraft = Minecraft.getMinecraft
   def fontRenderer = Minecraft.getMinecraft.fontRendererObj
   def renderEngine = Minecraft.getMinecraft.renderEngine
-  def world = Minecraft.getMinecraft.theWorld
-  def player = Minecraft.getMinecraft.thePlayer
+  def world = Minecraft.getMinecraft.world
+  def player = Minecraft.getMinecraft.player
   def textureManager = Minecraft.getMinecraft.getTextureManager
   def textureMapBlocks = Minecraft.getMinecraft.getTextureMapBlocks
   def blockColors = Minecraft.getMinecraft.getBlockColors
@@ -28,8 +28,5 @@ object Client {
 
   def missingIcon = textureMapBlocks.getAtlasSprite("missingno")
 
-  def shiftDown: Boolean = {
-    return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)
-  }
-
+  def shiftDown: Boolean = Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)
 }

@@ -58,5 +58,5 @@ case class Resource(kind: ResourceKind, amount: Double)
 
 object Resource {
   def from(fs: FluidStack) = Resource(FluidResource(fs.getFluid), fs.amount)
-  def from(is: ItemStack) = Resource(ItemResource(is.getItem, is.getItemDamage), is.stackSize)
+  def from(is: ItemStack) = Resource(ItemResource(is.getItem, is.getItemDamage), is.getCount)
 }

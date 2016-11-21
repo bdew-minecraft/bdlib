@@ -38,9 +38,10 @@ trait InventoryProxy extends TileEntity with CapabilityProvider with ISidedInven
   override def removeStackFromSlot(slot: Int) = targetInventory.map(_.removeStackFromSlot(slot)).orNull
 
   override def isItemValidForSlot(slot: Int, item: ItemStack) = targetInventory.exists(_.isItemValidForSlot(slot, item))
-  override def isUseableByPlayer(player: EntityPlayer) = targetInventory.exists(_.isUseableByPlayer(player))
+  override def isUsableByPlayer(player: EntityPlayer) = targetInventory.exists(_.isUsableByPlayer(player))
 
   override def clear() = targetInventory foreach (_.clear())
+  override def isEmpty: Boolean = targetInventory exists (_.isEmpty)
 
   override def getFieldCount = targetInventory map (_.getFieldCount()) getOrElse 0
   override def getField(id: Int) = targetInventory map (_.getField(id)) getOrElse 0

@@ -27,7 +27,7 @@ class InventoryItemAdapter(val player: EntityPlayer, val slot: Int, val size: In
     for (nbtItem <- tag.getList[NBTTagCompound](tagName)) {
       val slot = nbtItem.getByte("Slot")
       if (slot >= 0 && slot < inv.length) {
-        inv(slot) = ItemStack.loadItemStackFromNBT(nbtItem)
+        inv(slot) = new ItemStack(nbtItem)
       }
     }
   }

@@ -22,9 +22,9 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
 
 object CommandDumpRegistry extends CommandBase {
-  def getCommandName = "dumpregistry"
+  override def getName = "dumpregistry"
   override def getRequiredPermissionLevel = 2
-  def getCommandUsage(c: ICommandSender) = "dumpregistry"
+  override def getUsage(c: ICommandSender) = "dumpregistry"
 
   implicit object ResourceLocationOrdering extends Ordering[ResourceLocation] {
     override def compare(x: ResourceLocation, y: ResourceLocation) =
@@ -36,13 +36,15 @@ object CommandDumpRegistry extends CommandBase {
 
   def sanitize(x: IForgeRegistryEntry[_]): Option[String] = {
     Option(x.getRegistryName) orElse {
-      if (x.isInstanceOf[Item]) {
-        BdLib.logWarn("Item with null name in registry! Key=%s Unlocalized=%s Class=%s",
-          Item.REGISTRY.getNameForObject(x.asInstanceOf[Item]), x.asInstanceOf[Item].getUnlocalizedName, x.getClass.getName)
-      } else if (x.isInstanceOf[Block]) {
-        BdLib.logWarn("Block with null name in registry! Key=%s Unlocalized=%s Class=%s",
-          Block.REGISTRY.getNameForObject(x.asInstanceOf[Block]), x.asInstanceOf[Block].getUnlocalizedName, x.getClass.getName)
-      } else BdLib.logWarn("Entry with null name in registry! Class=%s", x.getClass.getName)
+      x match {
+        case item: Item =>
+          BdLib.logWarn("Item with null name in registry! Key=%s Unlocalized=%s Class=%s",
+            Item.REGISTRY.getNameForObject(item), item.getUnlocalizedName, x.getClass.getName)
+        case block: Block =>
+          BdLib.logWarn("Block with null name in registry! Key=%s Unlocalized=%s Class=%s",
+            Block.REGISTRY.getNameForObject(block), block.getUnlocalizedName, x.getClass.getName)
+        case _ => BdLib.logWarn("Entry with null name in registry! Class=%s", x.getClass.getName)
+      }
       None
     } map (_.toString)
   }

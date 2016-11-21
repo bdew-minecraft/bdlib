@@ -24,9 +24,9 @@ import net.minecraftforge.oredict.OreDictionary
 import scala.collection.mutable
 
 object CommandOreDistribution extends CommandBase {
-  def getCommandName = "oredistribution"
+  override def getName = "oredistribution"
   override def getRequiredPermissionLevel = 2
-  def getCommandUsage(c: ICommandSender) = "bdlib.oredistribution.usage"
+  override def getUsage(c: ICommandSender) = "bdlib.oredistribution.usage"
 
   def safeInt(s: String) =
     try {
@@ -41,11 +41,11 @@ object CommandOreDistribution extends CommandBase {
     val (flags, params) = baseParams.partition(_.startsWith("--"))
 
     if (params.length < 1 || params.length > 3)
-      throw new WrongUsageException(getCommandUsage(sender))
+      throw new WrongUsageException(getUsage(sender))
 
     val (startX, startZ, world) =
       sender match {
-        case p: EntityPlayerMP => (p.posX.toInt, p.posZ.toInt, p.worldObj)
+        case p: EntityPlayerMP => (p.posX.toInt, p.posZ.toInt, p.getEntityWorld)
         case _ => (0, 0, sender.getEntityWorld)
       }
 
@@ -54,7 +54,7 @@ object CommandOreDistribution extends CommandBase {
     val maxY = if (params.length >= 3) safeInt(params(2)) else world.getHeight - 1
 
     if (minY < 0 || radius <= 0 || minY > maxY || maxY > world.getHeight - 1)
-      throw new WrongUsageException(getCommandUsage(sender))
+      throw new WrongUsageException(getUsage(sender))
 
     val toFile = flags.contains("--file")
 

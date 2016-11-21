@@ -19,18 +19,18 @@ import net.minecraft.nbt.NBTTagCompound
 trait PersistentInventoryTile extends TileExtended with InventoryTile with CapabilityProvider {
 
   persistLoad.listen((tag: NBTTagCompound) => {
-    inv = new Array[ItemStack](getSizeInventory)
+    inv = Array.fill(getSizeInventory)(ItemStack.EMPTY)
     for (nbtItem <- tag.getList[NBTTagCompound]("Items")) {
       val slot = nbtItem.getByte("Slot")
       if (slot >= 0 && slot < inv.length) {
-        inv(slot) = ItemStack.loadItemStackFromNBT(nbtItem)
+        inv(slot) = new ItemStack(nbtItem)
       }
     }
   })
 
   persistSave.listen((tag: NBTTagCompound) => {
     tag.setList("Items",
-      for ((item, i) <- inv.view.zipWithIndex if item != null)
+      for ((item, i) <- inv.view.zipWithIndex if !item.isEmpty)
         yield Misc.applyMutator(new NBTTagCompound) { itemNbt =>
           itemNbt.setByte("Slot", i.asInstanceOf[Byte])
           item.writeToNBT(itemNbt)

@@ -20,15 +20,15 @@ abstract class BaseContainer(te: IInventory) extends NoInvContainer {
     if (getSlot(slot).inventory == player.inventory) {
       stack = ItemUtils.addStackToSlots(stack, te, 0 until te.getSizeInventory, true)
     } else {
-      stack = ItemUtils.addStackToSlots(stack, player.inventory, 9 until player.inventory.mainInventory.length, true)
+      stack = ItemUtils.addStackToSlots(stack, player.inventory, 9 until player.inventory.mainInventory.size(), true)
       // Only put in hotbar if the rest is full
-      if (stack != null)
+      if (!stack.isEmpty)
         stack = ItemUtils.addStackToSlots(stack, player.inventory, 0 until 9, true)
     }
     getSlot(slot).putStack(stack)
-    return null
+    ItemStack.EMPTY
   }
 
-  override def canInteractWith(player: EntityPlayer) = te.isUseableByPlayer(player)
+  override def canInteractWith(player: EntityPlayer) = te.isUsableByPlayer(player)
 }
 

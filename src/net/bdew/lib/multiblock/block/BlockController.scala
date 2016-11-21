@@ -38,7 +38,7 @@ abstract class BlockController[T <: TileController](name: String, material: Mate
   override def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos) =
     getTE(world, origin).exists(_.modules.contains(target))
 
-  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     getTE(world, pos).onClick(player)

@@ -18,7 +18,7 @@ import net.minecraft.util.text.ITextComponent
 import net.minecraftforge.items.wrapper.SidedInvWrapper
 
 trait BaseInventory extends IInventory {
-  var inv: Array[ItemStack] = new Array(getSizeInventory)
+  var inv = Array.fill(getSizeInventory)(ItemStack.EMPTY)
 
   def getInventoryStackLimit = 64
 
@@ -26,9 +26,11 @@ trait BaseInventory extends IInventory {
   override def getDisplayName: ITextComponent = null
   override def getName = ""
 
-  override def isUseableByPlayer(player: EntityPlayer) = true
+  override def isUsableByPlayer(player: EntityPlayer): Boolean = true
   override def closeInventory(player: EntityPlayer) = {}
   override def openInventory(player: EntityPlayer) = {}
+
+  override def isEmpty: Boolean = inv.forall(_.isEmpty)
 
   override def getStackInSlot(i: Int): ItemStack = inv(i)
 
@@ -41,33 +43,25 @@ trait BaseInventory extends IInventory {
 
   override def removeStackFromSlot(slot: Int) = {
     val st = inv(slot)
-    inv(slot) = null
+    inv(slot) = ItemStack.EMPTY
     markDirty()
     st
   }
 
+
   override def decrStackSize(slot: Int, n: Int): ItemStack = {
     val item = inv(slot)
-    if (item != null) {
-      if (item.stackSize <= n) {
-        inv(slot) = null
-        markDirty()
-        return item
-      } else {
-        val newStack = item.splitStack(n)
-        if (item.stackSize == 0) {
-          inv(slot) = null
-        }
-        markDirty()
-        return newStack
-      }
+    if (item.isEmpty) {
+      item
     } else {
-      return null
+      val newStack = item.splitStack(n)
+      markDirty()
+      newStack
     }
   }
 
   override def clear() = {
-    inv = new Array(getSizeInventory)
+    inv = Array.fill(getSizeInventory)(ItemStack.EMPTY)
     markDirty()
   }
 

@@ -10,12 +10,12 @@
 package net.bdew.lib
 
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 
 class CreativeTabContainer {
 
-  class Tab(name: String, item: => Item) extends CreativeTabs(name) {
-    override def getTabIconItem = item
+  class Tab(name: String, iconStack: => ItemStack) extends CreativeTabs(name) {
+    override def getTabIconItem = iconStack
   }
 
   BdLib.logInfo("Loaded creative tabs for %s", Misc.getActiveModId)

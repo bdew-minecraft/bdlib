@@ -9,16 +9,16 @@
 
 package net.bdew.lib.tooltip
 
+import net.bdew.lib.capabilities.Capabilities
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fluids.{FluidContainerRegistry, FluidStack, IFluidContainerItem}
+import net.minecraftforge.fluids.FluidStack
 
 trait FluidTooltipProvider extends TooltipProvider {
   def getFluid(is: ItemStack): Option[FluidStack] = {
-    if (is.getItem.isInstanceOf[IFluidContainerItem]) {
-      Option(is.getItem.asInstanceOf[IFluidContainerItem].getFluid(is))
-    } else {
-      Option(FluidContainerRegistry.getFluidForFilledItem(is))
-    }
+    if (is.hasCapability(Capabilities.CAP_FLUID_HANDLER, null)) {
+      val cap = is.getCapability(Capabilities.CAP_FLUID_HANDLER, null)
+      cap.getTankProperties map (_.getContents) find (x => x != null && x.getFluid != null && x.amount > 0)
+    } else None
   }
 
   override def shouldHandleTooltip(stack: ItemStack): Boolean = getFluid(stack) exists shouldHandleTooltip

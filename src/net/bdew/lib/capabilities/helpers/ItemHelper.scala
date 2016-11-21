@@ -66,11 +66,11 @@ object ItemHelper {
       if (canExtract != null) {
         val leftAfterInsert = to.insertItem(toSlot, canExtract, false)
         if (leftAfterInsert == null) {
-          from.extractItem(fromSlot, canExtract.stackSize, false)
-          itemsPushed += canExtract.stackSize
+          from.extractItem(fromSlot, canExtract.getCount, false)
+          itemsPushed += canExtract.getCount
         } else {
-          from.extractItem(fromSlot, canExtract.stackSize - leftAfterInsert.stackSize, false)
-          itemsPushed += canExtract.stackSize - leftAfterInsert.stackSize
+          from.extractItem(fromSlot, canExtract.getCount - leftAfterInsert.getCount, false)
+          itemsPushed += canExtract.getCount - leftAfterInsert.getCount
         }
         if (itemsPushed >= maxItems) return
       }

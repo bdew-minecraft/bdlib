@@ -29,7 +29,7 @@ class RichNBTTagCompound(val tag: NBTTagCompound) extends AnyVal {
     tag.setTag(name, list)
   }
 
-  def toItemStack = Option(ItemStack.loadItemStackFromNBT(tag))
+  def toItemStack = Some(new ItemStack(tag))
 
   def get[T: Type](name: String): Option[T] = {
     val vtype = Type[T]

@@ -39,7 +39,7 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
     getTE(world, pos).tryConnect()
   }
 
-  override def neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block): Unit = {
+  override def neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block, fromPos: BlockPos): Unit = {
     getTE(world, pos).tryConnect()
   }
 
@@ -56,16 +56,16 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
     }
   }
 
-  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
+  override def onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     val te = getTE(world, pos)
     if (te.connected.isDefined) {
       val p = te.connected.get
       val bs = world.getBlockState(p)
-      bs.getBlock.onBlockActivated(world, p, bs, player, hand, heldItem, side, 0, 0, 0)
+      bs.getBlock.onBlockActivated(world, p, bs, player, hand, side, 0, 0, 0)
     } else {
-      player.addChatMessage(new TextComponentTranslation("bdlib.multiblock.notconnected"))
+      player.sendStatusMessage(new TextComponentTranslation("bdlib.multiblock.notconnected"), true)
     }
     true
   }

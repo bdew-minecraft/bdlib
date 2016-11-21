@@ -50,7 +50,7 @@ trait BaseRotatableBlock extends BaseBlock {
     return false
   }
 
-  override def getValidRotations(worldObj: World, pos: BlockPos): Array[EnumFacing] = getValidFacings.toArray(Array.empty[EnumFacing])
+  override def getValidRotations(world: World, pos: BlockPos): Array[EnumFacing] = getValidFacings.toArray(Array.empty[EnumFacing])
 
   override def onBlockPlacedBy(world: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) = {
     val dir = RotatedHelper.getFacingFromEntity(placer, getValidFacings, getDefaultFacing)

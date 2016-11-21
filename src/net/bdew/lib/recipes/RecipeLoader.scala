@@ -88,7 +88,7 @@ class RecipeLoader {
   def sanitizeReflectedItem(x: AnyRef, source: String, meta: Int, cnt: Int): ItemStack = x match {
     case x: ItemStack =>
       val l = x.copy()
-      l.stackSize = cnt
+      l.setCount(cnt)
       if (meta != OreDictionary.WILDCARD_VALUE && meta != l.getItemDamage) {
         BdLib.logWarn("%s requested with meta %d but specifies %d", source, meta, l.getItemDamage)
         l.setItemDamage(meta)
@@ -160,7 +160,7 @@ class RecipeLoader {
     case StackOreDict(id) =>
       import scala.collection.JavaConversions._
       val c = OreDictionary.getOres(id).map(_.copy())
-      c.foreach(_.stackSize = cnt)
+      c.foreach(_.setCount(cnt))
       return c
     case _ => Seq(getConcreteStack(s))
   }
@@ -180,7 +180,7 @@ class RecipeLoader {
       val l = OreDictionary.getOres(id)
       if (l.size == 0) error("Concrete ItemStack requested for OD entry '%s' that is empty", id)
       val s = l.get(0).copy()
-      s.stackSize = cnt
+      s.setCount(cnt)
       BdLib.logDebug("Concrete ItemStack for OD entry '%s' -> %s", id, s)
       return s
     case StackMacro(ch) => getConcreteStack(currCharMap(ch), cnt)

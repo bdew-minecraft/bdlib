@@ -15,5 +15,5 @@ import net.minecraft.nbt.NBTTagCompound
 
 object TItemStack extends ConvertedType[ItemStack, NBTTagCompound] {
   override def encode(v: ItemStack) = v.writeToNBT(new NBTTagCompound)
-  override def decode(v: NBTTagCompound) = Option(ItemStack.loadItemStackFromNBT(v))
+  override def decode(v: NBTTagCompound) = Some(new ItemStack(v))
 }

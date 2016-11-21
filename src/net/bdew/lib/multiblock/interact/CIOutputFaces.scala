@@ -37,7 +37,7 @@ trait CIOutputFaces extends TileController {
       return i
     }
     val pl = getWorld.getClosestPlayer(bf.x, bf.y, bf.z, 10, false)
-    if (pl != null) pl.addChatMessage(new TextComponentTranslation("bdlib.multiblock.toomanyoutputs"))
+    if (pl != null) pl.sendStatusMessage(new TextComponentTranslation("bdlib.multiblock.toomanyoutputs"), true)
     return -1
   }
 

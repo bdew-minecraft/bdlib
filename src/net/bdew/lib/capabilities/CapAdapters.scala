@@ -9,11 +9,13 @@
 
 package net.bdew.lib.capabilities
 
-import net.bdew.lib.capabilities.adapters.{FluidContainerAdapter, FluidItemAdapter, InventoryAdapter, OldFluidHandlerAdapter}
+import net.bdew.lib.capabilities.adapters.InventoryAdapter
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.items.IItemHandler
 
 abstract class CapAdapter[T] {
   def canWrap(tile: TileEntity, side: EnumFacing): Boolean = false
@@ -50,9 +52,8 @@ object CapAdapters {
   def get[T](cap: Capability[T]): Adapters[T] = registry(cap).asInstanceOf[Adapters[T]]
 
   def init(): Unit = {
-    add(Capabilities.CAP_FLUID_HANDLER, FluidContainerAdapter)
-    add(Capabilities.CAP_FLUID_HANDLER, FluidItemAdapter)
-    add(Capabilities.CAP_FLUID_HANDLER, OldFluidHandlerAdapter)
+    registry += Capabilities.CAP_FLUID_HANDLER -> new Adapters[IFluidHandler]
+    registry += Capabilities.CAP_ITEM_HANDLER -> new Adapters[IItemHandler]
     add(Capabilities.CAP_ITEM_HANDLER, InventoryAdapter)
   }
 }

@@ -29,14 +29,14 @@ trait TileModule extends TileDataSlots {
     if (target.moduleConnected(this)) {
       connected.set(target.getPos)
       sendUpdateToClients()
-      getWorld.notifyNeighborsOfStateChange(getPos, getBlockType)
+      getWorld.notifyNeighborsOfStateChange(getPos, getBlockType, true)
     }
   }
 
   def coreRemoved() {
     connected.unset()
     sendUpdateToClients()
-    getWorld.notifyNeighborsOfStateChange(getPos, getBlockType)
+    getWorld.notifyNeighborsOfStateChange(getPos, getBlockType, true)
   }
 
   def onBreak() {

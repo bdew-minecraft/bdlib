@@ -16,7 +16,7 @@ import net.minecraft.item.{Item, ItemStack}
 class ItemStackSerialize(var stack: ItemStack) extends Serializable {
   private def writeObject(out: ObjectOutputStream) {
     out.writeShort(Item.getIdFromItem(stack.getItem))
-    out.writeByte(stack.stackSize)
+    out.writeByte(stack.getCount)
     out.writeShort(stack.getItemDamage)
     if (stack.hasTagCompound)
       out.writeObject(NBTHelper.toBytes(stack.getTagCompound))

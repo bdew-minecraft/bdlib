@@ -52,6 +52,7 @@ minecraft {
     version = "${config.minecraft.version}-${config.forge.version}"
     mappings = "${config.minecraft.mappings}"
     makeObfSourceJar = false
+    runDir = "run"
     replace("BDLIB_VER", simpleVersion.toString())
 }
 

@@ -31,30 +31,30 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
         if (amt > 0)
           kind.makeStack(amt)
         else
-          null
-      }).orNull
-    } else null
+          ItemStack.EMPTY
+      }).getOrElse(ItemStack.EMPTY)
+    } else ItemStack.EMPTY
 
   override def isItemValidForSlot(slot: Int, stack: ItemStack) = slot == 0
 
-  override def decrStackSize(slot: Int, amt: Int) = {
+  override def decrStackSize(slot: Int, amt: Int): ItemStack = {
     if (slot == 0) {
       (for {
         (kind, stored) <- getResource
         drained <- res.drainInternal(amt, true, false)
       } yield {
-        val stackSize = Misc.clamp(drained.amount.floor.toInt, 0, kind.makeStack(1).getMaxStackSize)
-        if (stackSize > 0) {
-          res.drainInternal(stackSize, true, true)
-          kind.makeStack(stackSize)
-        } else null
-      }).orNull
-    } else null
+        val getCount = Misc.clamp(drained.amount.floor.toInt, 0, kind.makeStack(1).getMaxStackSize)
+        if (getCount > 0) {
+          res.drainInternal(getCount, true, true)
+          kind.makeStack(getCount)
+        } else ItemStack.EMPTY
+      }).getOrElse(ItemStack.EMPTY)
+    } else ItemStack.EMPTY
   }
 
   override def setInventorySlotContents(slot: Int, stack: ItemStack) = {
     if (slot == 0) {
-      if (stack == null) {
+      if (stack.isEmpty) {
         decrStackSize(0, Int.MaxValue)
       } else {
         val stackRes = Resource.from(stack)
@@ -67,7 +67,7 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
 
   override def removeStackFromSlot(slot: Int) = {
     val stack = getStackInSlot(slot)
-    setInventorySlotContents(slot, null)
+    setInventorySlotContents(slot, ItemStack.EMPTY)
     stack
   }
 
@@ -76,9 +76,12 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
     markDirty()
   }
 
+  override def isEmpty: Boolean = res.resource.isEmpty
+
   override def closeInventory(player: EntityPlayer) = {}
   override def openInventory(player: EntityPlayer) = {}
-  override def isUseableByPlayer(player: EntityPlayer) = true
+
+  override def isUsableByPlayer(player: EntityPlayer): Boolean = true
 
   override def markDirty() = res.parent.dataSlotChanged(res)
 

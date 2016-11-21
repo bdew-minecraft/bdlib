@@ -23,7 +23,7 @@ import net.minecraftforge.items.IItemHandler
 
 object ItemUtils {
   def throwItemAt(world: World, pos: BlockPos, stack: ItemStack) {
-    if ((stack == null) || world.isRemote) return
+    if (stack.isEmpty || world.isRemote) return
     val dx = world.rand.nextFloat * 0.8
     val dy = world.rand.nextFloat * 0.8
     val dz = world.rand.nextFloat * 0.8
@@ -31,17 +31,17 @@ object ItemUtils {
     entity.motionX = world.rand.nextGaussian * 0.05
     entity.motionY = world.rand.nextGaussian * 0.05 + 0.2
     entity.motionZ = world.rand.nextGaussian * 0.05
-    world.spawnEntityInWorld(entity)
+    world.spawnEntity(entity)
   }
 
   def dropItemToPlayer(world: World, player: EntityPlayer, stack: ItemStack) {
-    if ((stack == null) || world.isRemote) return
-    world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, stack))
+    if (stack.isEmpty || world.isRemote) return
+    world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, stack))
   }
 
   def isSameItem(stack1: ItemStack, stack2: ItemStack): Boolean = {
-    if (stack1 == null || stack2 == null)
-      return stack1 == stack2
+    if (stack1.isEmpty || stack2.isEmpty)
+      return stack1.isEmpty == stack1.isEmpty
     if (stack1.getItem != stack2.getItem)
       return false
     if (stack1.getHasSubtypes && stack2.getItemDamage != stack1.getItemDamage)
@@ -55,26 +55,26 @@ object ItemUtils {
     // Try merging into existing slots
     for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && isSameItem(stack, inv.getStackInSlot(slot))) {
       val target = inv.getStackInSlot(slot)
-      val toAdd = Misc.min(target.getMaxStackSize - target.stackSize, inv.getInventoryStackLimit - target.stackSize, stack.stackSize)
-      if (toAdd >= stack.stackSize) {
-        target.stackSize += stack.stackSize
-        stack.stackSize = 0
+      val toAdd = Misc.min(target.getMaxStackSize - target.getCount, inv.getInventoryStackLimit - target.getCount, stack.getCount)
+      if (toAdd >= stack.getCount) {
+        target.grow(stack.getCount)
+        stack.setCount(0)
         inv.markDirty()
         return null
       } else if (toAdd > 0) {
-        target.stackSize += toAdd
-        stack.stackSize -= toAdd
+        target.grow(toAdd)
+        stack.shrink(toAdd)
         inv.markDirty()
       }
     }
 
     // Now find empty slots and stick any leftovers there
     for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && inv.getStackInSlot(slot) == null) {
-      if (inv.getInventoryStackLimit < stack.stackSize) {
+      if (inv.getInventoryStackLimit < stack.getCount) {
         inv.setInventorySlotContents(slot, stack.splitStack(inv.getInventoryStackLimit))
       } else {
         inv.setInventorySlotContents(slot, stack.copy())
-        stack.stackSize = 0
+        stack.setCount(0)
         return null
       }
     }
@@ -118,13 +118,14 @@ object ItemUtils {
   def copyWithRandomSize(template: ItemStack, max: Int, rand: Random) = {
     val newSize = rand.nextInt(max)
     val newStack = template.copy()
-    newStack.stackSize =
+    newStack.setCount(
       if (newSize > newStack.getMaxStackSize)
         newStack.getMaxStackSize
       else if (newSize <= 0)
         1
       else
         newSize
+    )
     newStack
   }
 }

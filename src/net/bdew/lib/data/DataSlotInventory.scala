@@ -22,18 +22,18 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
   override def markDirty() = parent.dataSlotChanged(this)
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) {
-    inv = new Array[ItemStack](getSizeInventory)
+    inv = Array.fill(getSizeInventory)(ItemStack.EMPTY)
     for (nbtItem <- t.getList[NBTTagCompound](name)) {
       val slot = nbtItem.getByte("Slot")
       if (slot >= 0 && slot < inv.length) {
-        inv(slot) = ItemStack.loadItemStackFromNBT(nbtItem)
+        inv(slot) = new ItemStack(nbtItem)
       }
     }
   }
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     val itemList = new NBTTagList
-    for ((item, i) <- inv.view.zipWithIndex if item != null) {
+    for ((item, i) <- inv.view.zipWithIndex if !item.isEmpty) {
       val itemNbt: NBTTagCompound = new NBTTagCompound
       itemNbt.setByte("Slot", i.asInstanceOf[Byte])
       item.writeToNBT(itemNbt)

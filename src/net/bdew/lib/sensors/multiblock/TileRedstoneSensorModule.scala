@@ -40,14 +40,14 @@ abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity],
   }
 
   override def canConnectToCore(bp: BlockPos): Boolean =
-    worldObj.getTileSafe[CIRedstoneSensors](bp).exists(_.redstoneSensorSystem == system)
+    world.getTileSafe[CIRedstoneSensors](bp).exists(_.redstoneSensorSystem == system)
 
-  def isSignalOn = block.getSignal(worldObj, pos)
+  def isSignalOn = block.getSignal(world, pos)
 
   serverTick.listen(() => {
     val act = getCore exists config.getResult
-    if (block.getSignal(worldObj, pos) != act) {
-      block.setSignal(worldObj, pos, act)
+    if (block.getSignal(world, pos) != act) {
+      block.setSignal(world, pos, act)
     }
   })
 
