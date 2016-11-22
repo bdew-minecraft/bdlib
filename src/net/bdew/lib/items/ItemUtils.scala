@@ -50,7 +50,7 @@ object ItemUtils {
   }
 
   def addStackToSlots(stack: ItemStack, inv: IInventory, slots: Iterable[Int], checkValid: Boolean): ItemStack = {
-    if (stack == null) return null
+    if (stack.isEmpty) return stack
 
     // Try merging into existing slots
     for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && isSameItem(stack, inv.getStackInSlot(slot))) {
@@ -60,7 +60,7 @@ object ItemUtils {
         target.grow(stack.getCount)
         stack.setCount(0)
         inv.markDirty()
-        return null
+        return ItemStack.EMPTY
       } else if (toAdd > 0) {
         target.grow(toAdd)
         stack.shrink(toAdd)
@@ -69,13 +69,13 @@ object ItemUtils {
     }
 
     // Now find empty slots and stick any leftovers there
-    for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && inv.getStackInSlot(slot) == null) {
+    for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && !inv.getStackInSlot(slot).isEmpty) {
       if (inv.getInventoryStackLimit < stack.getCount) {
         inv.setInventorySlotContents(slot, stack.splitStack(inv.getInventoryStackLimit))
       } else {
         inv.setInventorySlotContents(slot, stack.copy())
         stack.setCount(0)
-        return null
+        return ItemStack.EMPTY
       }
     }
 
@@ -83,20 +83,20 @@ object ItemUtils {
   }
 
   def addStackToHandler(stack: ItemStack, inv: IItemHandler, slots: Iterable[Int]): ItemStack = {
-    if (stack == null) return null
+    if (stack.isEmpty) return stack
 
     var left = stack.copy()
 
     // Try merging into existing slots
     for (slot <- slots if isSameItem(stack, inv.getStackInSlot(slot))) {
       left = inv.insertItem(slot, left, false)
-      if (left == null) return null
+      if (left.isEmpty) return left
     }
 
     // Now find empty slots and stick any leftovers there
-    for (slot <- slots if inv.getStackInSlot(slot) == null) {
+    for (slot <- slots if !inv.getStackInSlot(slot).isEmpty) {
       left = inv.insertItem(slot, left, false)
-      if (left == null) return null
+      if (left.isEmpty) return left
     }
 
     return left
@@ -112,7 +112,7 @@ object ItemUtils {
 
   def findItemInInventory(inv: IInventory, item: Item) =
     Range(0, inv.getSizeInventory).map(x => x -> inv.getStackInSlot(x))
-      .find({ case (slot, stack) => stack != null && stack.getItem == item })
+      .find({ case (slot, stack) => !stack.isEmpty && stack.getItem == item })
       .map({ case (slot, stack) => slot })
 
   def copyWithRandomSize(template: ItemStack, max: Int, rand: Random) = {

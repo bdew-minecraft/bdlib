@@ -37,6 +37,7 @@ trait BaseInventory extends IInventory {
   override def isItemValidForSlot(slot: Int, stack: ItemStack) = true
 
   override def setInventorySlotContents(slot: Int, stack: ItemStack) = {
+    require(stack != null)
     inv(slot) = stack
     markDirty()
   }
@@ -47,7 +48,6 @@ trait BaseInventory extends IInventory {
     markDirty()
     st
   }
-
 
   override def decrStackSize(slot: Int, n: Int): ItemStack = {
     val item = inv(slot)
