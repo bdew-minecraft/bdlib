@@ -9,13 +9,15 @@
 
 package net.bdew.lib.config
 
+import net.bdew.lib.BdLib
 import net.bdew.lib.block.{BaseBlockMixin, HasItemBlock, HasTE}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
-import net.minecraftforge.fml.common.registry.GameRegistry
-import net.minecraftforge.fml.common.{FMLCommonHandler, ObfuscationReflectionHelper}
+import net.minecraft.util.ResourceLocation
+import net.minecraftforge.fml.common.FMLCommonHandler
+import net.minecraftforge.fml.common.registry.{GameData, GameRegistry}
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: Block](block: T, skipTileEntityReg: Boolean = false): T = {
@@ -35,8 +37,7 @@ class BlockManager(creativeTab: CreativeTabs) {
     block.setCreativeTab(creativeTab)
 
     if (block.isInstanceOf[HasTE[_]] && !skipTileEntityReg)
-      GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
-        "%s.%s".format(block.getRegistryName.getResourceDomain, block.getRegistryName.getResourcePath))
+      GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass, block.getRegistryName.toString)
 
     if (FMLCommonHandler.instance().getSide.isClient && block.isInstanceOf[BaseBlockMixin]) {
       block.asInstanceOf[BaseBlockMixin].registerItemModels()
@@ -49,9 +50,13 @@ class BlockManager(creativeTab: CreativeTabs) {
     * Registers a legacy TE name->class mapping. Stolen from GameRegistry.registerTileEntityWithAlternatives
     */
   def registerLegacyTileEntity(name: String, cls: Class[_ <: TileEntity]): Unit = {
-    val teMappings: java.util.Map[String, Class[_]] = ObfuscationReflectionHelper.getPrivateValue(classOf[TileEntity], null, "field_" + "145855_i", "nameToClassMap")
-    if (!teMappings.containsKey(name))
-      teMappings.put(name, cls)
+    val newName = GameData.getTileEntityRegistry.getNameForObject(cls)
+    if (newName == null) {
+      BdLib.logWarn(s"Asked to register alternative name $name for TE class ${ cls.getName } that isn't registered!")
+    } else {
+      BdLib.logDebug(s"Registering legacy TE name $name -> $newName")
+      GameData.getTileEntityRegistry.addLegacyName(new ResourceLocation(name), newName)
+    }
   }
 
   def load() {}
