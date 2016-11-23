@@ -16,6 +16,7 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.registry.RegistryNamespaced
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.registry.{GameData, GameRegistry}
 
@@ -48,10 +49,11 @@ class BlockManager(creativeTab: CreativeTabs) {
   }
 
   /**
-    * Registers a legacy TE name->class mapping. Stolen from GameRegistry.registerTileEntityWithAlternatives
+    * Registers a legacy TE name->class mapping
     */
   def registerLegacyTileEntity(name: String, cls: Class[_ <: TileEntity]): Unit = {
-    val newName = GameData.getTileEntityRegistry.getNameForObject(cls)
+    // The (seemingly useless) cast prevents some weird compile error that only happens on some platforms
+    val newName = GameData.getTileEntityRegistry.asInstanceOf[RegistryNamespaced[ResourceLocation, Class[_ <: TileEntity]]].getNameForObject(cls)
     if (newName == null) {
       BdLib.logWarn(s"Asked to register alternative name $name for TE class ${ cls.getName } that isn't registered!")
     } else {
