@@ -21,6 +21,7 @@ class ItemManager(creativeTab: CreativeTabs) {
 
   def regItem[T <: Item](item: T): T = {
     require(item.getRegistryName != null, "Attempting to register item with null name")
+    require(!item.getRegistryName.getResourcePath.exists(_.isUpper), "Block names should contain no upper case character")
 
     GameRegistry.register(item)
     item.setCreativeTab(creativeTab)
