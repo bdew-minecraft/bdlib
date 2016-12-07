@@ -15,11 +15,11 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidStack
-import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.fluids.capability.{IFluidHandler, IFluidHandlerItem}
 
 object FluidHelper {
 
-  import net.bdew.lib.capabilities.Capabilities.CAP_FLUID_HANDLER
+  import net.bdew.lib.capabilities.Capabilities.{CAP_FLUID_HANDLER, CAP_FLUID_HANDLER_ITEM}
 
   def hasFluidHandler(world: World, pos: BlockPos, side: EnumFacing): Boolean = {
     val tile = world.getTileEntity(pos)
@@ -33,7 +33,7 @@ object FluidHelper {
   def hasFluidHandler(stack: ItemStack): Boolean = {
     if (stack == null || stack.getItem == null)
       false
-    else if (stack.hasCapability(CAP_FLUID_HANDLER, null))
+    else if (stack.hasCapability(CAP_FLUID_HANDLER_ITEM, null))
       true
     else CapAdapters.get(CAP_FLUID_HANDLER).canWrap(stack)
   }
@@ -48,13 +48,13 @@ object FluidHelper {
     CapAdapters.get(CAP_FLUID_HANDLER).wrap(tile, side)
   }
 
-  def getFluidHandler(stack: ItemStack): Option[IFluidHandler] = {
+  def getFluidHandler(stack: ItemStack): Option[IFluidHandlerItem] = {
     if (stack == null || stack.getItem == null) return None
-    if (stack.hasCapability(CAP_FLUID_HANDLER, null)) {
-      val cap = stack.getCapability(CAP_FLUID_HANDLER, null)
+    if (stack.hasCapability(CAP_FLUID_HANDLER_ITEM, null)) {
+      val cap = stack.getCapability(CAP_FLUID_HANDLER_ITEM, null)
       if (cap != null) return Some(cap)
     }
-    CapAdapters.get(CAP_FLUID_HANDLER).wrap(stack)
+    CapAdapters.get(CAP_FLUID_HANDLER_ITEM).wrap(stack)
   }
 
   /**

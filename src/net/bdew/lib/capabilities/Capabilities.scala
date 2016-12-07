@@ -10,7 +10,7 @@
 package net.bdew.lib.capabilities
 
 import net.minecraftforge.common.capabilities.{Capability, CapabilityInject}
-import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.fluids.capability.{IFluidHandler, IFluidHandlerItem}
 import net.minecraftforge.items.IItemHandler
 
 import scala.annotation.meta.setter
@@ -18,6 +18,9 @@ import scala.annotation.meta.setter
 object Capabilities {
   @(CapabilityInject@setter)(classOf[IFluidHandler])
   var CAP_FLUID_HANDLER: Capability[IFluidHandler] = null
+
+  @(CapabilityInject@setter)(classOf[IFluidHandlerItem])
+  var CAP_FLUID_HANDLER_ITEM: Capability[IFluidHandlerItem] = null
 
   @(CapabilityInject@setter)(classOf[IItemHandler])
   var CAP_ITEM_HANDLER: Capability[IItemHandler] = null

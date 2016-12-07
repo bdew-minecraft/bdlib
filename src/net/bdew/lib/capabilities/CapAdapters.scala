@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.fluids.capability.{IFluidHandler, IFluidHandlerItem}
 import net.minecraftforge.items.IItemHandler
 
 abstract class CapAdapter[T] {
@@ -53,6 +53,7 @@ object CapAdapters {
 
   def init(): Unit = {
     registry += Capabilities.CAP_FLUID_HANDLER -> new Adapters[IFluidHandler]
+    registry += Capabilities.CAP_FLUID_HANDLER_ITEM -> new Adapters[IFluidHandlerItem]
     registry += Capabilities.CAP_ITEM_HANDLER -> new Adapters[IItemHandler]
     add(Capabilities.CAP_ITEM_HANDLER, InventoryAdapter)
   }
