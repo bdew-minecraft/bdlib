@@ -41,7 +41,7 @@ object ItemUtils {
 
   def isSameItem(stack1: ItemStack, stack2: ItemStack): Boolean = {
     if (stack1.isEmpty || stack2.isEmpty)
-      return stack1.isEmpty == stack1.isEmpty
+      return stack1.isEmpty == stack2.isEmpty
     if (stack1.getItem != stack2.getItem)
       return false
     if (stack1.getHasSubtypes && stack2.getItemDamage != stack1.getItemDamage)
