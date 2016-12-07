@@ -69,7 +69,7 @@ object ItemUtils {
     }
 
     // Now find empty slots and stick any leftovers there
-    for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && !inv.getStackInSlot(slot).isEmpty) {
+    for (slot <- slots if (!checkValid || inv.isItemValidForSlot(slot, stack)) && inv.getStackInSlot(slot).isEmpty) {
       if (inv.getInventoryStackLimit < stack.getCount) {
         inv.setInventorySlotContents(slot, stack.splitStack(inv.getInventoryStackLimit))
       } else {
@@ -94,7 +94,7 @@ object ItemUtils {
     }
 
     // Now find empty slots and stick any leftovers there
-    for (slot <- slots if !inv.getStackInSlot(slot).isEmpty) {
+    for (slot <- slots if inv.getStackInSlot(slot).isEmpty) {
       left = inv.insertItem(slot, left, false)
       if (left.isEmpty) return left
     }
