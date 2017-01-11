@@ -14,11 +14,9 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.block.{Block, ITileEntityProvider}
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.{IBlockAccess, World}
+import net.minecraft.world.chunk.Chunk
+import net.minecraft.world.{ChunkCache, IBlockAccess, World}
 import net.minecraftforge.common.property.IExtendedBlockState
-import net.minecraftforge.fml.common.FMLCommonHandler
-
-import scala.util.{Failure, Success, Try}
 
 /**
   * Mixin for blocks that have a TileEntity
@@ -30,6 +28,13 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     * Class of TE - must override in implementing blocks
     */
   val TEClass: Class[_ <: TileEntity]
+
+  private def checkCast(t: TileEntity): Option[T] = {
+    if (t != null && TEClass.isInstance(t))
+      Some(t.asInstanceOf[T])
+    else
+      None
+  }
 
   override def createNewTileEntity(world: World, meta: Int): TileEntity = TEClass.newInstance()
 
@@ -56,18 +61,18 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     * Get TE for a block, if available. If this is in client it might not be available yet.
     */
   def getTE(w: IBlockAccess, pos: BlockPos): Option[T] = {
-    Try(w.getTileEntity(pos)) match {
-      case Success(te) if TEClass.isInstance(te) =>
-        // Everything is fine
-        Some(te.asInstanceOf[T])
-      case Success(_) if FMLCommonHandler.instance().getEffectiveSide.isServer && w.isInstanceOf[World] =>
-        // We are on the server and the TE got somehow fucked up, this will recreate it
-        Some(getTE(w.asInstanceOf[World], pos))
-      case Failure(e) =>
-        // Something is borked. Possibly CME because getTileEntity might not be thread safe and this is often called from render threads.
-        BdLib.logWarnException("Error retrieving TE", e)
-        None
-      case _ =>
+    try {
+      w match {
+        case ww: ChunkCache =>
+          checkCast(ww.func_190300_a(pos, Chunk.EnumCreateEntityType.CHECK))
+        case ww: World =>
+          Some(getTE(ww, pos))
+        case _ =>
+          checkCast(w.getTileEntity(pos))
+      }
+    } catch {
+      case e: Throwable =>
+        BdLib.logWarnException("Error retrieving TE of type %s at %s (world is %s)", e, getClass.getName, pos.toString, w.getClass.getName)
         None
     }
   }
