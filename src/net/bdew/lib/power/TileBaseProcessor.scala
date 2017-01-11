@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2013 - 2016
+ * Copyright (c) bdew, 2013 - 2017
  * https://github.com/bdew/bdlib
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
