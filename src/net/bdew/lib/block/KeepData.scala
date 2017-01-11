@@ -35,7 +35,9 @@ trait BlockKeepData extends Block with HasItemBlock {
 
   def getSavedBlock(world: IBlockAccess, pos: BlockPos, state: IBlockState) = {
     val stack = new ItemStack(getItemDropped(state, new Random(), 0), 1, damageDropped(state))
-    getTE(world, pos).foreach(_.saveToItem(stack))
+    // Don't try to save if called with bogus world object
+    if (!(world.isInstanceOf[World] && world.asInstanceOf[World].getChunkProvider == null))
+      getTE(world, pos).foreach(_.saveToItem(stack))
     stack
   }
 
