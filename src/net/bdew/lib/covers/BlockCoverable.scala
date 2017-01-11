@@ -39,7 +39,7 @@ trait BlockCoverable extends BaseBlock {
     } getOrElse state
   }
 
-  override def canRenderInLayer(layer: BlockRenderLayer) =
+  override def canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean =
     layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.CUTOUT
 
   private def getCoverItem(w: IBlockAccess, pos: BlockPos, side: EnumFacing): Option[(ItemCover, ItemStack, TileCoverable)] = {

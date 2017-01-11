@@ -30,7 +30,7 @@ trait ConnectedTextureBlock extends BaseBlock {
       vector -> canConnect(world, pos, pos.add(vector))
     }
 
-  override def canRenderInLayer(layer: BlockRenderLayer) =
+  override def canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean =
     layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.CUTOUT
 
   def canConnect(world: IBlockAccess, origin: BlockPos, target: BlockPos): Boolean

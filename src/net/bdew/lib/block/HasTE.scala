@@ -64,7 +64,7 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     try {
       w match {
         case ww: ChunkCache =>
-          checkCast(ww.func_190300_a(pos, Chunk.EnumCreateEntityType.CHECK))
+          checkCast(ww.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK))
         case ww: World =>
           Some(getTE(ww, pos))
         case _ =>
