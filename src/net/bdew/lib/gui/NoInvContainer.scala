@@ -37,5 +37,5 @@ abstract class NoInvContainer extends Container {
     super.slotClick(slotNum, button, clickType, player)
   }
 
-  override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = null
+  override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = ItemStack.EMPTY
 }

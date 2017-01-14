@@ -56,7 +56,7 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
   }
 
   override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: TileEntity): GenericSensorParameter =
-    if (clickType == ClickType.PICKUP && (button == 0 || button == 1) && item == null)
+    if (clickType == ClickType.PICKUP && (button == 0 || button == 1) && item.isEmpty)
       (current, obj) match {
         case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
           val outputs = x.outputFaces.map.values.toList.sorted

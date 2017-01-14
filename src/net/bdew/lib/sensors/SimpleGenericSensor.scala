@@ -32,9 +32,9 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
   lazy val parameterMap = (parameters map (x => x.uid -> x)).toMap
 
   override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: T): GenericSensorParameter =
-    if (item == null && button == 0 && clickType == ClickType.PICKUP)
+    if (item.isEmpty && button == 0 && clickType == ClickType.PICKUP)
       Misc.nextInSeq(parameters, current)
-    else if (item == null && button == 1 && clickType == ClickType.PICKUP)
+    else if (item.isEmpty && button == 1 && clickType == ClickType.PICKUP)
       Misc.prevInSeq(parameters, current)
     else
       current

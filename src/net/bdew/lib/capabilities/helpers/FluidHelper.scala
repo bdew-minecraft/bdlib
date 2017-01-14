@@ -31,7 +31,7 @@ object FluidHelper {
   }
 
   def hasFluidHandler(stack: ItemStack): Boolean = {
-    if (stack == null || stack.getItem == null)
+    if (stack.isEmpty)
       false
     else if (stack.hasCapability(CAP_FLUID_HANDLER_ITEM, null))
       true
@@ -49,7 +49,7 @@ object FluidHelper {
   }
 
   def getFluidHandler(stack: ItemStack): Option[IFluidHandlerItem] = {
-    if (stack == null || stack.getItem == null) return None
+    if (stack.isEmpty) return None
     if (stack.hasCapability(CAP_FLUID_HANDLER_ITEM, null)) {
       val cap = stack.getCapability(CAP_FLUID_HANDLER_ITEM, null)
       if (cap != null) return Some(cap)

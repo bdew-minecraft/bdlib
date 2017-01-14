@@ -25,7 +25,7 @@ object TooltipHandler {
 
   @SubscribeEvent
   def handleTooltipEvent(ev: ItemTooltipEvent): Unit = {
-    if (ev.getItemStack == null || ev.getItemStack.getItem == null) return
+    if (ev.getItemStack.isEmpty) return
 
     val toAdd = for (provider <- registry) yield {
       try {

@@ -24,8 +24,8 @@ trait LootListLoader extends GenericConfigLoader {
     (for ((chance, ref) <- list) yield {
       try {
         val itemStack = getConcreteStack(ref)
-        if (itemStack == null) {
-          BdLib.logWarn("Unable to resolve %s: null returned", ref)
+        if (itemStack.isEmpty) {
+          BdLib.logWarn("Unable to resolve %s", ref)
           None
         } else {
           if (itemStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {

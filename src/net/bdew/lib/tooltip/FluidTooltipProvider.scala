@@ -15,8 +15,8 @@ import net.minecraftforge.fluids.FluidStack
 
 trait FluidTooltipProvider extends TooltipProvider {
   def getFluid(is: ItemStack): Option[FluidStack] = {
-    if (is.hasCapability(Capabilities.CAP_FLUID_HANDLER, null)) {
-      val cap = is.getCapability(Capabilities.CAP_FLUID_HANDLER, null)
+    if (is.hasCapability(Capabilities.CAP_FLUID_HANDLER_ITEM, null)) {
+      val cap = is.getCapability(Capabilities.CAP_FLUID_HANDLER_ITEM, null)
       cap.getTankProperties map (_.getContents) find (x => x != null && x.getFluid != null && x.amount > 0)
     } else None
   }

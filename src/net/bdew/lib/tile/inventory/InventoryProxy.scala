@@ -32,10 +32,10 @@ trait InventoryProxy extends TileEntity with CapabilityProvider with ISidedInven
   override def getSizeInventory = targetInventory map (_.getSizeInventory) getOrElse 0
   override def getInventoryStackLimit = targetInventory map (_.getInventoryStackLimit) getOrElse 64
 
-  override def getStackInSlot(slot: Int) = targetInventory.map(_.getStackInSlot(slot)).orNull
+  override def getStackInSlot(slot: Int) = targetInventory.map(_.getStackInSlot(slot)).getOrElse(ItemStack.EMPTY)
   override def setInventorySlotContents(slot: Int, item: ItemStack) = targetInventory.foreach(_.setInventorySlotContents(slot, item))
-  override def decrStackSize(slot: Int, num: Int) = targetInventory.map(_.decrStackSize(slot, num)).orNull
-  override def removeStackFromSlot(slot: Int) = targetInventory.map(_.removeStackFromSlot(slot)).orNull
+  override def decrStackSize(slot: Int, num: Int) = targetInventory.map(_.decrStackSize(slot, num)).getOrElse(ItemStack.EMPTY)
+  override def removeStackFromSlot(slot: Int) = targetInventory.map(_.removeStackFromSlot(slot)).getOrElse(ItemStack.EMPTY)
 
   override def isItemValidForSlot(slot: Int, item: ItemStack) = targetInventory.exists(_.isItemValidForSlot(slot, item))
   override def isUsableByPlayer(player: EntityPlayer) = targetInventory.exists(_.isUsableByPlayer(player))

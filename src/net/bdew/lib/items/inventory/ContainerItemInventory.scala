@@ -20,9 +20,9 @@ class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) ex
     if (slotNum > 0 && slotNum < inventorySlots.size()) {
       val slot = inventorySlots.get(slotNum)
       if (slot.isHere(inv.player.inventory, inv.slot))
-        return null
+        return ItemStack.EMPTY
     }
-    if (clickType == ClickType.SWAP && button == inv.slot) return null
+    if (clickType == ClickType.SWAP && button == inv.slot) return ItemStack.EMPTY
     super.slotClick(slotNum, button, clickType, player)
   }
 }

@@ -30,7 +30,7 @@ trait BlockCoverable extends BaseBlock {
       super.getExtendedState(state, world, pos).asInstanceOf[IExtendedBlockState].withProperty(CoversProperty,
         tile.covers flatMap { case (side, cover) =>
           cover flatMap { stack =>
-            if (stack.getItem != null && stack.getItem.isInstanceOf[ItemCover])
+            if (!stack.isEmpty && stack.getItem.isInstanceOf[ItemCover])
               Some(side -> stack.getItem.asInstanceOf[ItemCover].getDisplayItem(tile, side, stack))
             else
               None
@@ -124,7 +124,7 @@ trait BlockCoverable extends BaseBlock {
         cover <- slot
         item <- Misc.asInstanceOpt(cover.getItem, classOf[ItemCover])
       } {
-        te.covers(dir) := null
+        te.covers(dir).unset()
         ItemUtils.throwItemAt(world, pos, item.onRemove(cover))
         coverChanged(world, pos, dir)
       }

@@ -24,7 +24,7 @@ abstract class TileItemProcessor extends TileBaseProcessor {
   def tryFinish(): Boolean = {
     output foreach { stack =>
       val left = ItemUtils.addStackToSlots(stack, this, outputSlots, false)
-      if (left == null || left.getCount <= 0)
+      if (left.isEmpty)
         output.unset()
       else
         output.set(left)

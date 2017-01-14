@@ -36,7 +36,7 @@ class InventoryItemAdapter(val player: EntityPlayer, val slot: Int, val size: In
     if (!getStack.hasTagCompound) getStack.setTagCompound(new NBTTagCompound)
     val tag = getStack.getTagCompound
     val itemList = new NBTTagList
-    for ((item, i) <- inv.view.zipWithIndex if item != null) {
+    for ((item, i) <- inv.view.zipWithIndex if !item.isEmpty) {
       val itemNbt: NBTTagCompound = new NBTTagCompound
       itemNbt.setByte("Slot", i.asInstanceOf[Byte])
       item.writeToNBT(itemNbt)

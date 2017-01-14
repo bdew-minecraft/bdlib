@@ -10,15 +10,14 @@
 package net.bdew.lib.tile.inventory
 
 import net.bdew.lib.items.ItemUtils
-import net.minecraft.item.ItemStack
 
 trait BreakableInventoryTile extends InventoryTile {
   def dropItems() {
     if (getWorld != null && !getWorld.isRemote) {
-      for (stack <- inv if stack != null) {
+      for (stack <- inv if !stack.isEmpty) {
         ItemUtils.throwItemAt(getWorld, getPos, stack)
       }
-      inv = new Array[ItemStack](inv.length)
+      clear()
     }
   }
 }

@@ -17,7 +17,7 @@ import net.minecraft.item.{Item, ItemBlock, ItemStack}
  */
 object IStack {
   def unapply(x: ItemStack): Option[Item] =
-    if (x == null || x.getItem == null)
+    if (x.isEmpty)
       None
     else
       Some(x.getItem)
@@ -28,7 +28,7 @@ object IStack {
  */
 object IStackBlock {
   def unapply(x: ItemStack): Option[Block] =
-    if (x == null || x.getItem == null || !x.getItem.isInstanceOf[ItemBlock])
+    if (x.isEmpty || !x.getItem.isInstanceOf[ItemBlock])
       None
     else
       Some(x.getItem.asInstanceOf[ItemBlock].block)

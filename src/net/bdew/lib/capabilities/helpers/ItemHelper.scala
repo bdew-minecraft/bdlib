@@ -30,7 +30,7 @@ object ItemHelper {
   }
 
   def hasItemHandler(stack: ItemStack): Boolean = {
-    if (stack == null || stack.getItem == null)
+    if (stack.isEmpty)
       false
     else if (stack.hasCapability(CAP_ITEM_HANDLER, null))
       true
@@ -48,7 +48,7 @@ object ItemHelper {
   }
 
   def getItemHandler(stack: ItemStack): Option[IItemHandler] = {
-    if (stack == null || stack.getItem == null) return None
+    if (stack.isEmpty) return None
     if (stack.hasCapability(CAP_ITEM_HANDLER, null)) {
       val cap = stack.getCapability(CAP_ITEM_HANDLER, null)
       if (cap != null) return Some(cap)
@@ -56,14 +56,14 @@ object ItemHelper {
     CapAdapters.get(CAP_ITEM_HANDLER).wrap(stack)
   }
 
-  def pushItems(from: IItemHandler, to: IItemHandler, maxItems: Int = Int.MaxValue, filter: (ItemStack) => Boolean = _ != null): Unit = {
+  def pushItems(from: IItemHandler, to: IItemHandler, maxItems: Int = Int.MaxValue, filter: (ItemStack) => Boolean = !_.isEmpty): Unit = {
     var itemsPushed = 0
     for {
       fromSlot <- 0 until from.getSlots if filter(from.getStackInSlot(fromSlot))
       toSlot <- 0 until to.getSlots
     } {
       val canExtract = from.extractItem(fromSlot, maxItems - itemsPushed, true)
-      if (canExtract != null) {
+      if (!canExtract.isEmpty) {
         val leftAfterInsert = to.insertItem(toSlot, canExtract, false)
         if (leftAfterInsert == null) {
           from.extractItem(fromSlot, canExtract.getCount, false)
