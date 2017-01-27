@@ -35,7 +35,8 @@ class FluidMultiHandler(handlers: List[IFluidHandler]) extends IFluidHandler {
     null
   }
 
-  override def fill(resource: FluidStack, doFill: Boolean): Int = {
+  override def fill(original: FluidStack, doFill: Boolean): Int = {
+    val resource = original.copy()
     val starting = resource.amount
     for (tank <- handlers) {
       val filled = tank.fill(resource.copy(), doFill)
