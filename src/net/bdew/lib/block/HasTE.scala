@@ -51,7 +51,7 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     var t = w.getTileEntity(pos)
     if ((t == null) || !TEClass.isInstance(t)) {
       BdLib.logWarn("Tile entity for block %s at (%d,%d,%d) is corrupt or missing - recreating", this, pos.getX, pos.getY, pos.getZ)
-      t = createNewTileEntity(w, getMetaFromState(w.getBlockState(pos)))
+      t = createTileEntity(w, w.getBlockState(pos))
       w.setTileEntity(pos, t)
     }
     return t.asInstanceOf[T]
