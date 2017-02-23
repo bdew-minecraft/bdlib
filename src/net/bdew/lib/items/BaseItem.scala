@@ -12,7 +12,7 @@ package net.bdew.lib.items
 import net.bdew.lib.{BdLib, Client, Misc}
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
-import net.minecraft.item.{Item, ItemTool}
+import net.minecraft.item.{Item, ItemBlock, ItemTool}
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
@@ -43,3 +43,5 @@ import scala.collection.JavaConverters._
 class BaseItem(val name: String) extends Item with BaseItemMixin
 
 class BaseTool(val name: String, material: Item.ToolMaterial, effectiveBlocks: Block*) extends ItemTool(material, effectiveBlocks.toSet.asJava) with BaseItemMixin
+
+class BaseItemBlock(val name: String, block: Block) extends ItemBlock(block) with BaseItemMixin

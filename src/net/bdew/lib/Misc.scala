@@ -26,8 +26,15 @@ import net.minecraftforge.fml.common.versioning.VersionParser
 import net.minecraftforge.fml.common.{Loader, ModAPIManager, ModContainer}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
+import scala.util.DynamicVariable
+
 object Misc {
-  def getActiveModId = Option(Loader.instance().activeModContainer().getModId) getOrElse "<UNKNOWN>"
+  private val forcedModId = new DynamicVariable[Option[String]](None)
+
+  def withModId[R](s: String)(f: => R) = forcedModId.withValue(Some(s))(f)
+
+  def getActiveModId =
+    forcedModId.value.orElse(Option(Loader.instance().activeModContainer().getModId)) getOrElse "<UNKNOWN>"
 
   def toLocal(s: String) = I18n.translateToLocal(s)
   def toLocalF(s: String, params: Any*) = I18n.translateToLocal(s).format(params: _*)
