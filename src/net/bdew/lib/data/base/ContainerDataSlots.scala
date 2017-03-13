@@ -10,7 +10,7 @@
 package net.bdew.lib.data.base
 
 import net.bdew.lib.gui.NoInvContainer
-import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.inventory.IContainerListener
 
 trait ContainerDataSlots extends NoInvContainer {
@@ -36,4 +36,6 @@ trait ContainerDataSlots extends NoInvContainer {
         player.connection.sendPacket(pkt)
     }
   }
+
+  override def canInteractWith(player: EntityPlayer) = dataSource.isEntityInRange(player, 64D)
 }

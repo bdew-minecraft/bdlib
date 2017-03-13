@@ -80,5 +80,8 @@ trait InventoryTile extends TileEntity with CapabilityProvider with BaseInventor
   // To make the compiler happy
   override def getDisplayName: ITextComponent = super.getDisplayName
 
+  override def isUseableByPlayer(player: EntityPlayer): Boolean =
+    getWorld.getTileEntity(getPos) == this && player.getDistanceSqToCenter(getPos) <= 64.0D
+
   addCachedSidedCapability(Capabilities.CAP_ITEM_HANDLER, new SidedInvWrapper(this, _))
 }

@@ -12,6 +12,7 @@ package net.bdew.lib.data
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.tile.inventory.BaseInventory
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
@@ -41,6 +42,8 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
     }
     t.setTag(name, itemList)
   }
+
+  override def isUseableByPlayer(player: EntityPlayer): Boolean = parent.isEntityInRange(player, 64D)
 }
 
 
