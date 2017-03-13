@@ -10,6 +10,7 @@
 package net.bdew.lib.data.base
 
 import net.bdew.lib.tile.TileExtended
+import net.minecraft.entity.Entity
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.play.server.SPacketUpdateTileEntity
 
@@ -47,5 +48,8 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
       doLoad(UpdateKind.GUI, data)
     super.extDataPacket(id, data)
   }
+
+  override def isEntityInRange(entity: Entity, range: Double): Boolean =
+    getWorld.getTileEntity(getPos) == this && entity.getDistanceSqToCenter(getPos) <= range
 }
 

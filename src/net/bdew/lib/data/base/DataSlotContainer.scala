@@ -9,6 +9,7 @@
 
 package net.bdew.lib.data.base
 
+import net.minecraft.entity.Entity
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 
@@ -41,6 +42,13 @@ trait DataSlotContainer {
     * The value of getTotalWorldTime when the last GUI packet was sent happened
     */
   var lastGuiPacket = 0L
+
+  /**
+    * Check if an entity is withing range of a container
+    *
+    * @return true if entity is closer than range meters
+    */
+  def isEntityInRange(entity: Entity, range: Double): Boolean
 
   final val TRACE = false
 
