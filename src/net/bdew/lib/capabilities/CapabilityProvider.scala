@@ -25,13 +25,13 @@ trait CapabilityProvider extends ICapabilityProvider {
     * Usage: addCapability(SomeCap) { case EnumFacing.UP => myImplementation }
     */
   def addCapability[T](cap: Capability[T])(f: PartialFunction[EnumFacing, T]): Unit =
-  caps += (cap -> f.orElse(caps(cap)))
+    caps += (cap -> f.orElse(caps(cap)))
 
   /**
     * Add capability to all faces
     */
   def addCapability[T](cap: Capability[T], handler: T): Unit =
-  caps += (cap -> { case _ => handler })
+    caps += (cap -> { case _ => handler })
 
   /**
     * Add capability (using Options)
@@ -39,17 +39,23 @@ trait CapabilityProvider extends ICapabilityProvider {
     * Usage: addCapabilityOption(SomeCap) { face => if (face==EnumFacing.UP) Some(myImplementation) else None }
     */
   def addCapabilityOption[T](cap: Capability[T])(f: (EnumFacing) => Option[T]): Unit =
-  caps += (cap -> Function.unlift(f).orElse(caps(cap)))
+    caps += (cap -> Function.unlift(f).orElse(caps(cap)))
 
   /**
     * Add a face aware capability that can be cached
     */
   def addCachedSidedCapability[T](cap: Capability[T], factory: EnumFacing => T): Unit =
-  caps += (cap -> new CachedSidedCapability(factory))
+    caps += (cap -> new CachedSidedCapability(factory))
 
   final abstract override def getCapability[T](capability: Capability[T], facing: EnumFacing): T =
-    caps(capability).applyOrElse(facing, (f: EnumFacing) => super.getCapability(capability, f)).asInstanceOf[T]
+    if (caps != null)
+      caps(capability).applyOrElse(facing, (f: EnumFacing) => super.getCapability(capability, f)).asInstanceOf[T]
+    else
+      super.getCapability(capability, facing)
 
   final abstract override def hasCapability(capability: Capability[_], facing: EnumFacing): Boolean =
-    caps(capability).isDefinedAt(facing) || super.hasCapability(capability, facing)
+    if (caps != null)
+      caps(capability).isDefinedAt(facing) || super.hasCapability(capability, facing)
+    else
+      super.hasCapability(capability, facing)
 }
