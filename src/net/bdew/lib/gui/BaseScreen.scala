@@ -61,6 +61,8 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
   }
 
   protected override def drawScreen(x: Int, y: Int, f: Float) {
+    this.drawDefaultBackground()
+
     parialFrame.withValue(f) {
       super.drawScreen(x, y, f)
     }
@@ -73,6 +75,8 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
 
     if (tip.nonEmpty)
       drawHoveringText(tip, x, y, getFontRenderer)
+    else
+      this.renderHoveredToolTip(x, y)
   }
 
   protected def drawGuiContainerBackgroundLayer(f: Float, x: Int, y: Int) {
