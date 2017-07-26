@@ -39,7 +39,7 @@ object Misc {
   def hasLocal(s: String) = I18n.canTranslate(s)
 
   def flattenRecipe(pattern: Seq[String], items: Map[Char, AnyRef]) =
-    pattern ++ items.flatMap {
+    pattern.map(_.replace('_', ' ')) ++ items.flatMap {
       case (k, v) => Seq(new Character(k), v)
     }
 

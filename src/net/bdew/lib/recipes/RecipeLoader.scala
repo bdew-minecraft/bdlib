@@ -18,7 +18,7 @@ import net.minecraft.item.crafting.IRecipe
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.common.ModAPIManager
-import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.fml.common.registry.{ForgeRegistries, GameRegistry}
 import net.minecraftforge.oredict.{OreDictionary, ShapedOreRecipe, ShapelessOreRecipe}
 
 /**
@@ -56,11 +56,6 @@ class RecipeLoader {
     * List of unprocessed recipe statements
     */
   var recipeStatements = List.empty[RecipeStatement]
-
-  /**
-    * List of recipes ready for registration with forge
-    */
-  var recipes = List.empty[IRecipe]
 
   /**
     * Looks up a recipe component
@@ -195,7 +190,7 @@ class RecipeLoader {
       if (block == Blocks.AIR)
         error("Block name '%s:%s' resolved to Air. This probably means that it isn't registered.", mod, id)
       if (Item.getItemFromBlock(block) == null)
-        error("The block '%s:%s' does not have a valid matching item registered and thus can't be used in recipes", mod, id)
+        error("The block '%s:%s' does not have a valid matching item registered and thus can't be used in net.bdew.gendustry.recipes", mod, id)
       new ItemStack(block, cnt, meta)
     case StackItem(mod, id, meta) =>
       new ItemStack(notNull(Item.REGISTRY.getObject(new ResourceLocation(mod, id)), "Item not found %s:%s".format(mod, id)), cnt, meta)
@@ -275,7 +270,7 @@ class RecipeLoader {
       }
 
     case CsClearRecipes(res) =>
-      BdLib.logDebug("Clearing recipes that produce %s", res)
+      BdLib.logDebug("Clearing net.bdew.gendustry.recipes that produce %s", res)
       recipeStatements = clearStatements(recipeStatements, res)
 
     case CsRecipeBlock(lst) =>
@@ -283,6 +278,13 @@ class RecipeLoader {
 
     case x =>
       BdLib.logError("Can't process %s - this is a programing bug!", x)
+  }
+
+  val recipeCounter = Iterator.from(1)
+
+  def registerRecipe(recipe: IRecipe): Unit = {
+    recipe.setRegistryName(new ResourceLocation(Misc.getActiveModId, s"recipe${ recipeCounter.next() }"))
+    ForgeRegistries.RECIPES.register(recipe)
   }
 
   /**
@@ -309,9 +311,9 @@ class RecipeLoader {
         resStack.setItemDamage(0)
       }
 
-      recipes :+= new ShapedOreRecipe(new ResourceLocation(Misc.getActiveModId, "recipes"), resStack, Misc.flattenRecipe(rec, comp): _*)
+      registerRecipe(new ShapedOreRecipe(new ResourceLocation(Misc.getActiveModId, "net.bdew.gendustry.recipes"), resStack, Misc.flattenRecipe(rec, comp): _*))
 
-      BdLib.logDebug("Done... result=%s, od=%s", resStack)
+      BdLib.logDebug("Done... result=%s", resStack)
 
     case RsRecipeShapeless(rec, res, cnt) =>
       BdLib.logDebug("Adding shapeless recipe %s => %s * %d", rec, res, cnt)
@@ -324,9 +326,9 @@ class RecipeLoader {
         resStack.setItemDamage(0)
       }
 
-      recipes :+= new ShapelessOreRecipe(new ResourceLocation(Misc.getActiveModId, "recipes"), resStack, recTrans: _*)
+      registerRecipe(new ShapelessOreRecipe(new ResourceLocation(Misc.getActiveModId, "net.bdew.gendustry.recipes"), resStack, recTrans: _*))
 
-      BdLib.logDebug("Done... result=%s, od=%s", resStack)
+      BdLib.logDebug("Done... result=%s", resStack)
 
     case RsRecipeSmelting(in, out, cnt, xp) =>
       BdLib.logDebug("Adding smelting recipe %s => %s * %d (%f xp)", in, out, cnt, xp)
