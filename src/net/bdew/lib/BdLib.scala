@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger
 
 @Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")
 object BdLib {
-  var log: Logger = null
+  var log: Logger = _
 
   def logDebug(msg: String, args: Any*) = log.debug(msg.format(args: _*))
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))

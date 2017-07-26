@@ -20,7 +20,7 @@ case class BaseRect[T: Numeric](x: T, y: T, w: T, h: T) {
 
   def origin = BasePoint(x, y)
 
-  def map[R: Numeric](f: T => R) = new BaseRect(f(x), f(y), f(w), f(h))
+  def map[R: Numeric](f: T => R) = BaseRect(f(x), f(y), f(w), f(h))
 
   def interpolate(xf1: Float, yf1: Float, xf2: Float, yf2: Float) =
     new BaseRect[Float](

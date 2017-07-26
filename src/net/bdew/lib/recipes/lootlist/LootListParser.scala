@@ -12,12 +12,12 @@ package net.bdew.lib.recipes.lootlist
 import net.bdew.lib.recipes.gencfg.GenericConfigParser
 
 /**
- * Parser mixin for loot lists
- * ident = DropsList(
- * {chance}% {stackRef}
- * ...
- * )
- */
+  * Parser mixin for loot lists
+  * ident = DropsList(
+  * {chance}% {stackRef}
+  * ...
+  * )
+  */
 trait LootListParser extends GenericConfigParser {
   def dropsEntry = (decimalNumber <~ "%") ~ spec ^^ { case n ~ s => (n.toDouble, s) }
   def ceDrops = "DropsList" ~> "(" ~> dropsEntry.* <~ ")" ^^ EntryLootList

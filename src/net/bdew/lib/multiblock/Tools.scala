@@ -24,7 +24,7 @@ object Tools {
   }
 
   def findConnections(world: World, start: BlockPos, kind: String) =
-    (start.neighbours.values flatMap { case pos =>
+    (start.neighbours.values flatMap { pos =>
       (world.getTileEntity(pos) match {
         case t: TileModule => t.connected.value
         case t: TileController => Some(pos)

@@ -16,8 +16,8 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.oredict.OreDictionary
 
 /**
- * Loader mixin for loot lists
- */
+  * Loader mixin for loot lists
+  */
 trait LootListLoader extends GenericConfigLoader {
   def resolveLootList(entry: EntryLootList): List[(Double, ItemStack)] = resolveLootList(entry.list)
   def resolveLootList(list: List[(Double, StackRef)]) =

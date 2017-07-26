@@ -26,7 +26,7 @@ trait CapabilityProviderItem extends Item {
     * Usage: addCapability(SomeCap) { case stack => ... }
     */
   def addCapability[T](cap: Capability[T])(f: PartialFunction[ItemStack, T]): Unit =
-  caps += (cap -> f.orElse(caps(cap)))
+    caps += (cap -> f.orElse(caps(cap)))
 
   def addCapability[T](cap: Capability[T], f: ItemStack => T): Unit = {
     caps += (cap -> PartialFunction(f).orElse(caps(cap)))

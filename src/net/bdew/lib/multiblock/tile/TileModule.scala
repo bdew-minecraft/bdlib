@@ -19,7 +19,7 @@ import scala.reflect.ClassTag
 
 trait TileModule extends TileDataSlots {
   val kind: String
-  val connected = new DataSlotPos("connected", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE, UpdateKind.RENDER)
+  val connected = DataSlotPos("connected", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE, UpdateKind.RENDER)
 
   def getCoreAs[T <: TileController : ClassTag] = connected flatMap (p => getWorld.getTileSafe[T](p))
 

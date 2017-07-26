@@ -16,7 +16,7 @@ import net.bdew.lib.recipes.gencfg.ConfigSection
 
 abstract class Machine[T <: BaseBlock](val name: String, blockConstruct: => T) {
   var block: T = null.asInstanceOf[T]
-  var tuning: ConfigSection = null
+  var tuning: ConfigSection = _
   var enabled = false
   val modId = Misc.getActiveModId
 

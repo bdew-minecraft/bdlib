@@ -55,7 +55,7 @@ case class DataSlotMovingAverage(name: String, parent: DataSlotContainer, size: 
       if (t.hasKey(name)) {
         val i = new DataInputStream(new ByteArrayInputStream(t.getByteArray(name)))
         val len = i.readByte()
-        values ++= (for (x <- 0 until Math.min(len, size)) yield i.readDouble())
+        values ++= (for (_ <- 0 until Math.min(len, size)) yield i.readDouble())
         i.close()
       }
     }

@@ -57,11 +57,11 @@ class UnpackedReadableQuad(unpackedData: Array[Array[Array[Float]]], tint: Int, 
 class Unpacker(format: VertexFormat) extends IVertexConsumer {
   var unpackedData = Array.fill(4, format.getElementCount, 4)(0f)
   var tint = -1
-  var orientation: EnumFacing = null
+  var orientation: EnumFacing = _
   var vertices = 0
   var elements = 0
   var full = false
-  var texture: TextureAtlasSprite = null
+  var texture: TextureAtlasSprite = _
   var applyDiffuseLighting = false
 
   def reset(): Unit = {

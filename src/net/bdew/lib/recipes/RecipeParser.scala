@@ -18,7 +18,8 @@ import scala.util.parsing.combinator._
 
 class RecipeParser extends JavaTokenParsers {
   // Allows C-style comments
-  protected override val whiteSpace = """(\s|//.*|(?m)/\*(\*(?!/)|[^*])*\*/)+""".r
+  protected override val whiteSpace =
+    """(\s|//.*|(?m)/\*(\*(?!/)|[^*])*\*/)+""".r
 
   // Simple integer without signs
   def int = "\\d+".r ^^ (_.toInt)
@@ -42,7 +43,7 @@ class RecipeParser extends JavaTokenParsers {
   def recipeDuplet = repN(2, recipeChar | "_") ^^ (_.mkString(""))
 
   // Quoted string with escape characters
-  def unescapeStr = stringLiteral ^^ { case x => StringEscapeUtils.unescapeJava(x.substring(1, x.length - 1)) }
+  def unescapeStr = stringLiteral ^^ (x => StringEscapeUtils.unescapeJava(x.substring(1, x.length - 1)))
 
   // Identifier or quoted string
   def str = ident | unescapeStr
@@ -85,19 +86,19 @@ class RecipeParser extends JavaTokenParsers {
   def recipesTopBlock = "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ CsRecipeBlock
 
   def conditionRecipes = "if" ~> condition ~ ("{" ~> recipeStatements <~ "}") ~ ("else" ~> "{" ~> recipeStatements <~ "}").? ^^ {
-    case cond ~ thn ~ els => new RsConditional(cond, thn, els.getOrElse(List.empty))
+    case cond ~ thn ~ els => RsConditional(cond, thn, els.getOrElse(List.empty))
   }
 
   def conditionConfig = "if" ~> condition ~ ("<<" ~> configStatements <~ ">>") ~ ("else" ~> "<<" ~> configStatements <~ ">>").? ^^ {
-    case cond ~ thn ~ els => new CsConditionalConfig(cond, thn, els.getOrElse(List.empty))
+    case cond ~ thn ~ els => CsConditionalConfig(cond, thn, els.getOrElse(List.empty))
   }
 
-  def conditionBridge = conditionRecipes ^^ { case cond => CsRecipeBlock(List(cond)) }
+  def conditionBridge = conditionRecipes ^^ (cond => CsRecipeBlock(List(cond)))
 
   // === Statements ===
 
   def charSpec = recipeChar ~ "=" ~ spec ^^ {
-    case ch ~ eq ~ spec => new RsCharAssign(ch, spec)
+    case ch ~ eq ~ spec => RsCharAssign(ch, spec)
   }
 
   def classMacro = ("def" ~> ident <~ "=") ~ clsPath ^^ {
@@ -128,7 +129,7 @@ class RecipeParser extends JavaTokenParsers {
     case spec ~ wildcard ~ id => RsRegOredict(id, spec, wildcard.isDefined)
   }
 
-  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp => CsClearRecipes(sp) }
+  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ CsClearRecipes
 
   def recipeStatement: Parser[RecipeStatement] = (
     charSpec

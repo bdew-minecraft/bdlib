@@ -16,13 +16,14 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 
 object RecipesHelper {
   /**
-   * Perform full loading of a set of config
-   * @param modName Name of the mod, used in logging and errors
-   * @param listResource Resource Name of the internal config list file
-   * @param configDir Base path to user config giles
-   * @param resBaseName Base resource name for internal config files
-   * @param loader Loader instance
-   */
+    * Perform full loading of a set of config
+    *
+    * @param modName      Name of the mod, used in logging and errors
+    * @param listResource Resource Name of the internal config list file
+    * @param configDir    Base path to user config giles
+    * @param resBaseName  Base resource name for internal config files
+    * @param loader       Loader instance
+    */
   def loadConfigs(modName: String, listResource: String, configDir: File, resBaseName: String, loader: RecipeLoader) {
     BdLib.logInfo("Loading internal config files for mod %s", modName)
 

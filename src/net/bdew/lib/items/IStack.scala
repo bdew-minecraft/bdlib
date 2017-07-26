@@ -13,8 +13,8 @@ import net.minecraft.block.Block
 import net.minecraft.item.{Item, ItemBlock, ItemStack}
 
 /**
- * Allows matching Items in ItemStacks in scala pattern matches
- */
+  * Allows matching Items in ItemStacks in scala pattern matches
+  */
 object IStack {
   def unapply(x: ItemStack): Option[Item] =
     if (x.isEmpty)
@@ -24,8 +24,8 @@ object IStack {
 }
 
 /**
- * Allows matching Blocks in ItemStacks in scala pattern matches
- */
+  * Allows matching Blocks in ItemStacks in scala pattern matches
+  */
 object IStackBlock {
   def unapply(x: ItemStack): Option[Block] =
     if (x.isEmpty || !x.getItem.isInstanceOf[ItemBlock])

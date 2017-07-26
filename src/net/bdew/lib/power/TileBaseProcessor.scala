@@ -17,8 +17,8 @@ import net.bdew.lib.tile.inventory.{PersistentInventoryTile, SidedInventory}
 
 abstract class TileBaseProcessor extends TileExtended
   with TileDataSlotsTicking
-with PersistentInventoryTile
-with SidedInventory
+  with PersistentInventoryTile
+  with SidedInventory
   with TilePoweredBase {
   def cfg: ProcessorMachine
   val power = DataSlotPower("power", this)

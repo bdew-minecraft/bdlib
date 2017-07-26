@@ -47,7 +47,7 @@ trait MachineManagerMultiblock extends MachineManager {
 
   def getMachinesForBlock(b: BlockModule[_]): Map[MachineCore, (Int, Int)] = {
     (for (machine <- controllers; max <- machine.modules.get(b.kind)) yield {
-      machine ->(machine.required.getOrElse(b.kind, 0), max)
+      machine -> (machine.required.getOrElse(b.kind, 0), max)
     }).toMap
   }
 }

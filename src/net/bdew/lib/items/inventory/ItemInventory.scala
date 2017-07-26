@@ -18,9 +18,9 @@ import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
 /**
- * Mixin for items that have an internal inventory
- * Subclasses are responsible for registering themselves with the GuiHandler of their mod
- */
+  * Mixin for items that have an internal inventory
+  * Subclasses are responsible for registering themselves with the GuiHandler of their mod
+  */
 trait ItemInventory extends Item with GuiProvider {
   type TEClass = Any
   def guiId: Int

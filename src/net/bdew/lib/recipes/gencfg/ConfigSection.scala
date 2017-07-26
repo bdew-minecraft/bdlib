@@ -53,7 +53,7 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
     if (raw.isDefinedAt(id)) {
       getRaw(id, classOf[ConfigSection])
     } else {
-      val newSection = new ConfigSection(pfx + id + ".")
+      val newSection = ConfigSection(pfx + id + ".")
       set(id, newSection)
       newSection
     }

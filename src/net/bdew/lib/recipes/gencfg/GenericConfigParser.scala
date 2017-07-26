@@ -16,9 +16,9 @@ trait GenericConfigParser extends RecipeParser {
 
   // Hex variant must come before decimalNumber, otherwise the parser breaks
   def signedNumber = (
-    ("0x" ~> "[0-9A-Fa-f]+".r) ^^ { case x => Integer.parseInt(x, 16).toDouble }
-      | decimalNumber ^^ { case x => x.toDouble }
-      | ("-" ~> decimalNumber) ^^ { case x => -x.toDouble }
+    ("0x" ~> "[0-9A-Fa-f]+".r) ^^ (Integer.parseInt(_, 16).toDouble)
+      | decimalNumber ^^ (_.toDouble)
+      | ("-" ~> decimalNumber) ^^ (-_.toDouble)
     )
 
   def cvNum = signedNumber ^^ EntryDouble
@@ -35,7 +35,7 @@ trait GenericConfigParser extends RecipeParser {
   // A bit of type acrobatics because this is recursive (via cfgStatementSub)
   // the tuple is translated into the proper class in either cfgStatementSub or cfg
   def cfgBlock: Parser[(String, List[CfgEntry])] =
-    "cfg" ~> str ~ ("{" ~> cfgEntry.* <~ "}") ^^ { case id ~ st => (id, st) }
+  "cfg" ~> str ~ ("{" ~> cfgEntry.* <~ "}") ^^ { case id ~ st => (id, st) }
 
   def statementCfg = cfgBlock ^^ { case (id, st) => CsCfgSection(id, st) }
 }

@@ -123,7 +123,6 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
     else
       None
 
-
     if (sendCapacityOnUpdateKind.contains(kind))
       tag.getInteger("capacity")
   }

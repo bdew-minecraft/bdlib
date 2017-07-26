@@ -21,5 +21,5 @@ case class BasePoint[T: Numeric](x: T, y: T) {
   def -(that: BasePoint[T]) = BasePoint(this.x - that.x, this.y - that.y)
   def -(xOff: T, yOff: T) = BasePoint(this.x - xOff, this.y - yOff)
 
-  def map[R: Numeric](f: T => R) = new BasePoint(f(x), f(y))
+  def map[R: Numeric](f: T => R) = BasePoint(f(x), f(y))
 }

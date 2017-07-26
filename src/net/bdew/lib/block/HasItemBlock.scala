@@ -13,9 +13,9 @@ import net.minecraft.block.Block
 import net.minecraft.item.ItemBlock
 
 /**
- * If defined on a block - defines a custom ItemBlock class that will be used when registering
- * Supported by BlockManager and Machine
- */
+  * If defined on a block - defines a custom ItemBlock class that will be used when registering
+  * Supported by BlockManager and Machine
+  */
 trait HasItemBlock extends Block {
   val itemBlockInstance: ItemBlock
 }

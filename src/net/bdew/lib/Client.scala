@@ -13,8 +13,8 @@ import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
 
 /**
- * Misc functions and shortcuts for client-side code
- */
+  * Misc functions and shortcuts for client-side code
+  */
 object Client {
   def minecraft = Minecraft.getMinecraft
   def fontRenderer = Minecraft.getMinecraft.fontRenderer

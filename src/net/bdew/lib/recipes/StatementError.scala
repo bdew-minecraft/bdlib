@@ -10,7 +10,7 @@
 package net.bdew.lib.recipes
 
 /**
- * Used in statement processing to abort the current statement and show an error without a stack trace
- */
+  * Used in statement processing to abort the current statement and show an error without a stack trace
+  */
 class StatementError(msg: String) extends Exception(msg)
 

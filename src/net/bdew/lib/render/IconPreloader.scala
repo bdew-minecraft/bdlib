@@ -31,7 +31,7 @@ class IconPreloader {
   var icons = Set.empty[TextureLoc]
 
   case class TextureLoc(loc: String) {
-    var texture: IconWrapper = null
+    var texture: IconWrapper = _
     icons += this
   }
 

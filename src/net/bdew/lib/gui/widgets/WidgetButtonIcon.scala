@@ -18,7 +18,7 @@ import scala.collection.mutable
 
 class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Texture, hoverTex: Texture) extends Widget {
   val rect = new Rect(p, 16, 16)
-  val iconRect = new Rect(p +(1, 1), 14, 14)
+  val iconRect = new Rect(p + (1, 1), 14, 14)
 
   var icon: Texture = _
   var hover: String = _
