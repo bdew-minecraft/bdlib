@@ -21,7 +21,7 @@ class WidgetSensorType[T](val p: Point, sensor: => GenericSensorType[T, _], obj:
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) =
     for (x <- obj; s <- sensor.getTooltip(x)) tip += s
 
-  override def draw(mouse: Point) = obj foreach (x => sensor.drawSensor(rect, parent, x))
+  override def draw(mouse: Point, partial: Float) = obj foreach (x => sensor.drawSensor(rect, parent, x))
 }
 
 

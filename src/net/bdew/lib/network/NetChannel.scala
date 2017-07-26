@@ -19,14 +19,14 @@ import net.minecraftforge.fml.common.network.{FMLEmbeddedChannel, FMLOutboundHan
 import net.minecraftforge.fml.relauncher.Side
 
 class NetChannel(val name: String) {
-  var channels: util.EnumMap[Side, FMLEmbeddedChannel] = null
+  var channels: util.EnumMap[Side, FMLEmbeddedChannel] = _
 
   type Message = BaseMessage[this.type]
 
   object ServerHandler extends SimpleChannelInboundHandler[Message] {
     def channelRead0(ctx: ChannelHandlerContext, msg: Message) {
       try {
-        val player = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get.asInstanceOf[NetHandlerPlayServer].playerEntity
+        val player = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get.asInstanceOf[NetHandlerPlayServer].player
         if (serverChain.isDefinedAt(msg, player))
           serverChain(msg, player)
         else

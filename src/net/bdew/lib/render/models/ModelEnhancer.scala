@@ -10,8 +10,8 @@
 package net.bdew.lib.render.models
 
 import java.util
+import java.util.function
 
-import com.google.common.base.Function
 import com.google.common.collect.ImmutableMap
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -64,7 +64,7 @@ abstract class ModelEnhancer {
     * @param base base model
     * @return wrapped model, that will bake into a ISmartBlockModel with our logic
     */
-  def wrap(base: IModel): IRetexturableModel = new SmartUnbakedWrapper(base)
+  def wrap(base: IModel): IModel = new SmartUnbakedWrapper(base)
 
   /**
     * Combines this with another ModelEnhancer
@@ -73,18 +73,15 @@ abstract class ModelEnhancer {
     */
   def compose(that: ModelEnhancer) = new ComposedModelEnhancer(this, that)
 
-  private class SmartUnbakedWrapper(base: IModel) extends IRetexturableModel {
+  private class SmartUnbakedWrapper(base: IModel) extends IModel {
     override def getTextures = base.getTextures ++ additionalTextureLocations
     override def getDefaultState = base.getDefaultState
     override def getDependencies = base.getDependencies
 
-    override def retexture(textures: ImmutableMap[String, String]) =
-      if (base.isInstanceOf[IRetexturableModel]) {
-        new SmartUnbakedWrapper(base.asInstanceOf[IRetexturableModel].retexture(textures))
-      } else this
+    override def retexture(textures: ImmutableMap[String, String]) = wrap(base.retexture(textures))
 
-    override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function[ResourceLocation, TextureAtlasSprite]) = {
-      val baked = ModelUtils.makePerspectiveAware(base.bake(state, format, bakedTextureGetter))
+    override def bake(state: IModelState, format: VertexFormat, bakedTextureGetter: function.Function[ResourceLocation, TextureAtlasSprite]) = {
+      val baked = base.bake(state, format, bakedTextureGetter)
       val additionalSprites = additionalTextureLocations.map(res => res -> bakedTextureGetter(res)).toMap
       new BakedModelProxy(baked) with SmartItemModel {
         override def getQuads(state: IBlockState, side: EnumFacing, rand: Long): util.List[BakedQuad] =

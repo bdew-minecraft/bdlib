@@ -21,6 +21,6 @@ class WidgetSensorResult[T](val p: Point, state: => T, system: SensorSystem[_, T
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) =
     tip += system.getLocalizedResultText(state)
 
-  override def draw(mouse: Point) =
+  override def draw(mouse: Point, partial: Float) =
     system.drawResult(state, rect, parent)
 }

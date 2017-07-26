@@ -16,7 +16,7 @@ class WidgetFillDataSlot[T](val rect: Rect, val texture: Texture, dir: Direction
 
   import num.mkNumericOps
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     val fill = dSlot.value.toFloat() / maxVal.toFloat()
     dir match {
       case Direction.UP =>

@@ -13,18 +13,16 @@ import java.util
 import java.util.Locale
 
 import com.google.common.base.Optional
+import com.google.common.collect.ImmutableList
 import net.bdew.lib.gui.Texture
-import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.text.translation.I18n
 import net.minecraft.util.{EnumFacing, ResourceLocation}
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.{Fluid, FluidStack}
-import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.common.versioning.VersionParser
 import net.minecraftforge.fml.common.{Loader, ModAPIManager, ModContainer}
-import net.minecraftforge.oredict.ShapedOreRecipe
 
 import scala.util.DynamicVariable
 
@@ -50,12 +48,6 @@ object Misc {
     f(p)
     t.setTag(n, p)
   }
-
-  def addRecipe(result: ItemStack, pattern: Seq[String], items: Map[Char, AnyRef]) =
-    GameRegistry.addRecipe(result, flattenRecipe(pattern, items): _*)
-
-  def addRecipeOD(result: ItemStack, pattern: Seq[String], items: Map[Char, AnyRef]) =
-    GameRegistry.addRecipe(new ShapedOreRecipe(result, flattenRecipe(pattern, items): _*))
 
   def min[T: Ordering](values: T*) = values.min
   def max[T: Ordering](values: T*) = values.max
@@ -188,6 +180,11 @@ object Misc {
   def toOptional[T](o: Option[T]): Optional[T] = o match {
     case Some(v) => Optional.of(v)
     case None => Optional.absent()
+  }
+
+  def jImmutable[V](i: Iterable[V]): ImmutableList[V] = {
+    import scala.collection.JavaConverters._
+    ImmutableList.copyOf(i.asJava)
   }
 }
 

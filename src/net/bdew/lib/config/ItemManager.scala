@@ -13,7 +13,7 @@ import net.bdew.lib.items.{BaseItem, BaseItemMixin}
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraftforge.fml.common.FMLCommonHandler
-import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.fml.common.registry.ForgeRegistries
 
 class ItemManager(creativeTab: CreativeTabs) {
 
@@ -23,7 +23,7 @@ class ItemManager(creativeTab: CreativeTabs) {
     require(item.getRegistryName != null, "Attempting to register item with null name")
     require(!item.getRegistryName.getResourcePath.exists(_.isUpper), "Block names should contain no upper case character")
 
-    GameRegistry.register(item)
+    ForgeRegistries.ITEMS.register(item)
     item.setCreativeTab(creativeTab)
 
     if (FMLCommonHandler.instance().getSide.isClient && item.isInstanceOf[BaseItemMixin]) {

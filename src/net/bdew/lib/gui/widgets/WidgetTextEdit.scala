@@ -21,5 +21,5 @@ class WidgetTextEdit(id: Int, val rect: Rect, fr: FontRenderer) extends GuiTextF
 
   override def looseFocus() = setFocused(false)
   override def keyTyped(c: Char, i: Int): Boolean = super.textboxKeyTyped(c, i)
-  override def draw(mouse: Point) = super.drawTextBox()
+  override def draw(mouse: Point, partial: Float) = super.drawTextBox()
 }

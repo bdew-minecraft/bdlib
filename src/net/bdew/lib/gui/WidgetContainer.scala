@@ -56,12 +56,12 @@ trait WidgetContainer extends DrawTarget {
     GL11.glPopMatrix()
   }
 
-  def draw(mouse: Point) {
+  def draw(mouse: Point, partial: Float) {
     val p = mouse - rect.origin
     GL11.glPushMatrix()
     GL11.glTranslatef(rect.origin.x, rect.origin.y, 0)
     for (w <- activeWidgets) {
-      w.draw(p)
+      w.draw(p, partial)
     }
     GL11.glPopMatrix()
   }

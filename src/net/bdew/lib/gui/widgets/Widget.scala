@@ -15,12 +15,12 @@ import scala.collection.mutable
 
 trait BaseWidget {
   val rect: Rect
-  var parent: WidgetContainer = null
+  var parent: WidgetContainer = _
   def init(p: WidgetContainer) = parent = p
   def handleTooltip(p: Point, tip: mutable.MutableList[String])
   def mouseClicked(p: Point, button: Int)
   def keyTyped(c: Char, i: Int): Boolean
-  def draw(mouse: Point)
+  def draw(mouse: Point, partial: Float)
   def drawBackground(mouse: Point)
   def looseFocus()
 }
@@ -30,7 +30,7 @@ trait Widget extends BaseWidget {
   def handleTooltip(p: Point, tip: mutable.MutableList[String]) {}
   def mouseClicked(p: Point, button: Int) {}
   def keyTyped(c: Char, i: Int): Boolean = false
-  def draw(mouse: Point) {}
+  def draw(mouse: Point, partial: Float) {}
   def drawBackground(mouse: Point) {}
   def looseFocus() {}
 }

@@ -37,10 +37,10 @@ class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSub
     RSMode.NEVER -> RSMode.ALWAYS
   )
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     bt.icon = icons(cfg.rsMode)
     bt.hover = Misc.toLocal("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase(Locale.US))
-    super.draw(mouse)
+    super.draw(mouse, partial)
   }
 
   def clicked(b: WidgetButtonIcon) {

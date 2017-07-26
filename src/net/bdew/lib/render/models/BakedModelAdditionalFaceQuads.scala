@@ -12,9 +12,8 @@ package net.bdew.lib.render.models
 import java.util
 
 import net.minecraft.block.state.IBlockState
-import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.block.model.{BakedQuad, IBakedModel}
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.IPerspectiveAwareModel
 
 import scala.collection.JavaConversions._
 
@@ -24,6 +23,6 @@ import scala.collection.JavaConversions._
   * @param base base model
   * @param add  map of face quads to add
   */
-class BakedModelAdditionalFaceQuads(base: IPerspectiveAwareModel, add: Map[EnumFacing, List[BakedQuad]]) extends BakedModelProxy(base) {
+class BakedModelAdditionalFaceQuads(base: IBakedModel, add: Map[EnumFacing, List[BakedQuad]]) extends BakedModelProxy(base) {
   override def getQuads(state: IBlockState, side: EnumFacing, rand: Long): util.List[BakedQuad] = super.getQuads(state, side, rand) ++ add(side)
 }

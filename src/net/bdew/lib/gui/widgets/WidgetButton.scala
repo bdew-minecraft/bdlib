@@ -23,5 +23,5 @@ class WidgetButton(val rect: Rect, text: String, clicked: WidgetButton => Unit)
     clicked(this)
   }
 
-  override def draw(mouse: Point) = drawButton(Minecraft.getMinecraft, mouse.x.round, mouse.y.round)
+  override def draw(mouse: Point, partial: Float) = drawButton(Minecraft.getMinecraft, mouse.x.round, mouse.y.round, partial)
 }

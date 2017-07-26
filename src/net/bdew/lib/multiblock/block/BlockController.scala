@@ -16,6 +16,7 @@ import net.bdew.lib.multiblock.{MachineCore, ResourceProvider}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
@@ -26,7 +27,7 @@ import net.minecraft.world.{IBlockAccess, World}
 abstract class BlockController[T <: TileController](name: String, material: Material, val TEClass: Class[T])
   extends BaseBlock(name, material) with HasTE[T] with ConnectedTextureBlock with BlockTooltip {
 
-  var machine: MachineCore = null
+  var machine: MachineCore = _
 
   def resources: ResourceProvider
 
@@ -45,7 +46,7 @@ abstract class BlockController[T <: TileController](name: String, material: Mate
     return true
   }
 
-  override def getTooltip(stack: ItemStack, player: EntityPlayer, advanced: Boolean): List[String] = {
+  override def getTooltip(stack: ItemStack, world: World, flags: ITooltipFlag): List[String] = {
     List(Misc.toLocal("bdlib.multiblock.tip.controller")) ++ (
       for ((kind, max) <- machine.modules) yield {
         val name = Misc.toLocalF(resources.getModuleName(kind))

@@ -15,6 +15,7 @@ import net.minecraft.inventory.Container
 import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
+import scala.util.DynamicVariable
 
 abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContainer(cont) {
   xSize = xSz
@@ -28,6 +29,9 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
 
   def getFontRenderer = Client.fontRenderer
   def getZLevel = zLevel
+
+  // fixme: this is somewhat hacky, look for a better solution
+  val parialFrame = new DynamicVariable(0f)
 
   override def initGui() {
     super.initGui()
@@ -52,12 +56,14 @@ abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContai
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
     GL11.glEnable(GL11.GL_BLEND)
     GL11.glColor4f(1, 1, 1, 1)
-    widgets.draw(Point(x, y) - rect.origin)
+    widgets.draw(Point(x, y) - rect.origin, parialFrame.value)
     GL11.glPopAttrib()
   }
 
   protected override def drawScreen(x: Int, y: Int, f: Float) {
-    super.drawScreen(x, y, f)
+    parialFrame.withValue(f) {
+      super.drawScreen(x, y, f)
+    }
 
     val tip = mutable.MutableList.empty[String]
 

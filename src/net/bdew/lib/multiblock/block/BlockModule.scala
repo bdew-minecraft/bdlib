@@ -19,6 +19,7 @@ import net.bdew.lib.render.connected.ConnectedTextureBlock
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -70,7 +71,7 @@ abstract class BlockModule[T <: TileModule](name: String, val kind: String, mate
     true
   }
 
-  override def getTooltip(stack: ItemStack, player: EntityPlayer, advanced: Boolean): List[String] = {
+  override def getTooltip(stack: ItemStack, world: World, flags: ITooltipFlag): List[String] = {
     List(Misc.toLocal("bdlib.multiblock.tip.module")) ++ (
       for ((machine, (min, max)) <- machines.getMachinesForBlock(this)) yield {
         val name = machine.getController.getLocalizedName

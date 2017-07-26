@@ -16,15 +16,12 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType
 import net.minecraft.client.renderer.block.model.{BakedQuad, IBakedModel, ItemCameraTransforms, ItemOverrideList}
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.IPerspectiveAwareModel
 import org.apache.commons.lang3.tuple.Pair
 
 /**
   * Base class for wrappers around IBakedModel
   */
-class BakedModelProxy(aBase: IBakedModel) extends IPerspectiveAwareModel {
-  val base = ModelUtils.makePerspectiveAware(aBase)
-
+class BakedModelProxy(base: IBakedModel) extends IBakedModel {
   override def isBuiltInRenderer = base.isBuiltInRenderer
   override def isAmbientOcclusion = base.isAmbientOcclusion
   override def isGui3d = base.isGui3d

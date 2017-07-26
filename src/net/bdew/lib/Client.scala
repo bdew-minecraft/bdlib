@@ -17,7 +17,7 @@ import org.lwjgl.input.Keyboard
  */
 object Client {
   def minecraft = Minecraft.getMinecraft
-  def fontRenderer = Minecraft.getMinecraft.fontRendererObj
+  def fontRenderer = Minecraft.getMinecraft.fontRenderer
   def renderEngine = Minecraft.getMinecraft.renderEngine
   def world = Minecraft.getMinecraft.world
   def player = Minecraft.getMinecraft.player

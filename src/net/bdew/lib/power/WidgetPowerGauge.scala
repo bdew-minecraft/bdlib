@@ -18,7 +18,7 @@ import scala.collection.mutable
 class WidgetPowerGauge(val rect: Rect, texture: Texture, dSlot: DataSlotPower) extends Widget {
   val a = rect.map(_.round)
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     val fill = dSlot.stored / dSlot.capacity
     parent.drawTextureInterpolate(rect, texture, 0, 1 - fill, 1, 1)
   }

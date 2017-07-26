@@ -24,7 +24,7 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
   val rect = new Rect(p, 16, 16)
   val drawRect = Rect(p.x + 1, p.y + 1, 14, 14)
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     val faces = te.outputFaces.inverted
     faces.get(output).map { bf =>
       //noinspection UnitInMap

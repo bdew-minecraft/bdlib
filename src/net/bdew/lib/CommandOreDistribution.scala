@@ -45,7 +45,7 @@ object CommandOreDistribution extends CommandBase {
 
     val (startX, startZ, world) =
       sender match {
-        case p: EntityPlayerMP => (p.posX.toInt, p.posZ.toInt, p.getEntityWorld)
+        case p: EntityPlayerMP => (p.posX.toInt, p.posZ.toInt, p.world)
         case _ => (0, 0, sender.getEntityWorld)
       }
 

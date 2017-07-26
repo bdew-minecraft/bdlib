@@ -20,13 +20,12 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
-import net.minecraftforge.client.model.IPerspectiveAwareModel
 import org.apache.commons.lang3.tuple.Pair
 
 /**
   * Provides a saner replacement to ISmartItemModel (r.i.p) via ItemOverrides
   */
-trait SmartItemModel extends IBakedModel with IPerspectiveAwareModel {
+trait SmartItemModel extends IBakedModel {
   /**
     * Override this to provide quads for items. Normal getQuads is not called for them.
     */

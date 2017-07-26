@@ -21,6 +21,6 @@ class WidgetSensorParam[T](val p: Point, config: => SensorPair[T, _], obj: => Op
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) =
     for (x <- obj; s <- config.sensor.getParamTooltip(x, config.param)) tip += s
 
-  override def draw(mouse: Point) =
+  override def draw(mouse: Point, partial: Float) =
     obj foreach (x => config.sensor.drawParameter(rect, parent, x, config.param))
 }

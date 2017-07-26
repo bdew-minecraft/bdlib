@@ -12,5 +12,5 @@ package net.bdew.lib.gui.widgets
 import net.bdew.lib.gui._
 
 case class WidgetSimpleIcon(rect: Rect, icon: Texture) extends Widget {
-  override def draw(mouse: Point) = parent.drawTexture(rect, icon)
+  override def draw(mouse: Point, partial: Float) = parent.drawTexture(rect, icon)
 }

@@ -13,7 +13,7 @@ import net.bdew.lib.gui.{Color, Point, Rect}
 
 class WidgetDynLabel(text: => String, x: Int, y: Int, color: Color) extends Widget {
   val rect = new Rect(x, y, 0, 0)
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     parent.drawText(text, rect.origin, color, false)
   }
 }

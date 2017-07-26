@@ -20,10 +20,10 @@ class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Tex
   val rect = new Rect(p, 16, 16)
   val iconRect = new Rect(p +(1, 1), 14, 14)
 
-  var icon: Texture = null
-  var hover: String = null
+  var icon: Texture = _
+  var hover: String = _
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     if (rect.contains(mouse))
       parent.drawTexture(rect, hoverTex)
     else

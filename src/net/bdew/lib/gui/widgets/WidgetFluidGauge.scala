@@ -25,7 +25,7 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dSlot: DataSlotTankBase
     }
   }
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     val fStack = dSlot.getFluid
     if (fStack != null) {
       val color = Color.fromInt(Misc.getFluidColor(fStack))

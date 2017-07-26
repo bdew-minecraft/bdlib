@@ -17,9 +17,9 @@ import net.minecraft.item.Item
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.FluidRegistry
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry
 import net.minecraftforge.fml.relauncher.FMLInjectionData
 import net.minecraftforge.oredict.OreDictionary
+import net.minecraftforge.registries.IForgeRegistryEntry
 
 object CommandDumpRegistry extends CommandBase {
   override def getName = "dumpregistry"

@@ -21,7 +21,7 @@ class WidgetInfoMulti(val rect: Rect, icon: Texture, text: => String, tooltip: =
     if (iconRect.contains(p) && tooltip != null) tip ++= tooltip
   }
 
-  override def draw(mouse: Point) {
+  override def draw(mouse: Point, partial: Float) {
     parent.drawTexture(iconRect + rect.origin, icon)
     parent.drawText(text, rect.origin +(12, 1), Color.darkGray, false)
   }

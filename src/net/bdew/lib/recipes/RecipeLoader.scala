@@ -14,54 +14,60 @@ import java.io.Reader
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.block.Block
 import net.minecraft.init.Blocks
+import net.minecraft.item.crafting.IRecipe
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.common.ModAPIManager
 import net.minecraftforge.fml.common.registry.GameRegistry
-import net.minecraftforge.oredict.{OreDictionary, ShapelessOreRecipe}
+import net.minecraftforge.oredict.{OreDictionary, ShapedOreRecipe, ShapelessOreRecipe}
 
 /**
- * Main recipe loader class
- * The input file is parsed by [[net.bdew.lib.recipes.RecipeParser]]
- * Into a list of [[net.bdew.lib.recipes.ConfigStatement]] subclasses
- * That are then executed here
- */
+  * Main recipe loader class
+  * The input file is parsed by [[net.bdew.lib.recipes.RecipeParser]]
+  * Into a list of [[net.bdew.lib.recipes.ConfigStatement]] subclasses
+  * That are then executed here
+  */
 
 class RecipeLoader {
 
   /**
-   * Create a new parser, override in subclasses to use an extended parser
+    * Create a new parser, override in subclasses to use an extended parser
     *
     * @return New ConfigParser (or subclass) instance
-   */
+    */
   def newParser() = new RecipeParser()
 
   /**
-   * Current map of recipe characters to parser item references
-   */
+    * Current map of recipe characters to parser item references
+    */
   var currCharMap = Map.empty[Char, StackRef].withDefault(x => error("Undefined recipe character '%s'", x))
 
   /**
-   * Current map of class macros
-   */
+    * Current map of class macros
+    */
   var currClassMacros = Map.empty[String, String].withDefault(x => error("Undefined class macro '%s'", x))
 
   /**
-   * Triggers an error with formatted string
-   */
+    * Triggers an error with formatted string
+    */
   def error(msg: String, params: Any*) = throw new StatementError(msg.format(params: _*))
 
   /**
-   * List of unprocessed recipe statements
-   */
+    * List of unprocessed recipe statements
+    */
   var recipeStatements = List.empty[RecipeStatement]
 
   /**
-   * Looks up a recipe component
+    * List of recipes ready for registration with forge
+    */
+  var recipes = List.empty[IRecipe]
+
+  /**
+    * Looks up a recipe component
     *
     * @param s Parser ItemStack reference
-   * @return ItemStack or String that can be used as recipe components in MC functions
-   */
+    * @return ItemStack or String that can be used as recipe components in MC functions
+    */
   def getRecipeComponent(s: StackRef): AnyRef = s match {
     case StackOreDict(id) => id
     case StackMacro(ch) => getRecipeComponent(currCharMap(ch))
@@ -69,22 +75,22 @@ class RecipeLoader {
   }
 
   /**
-   * Resolve class name if it's a macro
-   */
+    * Resolve class name if it's a macro
+    */
   def getRealClassName(s: String) = {
     if (s.startsWith("$"))
       currClassMacros(s.stripPrefix("$"))
     else s
   }
   /**
-   * Sanitize items from reflection
+    * Sanitize items from reflection
     *
-    * @param x     The item
-   * @param source Human readable source (used in errors and warnings)
-   * @param meta Metadata or damage
-   * @param cnt Stack size
-   * @return
-   */
+    * @param x      The item
+    * @param source Human readable source (used in errors and warnings)
+    * @param meta   Metadata or damage
+    * @param cnt    Stack size
+    * @return
+    */
   def sanitizeReflectedItem(x: AnyRef, source: String, meta: Int, cnt: Int): ItemStack = x match {
     case x: ItemStack =>
       val l = x.copy()
@@ -103,15 +109,15 @@ class RecipeLoader {
   }
 
   /**
-   * Fetches an ItemStack using reflection from static fields
-   * Item and Block instances are converted to ItemStacks
+    * Fetches an ItemStack using reflection from static fields
+    * Item and Block instances are converted to ItemStacks
     *
     * @param clsName Name of class to fetch from (can be a class macro)
-   * @param fldName Field name
-   * @param meta Metadata or damage
-   * @param cnt Stack size
-   * @return Matching item stack
-   */
+    * @param fldName Field name
+    * @param meta    Metadata or damage
+    * @param cnt     Stack size
+    * @return Matching item stack
+    */
   def reflectStack(clsName: String, fldName: String, meta: Int, cnt: Int): ItemStack = {
     val realName = getRealClassName(clsName)
     val fld = Class.forName(realName).getField(fldName).get(null)
@@ -119,16 +125,16 @@ class RecipeLoader {
   }
 
   /**
-   * Fetches an ItemStack using reflection from static getters
-   * Item and Block instances are converted to ItemStacks
+    * Fetches an ItemStack using reflection from static getters
+    * Item and Block instances are converted to ItemStacks
     *
     * @param clsName Name of class to fetch from (can be a class macro)
-   * @param method Method name
-   * @param param Parameter to method
-   * @param meta Metadata or damage
-   * @param cnt Stack size
-   * @return Matching item stack
-   */
+    * @param method  Method name
+    * @param param   Parameter to method
+    * @param meta    Metadata or damage
+    * @param cnt     Stack size
+    * @return Matching item stack
+    */
   def reflectStackGetter(clsName: String, method: String, param: String, meta: Int, cnt: Int): ItemStack = {
     var realName: String = clsName
     var realMethod: String = method
@@ -149,13 +155,13 @@ class RecipeLoader {
   }
 
   /**
-   * Returns all possible ItemStacks that match a reference
-   * Currently everything except OreDictionary references just returns one item
+    * Returns all possible ItemStacks that match a reference
+    * Currently everything except OreDictionary references just returns one item
     *
-    * @param s  Parser ItemStack reference
-   * @param cnt Stack size
-   * @return List of matching ItemStacks
-   */
+    * @param s   Parser ItemStack reference
+    * @param cnt Stack size
+    * @return List of matching ItemStacks
+    */
   def getAllConcreteStacks(s: StackRef, cnt: Int = 1): Iterable[ItemStack] = s match {
     case StackOreDict(id) =>
       import scala.collection.JavaConversions._
@@ -168,13 +174,13 @@ class RecipeLoader {
   def notNull[T](v: T, err: => String) = if (v == null) error(err) else v
 
   /**
-   * Returns an ItemStack that match a reference
-   * This is the main StackRef resolution method
+    * Returns an ItemStack that match a reference
+    * This is the main StackRef resolution method
     *
-    * @param s  Parser ItemStack reference
-   * @param cnt Stack size
-   * @return A matching ItemStack
-   */
+    * @param s   Parser ItemStack reference
+    * @param cnt Stack size
+    * @return A matching ItemStack
+    */
   def getConcreteStack(s: StackRef, cnt: Int = 1): ItemStack = s match {
     case StackOreDict(id) =>
       val l = OreDictionary.getOres(id)
@@ -198,31 +204,29 @@ class RecipeLoader {
   }
 
   /**
-   * Looks up all characters used in the recipe
+    * Looks up all characters used in the recipe
     *
     * @param s The pattern
-   * @return Map from character to recipe components and a boolean that means OD-aware methods should be used
-   */
-  def resolveRecipeComponents(s: Iterable[Char]): (Map[Char, AnyRef], Boolean) = {
+    * @return Map from character to recipe components and a boolean that means OD-aware methods should be used
+    */
+  def resolveRecipeComponents(s: Iterable[Char]): Map[Char, AnyRef] = {
     var comp = Map.empty[Char, AnyRef]
-    var needOd = false
     for (x <- s if !comp.contains(x) && x != '_') {
       if (!currCharMap.contains(x)) error("Character %s is undefined", x)
       val r = getRecipeComponent(currCharMap(x))
-      if (r.isInstanceOf[String]) needOd = true
       BdLib.logDebug("%s -> %s", x, r)
       comp += (x -> r)
     }
-    return (comp, needOd)
+    return comp
   }
 
   /**
-   * Helper to remove recipes from lists
+    * Helper to remove recipes from lists
     *
     * @param list list to check
-   * @param res crafting result to remove
-   * @return cleaned list
-   */
+    * @param res  crafting result to remove
+    * @return cleaned list
+    */
   def clearStatements(list: List[RecipeStatement], res: StackRef): List[RecipeStatement] = {
     list flatMap {
       case x: CraftingStatement =>
@@ -239,8 +243,8 @@ class RecipeLoader {
   }
 
   /**
-   * Checks a condition and returns the result
-   */
+    * Checks a condition and returns the result
+    */
   def resolveCondition(cond: Condition): Boolean = cond match {
     case CndHaveMod(mod) =>
       Misc.haveModVersion(mod)
@@ -256,10 +260,10 @@ class RecipeLoader {
   }
 
   /**
-   * Process a single statement, override this to add more statements
+    * Process a single statement, override this to add more statements
     *
     * @param s The statement
-   */
+    */
   def processConfigStatement(s: ConfigStatement): Unit = s match {
     case CsConditionalConfig(cnd, thn, els) =>
       if (resolveCondition(cnd)) {
@@ -282,10 +286,10 @@ class RecipeLoader {
   }
 
   /**
-   * Process a single recipe statement
+    * Process a single recipe statement
     *
     * @param st The statement
-   */
+    */
   def processRecipeStatement(st: RecipeStatement) = st match {
     case RsCharAssign(c, r) =>
       currCharMap += (c -> r)
@@ -297,7 +301,7 @@ class RecipeLoader {
 
     case RsRecipeShaped(rec, res, cnt) =>
       BdLib.logDebug("Adding shaped recipe %s => %s * %d", rec, res, cnt)
-      val (comp, needOd) = resolveRecipeComponents(rec.mkString(""))
+      val comp = resolveRecipeComponents(rec.mkString(""))
       val resStack = getConcreteStack(res, cnt)
 
       if (resStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
@@ -305,16 +309,13 @@ class RecipeLoader {
         resStack.setItemDamage(0)
       }
 
-      if (needOd)
-        Misc.addRecipeOD(resStack, rec, comp)
-      else
-        Misc.addRecipe(resStack, rec, comp)
+      recipes :+= new ShapedOreRecipe(new ResourceLocation(Misc.getActiveModId, "recipes"), resStack, Misc.flattenRecipe(rec, comp): _*)
 
-      BdLib.logDebug("Done... result=%s, od=%s", resStack, needOd)
+      BdLib.logDebug("Done... result=%s, od=%s", resStack)
 
     case RsRecipeShapeless(rec, res, cnt) =>
       BdLib.logDebug("Adding shapeless recipe %s => %s * %d", rec, res, cnt)
-      val (comp, needOd) = resolveRecipeComponents(rec)
+      val comp = resolveRecipeComponents(rec)
       val resStack = getConcreteStack(res, cnt)
       val recTrans = rec.toCharArray.map(comp(_))
 
@@ -323,12 +324,9 @@ class RecipeLoader {
         resStack.setItemDamage(0)
       }
 
-      if (needOd)
-        GameRegistry.addRecipe(new ShapelessOreRecipe(resStack, recTrans: _*))
-      else
-        GameRegistry.addShapelessRecipe(resStack, recTrans: _*)
+      recipes :+= new ShapelessOreRecipe(new ResourceLocation(Misc.getActiveModId, "recipes"), resStack, recTrans: _*)
 
-      BdLib.logDebug("Done... result=%s, od=%s", resStack, needOd)
+      BdLib.logDebug("Done... result=%s, od=%s", resStack)
 
     case RsRecipeSmelting(in, out, cnt, xp) =>
       BdLib.logDebug("Adding smelting recipe %s => %s * %d (%f xp)", in, out, cnt, xp)
@@ -369,9 +367,9 @@ class RecipeLoader {
   }
 
   /**
-   * Processes recipe statements in a new context
-   * Any changes to mutable state will not persist when this method returns
-   */
+    * Processes recipe statements in a new context
+    * Any changes to mutable state will not persist when this method returns
+    */
   def processRecipeStatementsInSubcontext(list: List[RecipeStatement]) = {
     val oldCharMap = currCharMap
     val oldClassMacros = currClassMacros
@@ -384,8 +382,8 @@ class RecipeLoader {
   }
 
   /**
-   * Process main recipe statements list, clear the list afterwards
-   */
+    * Process main recipe statements list, clear the list afterwards
+    */
   def processRecipeStatements() {
     BdLib.logDebug("Processing %d recipe statements", recipeStatements.size)
     processRecipeStatementsSafe(recipeStatements)
@@ -393,10 +391,10 @@ class RecipeLoader {
   }
 
   /**
-   * Process a list of recipe statements and catch all exceptions
+    * Process a list of recipe statements and catch all exceptions
     *
     * @param list The list to process
-   */
+    */
   def processRecipeStatementsSafe(list: List[RecipeStatement]) {
     for (s <- list) {
       try {
@@ -411,10 +409,10 @@ class RecipeLoader {
   }
 
   /**
-   * Process a list of config statements and catch all exceptions
+    * Process a list of config statements and catch all exceptions
     *
     * @param r The list to process
-   */
+    */
   def processConfigStatementsSafe(r: List[ConfigStatement]): Unit = {
     for (s <- r) {
       try {

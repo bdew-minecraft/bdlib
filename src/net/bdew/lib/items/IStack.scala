@@ -31,5 +31,5 @@ object IStackBlock {
     if (x.isEmpty || !x.getItem.isInstanceOf[ItemBlock])
       None
     else
-      Some(x.getItem.asInstanceOf[ItemBlock].block)
+      Some(x.getItem.asInstanceOf[ItemBlock].getBlock)
 }

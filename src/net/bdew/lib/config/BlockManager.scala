@@ -9,16 +9,12 @@
 
 package net.bdew.lib.config
 
-import net.bdew.lib.BdLib
 import net.bdew.lib.block.{BaseBlockMixin, HasItemBlock, HasTE}
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.ResourceLocation
-import net.minecraft.util.registry.RegistryNamespaced
 import net.minecraftforge.fml.common.FMLCommonHandler
-import net.minecraftforge.fml.common.registry.{GameData, GameRegistry}
+import net.minecraftforge.fml.common.registry.{ForgeRegistries, GameRegistry}
 
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: Block](block: T, skipTileEntityReg: Boolean = false): T = {
@@ -33,8 +29,8 @@ class BlockManager(creativeTab: CreativeTabs) {
     if (block.getRegistryName != itemBlock.getRegistryName)
       sys.error("Registry name mismatch between block/item for %s (%s)".format(block.getRegistryName, block.getClass.getName))
 
-    GameRegistry.register(block)
-    GameRegistry.register(itemBlock)
+    ForgeRegistries.BLOCKS.register(block)
+    ForgeRegistries.ITEMS.register(itemBlock)
 
     block.setCreativeTab(creativeTab)
 
@@ -46,20 +42,6 @@ class BlockManager(creativeTab: CreativeTabs) {
     }
 
     return block
-  }
-
-  /**
-    * Registers a legacy TE name->class mapping
-    */
-  def registerLegacyTileEntity(name: String, cls: Class[_ <: TileEntity]): Unit = {
-    // The (seemingly useless) cast prevents some weird compile error that only happens on some platforms
-    val newName = GameData.getTileEntityRegistry.asInstanceOf[RegistryNamespaced[ResourceLocation, Class[_ <: TileEntity]]].getNameForObject(cls)
-    if (newName == null) {
-      BdLib.logWarn(s"Asked to register alternative name $name for TE class ${ cls.getName } that isn't registered!")
-    } else {
-      BdLib.logDebug(s"Registering legacy TE name $name -> $newName")
-      GameData.getTileEntityRegistry.addLegacyName(new ResourceLocation(name), newName)
-    }
   }
 
   def load() {}
