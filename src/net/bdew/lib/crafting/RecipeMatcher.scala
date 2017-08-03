@@ -96,7 +96,7 @@ class RecipeMatcher(inv: InventoryCrafting) {
   /**
     * Set of all the stacks in the crafting inventory
     */
-  val items = for (i <- 0 until inv.getWidth; j <- 0 until inv.getHeight; stack <- Option(inv.getStackInRowAndColumn(i, j))) yield Entry(i, j, stack)
+  val items = for (i <- 0 until inv.getWidth; j <- 0 until inv.getHeight; stack <- Option(inv.getStackInRowAndColumn(i, j)) if !stack.isEmpty) yield Entry(i, j, stack)
 
   val itemSet = items.toSet
 
