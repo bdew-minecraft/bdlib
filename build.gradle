@@ -127,6 +127,7 @@ curseforge {
         changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
 
         addGameVersion config.minecraft.version
+        addGameVersion "1.12"
 
         mainArtifact(jar) {
             displayName = "BDLib ${simpleVersion} (MC ${config.minecraft.version})"
