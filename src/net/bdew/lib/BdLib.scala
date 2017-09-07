@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.event.{FMLInitializationEvent, FMLPreInitia
 import net.minecraftforge.fml.common.{FMLCommonHandler, Mod}
 import org.apache.logging.log4j.Logger
 
-@Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala")
+@Mod(modid = "bdlib", name = "BD lib", version = "BDLIB_VER", modLanguage = "scala", acceptedMinecraftVersions = "[1.12,1.12.1]")
 object BdLib {
   var log: Logger = _
 
