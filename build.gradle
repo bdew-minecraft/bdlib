@@ -128,6 +128,7 @@ curseforge {
 
         addGameVersion config.minecraft.version
         addGameVersion "1.12"
+        addGameVersion "1.12.1"
 
         mainArtifact(jar) {
             displayName = "BDLib ${simpleVersion} (MC ${config.minecraft.version})"

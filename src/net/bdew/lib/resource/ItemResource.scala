@@ -20,7 +20,7 @@ case class ItemResource(item: Item, meta: Int) extends ResourceKind {
     new IconWrapper(Texture.BLOCKS, Client.minecraft.getRenderItem.getItemModelMesher.getParticleIcon(item, meta))
 
   @SideOnly(Side.CLIENT)
-  override def getColor: Color = Color.fromInt(Client.itemColors.getColorFromItemstack(makeStack(1), 0))
+  override def getColor: Color = Color.fromInt(Client.itemColors.colorMultiplier(makeStack(1), 0))
 
   override def getLocalizedName = item.getItemStackDisplayName(makeStack(1))
   override def getUnlocalizedName = item.getUnlocalizedName(makeStack(1))
