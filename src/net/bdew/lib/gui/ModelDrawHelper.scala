@@ -97,6 +97,8 @@ object ModelDrawHelper {
       }
     }
 
+    ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
+
     // And we're done!
 
     tessellator.draw()
