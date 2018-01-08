@@ -48,13 +48,15 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     * Get TE for a block
     */
   def getTE(w: World, pos: BlockPos): T = {
-    if (w.getBlockState(pos).getBlock != this)
-      sys.error(s"Attempt to get TE ${ getClass.getName } on a mismatched block ${ w.getBlockState(pos) } at $pos")
     var t = w.getTileEntity(pos)
     if ((t == null) || !TEClass.isInstance(t)) {
-      BdLib.logWarn("Tile entity for block %s at (%d,%d,%d) is corrupt or missing - recreating", this, pos.getX, pos.getY, pos.getZ)
-      t = createTileEntity(w, w.getBlockState(pos))
-      w.setTileEntity(pos, t)
+      if (w.getBlockState(pos).getBlock == this) {
+        BdLib.logWarn("Tile entity for block %s at (%d,%d,%d) is corrupt or missing - recreating", this, pos.getX, pos.getY, pos.getZ)
+        t = createTileEntity(w, w.getBlockState(pos))
+        w.setTileEntity(pos, t)
+      } else {
+        sys.error(s"Attempt to get TE ${ TEClass.getName } on a mismatched block ${ w.getBlockState(pos) } at $pos")
+      }
     }
     return t.asInstanceOf[T]
   }
@@ -63,24 +65,19 @@ trait HasTE[T] extends Block with ITileEntityProvider {
     * Get TE for a block, if available. If this is in client it might not be available yet.
     */
   def getTE(w: IBlockAccess, pos: BlockPos): Option[T] = {
-    if (w.getBlockState(pos).getBlock != this) {
-      BdLib.logWarn(s"Attempt to get TE ${ getClass.getName } on a mismatched block ${ w.getBlockState(pos) } at $pos")
-      None
-    } else {
-      try {
-        w match {
-          case ww: ChunkCache =>
-            checkCast(ww.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK))
-          case ww: World =>
-            Some(getTE(ww, pos))
-          case _ =>
-            checkCast(w.getTileEntity(pos))
-        }
-      } catch {
-        case e: Throwable =>
-          BdLib.logWarnException("Error retrieving TE of type %s at %s (world is %s)", e, getClass.getName, pos.toString, w.getClass.getName)
-          None
+    try {
+      w match {
+        case ww: ChunkCache =>
+          checkCast(ww.getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK))
+        case ww: World =>
+          Some(getTE(ww, pos))
+        case _ =>
+          checkCast(w.getTileEntity(pos))
       }
+    } catch {
+      case e: Throwable =>
+        BdLib.logWarnException("Error retrieving TE of type %s at %s (world is %s)", e, getClass.getName, pos.toString, w.getClass.getName)
+        None
     }
   }
 
