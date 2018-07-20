@@ -9,10 +9,22 @@ bdlib.multiblock.disabled=Отключено
 bdlib.multiblock.incomplete=Этот механизм не завершён, ему требуется как минимум:
 bdlib.multiblock.notconnected=Не подключено к верному механизму
 bdlib.multiblock.toomanyoutputs=Слишком много выходов подсоединено, нельзя установить новое соединение
+bdlib.multiblock.tip.module=Может быть установлено в:
+bdlib.multiblock.tip.controller=Доступные модули:
+bdlib.multiblock.tip.module.range= * %s (%s - %s)
+bdlib.multiblock.tip.module.max= * %s (до %s)
 
-bdlib.rsmode.always=Всегда ВКЛ.
+bdlib.rsmode.always=Всегда включен
 bdlib.rsmode.never=Отключен
 bdlib.rsmode.rs_on=Включение по сигналу красного камня
 bdlib.rsmode.rs_off=Отключение по сигналу красного камня
 
 bdlib.label.empty=Пусто
+
+bdlib.oredistribution.usage=/oredistribution <радиус> [<мин. высота>] [<макс. высота>] [--file]
+bdlib.oredistribution.start1=Проверка распределения руд в области от (%s,%s,%s) до (%s,%s,%s) в измерении %s
+bdlib.oredistribution.start2=Сервер может лагать некоторое время
+bdlib.oredistribution.entry=%s %s - %s (%s%%)
+bdlib.oredistribution.warn=%s Предупреждение: %s имеет несколько сгенерированных вариаций:
+bdlib.oredistribution.saved=Дамп распределения руд сохранён в %s
+bdlib.oredistribution.error=Не удалось сохранить дамп распределения руд: %s
