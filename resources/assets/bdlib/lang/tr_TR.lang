@@ -1,0 +1,31 @@
+### Translated by RoCoKo
+bdlib.multiblock.face.north=Kuzey
+bdlib.multiblock.face.south=Güney
+bdlib.multiblock.face.east=Doğu
+bdlib.multiblock.face.west=Batı
+bdlib.multiblock.face.up=Üst
+bdlib.multiblock.face.down=Alt
+
+bdlib.multiblock.disabled=Devre Dışı
+bdlib.multiblock.incomplete=Bu makine eksik, en az bunlar gerekir:
+bdlib.multiblock.notconnected=Geçerli bir makineye bağlı değil.
+bdlib.multiblock.toomanyoutputs=Çok fazla çıkış bağlı, yeni bağlantı takılamıyor.
+bdlib.multiblock.tip.module=Yüklenebilir:
+bdlib.multiblock.tip.controller=Olası Modüller:
+bdlib.multiblock.tip.module.range= * %s (%s - %s)
+bdlib.multiblock.tip.module.max= * %s (up to %s)
+
+bdlib.rsmode.always=Her Zaman Açık
+bdlib.rsmode.never=Devre Dışı
+bdlib.rsmode.rs_on=Redstone'da Etkinleştir
+bdlib.rsmode.rs_off=Redstone'da Devre Dışı Bırak
+
+bdlib.label.empty=Boş
+
+bdlib.oredistribution.usage=/oredistribution <radius> [<min yükseklik>] [<max yükseklik>] [--dosya]
+bdlib.oredistribution.start1=Checking ore distribution in (%s,%s,%s) to (%s,%s,%s) dim %s
+bdlib.oredistribution.start2=Sunucuda bir süre lag olabilir.
+bdlib.oredistribution.entry=%s %s - %s (%s%%)
+bdlib.oredistribution.warn=%s Uyarı: %s birçok varyanta sahip:
+bdlib.oredistribution.saved=Cevher dağıtımı %s içine dökülüyor.
+bdlib.oredistribution.error=Cevher dağıtım dökümünü kaydetmek başarısız oldu: %s
