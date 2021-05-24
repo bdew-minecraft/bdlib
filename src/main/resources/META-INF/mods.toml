@@ -1,7 +1,7 @@
 modLoader = "kotori_scala"
 loaderVersion = "[2.13.3,2.14.0)"
 issueTrackerURL = "https://github.com/bdew-minecraft/bdlib/issues"
-license = "All Rights Reserved" #fixme
+license = "MIT"
 
 [[mods]]
 modId = "bdlib"
