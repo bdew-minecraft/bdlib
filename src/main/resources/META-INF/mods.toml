@@ -1,0 +1,28 @@
+modLoader = "kotori_scala"
+loaderVersion = "[2.13.3,2.14.0)"
+issueTrackerURL = "https://github.com/bdew-minecraft/bdlib/issues"
+license = "All Rights Reserved" #fixme
+
+[[mods]]
+modId = "bdlib"
+version = "${file.jarVersion}"
+displayName = "BdLib"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/bdlib"
+authors = "bdew"
+description = '''
+This is a collection of generic code used by my other mods.
+'''
+
+[[dependencies.bdlib]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.bdlib]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,)"
+ordering = "NONE"
+side = "BOTH"

@@ -1,31 +1,21 @@
 buildscript {
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-        maven {
-            name = "gradle plugins"
-            url = "https://plugins.gradle.org/m2/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 
+plugins {
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+}
+
 apply plugin: 'scala'
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 file "build.properties" withReader {
     def prop = new Properties()
@@ -33,82 +23,102 @@ file "build.properties" withReader {
     ext.config = new ConfigSlurper().parse prop
 }
 
-if (project.hasProperty('forgeOverride')) {
-    config.forge.version = forgeOverride
-}
-
 if (project.hasProperty('buildnum')) {
-    ext.simpleVersion = "${config.bdlib.version}.${project.buildnum}"
+    ext.simpleVersion = "${config.mod.version}.${project.buildnum}"
 } else {
-    ext.simpleVersion = "${config.bdlib.version}-DEV"
+    ext.simpleVersion = "${config.mod.version}-DEV"
 }
 
 version = simpleVersion + '-mc' + config.minecraft.version
 
-group = "net.bdew"
-archivesBaseName = "bdlib"
+group = 'net.bdew'
+archivesBaseName = config.mod.id
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
-    version = "${config.minecraft.version}-${config.forge.version}"
-    mappings = "${config.minecraft.mappings}"
-    makeObfSourceJar = false
-    runDir = "run"
-    replace("BDLIB_VER", simpleVersion.toString())
-}
-
-import org.apache.tools.ant.filters.ReplaceTokens
-
-
-sourceSets {
-    main {
-        scala {
-            srcDir 'src'
+    mappings channel: 'official', version: config.minecraft.version
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                register(config.mod.id) {
+                    source sourceSets.main
+                }
+            }
         }
-        resources {
-            srcDir 'resources'
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                register(config.mod.id) {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', config.mod.id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            mods {
+                register(config.mod.id) {
+                    source sourceSets.main
+                }
+            }
         }
     }
 }
 
-processResources {
-    inputs.property "tokens", minecraft.replacements
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        filter(ReplaceTokens, tokens: minecraft.replacements)
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        name = "Azure-SLP"
+        url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+        content {
+            includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
+        }
     }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+    repositories.stream().filter { it instanceof MavenArtifactRepository }.forEach { repo ->
+        repo.content {
+            excludeVersionByRegex(".*", ".*", ".*_mapped_snapshot_.*")
+        }
     }
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier "dev"
+dependencies {
+    minecraft(group: 'net.minecraftforge', name: 'forge', version: "${config.minecraft.version}-${config.forge.version}")
+
+    implementation(group: 'org.scala-lang', name: 'scala-library', version: config.scala.version)
+    implementation(group: 'com.kotori316', name: 'ScalableCatsForce'.toLowerCase(Locale.ROOT), version: config.slp.version, classifier: 'dev')
 }
 
-task sourceJarReal(type: Jar) {
-    // FG has a task named sourceJar that seems to be borked
-    classifier "sources"
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : config.mod.id,
+                "Specification-Vendor"    : "bdew",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : simpleVersion,
+                "Implementation-Vendor"   : "bdew",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
-afterEvaluate { project ->
-    // Use sources after replacements
-    tasks.getByPath(":sourceJarReal").from(tasks.getByPath(":sourceMainScala").outputs.files)
-}
-
-artifacts {
-    archives sourceJarReal
-    archives deobfJar
-}
-
-apply plugin: 'maven-publish'
+jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
         maven(MavenPublication) {
-            artifact deobfJar
-            artifact sourceJarReal
+            artifact jar
         }
     }
     repositories {
@@ -127,19 +137,13 @@ curseforge {
         changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
 
         addGameVersion config.minecraft.version
-        addGameVersion "1.12"
-        addGameVersion "1.12.1"
 
         mainArtifact(jar) {
             displayName = "BDLib ${simpleVersion} (MC ${config.minecraft.version})"
         }
 
-        addArtifact(deobfJar) {
-            displayName = "BDLib ${simpleVersion} Deobfuscated (MC ${config.minecraft.version})"
-        }
-
-        addArtifact(sourceJarReal) {
-            displayName = "BDLib ${simpleVersion} Source (MC ${config.minecraft.version})"
+        relations {
+            requiredDependency 'scalable-cats-force'
         }
     }
 }
