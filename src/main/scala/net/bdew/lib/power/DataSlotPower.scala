@@ -33,8 +33,8 @@ case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSl
   }
 
   def configure(cfg: PowerConfig): Unit = {
-    capacity = cfg.capacity.get().toFloat
-    maxReceive = cfg.activation.get().toFloat
+    capacity = cfg.capacity()
+    maxReceive = cfg.maxReceive()
   }
 
   def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
