@@ -10,15 +10,17 @@ import net.minecraftforge.registries.ForgeRegistries
 class FluidManager(blocks: BlockManager, items: ItemManager) extends RegistryManager(ForgeRegistries.FLUIDS) {
   def props(material: Material): AbstractBlock.Properties = AbstractBlock.Properties.of(material)
 
-  case class FluidDef[S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing, BL <: FlowingFluidBlock, BU <: BucketItem](source: RegistryObject[S], flowing: RegistryObject[F], block: RegistryObject[BL], bucket: RegistryObject[BU])
+  case class FluidDef[S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing](source: RegistryObject[S], flowing: RegistryObject[F])
 
-  def makeFluid[S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing, BL <: FlowingFluidBlock](
-                                                                                                         id: String,
-                                                                                                         attrs: FluidAttributes.Builder,
-                                                                                                         sourceFactory: ForgeFlowingFluid.Properties => S,
-                                                                                                         flowingFactory: ForgeFlowingFluid.Properties => F,
-                                                                                                         blockFactory: (() => ForgeFlowingFluid) => BL,
-                                                                                                       ): FluidDef[S, F, BL, BucketItem] = {
+  case class FluidDefBlock[S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing, BL <: FlowingFluidBlock, BU <: BucketItem](source: RegistryObject[S], flowing: RegistryObject[F], block: RegistryObject[BL], bucket: RegistryObject[BU])
+
+  def define[S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing, BL <: FlowingFluidBlock](
+                                                                                                      id: String,
+                                                                                                      attrs: FluidAttributes.Builder,
+                                                                                                      sourceFactory: ForgeFlowingFluid.Properties => S,
+                                                                                                      flowingFactory: ForgeFlowingFluid.Properties => F,
+                                                                                                      blockFactory: (() => ForgeFlowingFluid) => BL,
+                                                                                                    ): FluidDefBlock[S, F, BL, BucketItem] = {
     var props: ForgeFlowingFluid.Properties = null
     val still = register(id, () => sourceFactory(props))
     val flowing = register(id + "_flowing", () => flowingFactory(props))
@@ -27,6 +29,19 @@ class FluidManager(blocks: BlockManager, items: ItemManager) extends RegistryMan
       items.props.stacksTo(1).craftRemainder(net.minecraft.item.Items.BUCKET)))
     props = new ForgeFlowingFluid.Properties(still, flowing, attrs)
     props.block(block).bucket(bucket)
-    FluidDef(still, flowing, block, bucket)
+    FluidDefBlock(still, flowing, block, bucket)
+  }
+
+  def define[S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing](
+                                                                             id: String,
+                                                                             attrs: FluidAttributes.Builder,
+                                                                             sourceFactory: ForgeFlowingFluid.Properties => S,
+                                                                             flowingFactory: ForgeFlowingFluid.Properties => F,
+                                                                           ): FluidDef[S, F] = {
+    var props: ForgeFlowingFluid.Properties = null
+    val still = register(id, () => sourceFactory(props))
+    val flowing = register(id + "_flowing", () => flowingFactory(props))
+    props = new ForgeFlowingFluid.Properties(still, flowing, attrs)
+    FluidDef(still, flowing)
   }
 }
