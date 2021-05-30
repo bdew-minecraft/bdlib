@@ -1,6 +1,7 @@
 package net.bdew.lib
 
 import net.bdew.lib.commands.{CommandDumpRegistry, CommandOreDistribution}
+import net.bdew.lib.keepdata.KeepDataLootFunction
 import net.bdew.lib.multiblock.network.MultiblockNetHandler
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegisterCommandsEvent
@@ -23,6 +24,8 @@ object BdLib {
   MinecraftForge.EVENT_BUS.addListener(this.registerCommands)
 
   MultiblockNetHandler.init()
+
+  KeepDataLootFunction.register()
 
   private def registerCommands(event: RegisterCommandsEvent): Unit = {
     event.getDispatcher.register(CommandOreDistribution.register)
