@@ -17,6 +17,7 @@ abstract class BaseMachineRecipe(val id: ResourceLocation) extends IRecipe[NullI
   override def canCraftInDimensions(x: Int, y: Int): Boolean = true
   override def getResultItem: ItemStack = ItemStack.EMPTY
   override def getId: ResourceLocation = id
+  override def isSpecial: Boolean = true
 }
 
 abstract class BaseMachineRecipeSerializer[T <: BaseMachineRecipe] extends ForgeRegistryEntry[IRecipeSerializer[_]] with IRecipeSerializer[T]
