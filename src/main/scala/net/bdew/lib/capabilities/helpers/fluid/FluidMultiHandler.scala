@@ -25,6 +25,7 @@ abstract class FluidMultiHandler() extends IFluidHandler {
     run(tank, _.isFluidValid(_, stack)).getOrElse(false)
 
   override def fill(original: FluidStack, action: IFluidHandler.FluidAction): Int = {
+    if (original.isEmpty) return 0
     val resource = original.copy()
     val starting = resource.getAmount
     for (tank <- handlers) {
