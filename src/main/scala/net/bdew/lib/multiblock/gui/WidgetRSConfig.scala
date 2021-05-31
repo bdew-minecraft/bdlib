@@ -6,7 +6,7 @@ import net.bdew.lib.gui.{Point, Rect, Texture}
 import net.bdew.lib.misc.RSMode
 import net.bdew.lib.multiblock.data.OutputConfigRSControllable
 import net.bdew.lib.multiblock.interact.CIOutputFaces
-import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgRSMode, MultiblockNetHandler}
+import net.bdew.lib.multiblock.network.{MsgOutputCfgRSMode, MultiblockNetHandler}
 import net.minecraft.util.text.ITextComponent
 
 import java.util.Locale
@@ -34,6 +34,6 @@ class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSub
   )
 
   def clicked(b: WidgetButtonIcon): Unit = {
-    MultiblockNetHandler.sendToServer(MsgOutputCfg(output, MsgOutputCfgRSMode(next(cfg.rsMode))))
+    MultiblockNetHandler.sendToServer(MsgOutputCfgRSMode(output, next(cfg.rsMode)))
   }
 }

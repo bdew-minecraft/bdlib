@@ -1,6 +1,6 @@
 package net.bdew.lib.multiblock.data
 
-import net.bdew.lib.multiblock.network.{MsgOutputCfgPayload, MsgOutputCfgSlot}
+import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgSlot}
 import net.minecraft.nbt.CompoundNBT
 
 trait OutputConfigSlots {
@@ -18,8 +18,8 @@ class OutputConfigFluidSlots(val slotsDef: SlotSet) extends OutputConfigFluid wi
     super.write(t)
     t.putString("slot", slot.id)
   }
-  override def handleConfigPacket(m: MsgOutputCfgPayload): Unit = m match {
-    case MsgOutputCfgSlot(id) => slot = slotsDef.get(id)
+  override def handleConfigPacket(m: MsgOutputCfg): Unit = m match {
+    case MsgOutputCfgSlot(_, id) => slot = slotsDef.get(id)
     case _ => super.handleConfigPacket(m)
   }
 }

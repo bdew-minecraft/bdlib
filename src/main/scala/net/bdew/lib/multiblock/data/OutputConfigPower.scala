@@ -1,7 +1,7 @@
 package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.misc.RSMode
-import net.bdew.lib.multiblock.network.{MsgOutputCfgPayload, MsgOutputCfgRSMode}
+import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgRSMode}
 import net.minecraft.nbt.CompoundNBT
 
 class OutputConfigPower(var unit: String = "fe") extends OutputConfig with OutputConfigRSControllable {
@@ -27,8 +27,8 @@ class OutputConfigPower(var unit: String = "fe") extends OutputConfig with Outpu
     t.putString("unit", unit)
   }
 
-  def handleConfigPacket(m: MsgOutputCfgPayload): Unit = m match {
-    case MsgOutputCfgRSMode(r) => rsMode = r
+  def handleConfigPacket(m: MsgOutputCfg): Unit = m match {
+    case MsgOutputCfgRSMode(_, r) => rsMode = r
     case _ => sys.error("Invalid output config packet %s to config %s".format(m, this))
   }
 }
