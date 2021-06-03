@@ -12,8 +12,7 @@ import net.minecraftforge.fml.network.{NetworkDirection, NetworkEvent, NetworkRe
 import java.util.Optional
 import scala.reflect.ClassTag
 
-class NetChannel(val name: String, val version: String) {
-  val modId: String = Misc.getActiveModId
+class NetChannel(val modId: String, val name: String, val version: String) {
   val id = new ResourceLocation(modId, name)
 
   val channel: SimpleChannel = NetworkRegistry.newSimpleChannel(id, () => version, version.equals, version.equals)
