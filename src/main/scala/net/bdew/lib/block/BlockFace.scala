@@ -37,6 +37,5 @@ object BlockFace {
     val bottom: Direction = top.getOpposite
     val left: Direction = right.getOpposite
   }
-
 }
 
