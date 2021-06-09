@@ -1,5 +1,6 @@
 package net.bdew.lib.rich
 
+import net.bdew.lib.PimpVanilla.pimpLazyOpt
 import net.minecraft.util.Direction
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockReader
@@ -27,7 +28,7 @@ class RichBlockReader(val v: IBlockReader) extends AnyVal {
   def getCapSafe[T](p: BlockPos, side: Direction, cap: Capability[T]): Option[T] = {
     val te = v.getBlockEntity(p)
     if (v != null)
-      te.getCapability(cap, side).map[Option[T]](x => Option(x)).orElseGet(() => None)
+      te.getCapability(cap, side).toScala
     else
       None
   }

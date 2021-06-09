@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundNBT
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.{IBlockReader, World}
 import net.minecraftforge.client.model.data.IModelData
+import net.minecraftforge.common.util.LazyOptional
 
 import scala.language.implicitConversions
 
@@ -21,6 +22,7 @@ object PimpVanilla {
   implicit def pimpNBT(p: CompoundNBT): RichCompoundNBT = new RichCompoundNBT(p)
   implicit def pimpBlockState(p: BlockState): RichBlockState = new RichBlockState(p)
   implicit def pimpModelData(p: IModelData): RichIModelData = new RichIModelData(p)
+  implicit def pimpLazyOpt[T](o: LazyOptional[T]): RichLazyOpt[T] = new RichLazyOpt(o)
 
   // Helpers for NBT stuff
 
