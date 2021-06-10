@@ -6,6 +6,8 @@ import net.minecraft.nbt.CompoundNBT
 
 trait ItemPoweredBase extends Item {
   def maxCharge: Float
+  def maxReceive: Float
+  def maxExtract: Float
 
   def getCharge(stack: ItemStack): Float = {
     if (!stack.hasTag) setCharge(stack, 0)
@@ -27,12 +29,11 @@ trait ItemPoweredBase extends Item {
   def setCharge(stack: ItemStack, charge: Float): Unit = {
     if (!stack.hasTag) stack.setTag(new CompoundNBT())
     stack.getTag.putFloat("charge", charge)
-    updateDamage(stack)
   }
 
   def injectCharge(stack: ItemStack, v: Float, simulate: Boolean): Float = {
     val current = getCharge(stack)
-    val canAdd = Misc.clamp(v, 0F, maxCharge - current)
+    val canAdd = Misc.clamp(v, 0F, Math.min(maxCharge - current, maxReceive))
     if ((canAdd > 0) && !simulate) {
       setCharge(stack, current + canAdd)
     }
@@ -41,15 +42,11 @@ trait ItemPoweredBase extends Item {
 
   def extractCharge(stack: ItemStack, v: Float, simulate: Boolean): Float = {
     val current = getCharge(stack)
-    val canExtract = Misc.clamp(v, 0F, current)
+    val canExtract = Misc.clamp(v, 0F, Math.min(current, maxExtract))
     if ((canExtract > 0) && !simulate) {
       setCharge(stack, current - canExtract)
     }
     canExtract
-  }
-
-  def updateDamage(stack: ItemStack): Unit = {
-    setDamage(stack, Misc.clamp((100 * (1 - getCharge(stack) / maxCharge)).round, 1, 100))
   }
 
   def stackWithCharge(charge: Float): ItemStack = {
@@ -58,5 +55,7 @@ trait ItemPoweredBase extends Item {
     n
   }
 
-  override def setDamage(stack: ItemStack, damage: Int): Unit = super.setDamage(stack, Misc.clamp(damage, 1, 100))
+  override def showDurabilityBar(stack: ItemStack) = true
+
+  override def getDurabilityForDisplay(stack: ItemStack): Double = 1 - 1D * getCharge(stack) / maxCharge
 }
