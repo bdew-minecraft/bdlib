@@ -1,6 +1,6 @@
 package net.bdew.lib.network
 
-import net.bdew.lib.{BdLib, Misc}
+import net.bdew.lib.Misc
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.inventory.container.Container
 import net.minecraft.network.PacketBuffer
@@ -8,11 +8,15 @@ import net.minecraft.util.{RegistryKey, ResourceLocation}
 import net.minecraft.world.World
 import net.minecraftforge.fml.network.simple.SimpleChannel
 import net.minecraftforge.fml.network.{NetworkDirection, NetworkEvent, NetworkRegistry, PacketDistributor}
+import org.apache.logging.log4j.{LogManager, Logger}
 
 import java.util.Optional
+import java.util.function.Supplier
 import scala.reflect.ClassTag
 
 class NetChannel(val modId: String, val name: String, val version: String) {
+  val log: Logger = LogManager.getLogger
+
   val id = new ResourceLocation(modId, name)
 
   val channel: SimpleChannel = NetworkRegistry.newSimpleChannel(id, () => version, version.equals, version.equals)
@@ -26,12 +30,24 @@ class NetChannel(val modId: String, val name: String, val version: String) {
   }
 
   def init(): Unit = {
-    BdLib.logInfo("Initialized network channel '%s' for mod '%s'", name, modId)
+    log.info(s"Initialized network channel '$name' for mod '$modId'")
+  }
+
+  def wrapHandler(cs: Supplier[NetworkEvent.Context], h: => Unit): Unit = {
+    try {
+      h
+    } catch {
+      case e: Throwable =>
+        val ctx = cs.get()
+        log.error(s"Error handling packet on channel $id from ${if (ctx.getSender == null) "SERVER" else ctx.getSender.toString}", e)
+    } finally {
+      cs.get().setPacketHandled(true)
+    }
   }
 
   def regServerHandler[M <: Message](id: Int, codec: Codec[M])(handler: (M, NetworkEvent.Context) => Unit): Unit = {
     channel.registerMessage[M](id, codec.cls, codec.encodeMsg, codec.decodeMsg,
-      (m, cs) => handler(m, cs.get()), Optional.of(NetworkDirection.PLAY_TO_SERVER))
+      (m, cs) => wrapHandler(cs, handler(m, cs.get())), Optional.of(NetworkDirection.PLAY_TO_SERVER))
   }
 
   def regServerContainerHandler[M <: Message, C <: Container](id: Int, codec: Codec[M], cont: Class[C])(handler: (M, C, NetworkEvent.Context) => Unit): Unit = {
@@ -42,7 +58,7 @@ class NetChannel(val modId: String, val name: String, val version: String) {
 
   def regClientHandler[M <: Message](id: Int, codec: Codec[M])(handler: M => Unit): Unit = {
     channel.registerMessage[M](id, codec.cls, codec.encodeMsg, codec.decodeMsg,
-      (m, _) => handler(m), Optional.of(NetworkDirection.PLAY_TO_CLIENT))
+      (m, cs) => wrapHandler(cs, handler(m)), Optional.of(NetworkDirection.PLAY_TO_CLIENT))
   }
 
   def sendToAll(message: Message): Unit = {
