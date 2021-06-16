@@ -1,18 +1,21 @@
 package net.bdew.lib.power
 
 import net.bdew.lib.Misc
+import net.bdew.lib.items.StackProperty
 import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.nbt.CompoundNBT
 
 trait ItemPoweredBase extends Item {
   def maxCharge: Float
   def maxReceive: Float
   def maxExtract: Float
 
-  def getCharge(stack: ItemStack): Float = {
-    if (!stack.hasTag) setCharge(stack, 0)
-    Misc.clamp(stack.getTag.getFloat("charge"), 0, maxCharge)
-  }
+  val charge = new StackProperty[Float]("charge")
+
+  def setCharge(stack: ItemStack, amount: Float): Unit =
+    charge.set(stack, amount)
+
+  def getCharge(stack: ItemStack): Float =
+    Misc.clamp(charge.get(stack, 0), 0f, maxCharge)
 
   def useCharge(stack: ItemStack, amount: Float): Boolean = {
     val charge = getCharge(stack)
@@ -24,11 +27,6 @@ trait ItemPoweredBase extends Item {
 
   def hasCharge(stack: ItemStack, amount: Float): Boolean = {
     getCharge(stack) >= amount
-  }
-
-  def setCharge(stack: ItemStack, charge: Float): Unit = {
-    if (!stack.hasTag) stack.setTag(new CompoundNBT())
-    stack.getTag.putFloat("charge", charge)
   }
 
   def injectCharge(stack: ItemStack, v: Float, simulate: Boolean): Float = {
