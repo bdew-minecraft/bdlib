@@ -40,6 +40,11 @@ abstract class NoInvContainer(containerType: ContainerType[_], id: Int) extends 
     }
   }
 
+  override def quickMoveStack(p_82846_1_ : PlayerEntity, p_82846_2_ : Int): ItemStack = {
+    // Nothing to do here if container has no inventory, and vanilla code can lock up so just do nothing
+    ItemStack.EMPTY
+  }
+
   override def removeSlotListener(listener: IContainerListener): Unit = {
     super.removeSlotListener(listener)
     listener match {
