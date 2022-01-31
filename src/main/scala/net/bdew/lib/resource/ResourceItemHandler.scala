@@ -1,7 +1,7 @@
 package net.bdew.lib.resource
 
 import net.bdew.lib.Misc
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 import net.minecraftforge.items.IItemHandler
 
 class ResourceItemHandler(slot: DataSlotResource) extends IItemHandler {

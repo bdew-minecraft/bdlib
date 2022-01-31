@@ -3,7 +3,7 @@ package net.bdew.lib.multiblock.tile
 import net.bdew.lib.Misc
 import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.data.OutputConfig
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
 
 class TileOutputTracker[T <: OutputConfig](te: TileOutput[T], updateConfig: (T, Float) => Unit) {
   var outThisTick: Map[Direction, Float] = Map.empty[Direction, Float].withDefaultValue(0f)

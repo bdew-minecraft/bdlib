@@ -1,15 +1,15 @@
 package net.bdew.lib.data.base
 
 import net.bdew.lib.Event0
-import net.bdew.lib.tile.TileTicking
+import net.bdew.lib.tile.TileTickingServer
 
 /**
- * Trait for container that support ticks.
- * Register handler with server/clientTick.listen(...)
+ * Trait for container that support server side ticks
+ * client ticks support removed as of 1.18
+ * Register handler with server.listen(...)
  */
 trait DataSlotContainerTicking extends DataSlotContainer {
   val serverTick: Event0
-  val clientTick: Event0
 }
 
 /**
@@ -19,5 +19,5 @@ trait DataSlotTicking extends DataSlot {
   val parent: DataSlotContainerTicking
 }
 
-trait TileDataSlotsTicking extends TileDataSlots with TileTicking with DataSlotContainerTicking
+trait TileDataSlotsTicking extends TileDataSlots with TileTickingServer with DataSlotContainerTicking
 

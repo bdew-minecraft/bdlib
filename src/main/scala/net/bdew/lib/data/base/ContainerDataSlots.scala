@@ -1,13 +1,14 @@
 package net.bdew.lib.data.base
 
 import net.bdew.lib.container.NoInvContainer
-import net.minecraft.entity.player.{PlayerEntity, ServerPlayerEntity}
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.player.Player
 
 trait ContainerDataSlots extends NoInvContainer {
   val dataSource: TileDataSlots
   var lastSentChange: Long = dataSource.lastChange
 
-  override protected def playerAdded(player: ServerPlayerEntity): Unit = {
+  override protected def playerAdded(player: ServerPlayer): Unit = {
     super.playerAdded(player)
     player.connection.send(dataSource.getDataSlotPacket)
   }
@@ -24,5 +25,5 @@ trait ContainerDataSlots extends NoInvContainer {
     }
   }
 
-  override def stillValid(player: PlayerEntity): Boolean = dataSource.isEntityInRange(player, 64D)
+  override def stillValid(player: Player): Boolean = dataSource.isEntityInRange(player, 64D)
 }

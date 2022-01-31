@@ -1,17 +1,18 @@
 package net.bdew.lib.managers
 
-import net.minecraft.block.Block
-import net.minecraft.tileentity.{TileEntity, TileEntityType}
-import net.minecraftforge.fml.RegistryObject
-import net.minecraftforge.registries.ForgeRegistries
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
-class TEManager extends RegistryManager(ForgeRegistries.TILE_ENTITIES) {
-  def registerWithBlock[E <: TileEntity](name: String, teFactory: TileEntityType[E] => E, blockReg: RegistryObject[_ <: Block]): RegistryObject[TileEntityType[E]] = {
-    var teType: RegistryObject[TileEntityType[E]] = null // for foward reference to pass to factory
+class TEManager extends RegistryManager(ForgeRegistries.BLOCK_ENTITIES) {
+  def registerWithBlock[E <: BlockEntity](name: String, teFactory: (BlockEntityType[E], BlockPos, BlockState) => E, blockReg: RegistryObject[_ <: Block]): RegistryObject[BlockEntityType[E]] = {
+    var teType: RegistryObject[BlockEntityType[E]] = null // for forward reference to pass to factory
     teType =
       register(name, () => {
         val block = blockReg.get()
-        val builder = TileEntityType.Builder.of[E](() => teFactory(teType.get()), block)
+        val builder = BlockEntityType.Builder.of[E]((pos: BlockPos, state: BlockState) => teFactory(teType.get(), pos, state), block)
         val tmp = builder.build(null)
         TEManager.synchronized {
           // this will be called in parallel from different mods so needs to synchronize access
@@ -24,5 +25,5 @@ class TEManager extends RegistryManager(ForgeRegistries.TILE_ENTITIES) {
 }
 
 object TEManager {
-  var blockMap = Map.empty[Block, TileEntityType[_]]
+  var blockMap = Map.empty[Block, BlockEntityType[_]]
 }

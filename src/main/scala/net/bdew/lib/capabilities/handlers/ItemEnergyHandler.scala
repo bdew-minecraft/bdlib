@@ -1,7 +1,7 @@
 package net.bdew.lib.capabilities.handlers
 
 import net.bdew.lib.power.ItemPoweredBase
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 import net.minecraftforge.energy.IEnergyStorage
 
 class ItemEnergyHandler(item: ItemPoweredBase, stack: ItemStack, receive: Boolean, extract: Boolean) extends IEnergyStorage {

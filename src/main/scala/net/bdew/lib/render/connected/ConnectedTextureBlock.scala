@@ -1,9 +1,9 @@
 package net.bdew.lib.render.connected
 
-import net.minecraft.block.Block
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.IBlockReader
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.level.block.Block
 
 trait ConnectedTextureBlock extends Block {
-  def canConnect(world: IBlockReader, origin: BlockPos, target: BlockPos): Boolean
+  def canConnect(world: BlockGetter, origin: BlockPos, target: BlockPos): Boolean
 }

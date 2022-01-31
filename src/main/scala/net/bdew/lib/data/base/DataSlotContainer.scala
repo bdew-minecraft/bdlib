@@ -1,8 +1,8 @@
 package net.bdew.lib.data.base
 
-import net.minecraft.entity.Entity
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.world.World
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.Level
 
 import scala.collection.mutable
 
@@ -12,7 +12,7 @@ import scala.collection.mutable
 trait DataSlotContainer {
 
   // Can't use getWorld - it fails to get remapped and stuff breaks in obfuscated environment
-  def getWorldObject: World
+  def getWorldObject: Level
 
   /**
    * Called when a dataslot value changes
@@ -43,7 +43,7 @@ trait DataSlotContainer {
 
   final val TRACE = false
 
-  def doSave(kind: UpdateKind.Value, t: CompoundNBT): Unit = {
+  def doSave(kind: UpdateKind.Value, t: CompoundTag): Unit = {
     if (kind == UpdateKind.GUI)
       t.putLong("BDLib_TS", getWorldObject.getGameTime)
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
@@ -52,7 +52,7 @@ trait DataSlotContainer {
     }
   }
 
-  def doLoad(kind: UpdateKind.Value, t: CompoundNBT): Unit = {
+  def doLoad(kind: UpdateKind.Value, t: CompoundTag): Unit = {
     if (kind == UpdateKind.GUI) {
       val ts = t.getLong("BDLib_TS")
       if (ts > lastGuiPacket) {

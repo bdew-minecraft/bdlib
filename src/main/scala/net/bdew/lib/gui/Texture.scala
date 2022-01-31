@@ -1,8 +1,9 @@
 package net.bdew.lib.gui
 
+import com.mojang.blaze3d.systems.RenderSystem
 import net.bdew.lib.Client
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.util.ResourceLocation
+import net.minecraft.resources.ResourceLocation
 
 trait Texture {
   def u1: Float
@@ -25,7 +26,7 @@ class IconWrapper(val resource: ResourceLocation, icon: TextureAtlasSprite) exte
   def u2: Float = icon.getU1
   def v1: Float = icon.getV0
   def v2: Float = icon.getV1
-  def bind(): Unit = Client.textureManager.bind(resource)
+  def bind(): Unit = RenderSystem.setShaderTexture(0, resource)
 }
 
 class Sprite(val resource: ResourceLocation, r: Rect, scale: Int = 256) extends Texture {
@@ -34,7 +35,7 @@ class Sprite(val resource: ResourceLocation, r: Rect, scale: Int = 256) extends 
   def u2: Float = rect.x2
   def v1: Float = rect.y1
   def v2: Float = rect.y2
-  def bind(): Unit = Client.textureManager.bind(resource)
+  def bind(): Unit = RenderSystem.setShaderTexture(0, resource)
 }
 
 class ScaledResourceLocation(path: String, val scale: Int = 256) extends ResourceLocation(path) {

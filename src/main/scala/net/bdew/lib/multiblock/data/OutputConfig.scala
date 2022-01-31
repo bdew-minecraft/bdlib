@@ -1,20 +1,20 @@
 package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.multiblock.network.MsgOutputCfg
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 abstract class OutputConfig {
   def id: String
-  def read(t: CompoundNBT): Unit
-  def write(t: CompoundNBT): Unit
+  def read(t: CompoundTag): Unit
+  def write(t: CompoundTag): Unit
   def handleConfigPacket(m: MsgOutputCfg): Unit
 }
 
 class OutputConfigInvalid extends OutputConfig {
   override val id: String = "invalid"
-  def read(t: CompoundNBT): Unit = {}
-  def write(t: CompoundNBT): Unit = throw new NotImplementedException
+  def read(t: CompoundTag): Unit = {}
+  def write(t: CompoundTag): Unit = throw new NotImplementedException
   def handleConfigPacket(m: MsgOutputCfg): Unit = throw new NotImplementedException
 }
 

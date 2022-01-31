@@ -1,11 +1,11 @@
 package net.bdew.lib.sensors
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui._
 import net.bdew.lib.{BdLib, Misc}
-import net.minecraft.inventory.container.ClickType
-import net.minecraft.item.ItemStack
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.network.chat.Component
+import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.item.ItemStack
 import net.minecraftforge.api.distmarker.{Dist, OnlyIn}
 
 abstract class SensorSystem[T, R](defaultResult: R) {
@@ -25,10 +25,10 @@ abstract class SensorSystem[T, R](defaultResult: R) {
   def localizationPrefix: String
 
   @OnlyIn(Dist.CLIENT)
-  def drawResult(m: MatrixStack, result: R, rect: Rect, target: DrawTarget): Unit
+  def drawResult(m: PoseStack, result: R, rect: Rect, target: DrawTarget): Unit
 
   @OnlyIn(Dist.CLIENT)
-  def getResultText(result: R): ITextComponent
+  def getResultText(result: R): Component
 
   abstract class SensorType extends GenericSensorType(this)
 

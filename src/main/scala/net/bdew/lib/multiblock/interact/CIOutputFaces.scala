@@ -6,15 +6,15 @@ import net.bdew.lib.data.base.UpdateKind
 import net.bdew.lib.multiblock.data._
 import net.bdew.lib.multiblock.tile.{TileController, TileModule, TileOutput}
 import net.bdew.lib.{BdLib, Client, Text}
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.{Direction, Util}
+import net.minecraft.Util
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.nbt.CompoundTag
 
 trait CIOutputFaces extends TileController {
   val maxOutputs: Int
 
   val outputFaces: DataSlotBlockFaceMap = new DataSlotBlockFaceMap("outputs", this) {
-    override def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+    override def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
       super.load(t, kind)
       if (kind == UpdateKind.WORLD) {
         getModuleTiles[TileOutput[_]].foreach(t => {

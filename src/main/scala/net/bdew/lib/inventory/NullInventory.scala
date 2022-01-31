@@ -1,10 +1,10 @@
 package net.bdew.lib.inventory
 
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.IInventory
-import net.minecraft.item.ItemStack
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 
-class NullInventory extends IInventory {
+class NullInventory extends Container {
   override def getContainerSize: Int = 0
   override def isEmpty: Boolean = true
   override def getItem(slot: Int): ItemStack = ItemStack.EMPTY
@@ -12,7 +12,7 @@ class NullInventory extends IInventory {
   override def removeItemNoUpdate(slot: Int): ItemStack = ItemStack.EMPTY
   override def setItem(slot: Int, stack: ItemStack): Unit = {}
   override def setChanged(): Unit = {}
-  override def stillValid(player: PlayerEntity): Boolean = false
+  override def stillValid(player: Player): Boolean = false
   override def clearContent(): Unit = {}
 }
 

@@ -1,10 +1,10 @@
 package net.bdew.lib.inventory
 
-import net.minecraft.inventory.{IInventory, ISidedInventory}
-import net.minecraft.item.ItemStack
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
+import net.minecraft.world.{Container, WorldlyContainer}
+import net.minecraft.world.item.ItemStack
 
-class RestrictedInventory(inv: IInventory, canExtract: (Int, Direction) => Boolean, canInsert: (Int, ItemStack, Direction) => Boolean) extends InventoryProxy(inv) with ISidedInventory {
+class RestrictedInventory(inv: Container, canExtract: (Int, Direction) => Boolean, canInsert: (Int, ItemStack, Direction) => Boolean) extends InventoryProxy(inv) with WorldlyContainer {
   override def getSlotsForFace(face: Direction): Array[Int] =
     (0 until inv.getContainerSize).toArray
 

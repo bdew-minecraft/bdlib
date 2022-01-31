@@ -5,12 +5,14 @@ import net.bdew.lib.data.DataSlotBoolean
 import net.bdew.lib.data.base.UpdateKind
 import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.multiblock.tile.{TileModule, TileOutput}
-import net.minecraft.block.{Block, BlockState}
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.util.math.{BlockPos, BlockRayTraceResult}
-import net.minecraft.util.{ActionResultType, Direction, Hand}
-import net.minecraft.world.World
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.{InteractionHand, InteractionResult}
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.BlockHitResult
 
 trait TileForcedOutput extends TileModule {
   this: TileOutput[_] =>
@@ -33,9 +35,9 @@ trait TileForcedOutput extends TileModule {
 
 trait BlockForcedOutput extends Block with WrenchableBlock {
   this: BlockModule[_ <: TileForcedOutput] =>
-  override def wrenched(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, stack: ItemStack, hit: BlockRayTraceResult): ActionResultType = {
-    if (world.isClientSide) return ActionResultType.SUCCESS
+  override def wrenched(state: BlockState, world: Level, pos: BlockPos, player: Player, hand: InteractionHand, stack: ItemStack, hit: BlockHitResult): InteractionResult = {
+    if (world.isClientSide) return InteractionResult.SUCCESS
     getTE(world, pos).switchSideForced(hit.getDirection)
-    ActionResultType.CONSUME
+    InteractionResult.CONSUME
   }
 }

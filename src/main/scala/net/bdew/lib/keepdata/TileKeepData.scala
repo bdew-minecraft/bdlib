@@ -2,8 +2,8 @@ package net.bdew.lib.keepdata
 
 import net.bdew.lib.nbt.NBT
 import net.bdew.lib.tile.TileExtended
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.item.ItemStack
 
 /**
  * Mixin for tile entities to keep their data when broken
@@ -16,7 +16,7 @@ trait TileKeepData extends TileExtended {
    * @param t Automatically serialized data
    * @return Modified serialized data
    */
-  def afterTileBreakSave(t: CompoundNBT) = t
+  def afterTileBreakSave(t: CompoundTag): CompoundTag = t
 
   /**
    * Override to modify data that will be load from an item
@@ -25,14 +25,14 @@ trait TileKeepData extends TileExtended {
    * @param t Automatically serialized data
    * @return Modified serialized data
    */
-  def beforeTileBreakLoad(t: CompoundNBT) = t
+  def beforeTileBreakLoad(t: CompoundTag): CompoundTag = t
 
-  final def saveToItem(is: ItemStack): Unit = {
+  final def saveDataToItem(is: ItemStack): Unit = {
     val tag = is.getOrCreateTag()
     tag.put("data", afterTileBreakSave(NBT.from(persistSave.trigger)))
   }
 
-  final def loadFromItem(is: ItemStack): Unit = {
+  final def loadDataFromItem(is: ItemStack): Unit = {
     if (is.hasTag && is.getTag.contains("data")) {
       persistLoad.trigger(beforeTileBreakLoad(is.getTag.getCompound("data")))
     }

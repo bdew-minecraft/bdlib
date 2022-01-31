@@ -5,17 +5,18 @@ import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.multiblock.ModuleType
 import net.bdew.lib.multiblock.tile.{TileController, TileModule}
 import net.bdew.lib.sensors.{DataSlotSensor, RedstoneSensors, SensorPair}
-import net.bdew.lib.tile.{TileExtended, TileTicking}
-import net.minecraft.inventory.container.INamedContainerProvider
-import net.minecraft.tileentity.{TileEntity, TileEntityType}
-import net.minecraft.util.math.BlockPos
+import net.bdew.lib.tile.{TileExtended, TileTickingServer}
+import net.minecraft.core.BlockPos
+import net.minecraft.world.MenuProvider
+import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
+import net.minecraft.world.level.block.state.BlockState
 
-abstract class TileRedstoneSensorModule(val kind: ModuleType, val system: RedstoneSensors[TileEntity], block: BlockRedstoneSensorModule[_], teType: TileEntityType[_]) extends TileExtended(teType)
-  with TileModule with TileTicking with INamedContainerProvider {
+abstract class TileRedstoneSensorModule(val kind: ModuleType, val system: RedstoneSensors[BlockEntity], block: BlockRedstoneSensorModule[_], teType: BlockEntityType[_], pos: BlockPos, state: BlockState) extends TileExtended(teType, pos, state)
+  with TileModule with TileTickingServer with MenuProvider {
 
   override def getCore: Option[CIRedstoneSensors] = getCoreAs[CIRedstoneSensors]
 
-  val config: DataSlotSensor[TileEntity, Boolean] = DataSlotSensor(system, "sensor", this, system.DisabledSensor)
+  val config: DataSlotSensor[BlockEntity, Boolean] = DataSlotSensor(system, "sensor", this, system.DisabledSensor)
 
   override def connect(target: TileController): Unit = {
     super.connect(target)

@@ -1,11 +1,10 @@
 package net.bdew.lib.managers
 
-import net.minecraft.item.{Item, ItemGroup}
-import net.minecraftforge.fml.RegistryObject
-import net.minecraftforge.registries.ForgeRegistries
+import net.minecraft.world.item.{CreativeModeTab, Item}
+import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
 
-class ItemManager(itemGroup: ItemGroup) extends RegistryManager(ForgeRegistries.ITEMS) {
+class ItemManager(itemGroup: CreativeModeTab) extends RegistryManager(ForgeRegistries.ITEMS) {
   def props: Item.Properties = new Item.Properties().tab(itemGroup)
 
   def simple(id: String, props: Item.Properties): RegistryObject[Item] = {

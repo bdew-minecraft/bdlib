@@ -1,11 +1,11 @@
 package net.bdew.lib.multiblock.gui
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Text
 import net.bdew.lib.gui.widgets.Widget
 import net.bdew.lib.gui.{BaseRect, ModelDrawHelper, Point, Rect, Texture}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.network.chat.Component
 
 import java.util.Locale
 import scala.collection.mutable.ArrayBuffer
@@ -14,7 +14,7 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
   val rect = new Rect(p, 16, 16)
   val drawRect: BaseRect[Float] = Rect(p.x + 1, p.y + 1, 14, 14)
 
-  override def draw(m: MatrixStack, mouse: Point, partial: Float): Unit = {
+  override def draw(m: PoseStack, mouse: Point, partial: Float): Unit = {
     val faces = te.outputFaces.inverted
     faces.get(output).map { bf =>
       ModelDrawHelper.renderWorldBlockIntoGUI(m, te.getLevel, bf.pos, bf.face, drawRect)
@@ -23,7 +23,7 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
     }
   }
 
-  override def handleTooltip(p: Point, tip: ArrayBuffer[ITextComponent]): Unit = {
+  override def handleTooltip(p: Point, tip: ArrayBuffer[Component]): Unit = {
     val faces = te.outputFaces.inverted
     tip += Text.translate(te.resources.unlocalizedOutputName(output))
     if (faces.isDefinedAt(output)) {

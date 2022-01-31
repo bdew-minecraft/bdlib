@@ -1,22 +1,22 @@
 package net.bdew.lib.inventory
 
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.IInventory
-import net.minecraft.item.ItemStack
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 
-class MultipleInventoryAdapter(inventories: List[IInventory]) extends IInventory {
-  def mapInvs: List[(IInventory, Int)] =
+class MultipleInventoryAdapter(inventories: List[Container]) extends Container {
+  def mapInvs: List[(Container, Int)] =
     inventories.flatMap(x => (0 until x.getContainerSize).map(t => (x, t)))
 
   override def setChanged(): Unit = inventories.foreach(_.setChanged())
   override def clearContent(): Unit = inventories.foreach(_.clearContent())
 
-  override def stillValid(player: PlayerEntity): Boolean = inventories.exists(_.stillValid(player))
+  override def stillValid(player: Player): Boolean = inventories.exists(_.stillValid(player))
 
   override def getContainerSize: Int = inventories.map(x => x.getContainerSize).sum
   override def isEmpty: Boolean = inventories.forall(_.isEmpty)
 
-  private def run[T](slot: Int, f: (IInventory, Int) => T): Option[T] =
+  private def run[T](slot: Int, f: (Container, Int) => T): Option[T] =
     mapInvs.lift(slot).map(x => f.tupled(x))
 
   override def getItem(slot: Int): ItemStack =
@@ -32,7 +32,7 @@ class MultipleInventoryAdapter(inventories: List[IInventory]) extends IInventory
     run(slot, _.setItem(_, stack))
 }
 
-class MultipleInventoryAdapterStatic(inventories: List[IInventory]) extends MultipleInventoryAdapter(inventories) {
+class MultipleInventoryAdapterStatic(inventories: List[Container]) extends MultipleInventoryAdapter(inventories) {
   // Optimized version for inventories that never change sizes
-  override val mapInvs: List[(IInventory, Int)] = super.mapInvs
+  override val mapInvs: List[(Container, Int)] = super.mapInvs
 }

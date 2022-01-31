@@ -2,7 +2,7 @@ package net.bdew.lib.tile
 
 import net.bdew.lib.Misc
 import net.bdew.lib.data.mixins.DataSlotNumeric
-import net.minecraft.fluid.Fluid
+import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction
 import net.minecraftforge.fluids.{FluidStack, IFluidTank}

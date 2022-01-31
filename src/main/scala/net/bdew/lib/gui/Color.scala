@@ -6,7 +6,7 @@ import net.bdew.lib.Misc
 case class Color(r: Float, g: Float, b: Float, a: Float = 1) {
   def this(c: (Float, Float, Float)) = this(c._1, c._2, c._3)
   def this(c: (Float, Float, Float, Float)) = this(c._1, c._2, c._3, c._4)
-  def activate(): Unit = RenderSystem.color4f(r, g, b, a)
+  def activate(): Unit = RenderSystem.setShaderColor(r, g, b, a)
   def asARGB: Int =
     Misc.clamp((a * 255).round, 0, 255) << 24 |
       Misc.clamp((r * 255).round, 0, 255) << 16 |

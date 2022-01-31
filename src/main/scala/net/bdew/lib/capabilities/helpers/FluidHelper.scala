@@ -2,22 +2,21 @@ package net.bdew.lib.capabilities.helpers
 
 import net.bdew.lib.capabilities.CapAdapters
 import net.bdew.lib.capabilities.Capabilities.{CAP_FLUID_HANDLER, CAP_FLUID_HANDLER_ITEM}
-import net.minecraft.item.ItemStack
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction
 import net.minecraftforge.fluids.capability.{IFluidHandler, IFluidHandlerItem}
 
 object FluidHelper {
-  def hasFluidHandler(world: World, pos: BlockPos, side: Direction): Boolean =
+  def hasFluidHandler(world: Level, pos: BlockPos, side: Direction): Boolean =
     getFluidHandler(world, pos, side).isDefined
 
   def hasFluidHandler(stack: ItemStack): Boolean =
     getFluidHandler(stack).isDefined
 
-  def getFluidHandler(world: World, pos: BlockPos, side: Direction): Option[IFluidHandler] = {
+  def getFluidHandler(world: Level, pos: BlockPos, side: Direction): Option[IFluidHandler] = {
     val tile = world.getBlockEntity(pos)
     if (tile == null) return None
     val cap = tile.getCapability(CAP_FLUID_HANDLER, side)

@@ -2,7 +2,7 @@ package net.bdew.lib.render
 
 import net.bdew.lib.Misc
 import net.bdew.lib.render.primitive.{TQuad, TVertex}
-import net.minecraft.client.renderer.model.BakedQuad
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraftforge.client.ForgeHooksClient
 
 class QuadBaker {

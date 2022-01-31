@@ -7,7 +7,7 @@ import net.bdew.lib.misc.RSMode
 import net.bdew.lib.multiblock.data.OutputConfigRSControllable
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 import net.bdew.lib.multiblock.network.{MsgOutputCfgRSMode, MultiblockNetHandler}
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.network.chat.Component
 
 import java.util.Locale
 
@@ -16,7 +16,7 @@ class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSub
 
   val bt: WidgetButtonIcon = add(new WidgetButtonIcon(Point(0, 0), clicked, te.resources.btBase, te.resources.btHover) {
     override def icon: Texture = icons(cfg.rsMode)
-    override def hover: ITextComponent = Text.translate("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase(Locale.US))
+    override def hover: Component = Text.translate("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase(Locale.US))
   })
 
   val icons = Map(

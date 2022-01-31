@@ -1,7 +1,6 @@
 package net.bdew.lib.block
 
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.{BlockPos, Direction}
 
 case class BlockFace(pos: BlockPos, face: Direction) {
   def x: Int = pos.getX

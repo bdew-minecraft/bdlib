@@ -1,9 +1,9 @@
 package net.bdew.lib.container
 
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.container.{ClickType, Slot}
-import net.minecraft.item.ItemStack
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.{ClickType, Slot}
+import net.minecraft.world.item.ItemStack
 
 trait SlotClickable extends Slot {
-  def onClick(clickType: ClickType, button: Int, player: PlayerEntity): ItemStack
+  def onClick(clickType: ClickType, button: Int, player: Player): ItemStack
 }

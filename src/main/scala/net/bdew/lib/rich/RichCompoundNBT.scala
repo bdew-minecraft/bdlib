@@ -1,12 +1,12 @@
 package net.bdew.lib.rich
 
 import net.bdew.lib.nbt.Type
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.{CompoundNBT, ListNBT}
+import net.minecraft.nbt.{CompoundTag, ListTag}
+import net.minecraft.world.item.ItemStack
 
 import scala.language.implicitConversions
 
-class RichCompoundNBT(val tag: CompoundNBT) extends AnyVal {
+class RichCompoundNBT(val tag: CompoundTag) extends AnyVal {
   def getVal[T: Type](name: String): Option[T] = {
     val vtype = Type[T]
     Option(tag.get(name)) flatMap (v => vtype.toVal(v))
@@ -26,7 +26,7 @@ class RichCompoundNBT(val tag: CompoundNBT) extends AnyVal {
   }
 
   def setListVals[T: Type](name: String, v: Iterable[T]): Unit = {
-    val list = new ListNBT()
+    val list = new ListTag()
     for (x <- v) list.add(Type[T].toNBT(x))
     tag.put(name, list)
   }

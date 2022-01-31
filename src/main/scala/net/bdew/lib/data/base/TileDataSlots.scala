@@ -1,11 +1,13 @@
 package net.bdew.lib.data.base
 
 import net.bdew.lib.Client
+import net.bdew.lib.nbt.NBT
 import net.bdew.lib.tile.TileExtended
-import net.minecraft.entity.Entity
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.network.play.server.SUpdateTileEntityPacket
-import net.minecraft.world.World
+import net.minecraft.network.Connection
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.entity.BlockEntity
 
 trait TileDataSlots extends TileExtended with DataSlotContainer {
   persistSave.listen(doSave(UpdateKind.SAVE, _))
@@ -19,7 +21,7 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
       Client.doRenderUpdate(getBlockPos)
   }
 
-  override def getWorldObject: World = getLevel
+  override def getWorldObject: Level = getLevel
 
   override def dataSlotChanged(slot: DataSlot): Unit = {
     if (getWorldObject != null) {
@@ -30,7 +32,7 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
         sendUpdateToClients()
 
       if (slot.updateKind.contains(UpdateKind.SAVE))
-        getWorldObject.blockEntityChanged(getBlockPos, this)
+        getWorldObject.blockEntityChanged(getBlockPos)
 
       if (slot.updateKind.contains(UpdateKind.UPDATE)) {
         getLevel.updateNeighborsAt(getBlockPos, getBlockState.getBlock)
@@ -38,16 +40,20 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
     }
   }
 
-  def getDataSlotPacket: SUpdateTileEntityPacket = {
-    val tag = new CompoundNBT()
-    doSave(UpdateKind.GUI, tag)
-    new SUpdateTileEntityPacket(getBlockPos, ACT_GUI, tag)
+  def getDataSlotPacket: ClientboundBlockEntityDataPacket = {
+    ClientboundBlockEntityDataPacket.create(this, (x: BlockEntity) => {
+      NBT from { tag =>
+        doSave(UpdateKind.GUI, tag)
+        tag.putBoolean("_gui_", true);
+      }
+    })
   }
 
-  override protected def extDataPacket(id: Int, data: CompoundNBT): Unit = {
-    if (id == ACT_GUI)
-      doLoad(UpdateKind.GUI, data)
-    super.extDataPacket(id, data)
+  override def onDataPacket(net: Connection, pkt: ClientboundBlockEntityDataPacket): Unit = {
+    if (pkt.getTag.getBoolean("_gui_"))
+      handleClientUpdate.trigger(pkt.getTag)
+    else
+      super.onDataPacket(net, pkt)
   }
 
   override def isEntityInRange(entity: Entity, range: Double): Boolean =

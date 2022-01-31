@@ -1,12 +1,11 @@
 package net.bdew.lib.rich
 
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.{BlockPos, Direction}
 
 import scala.language.implicitConversions
 
 class RichBlockPos(val v: BlockPos) extends AnyVal {
-  def neighbours: Map[Direction, BlockPos] = (Direction.values() map (x => x -> v.offset(x.getNormal))).toMap
+  def neighbours: Map[Direction, BlockPos] = (Direction.values() map (x => x -> (v.offset(x.getNormal): BlockPos))).toMap
 
   def to(that: BlockPos): IndexedSeq[BlockPos] =
     for {

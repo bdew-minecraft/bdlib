@@ -2,7 +2,7 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.misc.RSMode
 import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgRSMode}
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 
 class OutputConfigPower(var unit: String = "fe") extends OutputConfig with OutputConfigRSControllable {
   override val id = "power"
@@ -15,13 +15,13 @@ class OutputConfigPower(var unit: String = "fe") extends OutputConfig with Outpu
     avg = avg * decay + (1 - decay) * v
   }
 
-  def read(t: CompoundNBT): Unit = {
+  def read(t: CompoundTag): Unit = {
     avg = t.getDouble("avg")
     rsMode = RSMode(t.getInt("rsMode"))
     unit = t.getString("unit")
   }
 
-  def write(t: CompoundNBT): Unit = {
+  def write(t: CompoundTag): Unit = {
     t.putDouble("avg", avg)
     t.putInt("rsMode", rsMode.id)
     t.putString("unit", unit)

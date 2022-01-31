@@ -1,19 +1,16 @@
 package net.bdew.lib.gui
 
-import com.mojang.blaze3d.matrix.MatrixStack
 import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.{DefaultVertexFormat, PoseStack, Tesselator, VertexFormat}
+import com.mojang.math.Vector3f
 import net.bdew.lib.Client
 import net.bdew.lib.render.models.ModelUtils
 import net.minecraft.client.renderer.texture.OverlayTexture
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.client.renderer.{RenderType, RenderTypeLookup, Tessellator}
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.vector.Vector3f
-import net.minecraft.world.IBlockDisplayReader
+import net.minecraft.client.renderer.{ItemBlockRenderTypes, RenderType}
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.model.data.EmptyModelData
-import org.lwjgl.opengl.GL11
 
 import scala.jdk.CollectionConverters._
 
@@ -27,18 +24,18 @@ object ModelDrawHelper {
    * @param face  face of block
    * @param rect  area in GUI to draw into
    */
-  def renderWorldBlockIntoGUI(m: MatrixStack, world: IBlockDisplayReader, pos: BlockPos, face: Direction, rect: Rect): Unit = {
+  def renderWorldBlockIntoGUI(m: PoseStack, world: BlockAndTintGetter, pos: BlockPos, face: Direction, rect: Rect): Unit = {
     // Warning, hackery incoming.
     // This is bastardized from both item and block drawing code in vanilla as neither does exactly what we need.
 
     val dispatcher = Client.minecraft.getBlockRenderer
     val textures = Client.textureManager
     val blockState = world.getBlockState(pos)
-    val tessellator = Tessellator.getInstance()
+    val tessellator = Tesselator.getInstance()
     val buffer = tessellator.getBuilder
 
     // Make sure that block atlas is selected
-    textures.bind(Client.blocksAtlas)
+    RenderSystem.setShaderTexture(0, Client.blocksAtlas)
     textures.getTexture(Client.blocksAtlas).setBlurMipmap(false, false)
 
     m.pushPose()
@@ -73,7 +70,7 @@ object ModelDrawHelper {
     // And go back to corner
     m.translate(-0.5f, -0.5f, -0.5f)
 
-    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK)
+    buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK)
 
     val model = dispatcher.getBlockModel(blockState)
 
@@ -81,10 +78,10 @@ object ModelDrawHelper {
     val data = if (te != null) te.getModelData else EmptyModelData.INSTANCE
 
     // If blocks renders in multiple layers - go through all
-    for (layer <- RenderType.chunkBufferLayers().asScala if RenderTypeLookup.canRenderInLayer(blockState, layer)) {
+    for (layer <- RenderType.chunkBufferLayers().asScala if ItemBlockRenderTypes.canRenderInLayer(blockState, layer)) {
 
       // This is thread local so will hopefully not break anything else. No other way to pass the current layer to the model
-      ForgeHooksClient.setRenderLayer(layer)
+      ForgeHooksClient.setRenderType(layer)
 
       // Grab all relevant quads
       for (quad <- ModelUtils.getAllQuads(model, blockState, data)) {
@@ -96,7 +93,7 @@ object ModelDrawHelper {
       }
     }
 
-    ForgeHooksClient.setRenderLayer(RenderType.solid())
+    ForgeHooksClient.setRenderType(RenderType.solid())
 
     // And we're done!
     tessellator.end()

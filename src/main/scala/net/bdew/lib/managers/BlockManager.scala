@@ -1,12 +1,13 @@
 package net.bdew.lib.managers
 
 import net.bdew.lib.block.HasTE
-import net.minecraft.block.material.Material
-import net.minecraft.block.{AbstractBlock, Block}
-import net.minecraft.item.{BlockItem, Item}
-import net.minecraft.tileentity.{TileEntity, TileEntityType}
-import net.minecraftforge.fml.RegistryObject
-import net.minecraftforge.registries.ForgeRegistries
+import net.minecraft.core.BlockPos
+import net.minecraft.world.item.{BlockItem, Item}
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
+import net.minecraft.world.level.block.state.{BlockBehaviour, BlockState}
+import net.minecraft.world.level.material.Material
+import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
 
 class BlockManager(items: ItemManager) extends RegistryManager(ForgeRegistries.BLOCKS) {
@@ -15,16 +16,16 @@ class BlockManager(items: ItemManager) extends RegistryManager(ForgeRegistries.B
 
   def defaultItemProps: Item.Properties = items.props
 
-  def props(material: Material): AbstractBlock.Properties = AbstractBlock.Properties.of(material)
+  def props(material: Material): BlockBehaviour.Properties = BlockBehaviour.Properties.of(material)
 
-  def simple(id: String, props: AbstractBlock.Properties): RegistryObject[Block] = {
+  def simple(id: String, props: BlockBehaviour.Properties): RegistryObject[Block] = {
     val block = register(id, () => new Block(props))
     items.register(id, () => new BlockItem(block.get, defaultItemProps))
     block
   }
 
   class DefBuilder[B <: Block](name: String, factory: () => B) {
-    def withTE[E <: TileEntity](teFactory: TileEntityType[_] => E)(implicit q: B <:< B with HasTE[E]): DefBuilder_TE[B, E] =
+    def withTE[E <: BlockEntity](teFactory: (BlockEntityType[_], BlockPos, BlockState) => E)(implicit q: B <:< B with HasTE[E]): DefBuilder_TE[B, E] =
       new DefBuilder_TE[B, E](name, q.substituteCo(factory), teFactory)
     def withItem[I <: BlockItem](biFactory: B => I): DefBuilder_BI[B, I] =
       new DefBuilder_BI(name, factory, biFactory): DefBuilder_BI[B, I]
@@ -34,16 +35,16 @@ class BlockManager(items: ItemManager) extends RegistryManager(ForgeRegistries.B
       outer.register(name, factory)
   }
 
-  class DefTE[B <: Block, E <: TileEntity](val block: RegistryObject[B with HasTE[E]], val teType: RegistryObject[TileEntityType[E]])
+  class DefTE[B <: Block, E <: BlockEntity](val block: RegistryObject[B with HasTE[E]], val teType: RegistryObject[BlockEntityType[E]])
 
-  class DefBuilder_TE[B <: Block, E <: TileEntity](name: String, factory: () => B with HasTE[E], teFactory: TileEntityType[_] => E) {
+  class DefBuilder_TE[B <: Block, E <: BlockEntity](name: String, factory: () => B with HasTE[E], teFactory: (BlockEntityType[_], BlockPos, BlockState) => E) {
     def withItem[I <: BlockItem](biFactory: B => I): DefBuilder_TE_BI[B, E, I] =
       new DefBuilder_TE_BI(name, factory, teFactory, biFactory)
     def withDefaultItem: DefBuilder_TE_BI[B, E, BlockItem] =
       new DefBuilder_TE_BI(name, factory, teFactory, b => new BlockItem(b, defaultItemProps))
     def register: DefTE[B, E] = {
       val b: RegistryObject[B with HasTE[E]] = outer.register(name, factory)
-      val e: RegistryObject[TileEntityType[E]] = tileEntities.registerWithBlock(name, teFactory, b)
+      val e: RegistryObject[BlockEntityType[E]] = tileEntities.registerWithBlock(name, teFactory, b)
       new DefTE(b, e)
     }
   }
@@ -51,7 +52,7 @@ class BlockManager(items: ItemManager) extends RegistryManager(ForgeRegistries.B
   class DefBI[B <: Block, I <: BlockItem](val block: RegistryObject[B], val item: RegistryObject[I])
 
   class DefBuilder_BI[B <: Block, I <: BlockItem](name: String, factory: () => B, biFactory: B => I) {
-    def withTE[E <: TileEntity](teFactory: TileEntityType[_] => E)(implicit q: B <:< B with HasTE[E]): DefBuilder_TE_BI[B, E, I] =
+    def withTE[E <: BlockEntity](teFactory: (BlockEntityType[_], BlockPos, BlockState) => E)(implicit q: B <:< B with HasTE[E]): DefBuilder_TE_BI[B, E, I] =
       new DefBuilder_TE_BI(name, q.substituteCo(factory), teFactory, biFactory)
     def register: DefBI[B, I] = {
       val b: RegistryObject[B] = outer.register(name, factory)
@@ -60,12 +61,12 @@ class BlockManager(items: ItemManager) extends RegistryManager(ForgeRegistries.B
     }
   }
 
-  class Def[B <: Block, E <: TileEntity, I <: BlockItem](val block: RegistryObject[B with HasTE[E]], val teType: RegistryObject[TileEntityType[E]], val item: RegistryObject[I])
+  class Def[B <: Block, E <: BlockEntity, I <: BlockItem](val block: RegistryObject[B with HasTE[E]], val teType: RegistryObject[BlockEntityType[E]], val item: RegistryObject[I])
 
-  class DefBuilder_TE_BI[B <: Block, E <: TileEntity, I <: BlockItem](name: String, factory: () => B with HasTE[E], teFactory: TileEntityType[_] => E, biFactory: B => I) {
-    def registerEx[R](f: (RegistryObject[B with HasTE[E]], RegistryObject[TileEntityType[E]], RegistryObject[I]) => R): R = {
+  class DefBuilder_TE_BI[B <: Block, E <: BlockEntity, I <: BlockItem](name: String, factory: () => B with HasTE[E], teFactory: (BlockEntityType[_], BlockPos, BlockState) => E, biFactory: B => I) {
+    def registerEx[R](f: (RegistryObject[B with HasTE[E]], RegistryObject[BlockEntityType[E]], RegistryObject[I]) => R): R = {
       val b: RegistryObject[B with HasTE[E]] = outer.register(name, factory)
-      val e: RegistryObject[TileEntityType[E]] = tileEntities.registerWithBlock(name, teFactory, b)
+      val e: RegistryObject[BlockEntityType[E]] = tileEntities.registerWithBlock(name, teFactory, b)
       val i: RegistryObject[I] = items.register(name, () => biFactory(b.get()))
       f(b, e, i)
     }

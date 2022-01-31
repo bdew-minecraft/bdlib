@@ -1,7 +1,7 @@
 package net.bdew.lib.container
 
-import net.minecraft.inventory.IInventory
-import net.minecraft.inventory.container.Slot
+import net.minecraft.world.Container
+import net.minecraft.world.inventory.Slot
 
-class BaseSlot(inv: IInventory, slot: Int, x: Int, y: Int) extends Slot(inv, slot, x, y) {
+class BaseSlot(inv: Container, slot: Int, x: Int, y: Int) extends Slot(inv, slot, x, y) {
 }

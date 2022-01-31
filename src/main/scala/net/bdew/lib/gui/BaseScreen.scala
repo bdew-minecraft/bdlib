@@ -1,25 +1,26 @@
 package net.bdew.lib.gui
 
-import com.mojang.blaze3d.matrix.MatrixStack
-import net.minecraft.client.gui.screen.inventory.ContainerScreen
-import net.minecraft.client.gui.{FontRenderer, IHasContainer, INestedGuiEventHandler}
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.inventory.container.Container
-import net.minecraft.util.text.ITextComponent
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.components.events.ContainerEventHandler
+import net.minecraft.client.gui.screens.inventory.{AbstractContainerScreen, MenuAccess}
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.inventory.AbstractContainerMenu
 
 import scala.collection.mutable.ArrayBuffer
 
-abstract class BaseScreen[T <: Container](container: T, playerInv: PlayerInventory, title: ITextComponent)
-  extends ContainerScreen[T](container, playerInv, title)
-    with INestedGuiEventHandler
-    with IHasContainer[T] {
+abstract class BaseScreen[T <: AbstractContainerMenu](container: T, playerInv: Inventory, title: Component)
+  extends AbstractContainerScreen[T](container, playerInv, title)
+    with ContainerEventHandler
+    with MenuAccess[T] {
 
   val background: Texture
   var rect: Rect = _
 
   val widgets = new WidgetContainerWindow(this)
 
-  def getFontRenderer: FontRenderer = getMinecraft.font
+  def getFontRenderer: Font = getMinecraft.font
   def getZLevel = 0F //?
 
   def initGui(width: Int, height: Int): Unit = {
@@ -37,12 +38,12 @@ abstract class BaseScreen[T <: Container](container: T, playerInv: PlayerInvento
   override def charTyped(c: Char, i: Int): Boolean =
     widgets.keyTyped(c, i) || super.charTyped(c, i)
 
-  override def render(matrix: MatrixStack, mouseX: Int, mouseY: Int, pf: Float): Unit = {
+  override def render(matrix: PoseStack, mouseX: Int, mouseY: Int, pf: Float): Unit = {
     renderBackground(matrix)
     super.render(matrix, mouseX, mouseY, pf)
     val mouse = Point(mouseX, mouseY)
     widgets.draw(matrix, mouse, pf)
-    val tip = ArrayBuffer.empty[ITextComponent]
+    val tip = ArrayBuffer.empty[Component]
     widgets.handleTooltip(mouse, tip)
     if (tip.nonEmpty) {
       import scala.jdk.CollectionConverters._
@@ -52,11 +53,11 @@ abstract class BaseScreen[T <: Container](container: T, playerInv: PlayerInvento
     }
   }
 
-  override def renderLabels(m: MatrixStack, x: Int, y: Int): Unit = {
+  override def renderLabels(m: PoseStack, x: Int, y: Int): Unit = {
     // disable vanilla labels
   }
 
-  override def renderBg(matrix: MatrixStack, pf: Float, mouseX: Int, mouseY: Int): Unit = {
+  override def renderBg(matrix: PoseStack, pf: Float, mouseX: Int, mouseY: Int): Unit = {
     widgets.drawTexture(matrix, rect, background)
     widgets.drawBackground(matrix, Point(mouseX, mouseY))
   }

@@ -2,8 +2,8 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.nbt.CompoundTag
 
 import scala.collection.mutable
 
@@ -12,11 +12,11 @@ case class DataSlotPosSet(name: String, parent: DataSlotContainer) extends DataS
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
-  def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     t.setListVals(name, set.toList)
   }
 
-  def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     set.clear()
     set ++= t.getListVals[BlockPos](name)
   }

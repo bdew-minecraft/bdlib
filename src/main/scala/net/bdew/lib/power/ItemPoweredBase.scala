@@ -2,7 +2,7 @@ package net.bdew.lib.power
 
 import net.bdew.lib.Misc
 import net.bdew.lib.items.StackProperty
-import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.world.item.{Item, ItemStack}
 
 trait ItemPoweredBase extends Item {
   def maxCharge: Float
@@ -53,7 +53,6 @@ trait ItemPoweredBase extends Item {
     n
   }
 
-  override def showDurabilityBar(stack: ItemStack) = true
-
-  override def getDurabilityForDisplay(stack: ItemStack): Double = 1 - 1D * getCharge(stack) / maxCharge
+  override def isBarVisible(stack: ItemStack): Boolean = true
+  override def getBarWidth(stack: ItemStack): Int = ((1D - getCharge(stack) / maxCharge) * 13D).round.toInt
 }

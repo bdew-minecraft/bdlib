@@ -1,8 +1,9 @@
 package net.bdew.lib.block
 
-import net.minecraft.block.{AbstractBlock, Block, BlockState}
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.{BlockBehaviour, BlockState}
 
-class StatefulBlock(props: AbstractBlock.Properties) extends Block(props) {
+class StatefulBlock(props: BlockBehaviour.Properties) extends Block(props) {
   registerDefaultState(getDefaultState(defaultBlockState()))
 
   def getDefaultState(base: BlockState): BlockState = base

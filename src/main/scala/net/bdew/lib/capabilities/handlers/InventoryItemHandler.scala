@@ -1,11 +1,11 @@
 package net.bdew.lib.capabilities.handlers
 
-import net.minecraft.inventory.IInventory
-import net.minecraft.item.ItemStack
+import net.minecraft.world.Container
+import net.minecraft.world.item.ItemStack
 import net.minecraftforge.common.util.LazyOptional
 import net.minecraftforge.items.wrapper.InvWrapper
 
-class InventoryItemHandler(inv: IInventory, canExtract: Int => Boolean, canInsert: (Int, ItemStack) => Boolean) extends InvWrapper(inv) {
+class InventoryItemHandler(inv: Container, canExtract: Int => Boolean, canInsert: (Int, ItemStack) => Boolean) extends InvWrapper(inv) {
   override def insertItem(slot: Int, stack: ItemStack, simulate: Boolean): ItemStack = {
     if (canInsert(slot, stack))
       super.insertItem(slot, stack, simulate)
@@ -25,7 +25,7 @@ class InventoryItemHandler(inv: IInventory, canExtract: Int => Boolean, canInser
 }
 
 object InventoryItemHandler {
-  def create(inv: IInventory, canExtract: Int => Boolean, canInsert: (Int, ItemStack) => Boolean): LazyOptional[InventoryItemHandler] = {
+  def create(inv: Container, canExtract: Int => Boolean, canInsert: (Int, ItemStack) => Boolean): LazyOptional[InventoryItemHandler] = {
     val handler = new InventoryItemHandler(inv, canExtract, canInsert)
     LazyOptional.of(() => handler)
   }

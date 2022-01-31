@@ -1,11 +1,11 @@
 package net.bdew.lib.sensors
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Misc
 import net.bdew.lib.gui._
-import net.minecraft.inventory.container.ClickType
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.item.ItemStack
 import net.minecraftforge.api.distmarker.{Dist, OnlyIn}
 
 abstract class SimpleGenericParameter(system: SensorSystem[_, _]) extends GenericSensorParameter(system) {
@@ -31,8 +31,8 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
     else
       current
 
-  override def saveParameter(p: GenericSensorParameter, tag: CompoundNBT): Unit = tag.putString("param", p.uid)
-  override def loadParameter(tag: CompoundNBT): GenericSensorParameter = parameterMap.getOrElse(tag.getString("param"), system.DisabledParameter)
+  override def saveParameter(p: GenericSensorParameter, tag: CompoundTag): Unit = tag.putString("param", p.uid)
+  override def loadParameter(tag: CompoundTag): GenericSensorParameter = parameterMap.getOrElse(tag.getString("param"), system.DisabledParameter)
   override def isValidParameter(p: GenericSensorParameter, obj: T): Boolean = parameters.contains(p)
 
   @OnlyIn(Dist.CLIENT)
@@ -42,12 +42,12 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
   def textureColor: Color = Color.white
 
   @OnlyIn(Dist.CLIENT)
-  override def drawSensor(m: MatrixStack, rect: Rect, target: DrawTarget, obj: T): Unit = {
+  override def drawSensor(m: PoseStack, rect: Rect, target: DrawTarget, obj: T): Unit = {
     target.drawTexture(m, rect, texture, textureColor)
   }
 
   @OnlyIn(Dist.CLIENT)
-  override def drawParameter(m: MatrixStack, rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit = {
+  override def drawParameter(m: PoseStack, rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit = {
     param match {
       case x: SimpleGenericParameter => target.drawTexture(m, rect, x.texture, x.textureColor)
       case _ => target.drawTexture(m, rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)

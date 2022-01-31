@@ -1,9 +1,9 @@
 package net.bdew.lib.gui
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui.widgets.BaseWidget
-import net.minecraft.client.gui.FontRenderer
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.client.gui.Font
+import net.minecraft.network.chat.Component
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -15,7 +15,7 @@ trait WidgetContainer extends DrawTarget {
 
   def activeWidgets: Iterable[BaseWidget] = widgets
 
-  def getFontRenderer: FontRenderer
+  def getFontRenderer: Font
 
   def clear(): Unit = widgets.clear()
 
@@ -43,7 +43,7 @@ trait WidgetContainer extends DrawTarget {
     false
   }
 
-  def drawBackground(matrix: MatrixStack, mouse: Point): Unit = {
+  def drawBackground(matrix: PoseStack, mouse: Point): Unit = {
     val p = mouse - rect.origin
     matrix.pushPose()
     matrix.translate(rect.origin.x, rect.origin.y, 0)
@@ -53,7 +53,7 @@ trait WidgetContainer extends DrawTarget {
     matrix.popPose()
   }
 
-  def draw(matrix: MatrixStack, mouse: Point, partial: Float): Unit = {
+  def draw(matrix: PoseStack, mouse: Point, partial: Float): Unit = {
     val p = mouse - rect.origin
     matrix.pushPose()
     matrix.translate(rect.origin.x, rect.origin.y, 0)
@@ -63,7 +63,7 @@ trait WidgetContainer extends DrawTarget {
     matrix.popPose()
   }
 
-  def handleTooltip(mouse: Point, tip: mutable.ArrayBuffer[ITextComponent]): Unit = {
+  def handleTooltip(mouse: Point, tip: mutable.ArrayBuffer[Component]): Unit = {
     val p = mouse - rect.origin
     for (w <- activeWidgets if w.rect.contains(p)) {
       w.handleTooltip(p, tip)
@@ -79,7 +79,7 @@ trait WidgetContainer extends DrawTarget {
 
 class WidgetContainerWindow(val parent: BaseScreen[_]) extends WidgetContainer with SimpleDrawTarget {
   def getZLevel: Float = parent.getZLevel
-  def getFontRenderer: FontRenderer = parent.getFontRenderer
+  def getFontRenderer: Font = parent.getFontRenderer
   def getOffsetFromWindow: Point = Point(0, 0)
   def rect: Rect = parent.rect
 }

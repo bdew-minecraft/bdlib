@@ -6,13 +6,14 @@ import net.bdew.lib.block.BlockFace
 import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.interact.{CIOutputFaces, MIOutput}
 import net.bdew.lib.multiblock.render.OutputFaceProperty
-import net.bdew.lib.tile.{TileExtended, TileTicking}
-import net.minecraft.tileentity.TileEntityType
-import net.minecraft.util.Direction
+import net.bdew.lib.tile.{TileExtended, TileTickingServer}
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.model.data.IModelData
 
-abstract class TileOutput[T <: OutputConfig](teType: TileEntityType[_]) extends TileExtended(teType)
-  with TileModule with MIOutput[T] with TileTicking {
+abstract class TileOutput[T <: OutputConfig](teType: BlockEntityType[_], pos: BlockPos, state: BlockState) extends TileExtended(teType, pos, state)
+  with TileModule with MIOutput[T] with TileTickingServer {
 
   override def getCore: Option[CIOutputFaces] = getCoreAs[CIOutputFaces]
 
@@ -65,7 +66,7 @@ abstract class TileOutput[T <: OutputConfig](teType: TileEntityType[_]) extends 
 
   override def getModelData: IModelData = {
     val faces = for {
-      core <- getCore.toIterable
+      core <- getCore.toList
       face <- Direction.values()
       output <- core.outputFaces.get(BlockFace(getBlockPos, face))
     } yield face -> output

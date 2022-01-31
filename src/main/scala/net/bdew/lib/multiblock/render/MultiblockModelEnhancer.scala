@@ -6,11 +6,12 @@ import net.bdew.lib.multiblock.ResourceProvider
 import net.bdew.lib.render.connected.ConnectedModelEnhancer
 import net.bdew.lib.render.primitive.{Quad, Texture, Vertex}
 import net.bdew.lib.render.{Cuboid, QuadBakerDefault}
-import net.minecraft.block.BlockState
 import net.minecraft.client.renderer.RenderType
-import net.minecraft.client.renderer.model.BakedQuad
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.util.{Direction, ResourceLocation}
+import net.minecraft.core.Direction
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.client.model.data.IModelData
 
@@ -24,7 +25,7 @@ class MultiblockModelEnhancer(resources: ResourceProvider) extends ConnectedMode
 
   override def processBlockQuads(state: BlockState, side: Direction, rand: Random, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     var list = super.processBlockQuads(state, side, rand, data, textures, base)
-    if (state != null && side != null && MinecraftForgeClient.getRenderLayer == RenderType.cutout()) {
+    if (state != null && side != null && MinecraftForgeClient.getRenderType == RenderType.cutout()) {
       data.getDataOpt(OutputFaceProperty) foreach { outputs =>
         val output = Texture(textures(resources.output))
         val arrow = Texture(textures(resources.arrow))

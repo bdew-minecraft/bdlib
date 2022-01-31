@@ -6,8 +6,8 @@ import net.bdew.lib.data.base.{TileDataSlotsTicking, UpdateKind}
 import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.multiblock.data.DataSlotPosSet
 import net.bdew.lib.multiblock.{ModuleType, MultiblockMachineConfig, ResourceProvider, Tools}
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.player.Player
 
 import scala.reflect.ClassTag
 
@@ -30,7 +30,7 @@ trait TileController extends TileDataSlotsTicking {
   def getModulePositions(block: BlockModule[_]): Set[BlockPos] = modules.filter(pos => getLevel.getBlockState(pos).getBlock == block).toSet
 
   def onModulesChanged(): Unit
-  def onClick(player: PlayerEntity): Unit
+  def onClick(player: Player): Unit
 
   def moduleConnected(module: TileModule): Boolean = {
     if (acceptNewModules) {

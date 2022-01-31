@@ -1,21 +1,21 @@
 package net.bdew.lib.sensors.multiblock
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui._
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 import net.bdew.lib.sensors.{GenericSensorParameter, GenericSensorType, SensorSystem}
 import net.bdew.lib.{Misc, Text}
-import net.minecraft.inventory.container.ClickType
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
+import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraftforge.api.distmarker.{Dist, OnlyIn}
 
 import java.util.Locale
 
-trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
-  def system: SensorSystem[TileEntity, Boolean]
+trait SensorOutput extends GenericSensorType[BlockEntity, Boolean] {
+  def system: SensorSystem[BlockEntity, Boolean]
 
   override def defaultParameter: GenericSensorParameter = system.DisabledParameter
 
@@ -25,30 +25,30 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
 
   def getResultFromOutput(te: CIOutputFaces, output: Int): Boolean
 
-  override def loadParameter(tag: CompoundNBT): GenericSensorParameter = {
+  override def loadParameter(tag: CompoundTag): GenericSensorParameter = {
     if (tag.contains("output"))
       SensorOutputFlowParameter(tag.getInt("output"))
     else
       system.DisabledParameter
   }
 
-  override def saveParameter(p: GenericSensorParameter, tag: CompoundNBT): Unit = p match {
+  override def saveParameter(p: GenericSensorParameter, tag: CompoundTag): Unit = p match {
     case SensorOutputFlowParameter(n) => tag.putInt("output", n)
     case _ =>
   }
 
-  override def isValidParameter(p: GenericSensorParameter, obj: TileEntity): Boolean = (p, obj) match {
+  override def isValidParameter(p: GenericSensorParameter, obj: BlockEntity): Boolean = (p, obj) match {
     case (SensorOutputFlowParameter(n), x: CIOutputFaces) => x.outputFaces.inverted.isDefinedAt(n)
     case (param, _) if param == system.DisabledParameter => true
     case _ => false
   }
 
-  override def getResult(param: GenericSensorParameter, obj: TileEntity): Boolean = (param, obj) match {
+  override def getResult(param: GenericSensorParameter, obj: BlockEntity): Boolean = (param, obj) match {
     case (SensorOutputFlowParameter(n), x: CIOutputFaces) => getResultFromOutput(x, n)
     case _ => false
   }
 
-  override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: TileEntity): GenericSensorParameter =
+  override def paramClicked(current: GenericSensorParameter, item: ItemStack, clickType: ClickType, button: Int, obj: BlockEntity): GenericSensorParameter =
     if (clickType == ClickType.PICKUP && (button == 0 || button == 1) && item.isEmpty)
       (current, obj) match {
         case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
@@ -72,7 +72,7 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
       current
 
   @OnlyIn(Dist.CLIENT)
-  override def drawParameter(m: MatrixStack, rect: Rect, target: DrawTarget, obj: TileEntity, param: GenericSensorParameter): Unit = (param, obj) match {
+  override def drawParameter(m: PoseStack, rect: Rect, target: DrawTarget, obj: BlockEntity, param: GenericSensorParameter): Unit = (param, obj) match {
     case (SensorOutputFlowParameter(output), te: CIOutputFaces) =>
       val faces = te.outputFaces.inverted
       if (faces.isDefinedAt(output)) {
@@ -84,10 +84,10 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
     case _ => target.drawTexture(m, rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
   }
 
-  override def getParamTooltip(obj: TileEntity, param: GenericSensorParameter): List[ITextComponent] = (param, obj) match {
+  override def getParamTooltip(obj: BlockEntity, param: GenericSensorParameter): List[Component] = (param, obj) match {
     case (SensorOutputFlowParameter(output), te: CIOutputFaces) =>
       val faces = te.outputFaces.inverted
-      var list = List.empty[ITextComponent]
+      var list = List.empty[Component]
       list :+= Text.translate(te.resources.unlocalizedOutputName(output))
       if (faces.isDefinedAt(output)) {
         val bf = faces(output)

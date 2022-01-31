@@ -1,6 +1,6 @@
 package net.bdew.lib.capabilities
 
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
 import net.minecraftforge.common.capabilities.{Capability, ICapabilityProvider}
 import net.minecraftforge.common.util.LazyOptional
 

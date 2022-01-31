@@ -1,15 +1,15 @@
 package net.bdew.lib.render.models
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.datafixers.util.Pair
-import net.minecraft.block.BlockState
 import net.minecraft.client.renderer.RenderType
-import net.minecraft.client.renderer.model.{BakedQuad, IBakedModel, ItemCameraTransforms, ItemOverrideList}
+import net.minecraft.client.renderer.block.model.{BakedQuad, ItemOverrides, ItemTransforms}
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.item.ItemStack
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.IBlockDisplayReader
+import net.minecraft.client.resources.model.BakedModel
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.BlockAndTintGetter
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.model.data.IModelData
 
 import java.util
@@ -18,7 +18,7 @@ import java.util.Random
 /**
  * Base class for wrappers around IBakedModel
  */
-class BakedModelProxy(base: IBakedModel) extends IBakedModel {
+class BakedModelProxy(base: BakedModel) extends BakedModel {
   override def getQuads(state: BlockState, side: Direction, rand: Random, extraData: IModelData): util.List[BakedQuad] =
     base.getQuads(state, side, rand, extraData)
 
@@ -30,19 +30,17 @@ class BakedModelProxy(base: IBakedModel) extends IBakedModel {
   override def isCustomRenderer: Boolean = base.isCustomRenderer
   override def getParticleIcon: TextureAtlasSprite = base.getParticleIcon
   override def isGui3d: Boolean = base.isGui3d
-  override def getOverrides: ItemOverrideList = base.getOverrides
+  override def getOverrides: ItemOverrides = base.getOverrides
 
-  override def getBakedModel: IBakedModel = base.getBakedModel
-  override def isAmbientOcclusion(state: BlockState): Boolean = base.isAmbientOcclusion(state)
+  override def useAmbientOcclusion(state: BlockState): Boolean = base.useAmbientOcclusion(state)
   override def doesHandlePerspectives(): Boolean = base.doesHandlePerspectives()
-  override def handlePerspective(cameraTransformType: ItemCameraTransforms.TransformType, mat: MatrixStack): IBakedModel =
+  override def handlePerspective(cameraTransformType: ItemTransforms.TransformType, mat: PoseStack): BakedModel =
     base.handlePerspective(cameraTransformType, mat)
-  override def getModelData(world: IBlockDisplayReader, pos: BlockPos, state: BlockState, tileData: IModelData): IModelData =
+  override def getModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, tileData: IModelData): IModelData =
     base.getModelData(world, pos, state, tileData)
-  override def getParticleTexture(data: IModelData): TextureAtlasSprite =
-    base.getParticleTexture(data)
+  override def getParticleIcon(data: IModelData): TextureAtlasSprite = base.getParticleIcon(data)
   override def isLayered: Boolean = base.isLayered
-  override def getLayerModels(itemStack: ItemStack, fabulous: Boolean): util.List[Pair[IBakedModel, RenderType]] =
+  override def getLayerModels(itemStack: ItemStack, fabulous: Boolean): util.List[Pair[BakedModel, RenderType]] =
     base.getLayerModels(itemStack, fabulous)
-  override def getTransforms: ItemCameraTransforms = base.getTransforms
+  override def getTransforms: ItemTransforms = base.getTransforms
 }

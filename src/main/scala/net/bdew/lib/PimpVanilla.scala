@@ -2,10 +2,10 @@ package net.bdew.lib
 
 import net.bdew.lib.nbt.converters._
 import net.bdew.lib.rich._
-import net.minecraft.block.BlockState
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.{IBlockReader, World}
+import net.minecraft.core.BlockPos
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.level.{BlockGetter, Level}
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.model.data.IModelData
 import net.minecraftforge.common.util.LazyOptional
 
@@ -17,9 +17,9 @@ import scala.language.implicitConversions
  */
 object PimpVanilla {
   implicit def pimpBlockPos(p: BlockPos): RichBlockPos = new RichBlockPos(p)
-  implicit def pimpWorld(p: World): RichWorld = new RichWorld(p)
-  implicit def pimpBlockReader(p: IBlockReader): RichBlockReader = new RichBlockReader(p)
-  implicit def pimpNBT(p: CompoundNBT): RichCompoundNBT = new RichCompoundNBT(p)
+  implicit def pimpWorld(p: Level): RichWorld = new RichWorld(p)
+  implicit def pimpBlockReader(p: BlockGetter): RichBlockReader = new RichBlockReader(p)
+  implicit def pimpNBT(p: CompoundTag): RichCompoundNBT = new RichCompoundNBT(p)
   implicit def pimpBlockState(p: BlockState): RichBlockState = new RichBlockState(p)
   implicit def pimpModelData(p: IModelData): RichIModelData = new RichIModelData(p)
   implicit def pimpLazyOpt[T](o: LazyOptional[T]): RichLazyOpt[T] = new RichLazyOpt(o)

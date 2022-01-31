@@ -3,8 +3,7 @@ package net.bdew.lib.power
 import net.bdew.lib.Misc
 import net.bdew.lib.config.PowerConfig
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.CompoundNBT
-import net.minecraftforge.common.util.Constants
+import net.minecraft.nbt.{CompoundTag, Tag}
 
 case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSlot {
   updateKind = Set(UpdateKind.GUI, UpdateKind.SAVE)
@@ -37,16 +36,16 @@ case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSl
     maxReceive = cfg.maxReceive()
   }
 
-  def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
-    val tag = new CompoundNBT()
+  def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
+    val tag = new CompoundTag()
     tag.putFloat("stored", stored)
     if (kind == UpdateKind.GUI)
       tag.putFloat("capacity", capacity)
     t.put(name, tag)
   }
 
-  def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
-    if (t.contains(name, Constants.NBT.TAG_COMPOUND)) {
+  def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
+    if (t.contains(name, Tag.TAG_COMPOUND)) {
       val tag = t.getCompound(name)
       stored = tag.getFloat("stored")
       if (kind == UpdateKind.GUI)

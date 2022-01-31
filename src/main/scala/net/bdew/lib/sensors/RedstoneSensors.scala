@@ -1,9 +1,9 @@
 package net.bdew.lib.sensors
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Text
 import net.bdew.lib.gui.{DrawTarget, Rect, Texture}
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.network.chat.Component
 import net.minecraftforge.api.distmarker.{Dist, OnlyIn}
 
 abstract class RedstoneSensors[T] extends SensorSystem[T, Boolean](false) {
@@ -11,7 +11,7 @@ abstract class RedstoneSensors[T] extends SensorSystem[T, Boolean](false) {
   private lazy val rsOff = Texture.block("minecraft:block/redstone_torch_off")
 
   @OnlyIn(Dist.CLIENT)
-  override def drawResult(m: MatrixStack, result: Boolean, rect: Rect, target: DrawTarget): Unit = {
+  override def drawResult(m: PoseStack, result: Boolean, rect: Rect, target: DrawTarget): Unit = {
     if (result)
       target.drawTexture(m, rect, rsOn)
     else
@@ -19,7 +19,7 @@ abstract class RedstoneSensors[T] extends SensorSystem[T, Boolean](false) {
   }
 
   @OnlyIn(Dist.CLIENT)
-  override def getResultText(result: Boolean): ITextComponent =
+  override def getResultText(result: Boolean): Component =
     if (result)
       Text.translate(localizationPrefix + ".on")
     else

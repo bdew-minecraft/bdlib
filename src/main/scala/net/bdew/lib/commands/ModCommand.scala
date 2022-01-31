@@ -3,13 +3,13 @@ package net.bdew.lib.commands
 import com.mojang.brigadier.arguments._
 import com.mojang.brigadier.builder.{LiteralArgumentBuilder, RequiredArgumentBuilder}
 import com.mojang.brigadier.context.CommandContext
-import net.minecraft.command.arguments.EntityArgument
-import net.minecraft.command.{CommandSource, Commands}
-import net.minecraft.entity.player.ServerPlayerEntity
+import net.minecraft.commands.{CommandSourceStack, Commands}
+import net.minecraft.commands.arguments.EntityArgument
+import net.minecraft.server.level.ServerPlayer
 
-class CommandArg[R](name: String, argType: ArgumentType[_], getter: (CommandContext[CommandSource], String) => R) {
-  def arg: RequiredArgumentBuilder[CommandSource, _] = Commands.argument(name, argType)
-  def get(ctx: CommandContext[CommandSource]): R = getter(ctx, name)
+class CommandArg[R](name: String, argType: ArgumentType[_], getter: (CommandContext[CommandSourceStack], String) => R) {
+  def arg: RequiredArgumentBuilder[CommandSourceStack, _] = Commands.argument(name, argType)
+  def get(ctx: CommandContext[CommandSourceStack]): R = getter(ctx, name)
 }
 
 trait ModCommand {
@@ -37,10 +37,10 @@ trait ModCommand {
   def boolArg(name: String): CommandArg[Boolean] =
     new CommandArg(name, BoolArgumentType.bool(), BoolArgumentType.getBool)
 
-  def playerArg(name: String): CommandArg[ServerPlayerEntity] =
+  def playerArg(name: String): CommandArg[ServerPlayer] =
     new CommandArg(name, EntityArgument.player(), EntityArgument.getPlayer)
 
-  def literal(str: String): LiteralArgumentBuilder[CommandSource] = Commands.literal(str)
+  def literal(str: String): LiteralArgumentBuilder[CommandSourceStack] = Commands.literal(str)
 
-  def register: LiteralArgumentBuilder[CommandSource]
+  def register: LiteralArgumentBuilder[CommandSourceStack]
 }

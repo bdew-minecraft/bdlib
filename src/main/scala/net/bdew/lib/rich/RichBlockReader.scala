@@ -1,14 +1,13 @@
 package net.bdew.lib.rich
 
 import net.bdew.lib.PimpVanilla.pimpLazyOpt
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.IBlockReader
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.level.BlockGetter
 import net.minecraftforge.common.capabilities.Capability
 
 import scala.reflect.ClassTag
 
-class RichBlockReader(val v: IBlockReader) extends AnyVal {
+class RichBlockReader(val v: BlockGetter) extends AnyVal {
   def getTileSafe[T: ClassTag](p: BlockPos): Option[T] = {
     val tile = v.getBlockEntity(p)
     if (tile != null && implicitly[ClassTag[T]].runtimeClass.isInstance(tile))

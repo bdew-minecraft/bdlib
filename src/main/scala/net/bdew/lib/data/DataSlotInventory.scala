@@ -3,9 +3,9 @@ package net.bdew.lib.data
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.inventory.BaseInventory
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.{CompoundNBT, ListNBT}
+import net.minecraft.nbt.{CompoundTag, ListTag}
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 
 case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int) extends DataSlot with BaseInventory {
   setUpdate(UpdateKind.SAVE, UpdateKind.UPDATE)
@@ -13,9 +13,9 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
   override def getContainerSize: Int = size
   override def setChanged(): Unit = parent.dataSlotChanged(this)
 
-  override def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  override def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     inv = Array.fill(size)(ItemStack.EMPTY)
-    for (nbtItem <- t.getListVals[CompoundNBT](name)) {
+    for (nbtItem <- t.getListVals[CompoundTag](name)) {
       val slot = nbtItem.getByte("Slot")
       if (slot >= 0 && slot < inv.length) {
         inv(slot) = ItemStack.of(nbtItem)
@@ -23,10 +23,10 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
     }
   }
 
-  override def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
-    val itemList = new ListNBT()
+  override def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
+    val itemList = new ListTag()
     for ((item, i) <- inv.view.zipWithIndex if !item.isEmpty) {
-      val itemNbt: CompoundNBT = new CompoundNBT
+      val itemNbt: CompoundTag = new CompoundTag
       itemNbt.putByte("Slot", i.asInstanceOf[Byte])
       item.save(itemNbt)
       itemList.add(itemNbt)
@@ -34,7 +34,7 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
     t.setVal(name, itemList)
   }
 
-  override def stillValid(player: PlayerEntity): Boolean = parent.isEntityInRange(player, 64D)
+  override def stillValid(player: Player): Boolean = parent.isEntityInRange(player, 64D)
 }
 
 

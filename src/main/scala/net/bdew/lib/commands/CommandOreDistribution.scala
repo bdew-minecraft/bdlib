@@ -5,11 +5,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.bdew.lib.PimpVanilla.pimpBlockPos
 import net.bdew.lib.{BdLib, DecFormat, Text}
-import net.minecraft.block.Block
-import net.minecraft.command.{CommandSource, Commands}
+import net.minecraft.ChatFormatting
+import net.minecraft.commands.{CommandSourceStack, Commands}
+import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Style
 import net.minecraft.tags.BlockTags
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.text.{Style, TextFormatting}
+import net.minecraft.world.level.block.Block
 import net.minecraftforge.fml.loading.FMLPaths
 
 import java.io.{BufferedWriter, FileWriter}
@@ -22,7 +23,7 @@ object CommandOreDistribution extends ModCommand {
   private val minHeight = intArg("minHeight", min = 0)
   private val maxHeight = intArg("maxHeight", min = 0)
 
-  override def register: LiteralArgumentBuilder[CommandSource] =
+  override def register: LiteralArgumentBuilder[CommandSourceStack] =
     literal("oredistribution")
       .requires(cs => cs.hasPermission(2))
       .`then`(radius.arg
@@ -38,12 +39,12 @@ object CommandOreDistribution extends ModCommand {
         ).executes(cs => execute(cs, radius.get(cs), 0, 255, false))
       ).executes(sendUsage)
 
-  def sendUsage(ctx: CommandContext[CommandSource]): Int = {
+  def sendUsage(ctx: CommandContext[CommandSourceStack]): Int = {
     ctx.getSource.sendFailure(Text.translate("bdlib.oredistribution.usage"))
     0
   }
 
-  def execute(ctx: CommandContext[CommandSource], radius: Int, minY: Int, maxY: Int, toFile: Boolean): Int = {
+  def execute(ctx: CommandContext[CommandSourceStack], radius: Int, minY: Int, maxY: Int, toFile: Boolean): Int = {
     val (startX, startZ) =
       if (ctx.getSource.getEntity != null)
         (ctx.getSource.getEntity.blockPosition().getX, ctx.getSource.getEntity.blockPosition().getZ)
@@ -122,18 +123,18 @@ object CommandOreDistribution extends ModCommand {
       // === OUTPUT TO CHAT ===
       for ((id, types) <- warnings.toList.sortBy(_._1)) {
         ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.warn",
-          Text.string(" !").setStyle(Style.EMPTY.withColor(TextFormatting.RED)),
-          Text.string(id).setStyle(Style.EMPTY.withColor(TextFormatting.RED)),
+          Text.string(" !").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
+          Text.string(id).setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
         ), true)
         for (block <- types)
           ctx.getSource.sendSuccess(
-            Text.string(" - ").setStyle(Style.EMPTY.withColor(TextFormatting.RED))
+            Text.string(" - ").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))
               .append(block.getRegistryName.toString), true)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
         ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.entry",
           " *",
-          Text.string(id).setStyle(Style.EMPTY.withColor(TextFormatting.YELLOW)),
+          Text.string(id).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
           DecFormat.round(num),
           DecFormat.short(100F * num / total)
         ), true)

@@ -2,16 +2,16 @@ package net.bdew.lib.recipes
 
 import com.google.gson.{JsonObject, JsonSyntaxException}
 import net.bdew.lib.resource.{FluidResource, ItemResource, Resource}
-import net.minecraft.item.ItemStack
-import net.minecraft.item.crafting.Ingredient
-import net.minecraft.network.PacketBuffer
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraftforge.fluids.FluidStack
 
 trait MixedIngredient {
   def matches(is: ItemStack): Boolean
   def matches(fs: FluidStack): Boolean
   def matches(res: Resource): Boolean
-  def toPacket(pkt: PacketBuffer): Unit
+  def toPacket(pkt: FriendlyByteBuf): Unit
 }
 
 object MixedIngredient {
@@ -24,7 +24,7 @@ object MixedIngredient {
       case _ => false
     }
 
-    override def toPacket(pkt: PacketBuffer): Unit = {
+    override def toPacket(pkt: FriendlyByteBuf): Unit = {
       pkt.writeUtf("item")
       ingredient.toNetwork(pkt)
     }
@@ -37,7 +37,7 @@ object MixedIngredient {
       case Resource(i: FluidResource, _) => ingredient.matches(i.fluid)
       case _ => false
     }
-    override def toPacket(pkt: PacketBuffer): Unit = {
+    override def toPacket(pkt: FriendlyByteBuf): Unit = {
       pkt.writeUtf("fluid")
       ingredient.toPacket(pkt)
     }
@@ -46,7 +46,7 @@ object MixedIngredient {
   def apply(v: Ingredient): MixedIngredient = Item(v)
   def apply(v: FluidIngredient): MixedIngredient = Fluid(v)
 
-  def fromPacket(pkt: PacketBuffer): MixedIngredient = {
+  def fromPacket(pkt: FriendlyByteBuf): MixedIngredient = {
     pkt.readUtf() match {
       case "item" => Item(Ingredient.fromNetwork(pkt))
       case "fluid" => Fluid(FluidIngredient.fromPacket(pkt))

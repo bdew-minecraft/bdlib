@@ -2,14 +2,15 @@ package net.bdew.lib.render.models
 
 import com.mojang.datafixers.util.Pair
 import net.bdew.lib.Client
-import net.minecraft.block.BlockState
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType
-import net.minecraft.client.renderer.model._
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType
+import net.minecraft.client.renderer.block.model.{BakedQuad, ItemTransforms}
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.item.ItemStack
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.{Direction, ResourceLocation}
-import net.minecraft.world.IBlockDisplayReader
+import net.minecraft.client.resources.model._
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.BlockAndTintGetter
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.model.data.IModelData
 
 import java.util
@@ -53,7 +54,7 @@ abstract class ModelEnhancer {
   /**
    * Implement data gathering for the model here
    */
-  def extendModelData(world: IBlockDisplayReader, pos: BlockPos, state: BlockState, base: IModelData): IModelData = base
+  def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: IModelData): IModelData = base
 
   /**
    * Wrap around basic model
@@ -61,7 +62,7 @@ abstract class ModelEnhancer {
    * @param base base model
    * @return wrapped model, that will bake with our logic
    */
-  def wrap(base: IUnbakedModel): IUnbakedModel = new SmartUnbakedWrapper(base)
+  def wrap(base: UnbakedModel): UnbakedModel = new SmartUnbakedWrapper(base)
 
   def overrideAmbientOcclusion(base: Boolean): Boolean = base
 
@@ -72,15 +73,15 @@ abstract class ModelEnhancer {
    */
   def compose(that: ModelEnhancer) = new ComposedModelEnhancer(this, that)
 
-  private class SmartUnbakedWrapper(base: IUnbakedModel) extends IUnbakedModel {
-    private val additionalMaterials = additionalTextureLocations.map(new RenderMaterial(Client.blocksAtlas, _))
+  private class SmartUnbakedWrapper(base: UnbakedModel) extends UnbakedModel {
+    private val additionalMaterials = additionalTextureLocations.map(new Material(Client.blocksAtlas, _))
 
-    override def getMaterials(modelGetter: function.Function[ResourceLocation, IUnbakedModel], missingTextureErrors: util.Set[Pair[String, String]]): util.Collection[RenderMaterial] =
+    override def getMaterials(modelGetter: function.Function[ResourceLocation, UnbakedModel], missingTextureErrors: util.Set[Pair[String, String]]): util.Collection[Material] =
       (base.getMaterials(modelGetter, missingTextureErrors).asScala ++ additionalMaterials).asJavaCollection
 
     override def getDependencies: util.Collection[ResourceLocation] = base.getDependencies
 
-    override def bake(bakery: ModelBakery, spriteGetter: function.Function[RenderMaterial, TextureAtlasSprite], transform: IModelTransform, location: ResourceLocation): IBakedModel = {
+    override def bake(bakery: ModelBakery, spriteGetter: function.Function[Material, TextureAtlasSprite], transform: ModelState, location: ResourceLocation): BakedModel = {
       val baked = base.bake(bakery, spriteGetter, transform, location)
       val additionalSprites = additionalMaterials.map(res => res.texture() -> spriteGetter(res)).toMap
 
@@ -88,10 +89,10 @@ abstract class ModelEnhancer {
         override def getQuads(state: BlockState, side: Direction, rand: util.Random, extraData: IModelData): util.List[BakedQuad] =
           processBlockQuads(state, side, rand, extraData, additionalSprites, () => baked.getQuads(state, side, rand, extraData).asScala.toList).asJava
 
-        override def getItemQuads(stack: ItemStack, side: Direction, transform: ItemCameraTransforms.TransformType, rand: util.Random): util.List[BakedQuad] =
+        override def getItemQuads(stack: ItemStack, side: Direction, transform: ItemTransforms.TransformType, rand: util.Random): util.List[BakedQuad] =
           processItemQuads(stack, side, rand, transform, additionalSprites, () => super.getQuads(null, side, rand).asScala.toList).asJava
 
-        override def getModelData(world: IBlockDisplayReader, pos: BlockPos, state: BlockState, tileData: IModelData): IModelData =
+        override def getModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, tileData: IModelData): IModelData =
           extendModelData(world, pos, state, baked.getModelData(world, pos, state, tileData))
 
         override def useAmbientOcclusion(): Boolean = overrideAmbientOcclusion(baked.useAmbientOcclusion())
@@ -107,7 +108,7 @@ class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelE
     e1.processBlockQuads(state, side, rand, data, textures, () => e2.processBlockQuads(state, side, rand, data, textures, base))
   override def processItemQuads(stack: ItemStack, side: Direction, rand: Random, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
     e1.processItemQuads(stack, side, rand, transform, textures, () => e2.processItemQuads(stack, side, rand, transform, textures, base))
-  override def extendModelData(world: IBlockDisplayReader, pos: BlockPos, state: BlockState, base: IModelData): IModelData =
+  override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: IModelData): IModelData =
     e1.extendModelData(world, pos, state, e2.extendModelData(world, pos, state, base))
 }
 

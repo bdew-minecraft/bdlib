@@ -1,11 +1,11 @@
 package net.bdew.lib.rotate
 
-import net.minecraft.block.{Block, BlockState}
-import net.minecraft.entity.LivingEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.{IBlockReader, World}
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.{BlockGetter, Level}
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockState
 
 import java.util
 
@@ -27,10 +27,10 @@ trait BaseRotatableBlock extends Block {
   /**
    * Those will be overridden to provide concrete storage
    */
-  def setFacing(world: World, pos: BlockPos, facing: Direction): Unit
-  def getFacing(world: IBlockReader, pos: BlockPos): Direction
+  def setFacing(world: Level, pos: BlockPos, facing: Direction): Unit
+  def getFacing(world: BlockGetter, pos: BlockPos): Direction
 
-  override def setPlacedBy(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity, stack: ItemStack): Unit = {
+  override def setPlacedBy(world: Level, pos: BlockPos, state: BlockState, placer: LivingEntity, stack: ItemStack): Unit = {
     val dir = RotatedHelper.getFacingFromEntity(placer, getValidFacings, getDefaultFacing)
     setFacing(world, pos, dir)
     super.setPlacedBy(world, pos, state, placer, stack)

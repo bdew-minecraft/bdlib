@@ -4,9 +4,9 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.bdew.lib.{BdLib, Text}
-import net.minecraft.command.CommandSource
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags._
-import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.loading.FMLPaths
 import net.minecraftforge.registries.{ForgeRegistries, ForgeRegistryEntry, IForgeRegistry}
 
@@ -15,7 +15,7 @@ import scala.jdk.CollectionConverters._
 import scala.util.Using
 
 object CommandDumpRegistry extends ModCommand {
-  override def register: LiteralArgumentBuilder[CommandSource] = {
+  override def register: LiteralArgumentBuilder[CommandSourceStack] = {
     literal("dumpregistry")
       .executes(cs => execute(cs))
   }
@@ -23,18 +23,18 @@ object CommandDumpRegistry extends ModCommand {
     dumpWriter.write(registry.getKeys.asScala.map(_.toString).toList.sorted.mkString("\n"))
   }
 
-  def dumpTag[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, loc: ResourceLocation, tag: ITag[T]): Unit = {
+  def dumpTag[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, loc: ResourceLocation, tag: Tag[T]): Unit = {
     dumpWriter.write(loc.toString)
     dumpWriter.newLine()
     dumpWriter.write(tag.getValues.asScala.map(x => s" - ${x.getRegistryName.toString}").sorted.mkString("\n"))
     dumpWriter.newLine()
   }
 
-  def dumpTags[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tags: ITagCollection[T]): Unit = {
+  def dumpTags[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tags: TagCollection[T]): Unit = {
     tags.getAllTags.asScala.toList.sortBy(_._1.toString).foreach(x => dumpTag(dumpWriter, x._1, x._2))
   }
 
-  def execute(ctx: CommandContext[CommandSource]): Int = {
+  def execute(ctx: CommandContext[CommandSourceStack]): Int = {
     val dumpFile = FMLPaths.GAMEDIR.get().resolve("registry.dump").toFile
 
     Using(new BufferedWriter(new FileWriter(dumpFile))) { dumpWriter =>

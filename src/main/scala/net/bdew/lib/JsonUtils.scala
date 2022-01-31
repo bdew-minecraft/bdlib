@@ -1,7 +1,7 @@
 package net.bdew.lib
 
 import com.google.gson.{JsonArray, JsonElement, JsonObject}
-import net.minecraft.util.ResourceLocation
+import net.minecraft.resources.ResourceLocation
 
 import scala.jdk.CollectionConverters.IterableHasAsScala
 

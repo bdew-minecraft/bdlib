@@ -1,22 +1,22 @@
 package net.bdew.lib.inventory
 
 import net.bdew.lib.items.ItemUtils
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.IInventory
-import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import net.minecraft.core.BlockPos
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.{Item, ItemStack}
+import net.minecraft.world.level.Level
 
 import java.util
 
-trait BaseInventory extends IInventory {
+trait BaseInventory extends Container {
   var inv: Array[ItemStack] = Array.fill(getContainerSize)(ItemStack.EMPTY)
 
   override def getMaxStackSize: Int = 64
 
-  override def stillValid(player: PlayerEntity): Boolean = true
-  override def startOpen(player: PlayerEntity): Unit = {}
-  override def stopOpen(player: PlayerEntity): Unit = {}
+  override def stillValid(player: Player): Boolean = true
+  override def startOpen(player: Player): Unit = {}
+  override def stopOpen(player: Player): Unit = {}
 
   override def canPlaceItem(slot: Int, stack: ItemStack): Boolean = true
 
@@ -58,7 +58,7 @@ trait BaseInventory extends IInventory {
   override def hasAnyOf(items: util.Set[Item]): Boolean =
     inv.exists(x => items.contains(x.getItem))
 
-  def dropContent(world: World, pos: BlockPos): Unit = {
+  def dropContent(world: Level, pos: BlockPos): Unit = {
     for (stack <- inv if !stack.isEmpty) {
       ItemUtils.throwItemAt(world, pos, stack)
     }

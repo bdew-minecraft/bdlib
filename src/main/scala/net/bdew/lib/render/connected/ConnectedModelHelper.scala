@@ -2,7 +2,7 @@ package net.bdew.lib.render.connected
 
 import net.bdew.lib.render.primitive._
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
 
 object ConnectedModelHelper {
   val edgeWidth: Float = 1 / 16F

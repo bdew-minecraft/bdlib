@@ -1,18 +1,17 @@
 package net.bdew.lib.recipes
 
 import net.bdew.lib.inventory.NullInventory
-import net.minecraft.item.ItemStack
-import net.minecraft.item.crafting.{IRecipe, IRecipeSerializer, IRecipeType, RecipeManager}
-import net.minecraft.util.ResourceLocation
-import net.minecraft.util.registry.Registry
-import net.minecraft.world.World
-import net.minecraftforge.fml.RegistryObject
-import net.minecraftforge.registries.ForgeRegistryEntry
+import net.minecraft.core.Registry
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.crafting.{Recipe, RecipeManager, RecipeSerializer, RecipeType}
+import net.minecraft.world.level.Level
+import net.minecraftforge.registries.{ForgeRegistryEntry, RegistryObject}
 
 import scala.jdk.CollectionConverters._
 
-abstract class BaseMachineRecipe(val id: ResourceLocation) extends IRecipe[NullInventory] {
-  override def matches(inv: NullInventory, world: World): Boolean = true
+abstract class BaseMachineRecipe(val id: ResourceLocation) extends Recipe[NullInventory] {
+  override def matches(inv: NullInventory, world: Level): Boolean = true
   override def assemble(inv: NullInventory): ItemStack = ItemStack.EMPTY
   override def canCraftInDimensions(x: Int, y: Int): Boolean = true
   override def getResultItem: ItemStack = ItemStack.EMPTY
@@ -20,9 +19,9 @@ abstract class BaseMachineRecipe(val id: ResourceLocation) extends IRecipe[NullI
   override def isSpecial: Boolean = true
 }
 
-abstract class BaseMachineRecipeSerializer[T <: BaseMachineRecipe] extends ForgeRegistryEntry[IRecipeSerializer[_]] with IRecipeSerializer[T]
+abstract class BaseMachineRecipeSerializer[T <: BaseMachineRecipe] extends ForgeRegistryEntry[RecipeSerializer[_]] with RecipeSerializer[T]
 
-class MachineRecipeType[T <: BaseMachineRecipe](reg: RegistryObject[_ <: IRecipeSerializer[T]]) extends IRecipeType[T] {
+class MachineRecipeType[T <: BaseMachineRecipe](reg: RegistryObject[_ <: RecipeSerializer[T]]) extends RecipeType[T] {
   val registryName: ResourceLocation = reg.getId
 
   Registry.register(Registry.RECIPE_TYPE, registryName, this)

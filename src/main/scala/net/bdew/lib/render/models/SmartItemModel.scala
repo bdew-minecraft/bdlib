@@ -1,13 +1,14 @@
 package net.bdew.lib.render.models
 
-import com.mojang.blaze3d.matrix.MatrixStack
-import net.minecraft.block.BlockState
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType
-import net.minecraft.client.renderer.model.{BakedQuad, IBakedModel, ItemOverrideList}
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.entity.LivingEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.util.Direction
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType
+import net.minecraft.client.renderer.block.model.{BakedQuad, ItemOverrides}
+import net.minecraft.client.resources.model.BakedModel
+import net.minecraft.core.Direction
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.ForgeHooksClient
 
 import java.util
@@ -16,16 +17,16 @@ import java.util.Random
 /**
  * Provides a saner replacement to ISmartItemModel (RIP) via ItemOverrides
  */
-trait SmartItemModel extends IBakedModel {
+trait SmartItemModel extends BakedModel {
   /**
    * Override this to provide quads for items. Normal getQuads is not called for them.
    */
   def getItemQuads(stack: ItemStack, side: Direction, transformType: TransformType, rand: Random): util.List[BakedQuad]
 
-  final override def getOverrides: ItemOverrideList = ItemOverrides
+  final override def getOverrides: ItemOverrides = ItemOverrides
 
-  private object ItemOverrides extends ItemOverrideList() {
-    override def resolve(originalModel: IBakedModel, stack: ItemStack, world: ClientWorld, entity: LivingEntity): IBakedModel = {
+  private object ItemOverrides extends ItemOverrides() {
+    override def resolve(originalModel: BakedModel, stack: ItemStack, world: ClientLevel, entity: LivingEntity, p_173469_ : Int): BakedModel = {
       new ItemModel(stack, null)
     }
   }
@@ -35,7 +36,7 @@ trait SmartItemModel extends IBakedModel {
       getItemQuads(stack, side, transform, rand)
     }
 
-    override def handlePerspective(cameraTransformType: TransformType, mat: MatrixStack): IBakedModel =
+    override def handlePerspective(cameraTransformType: TransformType, mat: PoseStack): BakedModel =
       ForgeHooksClient.handlePerspective(new ItemModel(stack, cameraTransformType), cameraTransformType, mat)
   }
 }

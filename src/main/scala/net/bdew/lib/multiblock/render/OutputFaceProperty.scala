@@ -1,6 +1,6 @@
 package net.bdew.lib.multiblock.render
 
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
 import net.minecraftforge.client.model.data.ModelProperty
 
 /**

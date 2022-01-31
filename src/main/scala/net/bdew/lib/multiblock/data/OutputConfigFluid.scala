@@ -3,7 +3,7 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.misc.RSMode
 import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgRSMode}
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 
 import scala.collection.mutable
 
@@ -22,13 +22,13 @@ class OutputConfigFluid extends OutputConfig with OutputConfigRSControllable {
       values.dequeue()
   }
 
-  def read(t: CompoundNBT): Unit = {
+  def read(t: CompoundTag): Unit = {
     values.clear()
     values ++= t.getListVals[Double]("values")
     rsMode = RSMode(t.getInt("rsMode"))
   }
 
-  def write(t: CompoundNBT): Unit = {
+  def write(t: CompoundTag): Unit = {
     t.setListVals("values", values)
     t.putInt("rsMode", rsMode.id)
   }

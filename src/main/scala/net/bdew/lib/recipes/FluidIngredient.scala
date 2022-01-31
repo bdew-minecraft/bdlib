@@ -2,10 +2,10 @@ package net.bdew.lib.recipes
 
 import com.google.gson.{JsonElement, JsonObject, JsonSyntaxException}
 import net.bdew.lib.{JSObj, JSObjectsArray, JSResLoc, JSSinglePair}
-import net.minecraft.fluid.Fluid
-import net.minecraft.network.PacketBuffer
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.FluidTags
-import net.minecraft.util.ResourceLocation
+import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.registries.ForgeRegistries
 
@@ -15,7 +15,7 @@ case class FluidIngredient(fluids: Set[Fluid]) {
   def matches(f: Fluid): Boolean = fluids.exists(_.isSame(f))
   def matches(fs: FluidStack): Boolean = matches(fs.getFluid)
 
-  def toPacket(pkt: PacketBuffer): Unit = {
+  def toPacket(pkt: FriendlyByteBuf): Unit = {
     pkt.writeVarInt(fluids.size)
     fluids.foreach(x => pkt.writeUtf(x.getRegistryName.toString))
   }
@@ -44,7 +44,7 @@ object FluidIngredient {
     }
   }
 
-  def fromPacket(pkt: PacketBuffer): FluidIngredient = {
+  def fromPacket(pkt: FriendlyByteBuf): FluidIngredient = {
     val count = pkt.readVarInt()
     FluidIngredient(
       (0 until count)

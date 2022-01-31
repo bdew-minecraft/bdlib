@@ -1,6 +1,6 @@
 package net.bdew.lib.data.base
 
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 
 import scala.language.implicitConversions
 
@@ -23,9 +23,9 @@ trait DataSlotVal[T] extends DataSlot {
   def :!=(that: T): Boolean = value != that
   def :==(that: T): Boolean = value == that
 
-  def loadValue(t: CompoundNBT, kind: UpdateKind.Value): T
+  def loadValue(t: CompoundTag, kind: UpdateKind.Value): T
 
-  final override def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = realValue = loadValue(t, kind)
+  final override def load(t: CompoundTag, kind: UpdateKind.Value): Unit = realValue = loadValue(t, kind)
 
   def update(v: T, notify: Boolean = true): Unit = {
     if (!isSame(v)) {

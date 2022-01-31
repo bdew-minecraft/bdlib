@@ -1,8 +1,8 @@
 package net.bdew.lib.multiblock
 
 import net.bdew.lib.gui.{Color, Texture}
-import net.minecraft.util.ResourceLocation
-import net.minecraft.util.text.IFormattableTextComponent
+import net.minecraft.network.chat.MutableComponent
+import net.minecraft.resources.ResourceLocation
 
 trait ResourceProvider {
   // Icons for rendering
@@ -21,6 +21,6 @@ trait ResourceProvider {
 
   val outputColors: Map[Int, Color]
   val unlocalizedOutputName: Map[Int, String]
-  def getModuleName(s: String): IFormattableTextComponent
-  def getMachineName(s: String): IFormattableTextComponent
+  def getModuleName(s: String): MutableComponent
+  def getMachineName(s: String): MutableComponent
 }

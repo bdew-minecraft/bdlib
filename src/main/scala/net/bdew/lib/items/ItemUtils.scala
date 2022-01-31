@@ -1,19 +1,18 @@
 package net.bdew.lib.items
 
 import net.bdew.lib.Misc
-import net.minecraft.entity.item.ItemEntity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.{IInventory, ISidedInventory}
-import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.{Container, WorldlyContainer}
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.{Item, ItemStack}
+import net.minecraft.world.level.Level
 import net.minecraftforge.items.IItemHandler
 
 import java.util.Random
 
 object ItemUtils {
-  def throwItemAt(world: World, pos: BlockPos, stack: ItemStack): Unit = {
+  def throwItemAt(world: Level, pos: BlockPos, stack: ItemStack): Unit = {
     if (stack.isEmpty || world.isClientSide) return
     val dx = world.random.nextFloat * 0.8
     val dy = world.random.nextFloat * 0.8
@@ -23,7 +22,7 @@ object ItemUtils {
     world.addFreshEntity(entity)
   }
 
-  def dropItemToPlayer(world: World, player: PlayerEntity, stack: ItemStack): Unit = {
+  def dropItemToPlayer(world: Level, player: Player, stack: ItemStack): Unit = {
     if (stack.isEmpty || world.isClientSide) return
     world.addFreshEntity(new ItemEntity(world, player.position.x, player.position.y, player.position.z, stack))
   }
@@ -38,7 +37,7 @@ object ItemUtils {
     ItemStack.isSame(stack1, stack2)
   }
 
-  def addStackToSlots(stack: ItemStack, inv: IInventory, slots: Iterable[Int], checkValid: Boolean): ItemStack = {
+  def addStackToSlots(stack: ItemStack, inv: Container, slots: Iterable[Int], checkValid: Boolean): ItemStack = {
     if (stack.isEmpty) return stack
 
     // Try merging into existing slots
@@ -94,12 +93,12 @@ object ItemUtils {
   def addStackToHandler(stack: ItemStack, inv: IItemHandler): ItemStack =
     addStackToHandler(stack, inv, 0 until inv.getSlots)
 
-  def getAccessibleSlotsFromSide(inv: IInventory, side: Direction): Iterable[Int] =
-    (Misc.asInstanceOpt(inv, classOf[ISidedInventory])
+  def getAccessibleSlotsFromSide(inv: Container, side: Direction): Iterable[Int] =
+    (Misc.asInstanceOpt(inv, classOf[WorldlyContainer])
       map (_.getSlotsForFace(side).toList)
       getOrElse (0 until inv.getContainerSize))
 
-  def findItemInInventory(inv: IInventory, item: Item): Option[Int] =
+  def findItemInInventory(inv: Container, item: Item): Option[Int] =
     Range(0, inv.getContainerSize).map(x => x -> inv.getItem(x))
       .find({ case (_, stack) => !stack.isEmpty && stack.getItem == item })
       .map({ case (slot, _) => slot })

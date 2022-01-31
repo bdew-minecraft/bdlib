@@ -1,6 +1,6 @@
 package net.bdew.lib.nbt
 
-import net.minecraft.nbt.INBT
+import net.minecraft.nbt.Tag
 
 /**
  * Definition of type that can be converted to something NBT-compatible
@@ -16,8 +16,8 @@ abstract class ConvertedType[T, R: Type] extends Type[T] {
   def encode(v: T): R
   def decode(v: R): Option[T]
 
-  override def toNBT(p: T): INBT = encodedType.toNBT(encode(p))
-  override def toVal(v: INBT): Option[T] = encodedType.toVal(v) flatMap decode
+  override def toNBT(p: T): Tag = encodedType.toNBT(encode(p))
+  override def toVal(v: Tag): Option[T] = encodedType.toVal(v) flatMap decode
 }
 
 

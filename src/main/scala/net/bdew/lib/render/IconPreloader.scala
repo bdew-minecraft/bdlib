@@ -2,8 +2,8 @@ package net.bdew.lib.render
 
 import net.bdew.lib.gui.{IconWrapper, Texture}
 import net.bdew.lib.{Client, Misc}
-import net.minecraft.client.renderer.texture.AtlasTexture
-import net.minecraft.util.ResourceLocation
+import net.minecraft.client.renderer.texture.TextureAtlas
+import net.minecraft.resources.ResourceLocation
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 
@@ -32,20 +32,20 @@ class IconPreloader {
   implicit def entry2texture(v: TextureLoc): IconWrapper =
     if (v.texture != null) v.texture else sys.error("Accessing unloaded texture in IconPreloader")
 
-  def registerIcons(reg: AtlasTexture): Unit = {}
+  def registerIcons(reg: TextureAtlas): Unit = {}
 
   @SubscribeEvent
   def preTextureStitch(ev: TextureStitchEvent.Pre): Unit = {
-    if (ev.getMap.location() == Client.blocksAtlas) {
+    if (ev.getAtlas.location() == Client.blocksAtlas) {
       icons.foreach(icon => ev.addSprite(icon.resource))
     }
-    registerIcons(ev.getMap)
+    registerIcons(ev.getAtlas)
   }
 
   @SubscribeEvent
   def postTextureStitch(ev: TextureStitchEvent.Post): Unit = {
-    if (ev.getMap.location() == Client.blocksAtlas) {
-      icons.foreach(icon => icon.texture = Texture(Client.blocksAtlas, ev.getMap.getSprite(icon.resource)))
+    if (ev.getAtlas.location() == Client.blocksAtlas) {
+      icons.foreach(icon => icon.texture = Texture(Client.blocksAtlas, ev.getAtlas.getSprite(icon.resource)))
     }
   }
 }

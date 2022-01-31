@@ -1,8 +1,8 @@
 package net.bdew.lib.data
 
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.fluid.Fluid
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.templates.FluidTank
 import net.minecraftforge.fluids.{FluidStack, IFluidTank}
@@ -12,15 +12,15 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
 
   val sendCapacityOnUpdateKind = Set(UpdateKind.GUI)
 
-  def save(t: CompoundNBT, k: UpdateKind.Value): Unit = {
-    val tag = new CompoundNBT()
+  def save(t: CompoundTag, k: UpdateKind.Value): Unit = {
+    val tag = new CompoundTag()
     writeToNBT(tag)
     if (sendCapacityOnUpdateKind.contains(k))
       tag.putInt("size", getCapacity)
     t.put(name, tag)
   }
 
-  def load(t: CompoundNBT, k: UpdateKind.Value): Unit = {
+  def load(t: CompoundTag, k: UpdateKind.Value): Unit = {
     setFluid(null)
     val tag = t.getCompound(name)
     readFromNBT(tag)

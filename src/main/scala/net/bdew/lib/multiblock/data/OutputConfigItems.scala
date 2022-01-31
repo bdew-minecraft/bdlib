@@ -2,17 +2,17 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.misc.RSMode
 import net.bdew.lib.multiblock.network.{MsgOutputCfg, MsgOutputCfgRSMode}
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 
 class OutputConfigItems extends OutputConfig with OutputConfigRSControllable {
   override def id = "items"
   var rsMode: RSMode.Value = RSMode.ALWAYS
 
-  def read(t: CompoundNBT): Unit = {
+  def read(t: CompoundTag): Unit = {
     rsMode = RSMode(t.getInt("rsMode"))
   }
 
-  def write(t: CompoundNBT): Unit = {
+  def write(t: CompoundTag): Unit = {
     t.putInt("rsMode", rsMode.id)
   }
 

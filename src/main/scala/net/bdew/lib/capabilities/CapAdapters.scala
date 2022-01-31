@@ -1,15 +1,15 @@
 package net.bdew.lib.capabilities
 
 import net.bdew.lib.BdLib
-import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraftforge.common.capabilities.Capability
 
 abstract class CapAdapter[T] {
-  def canWrap(tile: TileEntity, side: Direction): Boolean = false
+  def canWrap(tile: BlockEntity, side: Direction): Boolean = false
   def canWrap(stack: ItemStack): Boolean = false
-  def wrap(tile: TileEntity, side: Direction): Option[T] = None
+  def wrap(tile: BlockEntity, side: Direction): Option[T] = None
   def wrap(stack: ItemStack): Option[T] = None
 }
 
@@ -20,11 +20,11 @@ object CapAdapters {
 
     def add(adapter: CapAdapter[T]): Unit = adapters :+= adapter
 
-    def canWrap(tile: TileEntity, side: Direction): Boolean = adapters.exists(_.canWrap(tile, side))
+    def canWrap(tile: BlockEntity, side: Direction): Boolean = adapters.exists(_.canWrap(tile, side))
 
     def canWrap(stack: ItemStack): Boolean = adapters.exists(_.canWrap(stack))
 
-    def wrap(tile: TileEntity, side: Direction): Option[T] =
+    def wrap(tile: BlockEntity, side: Direction): Option[T] =
       adapters.find(_.canWrap(tile, side)).flatMap(_.wrap(tile, side))
 
     def wrap(stack: ItemStack): Option[T] =

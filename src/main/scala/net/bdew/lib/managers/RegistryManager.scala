@@ -1,9 +1,8 @@
 package net.bdew.lib.managers
 
 import net.bdew.lib.Misc
-import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
-import net.minecraftforge.registries.{DeferredRegister, IForgeRegistry, IForgeRegistryEntry}
+import net.minecraftforge.registries.{DeferredRegister, IForgeRegistry, IForgeRegistryEntry, RegistryObject}
 
 class RegistryManager[T <: IForgeRegistryEntry[T]](forgeRegistry: IForgeRegistry[T]) {
   val modId: String = Misc.getActiveModId

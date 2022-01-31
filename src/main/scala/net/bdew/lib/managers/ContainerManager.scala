@@ -1,33 +1,32 @@
 package net.bdew.lib.managers
 
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.gui.{IHasContainer, ScreenManager}
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.inventory.container.{Container, ContainerType}
-import net.minecraft.network.PacketBuffer
-import net.minecraft.tileentity.{TileEntity, TileEntityType}
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.client.gui.screens.inventory.MenuAccess
+import net.minecraft.client.gui.screens.{MenuScreens, Screen}
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.inventory.{AbstractContainerMenu, MenuType}
+import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
 import net.minecraftforge.api.distmarker.{Dist, OnlyIn}
-import net.minecraftforge.common.extensions.IForgeContainerType
-import net.minecraftforge.fml.RegistryObject
+import net.minecraftforge.common.extensions.IForgeMenuType
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
-import net.minecraftforge.registries.ForgeRegistries
+import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
 
 abstract class ContainerManager extends RegistryManager(ForgeRegistries.CONTAINERS) {
-  def registerSimple[T <: Container](id: String)(factory: (Int, PlayerInventory, PacketBuffer) => T): RegistryObject[ContainerType[T]] = {
-    super.register(id, () => IForgeContainerType.create((id, inv, data) => factory(id, inv, data)))
+  def registerSimple[T <: AbstractContainerMenu](id: String)(factory: (Int, Inventory, FriendlyByteBuf) => T): RegistryObject[MenuType[T]] = {
+    super.register(id, () => IForgeMenuType.create((id, inv, data) => factory(id, inv, data)))
   }
 
-  def registerPositional[E <: TileEntity, T <: Container](id: String, te: RegistryObject[TileEntityType[E]])(factory: (Int, PlayerInventory, E) => T): RegistryObject[ContainerType[T]] = {
+  def registerPositional[E <: BlockEntity, T <: AbstractContainerMenu](id: String, te: RegistryObject[BlockEntityType[E]])(factory: (Int, Inventory, E) => T): RegistryObject[MenuType[T]] = {
     registerSimple(id) { (id, inv, data) =>
       factory(id, inv, te.get().getBlockEntity(inv.player.level, data.readBlockPos()))
     }
   }
 
-  def registerScreen[C <: Container, S <: Screen with IHasContainer[C]](container: RegistryObject[ContainerType[C]])(factory: (C, PlayerInventory, ITextComponent) => S): Unit = {
-    container.ifPresent(cc => ScreenManager.register(cc, (c: C, i, t) => factory(c, i, t)))
+  def registerScreen[C <: AbstractContainerMenu, S <: Screen with MenuAccess[C]](container: RegistryObject[MenuType[C]])(factory: (C, Inventory, Component) => S): Unit = {
+    container.ifPresent(cc => MenuScreens.register(cc, (c: C, i, t) => factory(c, i, t)))
   }
 
   @OnlyIn(Dist.CLIENT) def onClientSetup(event: FMLClientSetupEvent): Unit

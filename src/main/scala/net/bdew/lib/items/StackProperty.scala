@@ -1,7 +1,7 @@
 package net.bdew.lib.items
 
 import net.bdew.lib.nbt.Type
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 class StackProperty[T: Type](name: String) {
   val nbtType: Type[T] = Type[T]

@@ -1,14 +1,15 @@
 package net.bdew.lib
 
 import net.minecraft.client.Minecraft
-import net.minecraft.client.audio.SoundHandler
-import net.minecraft.client.entity.player.ClientPlayerEntity
-import net.minecraft.client.gui.FontRenderer
-import net.minecraft.client.renderer.color.{BlockColors, ItemColors}
-import net.minecraft.client.renderer.texture.{AtlasTexture, TextureManager}
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.util.ResourceLocation
-import net.minecraft.util.math.BlockPos
+import net.minecraft.client.color.block.BlockColors
+import net.minecraft.client.color.item.ItemColors
+import net.minecraft.client.gui.Font
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.client.renderer.texture.{TextureAtlas, TextureManager}
+import net.minecraft.client.sounds.SoundManager
+import net.minecraft.core.BlockPos
+import net.minecraft.resources.ResourceLocation
 
 /**
  * Misc functions and shortcuts for client-side code
@@ -16,13 +17,13 @@ import net.minecraft.util.math.BlockPos
 object Client {
 
   def minecraft: Minecraft = Minecraft.getInstance()
-  def fontRenderer: FontRenderer = minecraft.font
+  def fontRenderer: Font = minecraft.font
   def textureManager: TextureManager = minecraft.textureManager
-  def soundManager: SoundHandler = minecraft.getSoundManager
-  def world: ClientWorld = minecraft.level
-  def player: ClientPlayerEntity = minecraft.player
+  def soundManager: SoundManager = minecraft.getSoundManager
+  def world: ClientLevel = minecraft.level
+  def player: LocalPlayer = minecraft.player
 
-  def blocksAtlas: ResourceLocation = AtlasTexture.LOCATION_BLOCKS
+  def blocksAtlas: ResourceLocation = TextureAtlas.LOCATION_BLOCKS
   def blockColors: BlockColors = minecraft.getBlockColors
   def itemColors: ItemColors = minecraft.getItemColors
 

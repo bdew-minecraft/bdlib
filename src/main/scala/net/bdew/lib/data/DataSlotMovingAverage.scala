@@ -1,7 +1,7 @@
 package net.bdew.lib.data
 
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
 import scala.collection.mutable
@@ -25,7 +25,7 @@ case class DataSlotMovingAverage(name: String, parent: DataSlotContainer, size: 
     parent.dataSlotChanged(this)
   }
 
-  override def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  override def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     if (kind == UpdateKind.GUI) {
       t.putDouble(name, average)
     } else {
@@ -38,7 +38,7 @@ case class DataSlotMovingAverage(name: String, parent: DataSlotContainer, size: 
     }
   }
 
-  override def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  override def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     if (kind == UpdateKind.GUI) {
       average = t.getDouble(name)
     } else {

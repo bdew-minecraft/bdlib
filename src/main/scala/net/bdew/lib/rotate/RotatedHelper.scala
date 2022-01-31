@@ -1,15 +1,15 @@
 package net.bdew.lib.rotate
 
-import net.minecraft.entity.LivingEntity
-import net.minecraft.util.Direction
-import net.minecraft.util.math.MathHelper
+import net.minecraft.core.Direction
+import net.minecraft.util.Mth
+import net.minecraft.world.entity.LivingEntity
 
 import java.util
 
 object RotatedHelper {
   def getFacingFromEntity(ent: LivingEntity, validRotations: util.EnumSet[Direction], default: Direction): Direction = {
-    val pitch = Math.round(ent.xRot)
-    val yaw = MathHelper.floor(ent.yRot * 4.0F / 360.0F + 0.5D) & 3
+    val pitch = Math.round(ent.getXRot)
+    val yaw = Mth.floor(ent.getYRot * 4.0F / 360.0F + 0.5D) & 3
     yaw match {
       case _ if pitch >= 50 && validRotations.contains(Direction.UP) => Direction.UP
       case _ if pitch <= -50 && validRotations.contains(Direction.DOWN) => Direction.DOWN

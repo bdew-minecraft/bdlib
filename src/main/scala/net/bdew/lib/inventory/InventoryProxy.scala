@@ -1,12 +1,12 @@
 package net.bdew.lib.inventory
 
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.IInventory
-import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.{Item, ItemStack}
 
 import java.util
 
-class InventoryProxy(inv: IInventory) extends IInventory {
+class InventoryProxy(inv: Container) extends Container {
   override def getContainerSize: Int = inv.getContainerSize
   override def getMaxStackSize: Int = inv.getMaxStackSize
   override def canPlaceItem(slot: Int, stack: ItemStack): Boolean = inv.canPlaceItem(slot, stack)
@@ -19,7 +19,7 @@ class InventoryProxy(inv: IInventory) extends IInventory {
   override def setChanged(): Unit = inv.setChanged()
   override def countItem(item: Item): Int = inv.countItem(item)
   override def hasAnyOf(items: util.Set[Item]): Boolean = inv.hasAnyOf(items)
-  override def startOpen(player: PlayerEntity): Unit = inv.startOpen(player)
-  override def stopOpen(player: PlayerEntity): Unit = inv.stopOpen(player)
-  override def stillValid(player: PlayerEntity): Boolean = inv.stillValid(player)
+  override def startOpen(player: Player): Unit = inv.startOpen(player)
+  override def stopOpen(player: Player): Unit = inv.stopOpen(player)
+  override def stillValid(player: Player): Boolean = inv.stillValid(player)
 }

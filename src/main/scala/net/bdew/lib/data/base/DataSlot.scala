@@ -1,6 +1,6 @@
 package net.bdew.lib.data.base
 
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
 
 /**
  * Base trait for all data slots
@@ -23,8 +23,8 @@ trait DataSlot {
   // Where should it sync
   var updateKind = Set(UpdateKind.GUI)
 
-  def save(t: CompoundNBT, kind: UpdateKind.Value): Unit
-  def load(t: CompoundNBT, kind: UpdateKind.Value): Unit
+  def save(t: CompoundTag, kind: UpdateKind.Value): Unit
+  def load(t: CompoundTag, kind: UpdateKind.Value): Unit
 
   def execWithChangeNotify[T](f: => T): T = {
     val v = f

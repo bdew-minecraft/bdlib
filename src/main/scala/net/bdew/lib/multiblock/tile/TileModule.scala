@@ -4,7 +4,7 @@ import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.multiblock.data.DataSlotPos
 import net.bdew.lib.multiblock.{ModuleType, Tools}
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
 
 import scala.reflect.ClassTag
 

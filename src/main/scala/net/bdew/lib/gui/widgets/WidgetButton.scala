@@ -1,15 +1,15 @@
 package net.bdew.lib.gui.widgets
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui.{Point, Rect}
-import net.minecraft.client.gui.widget.button.Button
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.client.gui.components.Button
+import net.minecraft.network.chat.Component
 
-class ButtonWidgetPressable(clicked: WidgetButton => Unit) extends Button.IPressable {
+class ButtonWidgetPressable(clicked: WidgetButton => Unit) extends Button.OnPress {
   override def onPress(b: Button): Unit = clicked(b.asInstanceOf[WidgetButton])
 }
 
-class WidgetButton(val rect: Rect, text: ITextComponent, clicked: WidgetButton => Unit)
+class WidgetButton(val rect: Rect, text: Component, clicked: WidgetButton => Unit)
   extends Button(rect.x.round, rect.y.round, rect.w.round, rect.h.round, text, new ButtonWidgetPressable(clicked)) with Widget {
 
   override def mouseClicked(p: Point, button: Int): Boolean = {
@@ -20,7 +20,7 @@ class WidgetButton(val rect: Rect, text: ITextComponent, clicked: WidgetButton =
     } else false
   }
 
-  override def draw(m: MatrixStack, mouse: Point, partial: Float): Unit = {
+  override def draw(m: PoseStack, mouse: Point, partial: Float): Unit = {
     render(m, mouse.x.round, mouse.y.round, partial)
   }
 }

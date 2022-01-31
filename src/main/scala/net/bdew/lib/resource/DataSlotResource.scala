@@ -2,8 +2,7 @@ package net.bdew.lib.resource
 
 import net.bdew.lib.Misc
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.nbt.CompoundNBT
-import net.minecraftforge.common.util.Constants
+import net.minecraft.nbt.{CompoundTag, Tag}
 
 class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapacity: Int, val canAccept: Resource => Boolean = _ => true) extends DataSlot {
   var resource: Option[Resource] = None
@@ -60,10 +59,10 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
     }
   }
 
-  override def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  override def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     val tag = t.getCompound(name)
 
-    resource = if (tag.contains("resource", Constants.NBT.TAG_COMPOUND))
+    resource = if (tag.contains("resource", Tag.TAG_COMPOUND))
       Resource.loadFromNBT(tag.getCompound("resource"))
     else
       None
@@ -72,8 +71,8 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
       tag.getInt("capacity")
   }
 
-  override def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
-    val tag = new CompoundNBT()
+  override def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
+    val tag = new CompoundTag()
 
     resource foreach { res => tag.put("resource", Resource.saveToNBT(res)) }
 

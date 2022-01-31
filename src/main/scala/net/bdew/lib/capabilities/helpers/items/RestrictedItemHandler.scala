@@ -1,6 +1,6 @@
 package net.bdew.lib.capabilities.helpers.items
 
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 import net.minecraftforge.items.IItemHandler
 
 class RestrictedItemHandler(val base: IItemHandler, canInsert: (Int, ItemStack) => Boolean, canExtract: Int => Boolean) extends ItemHandlerProxy {

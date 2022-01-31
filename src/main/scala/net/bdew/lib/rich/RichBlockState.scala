@@ -1,7 +1,7 @@
 package net.bdew.lib.rich
 
-import net.minecraft.block.BlockState
-import net.minecraft.state.Property
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.properties.Property
 
 class RichBlockState(val v: BlockState) extends AnyVal {
   def withProperties[T <: Comparable[T]](vals: Iterable[(Property[T], T)]): BlockState = {

@@ -4,13 +4,12 @@ import net.bdew.lib.Text._
 import net.bdew.lib.items.TooltipBlockItem
 import net.bdew.lib.multiblock.block.BlockController
 import net.bdew.lib.multiblock.{MultiblockMachineConfig, MultiblockMachineManager}
-import net.minecraft.client.util.ITooltipFlag
-import net.minecraft.item.{BlockItem, Item, ItemStack}
-import net.minecraft.util.text.ITextComponent
-import net.minecraft.world.World
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.{BlockItem, Item, ItemStack, TooltipFlag}
+import net.minecraft.world.level.Level
 
 class ControllerBlockItem(block: BlockController[_], props: Item.Properties, machines: MultiblockMachineManager, machine: MultiblockMachineConfig) extends BlockItem(block, props) with TooltipBlockItem {
-  override def getTooltip(stack: ItemStack, world: World, flags: ITooltipFlag): List[ITextComponent] =
+  override def getTooltip(stack: ItemStack, world: Level, flags: TooltipFlag): List[Component] =
     super.getTooltip(stack, world, flags) :+ translate("bdlib.multiblock.tip.controller") :++ (
       for ((kind, max) <- machine.modules()) yield {
         val name = machines.resources.getModuleName(kind.id)

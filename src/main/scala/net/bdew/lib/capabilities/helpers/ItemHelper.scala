@@ -3,22 +3,21 @@ package net.bdew.lib.capabilities.helpers
 import net.bdew.lib.capabilities.Capabilities.CAP_ITEM_HANDLER
 import net.bdew.lib.capabilities.adapters.InventoryAdapter
 import net.bdew.lib.capabilities.{CapAdapters, Capabilities}
-import net.minecraft.item.ItemStack
-import net.minecraft.util.Direction
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraftforge.items.IItemHandler
 
 object ItemHelper {
   CapAdapters.add(Capabilities.CAP_ITEM_HANDLER, InventoryAdapter)
 
-  def hasItemHandler(world: World, pos: BlockPos, side: Direction): Boolean =
+  def hasItemHandler(world: Level, pos: BlockPos, side: Direction): Boolean =
     getItemHandler(world, pos, side).isDefined
 
   def hasItemHandler(stack: ItemStack): Boolean =
     getItemHandler(stack).isDefined
 
-  def getItemHandler(world: World, pos: BlockPos, side: Direction): Option[IItemHandler] = {
+  def getItemHandler(world: Level, pos: BlockPos, side: Direction): Option[IItemHandler] = {
     val tile = world.getBlockEntity(pos)
     if (tile == null) return None
     val cap = tile.getCapability(CAP_ITEM_HANDLER, side)

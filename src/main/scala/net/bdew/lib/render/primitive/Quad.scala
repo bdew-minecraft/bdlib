@@ -1,8 +1,8 @@
 package net.bdew.lib.render.primitive
 
+import com.mojang.math.Transformation
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.util.Direction
-import net.minecraft.util.math.vector.TransformationMatrix
+import net.minecraft.core.Direction
 
 case class Quad(vertexes: List4[Vertex], face: Direction) {
   /**
@@ -13,7 +13,7 @@ case class Quad(vertexes: List4[Vertex], face: Direction) {
   /**
    * Applies a transformation to the vertexes, leaving other data untouched
    */
-  def applyTransformation(t: TransformationMatrix): Quad = copy(
+  def applyTransformation(t: Transformation): Quad = copy(
     vertexes map (_.applyTransformation(t))
     , face = t.rotateTransform(face)
   )
@@ -46,7 +46,7 @@ case class TQuad(vertexes: List4[TVertex], face: Direction, sprite: TextureAtlas
   /**
    * Applies a transformation to the vertexes, leaving other data untouched
    */
-  def applyTransformation(t: TransformationMatrix): TQuad = copy(
+  def applyTransformation(t: Transformation): TQuad = copy(
     vertexes map (_.applyTransformation(t))
     , face = t.rotateTransform(face)
   )

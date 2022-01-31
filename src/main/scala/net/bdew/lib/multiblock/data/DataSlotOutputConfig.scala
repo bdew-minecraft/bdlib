@@ -2,8 +2,7 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.nbt.NBT
-import net.minecraft.nbt.CompoundNBT
-import net.minecraftforge.common.util.Constants
+import net.minecraft.nbt.{CompoundTag, Tag}
 
 import scala.collection.mutable
 
@@ -14,7 +13,7 @@ case class DataSlotOutputConfig(name: String, parent: DataSlotContainer, slots: 
 
   def inverted: mutable.Map[OutputConfig, Int] = map.map(_.swap)
 
-  def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     for ((n, x) <- map) {
       t.put(name + "_" + n, NBT.from { tmp =>
         x.write(tmp)
@@ -23,10 +22,10 @@ case class DataSlotOutputConfig(name: String, parent: DataSlotContainer, slots: 
     }
   }
 
-  def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     map.clear()
     for (i <- 0 until slots) {
-      if (t.contains(name + "_" + i, Constants.NBT.TAG_COMPOUND)) {
+      if (t.contains(name + "_" + i, Tag.TAG_COMPOUND)) {
         val cfg = t.getCompound(name + "_" + i)
         val cfgObj = OutputConfigManager.create(cfg.getString("kind"))
         cfgObj.read(cfg)
