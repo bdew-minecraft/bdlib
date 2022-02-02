@@ -8,7 +8,7 @@ trait ContainerDataSlots extends NoInvContainer {
   val dataSource: TileDataSlots
   var lastSentChange: Long = dataSource.lastChange
 
-  override protected def playerAdded(player: ServerPlayer): Unit = {
+  override def playerAdded(player: ServerPlayer): Unit = {
     super.playerAdded(player)
     player.connection.send(dataSource.getDataSlotPacket)
   }

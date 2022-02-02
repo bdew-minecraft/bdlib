@@ -3,6 +3,7 @@ package net.bdew.lib.data.base
 import net.bdew.lib.Client
 import net.bdew.lib.nbt.NBT
 import net.bdew.lib.tile.TileExtended
+import net.minecraft.nbt.Tag
 import net.minecraft.network.Connection
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.world.entity.Entity
@@ -44,15 +45,15 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
     ClientboundBlockEntityDataPacket.create(this, (x: BlockEntity) => {
       NBT from { tag =>
         doSave(UpdateKind.GUI, tag)
-        tag.putBoolean("_gui_", true);
+        tag.putByte("_gui_", 1);
       }
     })
   }
 
   override def onDataPacket(net: Connection, pkt: ClientboundBlockEntityDataPacket): Unit = {
-    if (pkt.getTag.getBoolean("_gui_"))
-      handleClientUpdate.trigger(pkt.getTag)
-    else
+    if (pkt.getTag != null && pkt.getTag.contains("_gui_", Tag.TAG_BYTE) && pkt.getTag.getByte("_gui_") == 1) {
+      doLoad(UpdateKind.GUI, pkt.getTag)
+    } else
       super.onDataPacket(net, pkt)
   }
 

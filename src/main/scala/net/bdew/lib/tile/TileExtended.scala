@@ -45,7 +45,6 @@ class TileExtended(teType: BlockEntityType[_], pos: BlockPos, state: BlockState)
     handleClientUpdate.trigger(pkt.getTag)
   }
 
-
   protected def extDataPacket(id: Int, data: CompoundTag): Unit = {}
 }
 

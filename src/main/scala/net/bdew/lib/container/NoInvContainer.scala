@@ -6,7 +6,7 @@ import net.minecraft.world.inventory._
 import net.minecraft.world.item.ItemStack
 
 abstract class NoInvContainer(containerType: MenuType[_], id: Int) extends AbstractContainerMenu(containerType, id) {
-  var players = Set.empty[ServerPlayer]
+  protected var players = Set.empty[ServerPlayer]
 
   protected def bindPlayerInventory(inv: Inventory, xOffs: Int, yOffsInv: Int, yOffsHotbar: Int): Unit = {
     for (i <- 0 until 3; j <- 0 until 9)
@@ -27,32 +27,16 @@ abstract class NoInvContainer(containerType: MenuType[_], id: Int) extends Abstr
     super.clicked(slotNum, button, clickType, player)
   }
 
-  protected def playerAdded(player: ServerPlayer): Unit = {
+  def playerAdded(player: ServerPlayer): Unit = {
     players += player
   }
 
-  protected def playerRemoved(player: ServerPlayer): Unit = {
+  def playerRemoved(player: ServerPlayer): Unit = {
     players -= player
-  }
-
-  override def addSlotListener(listener: ContainerListener): Unit = {
-    super.addSlotListener(listener)
-    listener match {
-      case player: ServerPlayer => playerAdded(player)
-      case _ =>
-    }
   }
 
   override def quickMoveStack(p_82846_1_ : Player, p_82846_2_ : Int): ItemStack = {
     // Nothing to do here if container has no inventory, and vanilla code can lock up so just do nothing
     ItemStack.EMPTY
-  }
-
-  override def removeSlotListener(listener: ContainerListener): Unit = {
-    super.removeSlotListener(listener)
-    listener match {
-      case player: ServerPlayer => playerRemoved(player)
-      case _ =>
-    }
   }
 }
