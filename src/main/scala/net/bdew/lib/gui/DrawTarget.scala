@@ -1,9 +1,11 @@
 package net.bdew.lib.gui
 
+import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex._
 import net.bdew.lib.Client
 import net.minecraft.client.gui.Font
+import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
@@ -42,6 +44,10 @@ trait SimpleDrawTarget extends DrawTarget {
     val z = getZLevel
     t.bind()
     color.activate()
+
+    RenderSystem.enableBlend()
+    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA)
+    RenderSystem.setShader(() => GameRenderer.getPositionTexShader)
 
     val builder = tesselator.getBuilder
     val matrix = m.last.pose()
