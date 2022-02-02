@@ -6,7 +6,7 @@ import com.mojang.math.Vector3f
 import net.bdew.lib.Client
 import net.bdew.lib.render.models.ModelUtils
 import net.minecraft.client.renderer.texture.OverlayTexture
-import net.minecraft.client.renderer.{ItemBlockRenderTypes, RenderType}
+import net.minecraft.client.renderer.{GameRenderer, ItemBlockRenderTypes, RenderType}
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraftforge.client.ForgeHooksClient
@@ -33,6 +33,9 @@ object ModelDrawHelper {
     val blockState = world.getBlockState(pos)
     val tessellator = Tesselator.getInstance()
     val buffer = tessellator.getBuilder
+
+    // Setup shader stuff
+    RenderSystem.setShader(() => GameRenderer.getBlockShader)
 
     // Make sure that block atlas is selected
     RenderSystem.setShaderTexture(0, Client.blocksAtlas)
@@ -79,7 +82,6 @@ object ModelDrawHelper {
 
     // If blocks renders in multiple layers - go through all
     for (layer <- RenderType.chunkBufferLayers().asScala if ItemBlockRenderTypes.canRenderInLayer(blockState, layer)) {
-
       // This is thread local so will hopefully not break anything else. No other way to pass the current layer to the model
       ForgeHooksClient.setRenderType(layer)
 
