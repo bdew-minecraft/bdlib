@@ -2,6 +2,7 @@ package net.bdew.lib.power
 
 import net.bdew.lib.Misc
 import net.bdew.lib.items.StackProperty
+import net.minecraft.util.Mth
 import net.minecraft.world.item.{Item, ItemStack}
 
 trait ItemPoweredBase extends Item {
@@ -54,5 +55,8 @@ trait ItemPoweredBase extends Item {
   }
 
   override def isBarVisible(stack: ItemStack): Boolean = true
-  override def getBarWidth(stack: ItemStack): Int = ((1D - getCharge(stack) / maxCharge) * 13D).round.toInt
+  override def getBarWidth(stack: ItemStack): Int =
+    ((getCharge(stack) / maxCharge) * 13D).round.toInt
+  override def getBarColor(stack: ItemStack): Int =
+    Mth.hsvToRgb(Math.max(0.0F, getCharge(stack) / maxCharge) / 3.0F, 1.0F, 1.0F)
 }
