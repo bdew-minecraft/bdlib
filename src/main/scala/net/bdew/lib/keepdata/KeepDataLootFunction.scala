@@ -6,7 +6,7 @@ import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.storage.loot.LootContext
-import net.minecraft.world.level.storage.loot.functions.{LootItemConditionalFunction, LootItemFunctionType}
+import net.minecraft.world.level.storage.loot.functions.{LootItemConditionalFunction, LootItemFunction, LootItemFunctionType}
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 
@@ -37,4 +37,11 @@ object KeepDataLootFunction {
       new LootItemFunctionType(new KeepDataLootFunctionSerializer)
     )
   }
+
+  class Builder extends LootItemConditionalFunction.Builder[Builder] {
+    override def getThis: Builder = this
+    override def build(): LootItemFunction = new KeepDataLootFunction(getConditions)
+  }
+
+  def keepData = new Builder
 }

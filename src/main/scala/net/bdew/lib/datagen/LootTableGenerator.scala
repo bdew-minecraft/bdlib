@@ -1,6 +1,7 @@
 package net.bdew.lib.datagen
 
 import com.google.gson.{Gson, GsonBuilder}
+import net.bdew.lib.keepdata.{BlockKeepData, KeepDataLootFunction}
 import net.minecraft.data.{DataGenerator, DataProvider, HashCache}
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
@@ -23,6 +24,15 @@ abstract class LootTableGenerator(gen: DataGenerator, modId: String) extends Dat
       LootPool.lootPool()
         .setRolls(ConstantValue.exactly(1))
         .add(LootItem.lootTableItem(block))
+        .when(ExplosionCondition.survivesExplosion())
+    )
+  }
+
+  def makeKeepDataDropTable(block: BlockKeepData): LootTable.Builder = {
+    LootTable.lootTable().withPool(
+      LootPool.lootPool()
+        .setRolls(ConstantValue.exactly(1))
+        .add(LootItem.lootTableItem(block).apply(KeepDataLootFunction.keepData))
         .when(ExplosionCondition.survivesExplosion())
     )
   }
