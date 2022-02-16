@@ -15,7 +15,7 @@ abstract class BaseScreen[T <: AbstractContainerMenu](container: T, playerInv: I
     with ContainerEventHandler
     with MenuAccess[T] {
 
-  val background: Texture
+  def background: Texture
   var rect: Rect = _
 
   val widgets = new WidgetContainerWindow(this)

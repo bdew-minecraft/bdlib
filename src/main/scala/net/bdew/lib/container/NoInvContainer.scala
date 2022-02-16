@@ -8,6 +8,8 @@ import net.minecraft.world.item.ItemStack
 abstract class NoInvContainer(containerType: MenuType[_], id: Int) extends AbstractContainerMenu(containerType, id) {
   protected var players = Set.empty[ServerPlayer]
 
+  protected def addSlotInternal(slot: Slot): Slot = super.addSlot(slot)
+
   protected def bindPlayerInventory(inv: Inventory, xOffs: Int, yOffsInv: Int, yOffsHotbar: Int): Unit = {
     for (i <- 0 until 3; j <- 0 until 9)
       addSlot(new Slot(inv, j + i * 9 + 9, xOffs + j * 18, yOffsInv + i * 18))
