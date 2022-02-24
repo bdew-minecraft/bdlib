@@ -8,7 +8,6 @@ import net.bdew.lib.{BdLib, DecFormat, Text}
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.{CommandSourceStack, Commands}
 import net.minecraft.core.BlockPos
-import net.minecraft.network.chat.Style
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Block
 import net.minecraftforge.fml.loading.FMLPaths
@@ -84,7 +83,10 @@ object CommandOreDistribution extends ModCommand {
     }
 
     val total = distribution.values.sum
-    val warnings = kinds.filter(_._2.size > 1)
+
+    val warnings = kinds
+      .map({ case (ore, blocks) => ore -> blocks.groupBy(_.getRegistryName.getNamespace) })
+      .filter(_._2.size > 1)
 
     if (toFile) {
       // === OUTPUT TO FILE ===
@@ -99,8 +101,8 @@ object CommandOreDistribution extends ModCommand {
           for ((id, types) <- warnings.toList.sortBy(_._1)) {
             dumpWriter.write("Warning: %s has multiple variants generated:".format(id))
             dumpWriter.newLine()
-            for (block <- types) {
-              dumpWriter.write(" - %s".format(block.getRegistryName))
+            for ((mod, blocks) <- types) {
+              dumpWriter.write(" - %s (%s)".format(mod, blocks.map(_.getRegistryName.getPath).mkString(", ")))
               dumpWriter.newLine()
             }
             dumpWriter.newLine()
@@ -123,18 +125,22 @@ object CommandOreDistribution extends ModCommand {
       // === OUTPUT TO CHAT ===
       for ((id, types) <- warnings.toList.sortBy(_._1)) {
         ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.warn",
-          Text.string(" !").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
-          Text.string(id).setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
+          Text.string(" !").withStyle(ChatFormatting.RED),
+          Text.string(id).withStyle(ChatFormatting.RED),
         ), true)
-        for (block <- types)
+        for ((mod, blocks) <- types)
           ctx.getSource.sendSuccess(
-            Text.string(" - ").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))
-              .append(block.getRegistryName.toString), true)
+            Text.string(" - ").withStyle(ChatFormatting.RED)
+              .append(Text.string(mod).withStyle(ChatFormatting.YELLOW))
+              .append(
+                Text.string(" (%s)".format(blocks.map(_.getRegistryName.getPath).mkString(", ")))
+                  .withStyle(ChatFormatting.GRAY)
+              ), true)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
         ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.entry",
           " *",
-          Text.string(id).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+          Text.string(id).withStyle(ChatFormatting.YELLOW),
           DecFormat.round(num),
           DecFormat.short(100F * num / total)
         ), true)
