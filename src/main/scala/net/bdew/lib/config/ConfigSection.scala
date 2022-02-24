@@ -22,6 +22,9 @@ trait ConfigSection {
   def floatVal(spec: ForgeConfigSpec.Builder, name: String, comment: String, default: Float, minVal: Float = Float.MinValue, maxVal: Float = Float.MaxValue): () => Float =
     getter[java.lang.Double, Float](commentIfGiven(spec, comment).defineInRange(name, default.toDouble, minVal.toDouble, maxVal.toDouble), x => Double.unbox(x).toFloat)
 
+  def boolVal(spec: ForgeConfigSpec.Builder, name: String, comment: String, default: Boolean): () => Boolean =
+    getter(commentIfGiven(spec, comment).define(name, default), Boolean.unbox)
+
   def section[T](spec: ForgeConfigSpec.Builder, name: String, comment: String, body: => T): T =
     ConfigSection(spec, name, comment, body)
 }
