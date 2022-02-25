@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.bdew.lib.PimpVanilla.pimpBlockPos
-import net.bdew.lib.{BdLib, DecFormat, Text}
+import net.bdew.lib.{BdLib, DecFormat, Misc, Text}
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.{CommandSourceStack, Commands}
 import net.minecraft.core.BlockPos
@@ -19,8 +19,8 @@ import scala.util.Using
 
 object CommandOreDistribution extends ModCommand {
   private val radius = intArg("radius", min = 1)
-  private val minHeight = intArg("minHeight", min = 0)
-  private val maxHeight = intArg("maxHeight", min = 0)
+  private val minHeight = intArg("minHeight")
+  private val maxHeight = intArg("maxHeight")
 
   override def register: LiteralArgumentBuilder[CommandSourceStack] =
     literal("oredistribution")
@@ -34,8 +34,8 @@ object CommandOreDistribution extends ModCommand {
             .`then`(literal("--file")
               .executes(cs => execute(cs, radius.get(cs), minHeight.get(cs), maxHeight.get(cs), true))
             ).executes(cs => execute(cs, radius.get(cs), minHeight.get(cs), maxHeight.get(cs), false))
-          ).executes(cs => execute(cs, radius.get(cs), minHeight.get(cs), 255, false))
-        ).executes(cs => execute(cs, radius.get(cs), 0, 255, false))
+          ).executes(cs => execute(cs, radius.get(cs), minHeight.get(cs), Int.MaxValue, false))
+        ).executes(cs => execute(cs, radius.get(cs), Int.MinValue, Int.MaxValue, false))
       ).executes(sendUsage)
 
   def sendUsage(ctx: CommandContext[CommandSourceStack]): Int = {
@@ -43,7 +43,7 @@ object CommandOreDistribution extends ModCommand {
     0
   }
 
-  def execute(ctx: CommandContext[CommandSourceStack], radius: Int, minY: Int, maxY: Int, toFile: Boolean): Int = {
+  def execute(ctx: CommandContext[CommandSourceStack], radius: Int, minYparam: Int, maxYparam: Int, toFile: Boolean): Int = {
     val (startX, startZ) =
       if (ctx.getSource.getEntity != null)
         (ctx.getSource.getEntity.blockPosition().getX, ctx.getSource.getEntity.blockPosition().getZ)
@@ -53,7 +53,10 @@ object CommandOreDistribution extends ModCommand {
     val world = ctx.getSource.getLevel
 
 
-    if (minY < 0 || radius <= 0 || minY > maxY || maxY > world.getHeight() - 1)
+    val minY = Misc.max(minYparam, world.dimensionType().minY())
+    val maxY = Misc.min(maxYparam, world.getHeight() + world.dimensionType().minY() - 1)
+
+    if (radius <= 0 || minY > maxY)
       return sendUsage(ctx)
 
     ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.start1",
