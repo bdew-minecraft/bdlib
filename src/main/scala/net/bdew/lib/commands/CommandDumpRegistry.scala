@@ -3,10 +3,13 @@ package net.bdew.lib.commands
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import net.bdew.lib.misc.Tagable
 import net.bdew.lib.{BdLib, Text}
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags._
+import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fml.loading.FMLPaths
 import net.minecraftforge.registries.{ForgeRegistries, ForgeRegistryEntry, IForgeRegistry}
 
@@ -19,19 +22,20 @@ object CommandDumpRegistry extends ModCommand {
     literal("dumpregistry")
       .executes(cs => execute(cs))
   }
+
   def dumpRegistry[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, registry: IForgeRegistry[T]): Unit = {
     dumpWriter.write(registry.getKeys.asScala.map(_.toString).toList.sorted.mkString("\n"))
   }
 
-  def dumpTag[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, loc: ResourceLocation, tag: Tag[T]): Unit = {
-    dumpWriter.write(loc.toString)
+  def dumpTag[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tag: TagKey[T], entries: List[T]): Unit = {
+    dumpWriter.write(tag.location().toString)
     dumpWriter.newLine()
-    dumpWriter.write(tag.getValues.asScala.map(x => s" - ${x.getRegistryName.toString}").sorted.mkString("\n"))
+    dumpWriter.write(entries.map(x => s" - ${x.getRegistryName.toString}").sorted.mkString("\n"))
     dumpWriter.newLine()
   }
 
-  def dumpTags[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tags: TagCollection[T]): Unit = {
-    tags.getAllTags.asScala.toList.sortBy(_._1.toString).foreach(x => dumpTag(dumpWriter, x._1, x._2))
+  def dumpTags[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tags: Map[TagKey[T], List[T]]): Unit = {
+    tags.toList.sortBy(_._1.toString).foreach(x => dumpTag(dumpWriter, x._1, x._2))
   }
 
   def execute(ctx: CommandContext[CommandSourceStack]): Int = {
@@ -48,13 +52,13 @@ object CommandDumpRegistry extends ModCommand {
       dumpRegistry(dumpWriter, ForgeRegistries.FLUIDS)
 
       dumpWriter.write("\n\n==== BLOCK TAGS ====\n")
-      dumpTags(dumpWriter, BlockTags.getAllTags)
+      dumpTags(dumpWriter, Tagable[Block].tagMap)
 
       dumpWriter.write("\n\n==== ITEM TAGS ====\n")
-      dumpTags(dumpWriter, ItemTags.getAllTags)
+      dumpTags(dumpWriter, Tagable[Item].tagMap)
 
       dumpWriter.write("\n\n==== FLUID TAGS ====\n")
-      dumpTags(dumpWriter, FluidTags.getAllTags)
+      dumpTags(dumpWriter, Tagable[Fluid].tagMap)
 
       ctx.getSource.sendSuccess(Text.translate("bdlib.dumpregistry.saved", dumpFile.getCanonicalPath), true)
     } recover {

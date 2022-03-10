@@ -2,6 +2,7 @@ package net.bdew.lib.block
 
 import net.minecraft.core.BlockPos
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
@@ -9,8 +10,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.{InteractionHand, InteractionResult}
-
-import scala.jdk.CollectionConverters._
 
 trait WrenchableBlock extends Block {
   def wrenched(state: BlockState, world: Level, pos: BlockPos, player: Player, hand: InteractionHand, stack: ItemStack, hit: BlockHitResult): InteractionResult
@@ -26,8 +25,10 @@ trait WrenchableBlock extends Block {
 }
 
 object WrenchableBlock {
-  val wrenchTags = Set(new ResourceLocation("forge:wrenches"), new ResourceLocation("forge:tools/wrench"))
-  def isWrench(stack: ItemStack): Boolean = {
-    stack.getItem.getTags.asScala.exists(wrenchTags.contains)
-  }
+  val wrenchTags = Set(
+    ItemTags.create(new ResourceLocation("forge", "wrenches")),
+    ItemTags.create(new ResourceLocation("forge", "tools/wrench")),
+  )
+
+  def isWrench(stack: ItemStack): Boolean = wrenchTags.exists(stack.is)
 }

@@ -3,35 +3,30 @@ package net.bdew.lib.recipes
 import com.google.gson.{JsonElement, JsonObject, JsonSyntaxException}
 import net.bdew.lib.{JSObj, JSObjectsArray, JSResLoc, JSSinglePair}
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.FluidTags
 import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.registries.ForgeRegistries
 
-import scala.jdk.CollectionConverters._
-
-case class FluidIngredient(fluids: Set[Fluid]) {
-  def matches(f: Fluid): Boolean = fluids.exists(_.isSame(f))
+case class FluidIngredient(vals: Set[GenIngredient[Fluid]]) {
+  def matches(f: Fluid): Boolean = vals.exists(_.test(f))
   def matches(fs: FluidStack): Boolean = matches(fs.getFluid)
 
   def toPacket(pkt: FriendlyByteBuf): Unit = {
-    pkt.writeVarInt(fluids.size)
-    fluids.foreach(x => pkt.writeUtf(x.getRegistryName.toString))
+    pkt.writeVarInt(vals.size)
+    vals.foreach(_.toPacket(pkt))
   }
 }
 
 object FluidIngredient {
-  def singleFluid(js: JsonObject): Set[Fluid] = {
+  def singleFluid(js: JsonObject): Set[GenIngredient[Fluid]] = {
     js match {
       case JSSinglePair("fluid", JSResLoc(key)) =>
         if (!ForgeRegistries.FLUIDS.containsKey(key))
           throw new JsonSyntaxException(s"Fluid not found - $key")
-        Set(ForgeRegistries.FLUIDS.getValue(key))
+        Set(GenIngredient.of(ForgeRegistries.FLUIDS.getValue(key)))
       case JSSinglePair("fluidTag", JSResLoc(key)) =>
-        if (!FluidTags.getAllTags.getAllTags.containsKey(key))
-          throw new JsonSyntaxException(s"Fluid tag not found - $key")
-        FluidTags.getAllTags.getTag(key).getValues.asScala.toSet
+        Set(GenIngredient.of(FluidTags.create(key)))
       case _ => throw new JsonSyntaxException(s"Invalid fluid ingredient: ${js.toString}")
     }
   }
@@ -48,7 +43,7 @@ object FluidIngredient {
     val count = pkt.readVarInt()
     FluidIngredient(
       (0 until count)
-        .map(_ => ForgeRegistries.FLUIDS.getValue(new ResourceLocation(pkt.readUtf())))
+        .map(_ => GenIngredient.fromPacket[Fluid](pkt))
         .toSet
     )
   }

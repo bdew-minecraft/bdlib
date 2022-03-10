@@ -22,7 +22,7 @@ object RecipeReloadListener {
     event.addListener(
       new SimplePreparableReloadListener[Void]() {
         override protected def prepare(manager: ResourceManager, profiler: ProfilerFiller): Void = {
-          serverRecipeManager = event.getDataPackRegistries.getRecipeManager
+          serverRecipeManager = event.getServerResources.getRecipeManager
           null
         }
 
