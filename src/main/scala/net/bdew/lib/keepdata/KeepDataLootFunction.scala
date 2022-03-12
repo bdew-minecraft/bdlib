@@ -2,8 +2,7 @@ package net.bdew.lib.keepdata
 
 import com.google.gson.{JsonDeserializationContext, JsonObject}
 import net.bdew.lib.BdLib
-import net.minecraft.core.Registry
-import net.minecraft.resources.ResourceLocation
+import net.bdew.lib.registries.LootFunctionTypes
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.functions.{LootItemConditionalFunction, LootItemFunction, LootItemFunctionType}
@@ -20,7 +19,7 @@ class KeepDataLootFunction(conditions: Array[LootItemCondition]) extends LootIte
     stack
   }
 
-  override def getType: LootItemFunctionType = KeepDataLootFunction.lfType
+  override def getType: LootItemFunctionType = LootFunctionTypes.keepData.get
 }
 
 class KeepDataLootFunctionSerializer extends LootItemConditionalFunction.Serializer[KeepDataLootFunction] {
@@ -29,15 +28,6 @@ class KeepDataLootFunctionSerializer extends LootItemConditionalFunction.Seriali
 }
 
 object KeepDataLootFunction {
-  var lfType: LootItemFunctionType = _
-
-  def register(): Unit = {
-    lfType = Registry.register(Registry.LOOT_FUNCTION_TYPE,
-      new ResourceLocation(BdLib.ModId, "keep_data"),
-      new LootItemFunctionType(new KeepDataLootFunctionSerializer)
-    )
-  }
-
   class Builder extends LootItemConditionalFunction.Builder[Builder] {
     override def getThis: Builder = this
     override def build(): LootItemFunction = new KeepDataLootFunction(getConditions)

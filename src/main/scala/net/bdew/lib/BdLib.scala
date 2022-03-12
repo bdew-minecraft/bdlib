@@ -2,10 +2,9 @@ package net.bdew.lib
 
 import net.bdew.lib.commands.{CommandDumpRegistry, CommandOreDistribution}
 import net.bdew.lib.container.ContainerEventListener
-import net.bdew.lib.keepdata.KeepDataLootFunction
-import net.bdew.lib.managers.VanillaRegister
 import net.bdew.lib.multiblock.network.MultiblockNetHandler
 import net.bdew.lib.network.misc.MiscNetworkHandler
+import net.bdew.lib.registries.LootFunctionTypes
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.fml.common.Mod
@@ -26,12 +25,10 @@ object BdLib {
 
   MinecraftForge.EVENT_BUS.addListener(this.registerCommands)
 
-  VanillaRegister.init()
+  LootFunctionTypes.init()
 
   MultiblockNetHandler.init()
   MiscNetworkHandler.init()
-
-  VanillaRegister.listen(KeepDataLootFunction.register)
 
   ContainerEventListener.register()
 
