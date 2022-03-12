@@ -11,7 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries
 case class FluidIngredient(vals: Set[GenIngredient[Fluid]]) {
   def matches(f: Fluid): Boolean = vals.exists(_.test(f))
   def matches(fs: FluidStack): Boolean = matches(fs.getFluid)
-
+  def fluids: Set[Fluid] = vals.flatMap(_.resolve)
   def toPacket(pkt: FriendlyByteBuf): Unit = {
     pkt.writeVarInt(vals.size)
     vals.foreach(_.toPacket(pkt))

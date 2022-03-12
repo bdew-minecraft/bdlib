@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.bdew.lib.PimpVanilla.pimpBlockPos
 import net.bdew.lib._
-import net.bdew.lib.misc.Tagable
+import net.bdew.lib.misc.Taggable
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.{CommandSourceStack, Commands}
 import net.minecraft.core.BlockPos
@@ -66,7 +66,7 @@ object CommandOreDistribution extends ModCommand {
 
     ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.start2"), true)
 
-    val oreTags = Tagable[Block].tagMap.flatMap({
+    val oreTags = Taggable[Block].tagMap.flatMap({
       case (tag, blocks) if tag.location.getPath.startsWith("ores/") => Some(tag.location.getPath.substring(5) -> blocks)
       case _ => None
     })

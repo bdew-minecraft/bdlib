@@ -3,7 +3,7 @@ package net.bdew.lib.commands
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import net.bdew.lib.misc.Tagable
+import net.bdew.lib.misc.Taggable
 import net.bdew.lib.{BdLib, Text}
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.tags._
@@ -52,13 +52,13 @@ object CommandDumpRegistry extends ModCommand {
       dumpRegistry(dumpWriter, ForgeRegistries.FLUIDS)
 
       dumpWriter.write("\n\n==== BLOCK TAGS ====\n")
-      dumpTags(dumpWriter, Tagable[Block].tagMap)
+      dumpTags(dumpWriter, Taggable[Block].tagMap)
 
       dumpWriter.write("\n\n==== ITEM TAGS ====\n")
-      dumpTags(dumpWriter, Tagable[Item].tagMap)
+      dumpTags(dumpWriter, Taggable[Item].tagMap)
 
       dumpWriter.write("\n\n==== FLUID TAGS ====\n")
-      dumpTags(dumpWriter, Tagable[Fluid].tagMap)
+      dumpTags(dumpWriter, Taggable[Fluid].tagMap)
 
       ctx.getSource.sendSuccess(Text.translate("bdlib.dumpregistry.saved", dumpFile.getCanonicalPath), true)
     } recover {

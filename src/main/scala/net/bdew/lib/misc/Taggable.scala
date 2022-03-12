@@ -12,14 +12,15 @@ import scala.annotation.implicitNotFound
 import scala.jdk.CollectionConverters._
 import scala.jdk.StreamConverters._
 
-@implicitNotFound("Type ${T} is not tagable")
-trait Tagable[T <: ForgeRegistryEntry[T]] {
+@implicitNotFound("Type ${T} is not taggable")
+trait Taggable[T <: ForgeRegistryEntry[T]] {
   def resKey: ResourceKey[Registry[T]]
   def registry: IForgeRegistry[T]
   def ref(v: T): Holder.Reference[T]
   def tags(v: T): List[TagKey[T]] = ref(v).tags().toScala(List)
   def is(v: T, t: TagKey[T]): Boolean = ref(v).is(t)
   def createTag(loc: ResourceLocation): TagKey[T] = TagKey.create(resKey, loc)
+  def resolve(t: TagKey[T]): Set[T]
   def tagMap: Map[TagKey[T], List[T]] = {
     registry.getValues.asScala.toList
       .flatMap(o => tags(o).map(t => t -> o))
@@ -27,24 +28,27 @@ trait Tagable[T <: ForgeRegistryEntry[T]] {
   }
 }
 
-object Tagable {
-  def apply[T <: ForgeRegistryEntry[T] : Tagable]: Tagable[T] = implicitly[Tagable[T]]
+object Taggable {
+  def apply[T <: ForgeRegistryEntry[T] : Taggable]: Taggable[T] = implicitly[Taggable[T]]
 
-  implicit val TagableItem: Tagable[Item] = new Tagable[Item] {
+  implicit val TagableItem: Taggable[Item] = new Taggable[Item] {
     override def resKey: ResourceKey[Registry[Item]] = Registry.ITEM_REGISTRY
     override def registry: IForgeRegistry[Item] = ForgeRegistries.ITEMS
     override def ref(v: Item): Holder.Reference[Item] = v.builtInRegistryHolder()
+    override def resolve(t: TagKey[Item]): Set[Item] = Registry.ITEM.getTagOrEmpty(t).asScala.map(_.value()).toSet
   }
 
-  implicit val TagableBlock: Tagable[Block] = new Tagable[Block] {
+  implicit val TagableBlock: Taggable[Block] = new Taggable[Block] {
     override def resKey: ResourceKey[Registry[Block]] = Registry.BLOCK_REGISTRY
     override def registry: IForgeRegistry[Block] = ForgeRegistries.BLOCKS
     override def ref(v: Block): Holder.Reference[Block] = v.builtInRegistryHolder()
+    override def resolve(t: TagKey[Block]): Set[Block] = Registry.BLOCK.getTagOrEmpty(t).asScala.map(_.value()).toSet
   }
 
-  implicit val TagableFluid: Tagable[Fluid] = new Tagable[Fluid] {
+  implicit val TagableFluid: Taggable[Fluid] = new Taggable[Fluid] {
     override def resKey: ResourceKey[Registry[Fluid]] = Registry.FLUID_REGISTRY
     override def registry: IForgeRegistry[Fluid] = ForgeRegistries.FLUIDS
     override def ref(v: Fluid): Holder.Reference[Fluid] = v.builtInRegistryHolder()
+    override def resolve(t: TagKey[Fluid]): Set[Fluid] = Registry.FLUID.getTagOrEmpty(t).asScala.map(_.value()).toSet
   }
 }
