@@ -12,18 +12,19 @@ case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capaci
 
   override def getFluidAmount: Int = num.toDouble(ds).floor.toInt
   override def getCapacity: Int = capacity
-  override def getFluid: FluidStack = if (getFluidAmount > 0) new FluidStack(fluid, getFluidAmount) else null
+
+  override def getFluid: FluidStack = if (getFluidAmount > 0) new FluidStack(fluid, getFluidAmount) else FluidStack.EMPTY
 
   override def drain(maxDrain: Int, action: FluidAction): FluidStack = {
     val canDrain = Misc.clamp(maxDrain, 0, getFluidAmount)
     if (canDrain > 0) {
       if (action.execute) ds -= canDrain
       new FluidStack(fluid, canDrain)
-    } else null
+    } else FluidStack.EMPTY
   }
 
   override def fill(resource: FluidStack, action: FluidAction): Int = {
-    if (resource != null && resource.getFluid == fluid && resource.getAmount > 0) {
+    if (!resource.isEmpty && resource.getFluid == fluid && resource.getAmount > 0) {
       val canFill = Misc.min(resource.getAmount, getCapacity - getFluidAmount)
       if (action.execute) ds += canFill
       canFill
@@ -31,9 +32,9 @@ case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capaci
   }
 
   override def drain(resource: FluidStack, action: FluidAction): FluidStack = {
-    if (resource != null && resource.getFluid == fluid) {
+    if (!resource.isEmpty && resource.getFluid == fluid) {
       drain(resource.getAmount, action)
-    } else null
+    } else FluidStack.EMPTY
   }
 
   override def getTanks: Int = 1
