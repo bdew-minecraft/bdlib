@@ -1,8 +1,13 @@
 package net.bdew.lib.capabilities.helpers
 
-import net.bdew.lib.capabilities.CapAdapters
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.capabilities.Capabilities.{CAP_FLUID_HANDLER, CAP_FLUID_HANDLER_ITEM}
+import net.bdew.lib.capabilities.{CapAdapters, Capabilities}
+import net.bdew.lib.items.ItemUtils
 import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraftforge.fluids.FluidStack
@@ -63,5 +68,48 @@ object FluidHelper {
         } else FluidStack.EMPTY
       } else FluidStack.EMPTY
     } else FluidStack.EMPTY
+  }
+
+  def blockFluidInteract(world: Level, pos: BlockPos, player: Player, hand: InteractionHand): Boolean = {
+    val te = world.getBlockEntity(pos)
+    val item = player.getItemInHand(hand)
+
+    if (item.isEmpty || te == null) return false
+
+    val cont = item.copy()
+    cont.setCount(1)
+
+    val resultStack = cont.getCapability(Capabilities.CAP_FLUID_HANDLER_ITEM).toScala.flatMap(itemCap =>
+      te.getCapability(Capabilities.CAP_FLUID_HANDLER).toScala.flatMap(ourCap => {
+        val fluid = itemCap.drain(Int.MaxValue, FluidAction.SIMULATE)
+        if (fluid.isEmpty) {
+          val moved = pushFluid(ourCap, itemCap)
+          if (!moved.isEmpty) {
+            world.playSound(null, pos, SoundEvents.BUCKET_FILL, player.getSoundSource, 1, 1)
+            Some(itemCap.getContainer)
+          } else None
+        } else {
+          val moved = pushFluid(itemCap, ourCap)
+          if (!moved.isEmpty) {
+            world.playSound(null, pos, SoundEvents.BUCKET_EMPTY, player.getSoundSource, 1, 1)
+            Some(itemCap.getContainer)
+          } else None
+        }
+      })
+    )
+
+    resultStack.foreach(stack => {
+      if (!player.isCreative) {
+        if (item.getCount == 1)
+          player.setItemInHand(hand, stack)
+        else {
+          item.shrink(1)
+          if (!stack.isEmpty)
+            ItemUtils.dropItemToPlayer(world, player, stack)
+        }
+      }
+    })
+
+    resultStack.nonEmpty
   }
 }
