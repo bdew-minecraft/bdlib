@@ -42,7 +42,9 @@ class TileExtended(teType: BlockEntityType[_], pos: BlockPos, state: BlockState)
   }
 
   override def onDataPacket(net: Connection, pkt: ClientboundBlockEntityDataPacket): Unit = {
-    handleClientUpdate.trigger(pkt.getTag)
+    if (pkt.getTag != null)
+      handleClientUpdate.trigger(pkt.getTag)
+    super.onDataPacket(net, pkt)
   }
 
   protected def extDataPacket(id: Int, data: CompoundTag): Unit = {}
