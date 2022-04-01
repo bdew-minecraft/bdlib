@@ -62,7 +62,7 @@ abstract class ModelEnhancer {
    * @param base base model
    * @return wrapped model, that will bake with our logic
    */
-  def wrap(base: UnbakedModel): UnbakedModel = new SmartUnbakedWrapper(base)
+  def wrap(base: UnbakedModel, extraTex: Map[String, Material]): UnbakedModel = new SmartUnbakedWrapper(base, extraTex)
 
   def overrideAmbientOcclusion(base: Boolean): Boolean = base
 
@@ -73,17 +73,23 @@ abstract class ModelEnhancer {
    */
   def compose(that: ModelEnhancer) = new ComposedModelEnhancer(this, that)
 
-  private class SmartUnbakedWrapper(base: UnbakedModel) extends UnbakedModel {
+  private class SmartUnbakedWrapper(base: UnbakedModel, extraTex: Map[String, Material]) extends UnbakedModel {
     private val additionalMaterials = additionalTextureLocations.map(new Material(Client.blocksAtlas, _))
 
     override def getMaterials(modelGetter: function.Function[ResourceLocation, UnbakedModel], missingTextureErrors: util.Set[Pair[String, String]]): util.Collection[Material] =
-      (base.getMaterials(modelGetter, missingTextureErrors).asScala ++ additionalMaterials).asJavaCollection
+      (base.getMaterials(modelGetter, missingTextureErrors).asScala ++ additionalMaterials.filter(_.texture().getNamespace != "_ex") ++ extraTex.values).asJavaCollection
 
     override def getDependencies: util.Collection[ResourceLocation] = base.getDependencies
 
     override def bake(bakery: ModelBakery, spriteGetter: function.Function[Material, TextureAtlasSprite], transform: ModelState, location: ResourceLocation): BakedModel = {
       val baked = base.bake(bakery, spriteGetter, transform, location)
-      val additionalSprites = additionalMaterials.map(res => res.texture() -> spriteGetter(res)).toMap
+      val additionalSprites: Map[ResourceLocation, TextureAtlasSprite] =
+        additionalMaterials.map(res => res.texture() -> (
+          if (res.texture().getNamespace == "_ex")
+            spriteGetter(extraTex.getOrElse(res.texture().getPath, throw new RuntimeException(s"Model is missing required extra texture '${res.texture().getPath}'")))
+          else
+            spriteGetter(res)
+          )).toMap
 
       new BakedModelProxy(baked) with SmartItemModel {
         override def getQuads(state: BlockState, side: Direction, rand: util.Random, extraData: IModelData): util.List[BakedQuad] =

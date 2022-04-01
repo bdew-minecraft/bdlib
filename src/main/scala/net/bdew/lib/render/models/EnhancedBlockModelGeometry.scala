@@ -11,9 +11,8 @@ import net.minecraftforge.client.model.geometry.IModelGeometry
 import java.util
 import java.util.function
 
-class EnhancedBlockModelGeometry(val enhancer: ModelEnhancer, val parent: ResourceLocation, val textures: util.Map[String, Either[Material, String]]) extends IModelGeometry[EnhancedBlockModelGeometry] {
+class EnhancedBlockModelGeometry(val enhancer: ModelEnhancer, val parent: ResourceLocation, val textures: util.Map[String, Either[Material, String]], val extraTex: Map[String, Material]) extends IModelGeometry[EnhancedBlockModelGeometry] {
   private var parentModel: UnbakedModel = _
-
 
   override def bake(owner: IModelConfiguration, bakery: ModelBakery, spriteGetter: function.Function[Material, TextureAtlasSprite], modelTransform: ModelState, overrides: ItemOverrides, modelLocation: ResourceLocation): BakedModel = {
     parentModel.bake(bakery, spriteGetter, modelTransform, parent)
@@ -29,10 +28,8 @@ class EnhancedBlockModelGeometry(val enhancer: ModelEnhancer, val parent: Resour
       util.Collections.emptyList()
     )
 
-    parentModel = enhancer.wrap(subModel)
+    parentModel = enhancer.wrap(subModel, extraTex)
 
-    val parentTexures = parentModel.getMaterials(modelGetter, missingTextureErrors)
-
-    parentTexures
+    parentModel.getMaterials(modelGetter, missingTextureErrors)
   }
 }

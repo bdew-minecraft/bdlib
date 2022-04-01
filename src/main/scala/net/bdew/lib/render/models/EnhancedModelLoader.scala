@@ -15,14 +15,24 @@ class EnhancedModelLoader(val enhancer: ModelEnhancer) extends IModelLoader[Enha
     Either.left(new Material(Client.blocksAtlas, res))
 
   override def read(deserializationContext: JsonDeserializationContext, modelContents: JsonObject): EnhancedBlockModelGeometry = {
-    new EnhancedBlockModelGeometry(enhancer, new ResourceLocation(modelContents.get("parent").getAsString),
-      modelContents.get("textures")
+    val textures = modelContents.get("textures")
+      .getAsJsonObject
+      .entrySet()
+      .asScala
+      .map(x => x.getKey -> material(new ResourceLocation(x.getValue.getAsString)))
+      .toMap.asJava
+
+    val extraTex = if (modelContents.has("extraTex"))
+      modelContents.get("extraTex")
         .getAsJsonObject
         .entrySet()
         .asScala
-        .map(x => x.getKey -> material(new ResourceLocation(x.getValue.getAsString)))
-        .toMap.asJava
-    )
+        .map(x => x.getKey -> new Material(Client.blocksAtlas, new ResourceLocation(x.getValue.getAsString)))
+        .toMap
+    else
+      Map.empty[String, Material]
+
+    new EnhancedBlockModelGeometry(enhancer, new ResourceLocation(modelContents.get("parent").getAsString), textures, extraTex)
   }
 
   override def onResourceManagerReload(resourceManager: ResourceManager): Unit = {
