@@ -11,13 +11,13 @@ import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
 import scala.jdk.CollectionConverters._
 
-class RecipeDef[C <: Container, T <: Recipe[C], S <: RecipeSerializer[T], R <: RecipeType[T]](val id: ResourceLocation, val serializerRef: RegistryObject[S], val recipeTypeRef: VanillaRegistryObject[R]) {
+class RecipeDef[C <: Container, T <: Recipe[C], S <: RecipeSerializer[T], R <: RecipeType[T]](val id: ResourceLocation, val serializerRef: RegistryObject[S], val recipeTypeRef: RegistryObject[R]) {
   def serializer: S = serializerRef.get
   def recipeType: R = recipeTypeRef.get
   def from(mgr: crafting.RecipeManager): List[T] = mgr.getAllRecipesFor[C, T](recipeType).asScala.toList
 }
 
-class MachineRecipeDef[T <: BaseMachineRecipe, S <: BaseMachineRecipeSerializer[T]](id: ResourceLocation, serializerRef: RegistryObject[S], recipeTypeRef: VanillaRegistryObject[MachineRecipeType[T]])
+class MachineRecipeDef[T <: BaseMachineRecipe, S <: BaseMachineRecipeSerializer[T]](id: ResourceLocation, serializerRef: RegistryObject[S], recipeTypeRef: RegistryObject[MachineRecipeType[T]])
   extends RecipeDef[NullInventory, T, S, MachineRecipeType[T]](id, serializerRef, recipeTypeRef)
 
 class RecipeManager extends RegistryManager(ForgeRegistries.RECIPE_SERIALIZERS) {
