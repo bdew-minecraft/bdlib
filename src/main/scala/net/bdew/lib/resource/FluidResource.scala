@@ -15,7 +15,7 @@ case class FluidResource(fluid: Fluid) extends ResourceKind {
   override def getFormattedString(amount: Double, capacity: Double): MutableComponent =
     Text.fluidCap(amount, capacity)
   override def capacityMultiplier = 1
-  override def toString: String = "FluidResource(%s)".format(fluid.getRegistryName)
+  override def toString: String = "FluidResource(%s)".format(ForgeRegistries.FLUIDS.getKey(fluid))
   override def helperObject: ResourceHelper[_ >: FluidResource.this.type] = FluidResourceHelper
 }
 
@@ -27,6 +27,6 @@ object FluidResourceHelper extends ResourceHelper[FluidResource]("fluid") {
     } else None
   }
   override def saveToNBT(tag: CompoundTag, r: FluidResource): Unit = {
-    tag.putString("fluid", r.fluid.getRegistryName.toString)
+    tag.putString("fluid", ForgeRegistries.FLUIDS.getKey(r.fluid).toString)
   }
 }

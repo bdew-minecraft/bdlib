@@ -7,22 +7,22 @@ import net.minecraft.client.renderer.block.model.{BakedQuad, ItemOverrides, Item
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.resources.model.BakedModel
 import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.model.data.IModelData
 
 import java.util
-import java.util.Random
 
 /**
  * Base class for wrappers around IBakedModel
  */
 class BakedModelProxy(base: BakedModel) extends BakedModel {
-  override def getQuads(state: BlockState, side: Direction, rand: Random, extraData: IModelData): util.List[BakedQuad] =
+  override def getQuads(state: BlockState, side: Direction, rand: RandomSource, extraData: IModelData): util.List[BakedQuad] =
     base.getQuads(state, side, rand, extraData)
 
-  override def getQuads(state: BlockState, side: Direction, rand: Random): util.List[BakedQuad] =
+  override def getQuads(state: BlockState, side: Direction, rand: RandomSource): util.List[BakedQuad] =
     base.getQuads(state, side, rand)
 
   override def useAmbientOcclusion(): Boolean = base.useAmbientOcclusion()

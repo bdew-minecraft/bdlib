@@ -1,6 +1,6 @@
 package net.bdew.lib.capabilities.helpers.fluid
 
-import net.minecraft.tags.{Tag, TagKey}
+import net.minecraft.tags.TagKey
 import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler

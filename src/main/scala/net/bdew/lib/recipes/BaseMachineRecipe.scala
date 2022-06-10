@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.{Recipe, RecipeSerializer, RecipeType}
 import net.minecraft.world.level.Level
-import net.minecraftforge.registries.{ForgeRegistryEntry, RegistryObject}
+import net.minecraftforge.registries.RegistryObject
 
 abstract class BaseMachineRecipe(val id: ResourceLocation) extends Recipe[NullInventory] {
   override def matches(inv: NullInventory, world: Level): Boolean = true
@@ -16,7 +16,7 @@ abstract class BaseMachineRecipe(val id: ResourceLocation) extends Recipe[NullIn
   override def isSpecial: Boolean = true
 }
 
-abstract class BaseMachineRecipeSerializer[T <: BaseMachineRecipe] extends ForgeRegistryEntry[RecipeSerializer[_]] with RecipeSerializer[T]
+abstract class BaseMachineRecipeSerializer[T <: BaseMachineRecipe] extends RecipeSerializer[T]
 
 class MachineRecipeType[T <: BaseMachineRecipe](reg: RegistryObject[_ <: RecipeSerializer[T]]) extends RecipeType[T] {
   val registryName: ResourceLocation = reg.getId

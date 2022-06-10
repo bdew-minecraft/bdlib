@@ -30,7 +30,7 @@ trait HasTE[T <: BlockEntity] extends Block with EntityBlock {
         t = newBlockEntity(pos, w.getBlockState(pos))
         w.setBlockEntity(t)
       } else {
-        sys.error(s"Attempt to get TE ${teType.getRegistryName} on a mismatched block ${w.getBlockState(pos)} at $pos")
+        sys.error(s"Attempt to get TE ${BlockEntityType.getKey(teType).toString} on a mismatched block ${w.getBlockState(pos)} at $pos")
       }
     }
     t

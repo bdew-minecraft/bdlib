@@ -2,11 +2,11 @@ package net.bdew.lib.items
 
 import net.bdew.lib.Misc
 import net.minecraft.core.{BlockPos, Direction}
-import net.minecraft.world.{Container, WorldlyContainer}
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.{Item, ItemStack}
 import net.minecraft.world.level.Level
+import net.minecraft.world.{Container, WorldlyContainer}
 import net.minecraftforge.items.IItemHandler
 
 import java.util.Random

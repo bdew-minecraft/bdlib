@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.fml.loading.FMLPaths
-import net.minecraftforge.registries.{ForgeRegistries, ForgeRegistryEntry, IForgeRegistry}
+import net.minecraftforge.registries.{ForgeRegistries, IForgeRegistry}
 
 import java.io.{BufferedWriter, FileWriter}
 import scala.jdk.CollectionConverters._
@@ -23,19 +23,19 @@ object CommandDumpRegistry extends ModCommand {
       .executes(cs => execute(cs))
   }
 
-  def dumpRegistry[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, registry: IForgeRegistry[T]): Unit = {
+  def dumpRegistry[T](dumpWriter: BufferedWriter, registry: IForgeRegistry[T]): Unit = {
     dumpWriter.write(registry.getKeys.asScala.map(_.toString).toList.sorted.mkString("\n"))
   }
 
-  def dumpTag[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tag: TagKey[T], entries: List[T]): Unit = {
+  def dumpTag[T](dumpWriter: BufferedWriter, tag: TagKey[T], entries: List[T], reg: IForgeRegistry[T]): Unit = {
     dumpWriter.write(tag.location().toString)
     dumpWriter.newLine()
-    dumpWriter.write(entries.map(x => s" - ${x.getRegistryName.toString}").sorted.mkString("\n"))
+    dumpWriter.write(entries.map(x => s" - ${reg.getKey(x).toString}").sorted.mkString("\n"))
     dumpWriter.newLine()
   }
 
-  def dumpTags[T <: ForgeRegistryEntry[T]](dumpWriter: BufferedWriter, tags: Map[TagKey[T], List[T]]): Unit = {
-    tags.toList.sortBy(_._1.toString).foreach(x => dumpTag(dumpWriter, x._1, x._2))
+  def dumpTags[T](dumpWriter: BufferedWriter, kind: Taggable[T]): Unit = {
+    kind.tagMap.toList.sortBy(_._1.toString).foreach(x => dumpTag(dumpWriter, x._1, x._2, kind.registry))
   }
 
   def execute(ctx: CommandContext[CommandSourceStack]): Int = {
@@ -52,13 +52,13 @@ object CommandDumpRegistry extends ModCommand {
       dumpRegistry(dumpWriter, ForgeRegistries.FLUIDS)
 
       dumpWriter.write("\n\n==== BLOCK TAGS ====\n")
-      dumpTags(dumpWriter, Taggable[Block].tagMap)
+      dumpTags(dumpWriter, Taggable[Block])
 
       dumpWriter.write("\n\n==== ITEM TAGS ====\n")
-      dumpTags(dumpWriter, Taggable[Item].tagMap)
+      dumpTags(dumpWriter, Taggable[Item])
 
       dumpWriter.write("\n\n==== FLUID TAGS ====\n")
-      dumpTags(dumpWriter, Taggable[Fluid].tagMap)
+      dumpTags(dumpWriter, Taggable[Fluid])
 
       ctx.getSource.sendSuccess(Text.translate("bdlib.dumpregistry.saved", dumpFile.getCanonicalPath), true)
     } recover {

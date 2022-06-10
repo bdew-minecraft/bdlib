@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item
 import net.minecraftforge.client.model.generators.ModelFile.{ExistingModelFile, UncheckedModelFile}
 import net.minecraftforge.client.model.generators.{ItemModelProvider, ModelFile}
 import net.minecraftforge.common.data.ExistingFileHelper
+import net.minecraftforge.registries.ForgeRegistries
 
 abstract class ItemModelGenerator(gen: DataGenerator, modId: String, efh: ExistingFileHelper) extends ItemModelProvider(gen, modId, efh) {
   def vanillaModel(name: String): ExistingModelFile = {
@@ -17,7 +18,7 @@ abstract class ItemModelGenerator(gen: DataGenerator, modId: String, efh: Existi
   }
 
   def simpleItemModel(item: Item, texture: String): Unit = {
-    getBuilder(item.getRegistryName.getPath)
+    getBuilder(ForgeRegistries.ITEMS.getKey(item).getPath)
       .parent(vanillaModel("item/generated"))
       .texture("layer0", new ResourceLocation(modId, texture))
   }

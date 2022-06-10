@@ -3,8 +3,8 @@ package net.bdew.lib.commands
 import com.mojang.brigadier.arguments._
 import com.mojang.brigadier.builder.{LiteralArgumentBuilder, RequiredArgumentBuilder}
 import com.mojang.brigadier.context.CommandContext
-import net.minecraft.commands.{CommandSourceStack, Commands}
 import net.minecraft.commands.arguments.EntityArgument
+import net.minecraft.commands.{CommandSourceStack, Commands}
 import net.minecraft.server.level.ServerPlayer
 
 class CommandArg[R](name: String, argType: ArgumentType[_], getter: (CommandContext[CommandSourceStack], String) => R) {

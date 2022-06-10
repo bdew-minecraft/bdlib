@@ -1,8 +1,8 @@
 package net.bdew.lib.keepdata
 
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.item.{BlockItem, Item}
 import net.minecraft.world.item.context.BlockPlaceContext
+import net.minecraft.world.item.{BlockItem, Item}
 
 /**
  * Custom ItemBlock that handles loading data to the Tile Entity

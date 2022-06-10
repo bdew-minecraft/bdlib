@@ -2,9 +2,9 @@ package net.bdew.lib.managers
 
 import net.bdew.lib.Misc
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
-import net.minecraftforge.registries.{DeferredRegister, IForgeRegistry, IForgeRegistryEntry, RegistryObject}
+import net.minecraftforge.registries.{DeferredRegister, IForgeRegistry, RegistryObject}
 
-class RegistryManager[T <: IForgeRegistryEntry[T]](forgeRegistry: IForgeRegistry[T]) {
+class RegistryManager[T](forgeRegistry: IForgeRegistry[T]) {
   val modId: String = Misc.getActiveModId
   val registry: DeferredRegister[T] = DeferredRegister.create(forgeRegistry, modId)
   var all = Set.empty[RegistryObject[_ <: T]]

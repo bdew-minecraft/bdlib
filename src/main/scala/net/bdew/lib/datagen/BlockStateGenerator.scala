@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.model.generators.ModelFile.{ExistingModelFile, UncheckedModelFile}
 import net.minecraftforge.client.model.generators.{BlockStateProvider, ConfiguredModel, ModelFile, VariantBlockStateBuilder}
 import net.minecraftforge.common.data.ExistingFileHelper
+import net.minecraftforge.registries.ForgeRegistries
 
 abstract class BlockStateGenerator(gen: DataGenerator, modId: String, efh: ExistingFileHelper) extends BlockStateProvider(gen, modId, efh) {
   def vanillaModel(name: String): ExistingModelFile = {
@@ -27,12 +28,12 @@ abstract class BlockStateGenerator(gen: DataGenerator, modId: String, efh: Exist
 
   def blockItemModel(blockItem: BlockItem, blockModel: ModelFile): Unit = {
     itemModels()
-      .getBuilder(blockItem.getRegistryName.getPath)
+      .getBuilder(ForgeRegistries.ITEMS.getKey(blockItem).getPath)
       .parent(blockModel)
   }
 
   def makeBlock(block: Block): Unit = {
-    val model = uncheckedModel("block/" + block.getRegistryName.getPath)
+    val model = uncheckedModel("block/" + ForgeRegistries.BLOCKS.getKey(block).getPath)
     genStates(block, _ => model)
     makeBlockItem(block, model)
   }

@@ -10,18 +10,17 @@ import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.{BlockPos, Direction, Vec3i}
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.client.model.data.IModelData
 
-import scala.util.Random
-
 class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
   override def additionalTextureLocations: List[ResourceLocation] = super.additionalTextureLocations ++ List(frame)
 
-  override def processBlockQuads(state: BlockState, side: Direction, rand: Random, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+  override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     if (state != null && side != null && MinecraftForgeClient.getRenderType == RenderType.cutout()) {
       (data.getDataOpt(ConnectionsProperty) map { connections =>
         val frameSprite = textures(frame)
@@ -59,7 +58,7 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
     } else super.processBlockQuads(state, side, rand, data, textures, base)
   }
 
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: Random, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     if (stack != null && side != null) {
       val frameSprite = textures(frame)
       super.processItemQuads(stack, side, rand, mode, textures, base) :+

@@ -19,7 +19,7 @@ object ResourceOutput {
     override def resourceKind: ResourceKind = ItemResource(item)
     override def toPacket(pkt: FriendlyByteBuf): Unit = {
       pkt.writeUtf("item")
-      pkt.writeRegistryId(item)
+      pkt.writeRegistryId(ForgeRegistries.ITEMS, item)
     }
   }
 
@@ -27,7 +27,7 @@ object ResourceOutput {
     override def resourceKind: ResourceKind = FluidResource(fluid)
     override def toPacket(pkt: FriendlyByteBuf): Unit = {
       pkt.writeUtf("fluid")
-      pkt.writeRegistryId(fluid)
+      pkt.writeRegistryId(ForgeRegistries.FLUIDS, fluid)
     }
   }
 

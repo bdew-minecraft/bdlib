@@ -4,8 +4,8 @@ import net.bdew.lib.nbt.converters._
 import net.bdew.lib.rich._
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.world.level.{BlockGetter, Level}
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.{BlockGetter, Level}
 import net.minecraftforge.client.model.data.IModelData
 import net.minecraftforge.common.util.LazyOptional
 

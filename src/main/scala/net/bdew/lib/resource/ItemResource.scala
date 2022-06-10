@@ -26,7 +26,7 @@ case class ItemResource(item: Item) extends ResourceKind {
 
   def makeStack(n: Int) = new ItemStack(item, n)
 
-  override def toString: String = "ItemResource(%s)".format(item.getRegistryName)
+  override def toString: String = "ItemResource(%s)".format(ForgeRegistries.ITEMS.getKey(item))
   override def helperObject: ResourceHelper[_ >: ItemResource.this.type] = ItemResourceHelper
 }
 
@@ -36,7 +36,7 @@ object ItemResourceHelper extends ResourceHelper[ItemResource]("item") {
     item.map(ItemResource)
   }
   override def saveToNBT(tag: CompoundTag, r: ItemResource): Unit = {
-    tag.putString("id", r.item.getRegistryName.toString)
+    tag.putString("id", ForgeRegistries.ITEMS.getKey(r.item).toString)
   }
 }
 

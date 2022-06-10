@@ -1,8 +1,7 @@
 package net.bdew.lib.datagen
 
-import com.google.gson.{Gson, GsonBuilder}
 import net.bdew.lib.keepdata.{BlockKeepData, KeepDataLootFunction}
-import net.minecraft.data.{DataGenerator, DataProvider, HashCache}
+import net.minecraft.data.{CachedOutput, DataGenerator, DataProvider}
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.storage.loot.entries.LootItem
@@ -12,8 +11,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.minecraft.world.level.storage.loot.{LootPool, LootTable, LootTables}
 
 abstract class LootTableGenerator(gen: DataGenerator, modId: String) extends DataProvider {
-  val GSON: Gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create
-
   def makeTables(): Map[ResourceLocation, LootTable]
 
   def makeBlockEntry(block: Block, table: LootTable.Builder): (ResourceLocation, LootTable) =
@@ -39,10 +36,10 @@ abstract class LootTableGenerator(gen: DataGenerator, modId: String) extends Dat
 
   override def getName: String = s"Loot Tables: $modId"
 
-  override def run(cache: HashCache): Unit = {
+  override def run(cache: CachedOutput): Unit = {
     val outputFolder = gen.getOutputFolder
     for ((key, lootTable) <- makeTables()) {
-      DataProvider.save(GSON,
+      DataProvider.saveStable(
         cache,
         LootTables.serialize(lootTable),
         outputFolder.resolve("data/" + key.getNamespace + "/loot_tables/" + key.getPath + ".json"))

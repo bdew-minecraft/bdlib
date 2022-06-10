@@ -3,9 +3,9 @@ package net.bdew.lib.rotate
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.{BlockGetter, Level}
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.{BlockGetter, Level}
 
 import java.util
 

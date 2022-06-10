@@ -6,17 +6,16 @@ import net.bdew.lib.block.{HasTE, StatefulBlock}
 import net.bdew.lib.multiblock.tile.{TileController, TileModule}
 import net.bdew.lib.multiblock.{ModuleType, Tools}
 import net.bdew.lib.render.connected.ConnectedTextureBlock
-import net.minecraft.Util
 import net.minecraft.core.BlockPos
-import net.minecraft.world.{InteractionHand, InteractionResult}
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
-import net.minecraft.world.level.{BlockGetter, Level}
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.{BlockBehaviour, BlockState}
+import net.minecraft.world.level.{BlockGetter, Level}
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.{InteractionHand, InteractionResult}
 
 abstract class BlockModule[T <: TileModule](props: BlockBehaviour.Properties, val kind: ModuleType)
   extends StatefulBlock(props) with HasTE[T] with ConnectedTextureBlock {
@@ -58,7 +57,7 @@ abstract class BlockModule[T <: TileModule](props: BlockBehaviour.Properties, va
     } else {
       val te = getTE(world, pos)
       if (!te.getCore.exists(activateGui(state, world, pos, _, player))) {
-        player.sendMessage(Text.translate("bdlib.multiblock.notconnected"), Util.NIL_UUID)
+        player.sendSystemMessage(Text.translate("bdlib.multiblock.notconnected"))
       }
       InteractionResult.CONSUME
     }

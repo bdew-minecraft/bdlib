@@ -11,6 +11,7 @@ import net.minecraft.commands.{CommandSourceStack, Commands}
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.Block
 import net.minecraftforge.fml.loading.FMLPaths
+import net.minecraftforge.registries.ForgeRegistries
 
 import java.io.{BufferedWriter, FileWriter}
 import scala.collection.mutable
@@ -87,7 +88,7 @@ object CommandOreDistribution extends ModCommand {
     val total = distribution.values.sum
 
     val warnings = kinds
-      .map({ case (ore, blocks) => ore -> blocks.groupBy(_.getRegistryName.getNamespace) })
+      .map({ case (ore, blocks) => ore -> blocks.groupBy(x => ForgeRegistries.BLOCKS.getKey(x).getNamespace) })
       .filter(_._2.size > 1)
 
     if (toFile) {
@@ -104,7 +105,7 @@ object CommandOreDistribution extends ModCommand {
             dumpWriter.write("Warning: %s has multiple variants generated:".format(id))
             dumpWriter.newLine()
             for ((mod, blocks) <- types) {
-              dumpWriter.write(" - %s (%s)".format(mod, blocks.map(_.getRegistryName.getPath).mkString(", ")))
+              dumpWriter.write(" - %s (%s)".format(mod, blocks.map(x => ForgeRegistries.BLOCKS.getKey(x).getPath).mkString(", ")))
               dumpWriter.newLine()
             }
             dumpWriter.newLine()
@@ -135,7 +136,7 @@ object CommandOreDistribution extends ModCommand {
             Text.string(" - ").withStyle(ChatFormatting.RED)
               .append(Text.string(mod).withStyle(ChatFormatting.YELLOW))
               .append(
-                Text.string(" (%s)".format(blocks.map(_.getRegistryName.getPath).mkString(", ")))
+                Text.string(" (%s)".format(blocks.map(x => ForgeRegistries.BLOCKS.getKey(x).getPath).mkString(", ")))
                   .withStyle(ChatFormatting.GRAY)
               ), true)
       }

@@ -6,14 +6,14 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
-import net.minecraftforge.registries.{ForgeRegistries, ForgeRegistryEntry, IForgeRegistry}
+import net.minecraftforge.registries.{ForgeRegistries, IForgeRegistry}
 
 import scala.annotation.implicitNotFound
 import scala.jdk.CollectionConverters._
 import scala.jdk.StreamConverters._
 
 @implicitNotFound("Type ${T} is not taggable")
-trait Taggable[T <: ForgeRegistryEntry[T]] {
+trait Taggable[T] {
   def resKey: ResourceKey[Registry[T]]
   def registry: IForgeRegistry[T]
   def ref(v: T): Holder.Reference[T]
@@ -29,7 +29,7 @@ trait Taggable[T <: ForgeRegistryEntry[T]] {
 }
 
 object Taggable {
-  def apply[T <: ForgeRegistryEntry[T] : Taggable]: Taggable[T] = implicitly[Taggable[T]]
+  def apply[T: Taggable]: Taggable[T] = implicitly[Taggable[T]]
 
   implicit val TagableItem: Taggable[Item] = new Taggable[Item] {
     override def resKey: ResourceKey[Registry[Item]] = Registry.ITEM_REGISTRY

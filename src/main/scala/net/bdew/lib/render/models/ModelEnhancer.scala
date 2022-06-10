@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.resources.model._
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
@@ -16,7 +17,6 @@ import net.minecraftforge.client.model.data.IModelData
 import java.util
 import java.util.function
 import scala.jdk.CollectionConverters._
-import scala.util.Random
 
 /**
  * Allows extending simple models with ISmartBlockModel logic
@@ -37,7 +37,7 @@ abstract class ModelEnhancer {
    * @param base     Original list of quads
    * @return Modified list of quads
    */
-  def processBlockQuads(state: BlockState, side: Direction, rand: Random, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
+  def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
 
   /**
    * Implement quad processing logic for items here
@@ -49,7 +49,7 @@ abstract class ModelEnhancer {
    * @param base     Original list of quads
    * @return Modified list of quads
    */
-  def processItemQuads(stack: ItemStack, side: Direction, rand: Random, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
+  def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
 
   /**
    * Implement data gathering for the model here
@@ -92,10 +92,10 @@ abstract class ModelEnhancer {
           )).toMap
 
       new BakedModelProxy(baked) with SmartItemModel {
-        override def getQuads(state: BlockState, side: Direction, rand: util.Random, extraData: IModelData): util.List[BakedQuad] =
+        override def getQuads(state: BlockState, side: Direction, rand: RandomSource, extraData: IModelData): util.List[BakedQuad] =
           processBlockQuads(state, side, rand, extraData, additionalSprites, () => baked.getQuads(state, side, rand, extraData).asScala.toList).asJava
 
-        override def getItemQuads(stack: ItemStack, side: Direction, transform: ItemTransforms.TransformType, rand: util.Random): util.List[BakedQuad] =
+        override def getItemQuads(stack: ItemStack, side: Direction, transform: ItemTransforms.TransformType, rand: RandomSource): util.List[BakedQuad] =
           processItemQuads(stack, side, rand, transform, additionalSprites, () => super.getQuads(null, side, rand).asScala.toList).asJava
 
         override def getModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, tileData: IModelData): IModelData =
@@ -110,9 +110,9 @@ abstract class ModelEnhancer {
 
 class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelEnhancer {
   override def additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
-  override def processBlockQuads(state: BlockState, side: Direction, rand: Random, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
+  override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
     e1.processBlockQuads(state, side, rand, data, textures, () => e2.processBlockQuads(state, side, rand, data, textures, base))
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: Random, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
     e1.processItemQuads(stack, side, rand, transform, textures, () => e2.processItemQuads(stack, side, rand, transform, textures, base))
   override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: IModelData): IModelData =
     e1.extendModelData(world, pos, state, e2.extendModelData(world, pos, state, base))

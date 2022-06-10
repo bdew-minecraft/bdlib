@@ -2,10 +2,10 @@ package net.bdew.lib.rotate
 
 import net.bdew.lib.PimpVanilla._
 import net.minecraft.core.{BlockPos, Direction}
-import net.minecraft.world.level.{BlockGetter, Level}
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.state.{BlockState, StateDefinition}
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.block.state.{BlockState, StateDefinition}
+import net.minecraft.world.level.{BlockGetter, Level}
 
 /**
  * Mixin that stores rotation + boolean value in metadata

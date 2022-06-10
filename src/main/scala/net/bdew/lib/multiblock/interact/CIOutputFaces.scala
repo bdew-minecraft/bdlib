@@ -6,7 +6,6 @@ import net.bdew.lib.data.base.UpdateKind
 import net.bdew.lib.multiblock.data._
 import net.bdew.lib.multiblock.tile.{TileController, TileModule, TileOutput}
 import net.bdew.lib.{BdLib, Client, Text}
-import net.minecraft.Util
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.nbt.CompoundTag
 
@@ -41,7 +40,7 @@ trait CIOutputFaces extends TileController {
       return i
     }
     val pl = getLevel.getNearestPlayer(bf.x, bf.y, bf.z, 10, false)
-    if (pl != null) pl.sendMessage(Text.translate("bdlib.multiblock.toomanyoutputs"), Util.NIL_UUID)
+    if (pl != null) pl.sendSystemMessage(Text.translate("bdlib.multiblock.toomanyoutputs"))
     -1
   }
 
