@@ -22,7 +22,7 @@ class RichTextComponent(val v: MutableComponent) extends AnyVal {
 
 object Text {
   def translate(key: String, args: Object*): MutableComponent =
-    Component.translatable(key, args)
+    Component.translatable(key, args: _*)
 
   def string(s: String): MutableComponent = Component.literal(s)
 
