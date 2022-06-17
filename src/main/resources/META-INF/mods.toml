@@ -16,13 +16,13 @@ This is a collection of generic code used by my other mods.
 [[dependencies.bdlib]]
 modId = "forge"
 mandatory = true
-versionRange = "[40.0.36,)"
+versionRange = "[41.0.35,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.bdlib]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.2,)"
+versionRange = "[1.19,)"
 ordering = "NONE"
 side = "BOTH"

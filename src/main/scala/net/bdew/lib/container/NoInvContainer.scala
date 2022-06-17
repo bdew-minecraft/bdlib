@@ -37,8 +37,7 @@ abstract class NoInvContainer(containerType: MenuType[_], id: Int) extends Abstr
     players -= player
   }
 
-  override def quickMoveStack(p_82846_1_ : Player, p_82846_2_ : Int): ItemStack = {
-    // Nothing to do here if container has no inventory, and vanilla code can lock up so just do nothing
+  override def quickMoveStack(player : Player, slot : Int): ItemStack = {
     ItemStack.EMPTY
   }
 }
