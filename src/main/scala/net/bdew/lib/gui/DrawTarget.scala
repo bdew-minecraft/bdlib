@@ -57,9 +57,8 @@ trait SimpleDrawTarget extends DrawTarget {
     builder.vertex(matrix, r.x2, r.y2, z).uv(t.u2, t.v2).endVertex()
     builder.vertex(matrix, r.x2, r.y1, z).uv(t.u2, t.v1).endVertex()
     builder.vertex(matrix, r.x1, r.y1, z).uv(t.u1, t.v1).endVertex()
-    builder.endVertex()
 
-    BufferUploader.draw(builder.end())
+    BufferUploader.drawWithShader(builder.end())
   }
 
   override def drawText(m: PoseStack, text: Component, p: Point, color: Color, shadow: Boolean): Unit = {
