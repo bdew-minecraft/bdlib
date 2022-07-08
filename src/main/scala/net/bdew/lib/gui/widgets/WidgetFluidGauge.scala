@@ -5,7 +5,7 @@ import net.bdew.lib.Text
 import net.bdew.lib.data.DataSlotTankBase
 import net.bdew.lib.gui.{Color, Point, Rect, Texture}
 import net.minecraft.network.chat.Component
-import net.minecraftforge.client.RenderProperties
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -22,8 +22,8 @@ class WidgetFluidGauge(val rect: Rect, overlay: Texture, dSlot: DataSlotTankBase
   override def draw(m: PoseStack, mouse: Point, partial: Float): Unit = {
     val fStack = dSlot.getFluid
     if (!fStack.isEmpty) {
-      val props = RenderProperties.get(fStack.getFluid)
-      val color = Color.fromInt(props.getColorTint(fStack))
+      val props = IClientFluidTypeExtensions.of(fStack.getFluid)
+      val color = Color.fromInt(props.getTintColor(fStack))
       val icon = Texture.block(props.getStillTexture(fStack))
       val fillHeight = if (dSlot.getCapacity > 0) rect.h * fStack.getAmount / dSlot.getCapacity else 0
       parent.drawTextureTiled(m, Rect(rect.x, rect.y + rect.h - fillHeight, rect.w, fillHeight), icon, 16, 16, color)

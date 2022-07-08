@@ -16,7 +16,7 @@ This is a collection of generic code used by my other mods.
 [[dependencies.bdlib]]
 modId = "forge"
 mandatory = true
-versionRange = "[41.0.35,)"
+versionRange = "[41.0.64,)"
 ordering = "NONE"
 side = "BOTH"
 

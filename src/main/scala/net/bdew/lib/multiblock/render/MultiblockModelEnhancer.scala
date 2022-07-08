@@ -13,8 +13,7 @@ import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraftforge.client.MinecraftForgeClient
-import net.minecraftforge.client.model.data.IModelData
+import net.minecraftforge.client.model.data.ModelData
 
 class MultiblockModelEnhancer(resources: ResourceProvider) extends ConnectedModelEnhancer(resources.edge) {
   override def additionalTextureLocations: List[ResourceLocation] = super.additionalTextureLocations ++ List(resources.arrow, resources.output)
@@ -22,9 +21,9 @@ class MultiblockModelEnhancer(resources: ResourceProvider) extends ConnectedMode
   lazy val quads: Map[Direction, Quad] =
     Direction.values().map(f => f -> Cuboid.face(Vertex(-0.01f, -0.01f, -0.01f), Vertex(1.01f, 1.01f, 1.01f), f)).toMap
 
-  override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
-    var list = super.processBlockQuads(state, side, rand, data, textures, base)
-    if (state != null && side != null && MinecraftForgeClient.getRenderType == RenderType.cutout()) {
+  override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, renderType: RenderType, data: ModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+    var list = super.processBlockQuads(state, side, rand, renderType, data, textures, base)
+    if (state != null && side != null && renderType == RenderType.cutout()) {
       data.getDataOpt(OutputFaceProperty) foreach { outputs =>
         val output = Texture(textures(resources.output))
         val arrow = Texture(textures(resources.arrow))

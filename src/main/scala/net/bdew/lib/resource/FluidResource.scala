@@ -6,12 +6,12 @@ import net.minecraft.nbt.{CompoundTag, Tag}
 import net.minecraft.network.chat.{Component, MutableComponent}
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.material.Fluid
-import net.minecraftforge.client.RenderProperties
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions
 import net.minecraftforge.registries.ForgeRegistries
 
 case class FluidResource(fluid: Fluid) extends ResourceKind {
-  override def getTexture: Texture = Texture.block(RenderProperties.get(fluid).getStillTexture)
-  override def getColor: Color = Color.fromInt(RenderProperties.get(fluid).getColorTint)
+  override def getTexture: Texture = Texture.block(IClientFluidTypeExtensions.of(fluid).getStillTexture)
+  override def getColor: Color = Color.fromInt(IClientFluidTypeExtensions.of(fluid).getTintColor)
   override def getName: Component = fluid.getFluidType.getDescription
   override def getFormattedString(amount: Double, capacity: Double): MutableComponent =
     Text.fluidCap(amount, capacity)

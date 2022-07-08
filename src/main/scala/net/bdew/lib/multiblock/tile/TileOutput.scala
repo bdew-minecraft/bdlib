@@ -10,7 +10,7 @@ import net.bdew.lib.tile.{TileExtended, TileTickingServer}
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraftforge.client.model.data.IModelData
+import net.minecraftforge.client.model.data.ModelData
 
 abstract class TileOutput[T <: OutputConfig](teType: BlockEntityType[_], pos: BlockPos, state: BlockState) extends TileExtended(teType, pos, state)
   with TileModule with MIOutput[T] with TileTickingServer {
@@ -64,7 +64,7 @@ abstract class TileOutput[T <: OutputConfig](teType: BlockEntityType[_], pos: Bl
     }
   }
 
-  override def getModelData: IModelData = {
+  override def getModelData: ModelData = {
     val faces = for {
       core <- getCore.toList
       face <- Direction.values()

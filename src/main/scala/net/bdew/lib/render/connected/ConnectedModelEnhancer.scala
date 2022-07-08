@@ -14,14 +14,14 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraftforge.client.MinecraftForgeClient
-import net.minecraftforge.client.model.data.IModelData
+import net.minecraftforge.client.ChunkRenderTypeSet
+import net.minecraftforge.client.model.data.ModelData
 
 class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
   override def additionalTextureLocations: List[ResourceLocation] = super.additionalTextureLocations ++ List(frame)
 
-  override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, data: IModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
-    if (state != null && side != null && MinecraftForgeClient.getRenderType == RenderType.cutout()) {
+  override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, renderType: RenderType, data: ModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+    if (state != null && side != null && renderType == RenderType.cutout()) {
       (data.getDataOpt(ConnectionsProperty) map { connections =>
         val frameSprite = textures(frame)
         val sides = BlockFace.neighbourFaces(side)
@@ -55,26 +55,28 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
             .withTexture(ConnectedModelHelper.faceEdges(corner).texture(frameSprite))
         ))
       }) getOrElse List.empty
-    } else super.processBlockQuads(state, side, rand, data, textures, base)
+    } else super.processBlockQuads(state, side, rand, renderType, data, textures, base)
   }
 
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, renderType: RenderType, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     if (stack != null && side != null) {
       val frameSprite = textures(frame)
-      super.processItemQuads(stack, side, rand, mode, textures, base) :+
+      super.processItemQuads(stack, side, rand, renderType, mode, textures, base) :+
         QuadBakerDefault.bakeQuad(
           ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, side))
             .withTexture(ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(frameSprite))
         )
-    } else super.processItemQuads(stack, side, rand, mode, textures, base)
+    } else super.processItemQuads(stack, side, rand, renderType, mode, textures, base)
   }
 
+  override def overrideRenderTypes(state: BlockState, rand: RandomSource, data: ModelData, base: ChunkRenderTypeSet): ChunkRenderTypeSet =
+    ChunkRenderTypeSet.union(base, ChunkRenderTypeSet.of(RenderType.cutout()))
 
   override def overrideAmbientOcclusion(base: Boolean): Boolean = {
-    base && MinecraftForgeClient.getRenderType != RenderType.cutout()
+    base // fixme
   }
 
-  override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: IModelData): IModelData = {
+  override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: ModelData): ModelData = {
     if (!state.getBlock.isInstanceOf[ConnectedTextureBlock]) return base
     val block = state.getBlock.asInstanceOf[ConnectedTextureBlock]
 

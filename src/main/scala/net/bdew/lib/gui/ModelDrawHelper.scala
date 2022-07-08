@@ -5,12 +5,12 @@ import com.mojang.blaze3d.vertex.{DefaultVertexFormat, PoseStack, Tesselator, Ve
 import com.mojang.math.Vector3f
 import net.bdew.lib.Client
 import net.bdew.lib.render.models.ModelUtils
+import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.client.renderer.texture.OverlayTexture
-import net.minecraft.client.renderer.{GameRenderer, ItemBlockRenderTypes, RenderType}
 import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.util.RandomSource
 import net.minecraft.world.level.BlockAndTintGetter
-import net.minecraftforge.client.ForgeHooksClient
-import net.minecraftforge.client.model.data.EmptyModelData
+import net.minecraftforge.client.model.data.ModelData
 
 import scala.jdk.CollectionConverters._
 
@@ -78,15 +78,16 @@ object ModelDrawHelper {
     val model = dispatcher.getBlockModel(blockState)
 
     val te = world.getBlockEntity(pos)
-    val data = if (te != null) te.getModelData else EmptyModelData.INSTANCE
+    val data = if (te != null) te.getModelData else ModelData.EMPTY
+    val rand = RandomSource.create()
+
+    val renderTypes = model.getRenderTypes(blockState, rand, data).asScala
 
     // If blocks renders in multiple layers - go through all
-    for (layer <- RenderType.chunkBufferLayers().asScala if ItemBlockRenderTypes.canRenderInLayer(blockState, layer)) {
-      // This is thread local so will hopefully not break anything else. No other way to pass the current layer to the model
-      ForgeHooksClient.setRenderType(layer)
+    for (renderType <- renderTypes) {
 
       // Grab all relevant quads
-      for (quad <- ModelUtils.getAllQuads(model, blockState, data)) {
+      for (quad <- ModelUtils.getAllQuads(model, blockState, rand, data, renderType)) {
         val color = if (quad.isTinted)
           Color.fromInt(Client.blockColors.getColor(blockState, world, pos, quad.getTintIndex))
         else
@@ -94,8 +95,6 @@ object ModelDrawHelper {
         buffer.putBulkData(m.last(), quad, color.r, color.g, color.b, 15728880, OverlayTexture.NO_OVERLAY)
       }
     }
-
-    ForgeHooksClient.setRenderType(RenderType.solid())
 
     // And we're done!
     tessellator.end()
