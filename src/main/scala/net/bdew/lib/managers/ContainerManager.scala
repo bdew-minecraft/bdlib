@@ -14,7 +14,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
 
-abstract class ContainerManager extends RegistryManager(ForgeRegistries.CONTAINERS) {
+abstract class ContainerManager extends RegistryManager(ForgeRegistries.MENU_TYPES) {
   def registerSimple[T <: AbstractContainerMenu](id: String)(factory: (Int, Inventory, FriendlyByteBuf) => T): RegistryObject[MenuType[T]] = {
     super.register(id, () => IForgeMenuType.create((id, inv, data) => factory(id, inv, data)))
   }

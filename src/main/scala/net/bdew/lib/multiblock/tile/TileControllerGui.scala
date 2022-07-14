@@ -15,7 +15,7 @@ trait TileControllerGui extends TileController with MenuProvider {
         player.sendSystemMessage(translate("bdlib.multiblock.incomplete.entry", cnt.toString, resources.getModuleName(mod.id).setColor(Color.RED)))
     } else player match {
       case serverPlayer: ServerPlayer =>
-        NetworkHooks.openGui(serverPlayer, this, getBlockPos)
+        NetworkHooks.openScreen(serverPlayer, this, getBlockPos)
       case _ => // nothing
     }
   }

@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
-class TEManager extends RegistryManager(ForgeRegistries.BLOCK_ENTITIES) {
+class TEManager extends RegistryManager(ForgeRegistries.BLOCK_ENTITY_TYPES) {
   def registerWithBlock[E <: BlockEntity](name: String, teFactory: (BlockEntityType[E], BlockPos, BlockState) => E, blockReg: RegistryObject[_ <: Block]): RegistryObject[BlockEntityType[E]] = {
     var teType: RegistryObject[BlockEntityType[E]] = null // for forward reference to pass to factory
     teType =

@@ -11,14 +11,14 @@ object ContainerEventListener {
   }
 
   private def containerOpen(event: PlayerContainerEvent.Open): Unit = {
-    (event.getPlayer, event.getContainer) match {
+    (event.getEntity, event.getContainer) match {
       case (player: ServerPlayer, cont: NoInvContainer) => cont.playerAdded(player)
       case _ => // no op
     }
   }
 
   private def containerClosed(event: PlayerContainerEvent.Close): Unit = {
-    (event.getPlayer, event.getContainer) match {
+    (event.getEntity, event.getContainer) match {
       case (player: ServerPlayer, cont: NoInvContainer) => cont.playerRemoved(player)
       case _ => // no op
     }
