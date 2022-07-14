@@ -26,6 +26,9 @@ class BakedModelProxy(base: BakedModel) extends BakedModel {
     base.getQuads(state, side, rand)
 
   override def useAmbientOcclusion(): Boolean = base.useAmbientOcclusion()
+  override def useAmbientOcclusion(state: BlockState): Boolean = base.useAmbientOcclusion(state)
+  override def useAmbientOcclusion(state: BlockState, renderType: RenderType): Boolean = base.useAmbientOcclusion(state, renderType)
+
   override def usesBlockLight(): Boolean = base.usesBlockLight()
   override def isCustomRenderer: Boolean = base.isCustomRenderer
   override def getParticleIcon: TextureAtlasSprite = base.getParticleIcon
@@ -43,8 +46,6 @@ class BakedModelProxy(base: BakedModel) extends BakedModel {
 
   override def getRenderPasses(itemStack: ItemStack, fabulous: Boolean): util.List[BakedModel] =
     base.getRenderPasses(itemStack, fabulous)
-
-  override def useAmbientOcclusion(state: BlockState): Boolean = base.useAmbientOcclusion(state)
 
   override def getModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, tileData: ModelData): ModelData =
     base.getModelData(world, pos, state, tileData)

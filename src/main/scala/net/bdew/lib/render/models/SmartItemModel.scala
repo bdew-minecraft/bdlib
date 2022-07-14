@@ -22,7 +22,7 @@ trait SmartItemModel extends BakedModel {
   /**
    * Override this to provide quads for items. Normal getQuads is not called for them.
    */
-  def getItemQuads(stack: ItemStack, side: Direction, renderType: RenderType, transformType: TransformType, rand: RandomSource): util.List[BakedQuad]
+  def getItemQuads(stack: ItemStack, side: Direction, transformType: TransformType, rand: RandomSource): util.List[BakedQuad]
 
   final override def getOverrides: ItemOverrides = ItemOverrides
 
@@ -34,7 +34,13 @@ trait SmartItemModel extends BakedModel {
 
   private class ItemModel(stack: ItemStack, transform: TransformType) extends BakedModelProxy(this) {
     override def getQuads(state: BlockState, side: Direction, rand: RandomSource, data: ModelData, renderType: RenderType): util.List[BakedQuad] =
-      getItemQuads(stack, side, renderType, transform, rand)
+      getItemQuads(stack, side, transform, rand)
+
+    override def getQuads(state: BlockState, side: Direction, rand: RandomSource): util.List[BakedQuad] =
+      getItemQuads(stack, side, transform, rand)
+
+    override def getRenderPasses(itemStack: ItemStack, fabulous: Boolean): util.List[BakedModel] =
+      java.util.List.of(this)
 
     override def applyTransform(transformType: TransformType, poseStack: PoseStack, applyLeftHandTransform: Boolean): BakedModel = {
       val m = new ItemModel(stack, transformType)

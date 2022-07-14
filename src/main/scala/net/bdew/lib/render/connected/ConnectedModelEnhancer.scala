@@ -58,22 +58,22 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
     } else super.processBlockQuads(state, side, rand, renderType, data, textures, base)
   }
 
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, renderType: RenderType, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     if (stack != null && side != null) {
       val frameSprite = textures(frame)
-      super.processItemQuads(stack, side, rand, renderType, mode, textures, base) :+
+      super.processItemQuads(stack, side, rand, mode, textures, base) :+
         QuadBakerDefault.bakeQuad(
           ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, side))
             .withTexture(ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(frameSprite))
         )
-    } else super.processItemQuads(stack, side, rand, renderType, mode, textures, base)
+    } else super.processItemQuads(stack, side, rand, mode, textures, base)
   }
 
   override def overrideRenderTypes(state: BlockState, rand: RandomSource, data: ModelData, base: ChunkRenderTypeSet): ChunkRenderTypeSet =
     ChunkRenderTypeSet.union(base, ChunkRenderTypeSet.of(RenderType.cutout()))
 
-  override def overrideAmbientOcclusion(base: Boolean): Boolean = {
-    base // fixme
+  override def overrideAmbientOcclusion(blockState: BlockState, renderType: RenderType, base: Boolean): Boolean = {
+    base && renderType != RenderType.cutout()
   }
 
   override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: ModelData): ModelData = {

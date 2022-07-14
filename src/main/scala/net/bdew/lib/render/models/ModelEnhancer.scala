@@ -51,7 +51,7 @@ abstract class ModelEnhancer {
    * @param base     Original list of quads
    * @return Modified list of quads
    */
-  def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, renderType: RenderType, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
+  def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
 
   /**
    * Implement data gathering for the model here
@@ -71,7 +71,7 @@ abstract class ModelEnhancer {
    */
   def wrap(base: UnbakedModel, extraTex: Map[String, Material]): UnbakedModel = new SmartUnbakedWrapper(base, extraTex)
 
-  def overrideAmbientOcclusion(base: Boolean): Boolean = base
+  def overrideAmbientOcclusion(blockState: BlockState, renderType: RenderType, base: Boolean): Boolean = base
 
   /**
    * Combines this with another ModelEnhancer
@@ -102,13 +102,14 @@ abstract class ModelEnhancer {
         override def getQuads(state: BlockState, side: Direction, rand: RandomSource, data: ModelData, renderType: RenderType): util.List[BakedQuad] =
           processBlockQuads(state, side, rand, renderType, data, additionalSprites, () => baked.getQuads(state, side, rand, data, renderType).asScala.toList).asJava
 
-        override def getItemQuads(stack: ItemStack, side: Direction, renderType: RenderType, transform: TransformType, rand: RandomSource): util.List[BakedQuad] =
-          processItemQuads(stack, side, rand, renderType, transform, additionalSprites, () => super.getQuads(null, side, rand, null, renderType).asScala.toList).asJava
+        override def getItemQuads(stack: ItemStack, side: Direction, transform: TransformType, rand: RandomSource): util.List[BakedQuad] =
+          processItemQuads(stack, side, rand, transform, additionalSprites, () => super.getQuads(null, side, rand, null, null).asScala.toList).asJava
 
         override def getModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, tileData: ModelData): ModelData =
           extendModelData(world, pos, state, baked.getModelData(world, pos, state, tileData))
 
-        override def useAmbientOcclusion(): Boolean = overrideAmbientOcclusion(baked.useAmbientOcclusion())
+        override def useAmbientOcclusion(state: BlockState, renderType: RenderType): Boolean =
+          overrideAmbientOcclusion(state, renderType, baked.useAmbientOcclusion(state, renderType))
 
         override def getRenderTypes(state: BlockState, rand: RandomSource, data: ModelData): ChunkRenderTypeSet =
           overrideRenderTypes(state, rand, data, baked.getRenderTypes(state, rand, data))
@@ -121,8 +122,8 @@ class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelE
   override def additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
   override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, renderType: RenderType, data: ModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
     e1.processBlockQuads(state, side, rand, renderType, data, textures, () => e2.processBlockQuads(state, side, rand, renderType, data, textures, base))
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, renderType: RenderType, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
-    e1.processItemQuads(stack, side, rand, renderType, transform, textures, () => e2.processItemQuads(stack, side, rand, renderType, transform, textures, base))
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
+    e1.processItemQuads(stack, side, rand, transform, textures, () => e2.processItemQuads(stack, side, rand, transform, textures, base))
   override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: ModelData): ModelData =
     e1.extendModelData(world, pos, state, e2.extendModelData(world, pos, state, base))
   override def overrideRenderTypes(state: BlockState, rand: RandomSource, data: ModelData, base: ChunkRenderTypeSet): ChunkRenderTypeSet =
