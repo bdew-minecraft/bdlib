@@ -22,9 +22,4 @@ case class DataSlotSensor[T, R](registry: SensorSystem[T, R], name: String, pare
       .map(x => SensorPair(x, x.loadParameter(t.getCompound(name))))
       .getOrElse(default)
   }
-
-  def ensureValid(obj: T): Unit = {
-    if (!value.sensor.isValidParameter(value.param, obj))
-      update(value.copy(param = value.sensor.defaultParameter))
-  }
 }

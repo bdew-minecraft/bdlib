@@ -21,7 +21,13 @@ class TileExtended(teType: BlockEntityType[_], pos: BlockPos, state: BlockState)
 
   override final def load(tag: CompoundTag): Unit = {
     super.load(tag)
-    persistLoad.trigger(tag)
+    if (this.getLevel == null || !this.getLevel.isClientSide)
+      persistLoad.trigger(tag)
+  }
+
+  override def handleUpdateTag(tag: CompoundTag): Unit = {
+    handleClientUpdate.trigger(tag)
+    super.handleUpdateTag(tag)
   }
 
   def sendUpdateToClients(): Unit = {
@@ -44,9 +50,6 @@ class TileExtended(teType: BlockEntityType[_], pos: BlockPos, state: BlockState)
   override def onDataPacket(net: Connection, pkt: ClientboundBlockEntityDataPacket): Unit = {
     if (pkt.getTag != null)
       handleClientUpdate.trigger(pkt.getTag)
-    super.onDataPacket(net, pkt)
   }
-
-  protected def extDataPacket(id: Int, data: CompoundTag): Unit = {}
 }
 

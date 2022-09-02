@@ -48,7 +48,7 @@ trait DataSlotContainer {
       t.putLong("BDLib_TS", getWorldObject.getGameTime)
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
       s.save(t, kind)
-      if (TRACE) printf("%s: %s S=> %s\n".format(kind, n, t.get(n)))
+      if (TRACE) printf("%s (%s): %s S=> %s\n".format(kind, Thread.currentThread().getName, n, t.get(n)))
     }
   }
 
@@ -62,7 +62,7 @@ trait DataSlotContainer {
       }
     }
     for ((n, s) <- dataSlots if s.updateKind.contains(kind)) {
-      if (TRACE) printf("%s: %s L<= %s\n".format(kind, n, t.get(n)))
+      if (TRACE) printf("%s (%s): %s L<= %s\n".format(kind, Thread.currentThread().getName, n, t.get(n)))
       s.load(t, kind)
     }
   }
