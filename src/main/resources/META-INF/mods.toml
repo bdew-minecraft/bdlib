@@ -1,5 +1,5 @@
 modLoader = "kotori_scala"
-loaderVersion = "[2.13.8,2.14.0)"
+loaderVersion = "[2.13.10,2.14.0)"
 issueTrackerURL = "https://github.com/bdew-minecraft/bdlib/issues"
 license = "MIT"
 
@@ -16,13 +16,13 @@ This is a collection of generic code used by my other mods.
 [[dependencies.bdlib]]
 modId = "forge"
 mandatory = true
-versionRange = "[43.1,)"
+versionRange = "[44.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.bdlib]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[1.19.3,)"
 ordering = "NONE"
 side = "BOTH"

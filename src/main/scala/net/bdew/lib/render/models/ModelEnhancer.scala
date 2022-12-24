@@ -1,6 +1,5 @@
 package net.bdew.lib.render.models
 
-import com.mojang.datafixers.util.Pair
 import net.bdew.lib.Client
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -83,12 +82,10 @@ abstract class ModelEnhancer {
   private class SmartUnbakedWrapper(base: UnbakedModel, extraTex: Map[String, Material]) extends UnbakedModel {
     private val additionalMaterials = additionalTextureLocations.map(new Material(Client.blocksAtlas, _))
 
-    override def getMaterials(modelGetter: function.Function[ResourceLocation, UnbakedModel], missingTextureErrors: util.Set[Pair[String, String]]): util.Collection[Material] =
-      (base.getMaterials(modelGetter, missingTextureErrors).asScala ++ additionalMaterials.filter(_.texture().getNamespace != "_ex") ++ extraTex.values).asJavaCollection
-
+    override def resolveParents(getter: function.Function[ResourceLocation, UnbakedModel]): Unit = base.resolveParents(getter)
     override def getDependencies: util.Collection[ResourceLocation] = base.getDependencies
 
-    override def bake(bakery: ModelBakery, spriteGetter: function.Function[Material, TextureAtlasSprite], transform: ModelState, location: ResourceLocation): BakedModel = {
+    override def bake(bakery: ModelBaker, spriteGetter: function.Function[Material, TextureAtlasSprite], transform: ModelState, location: ResourceLocation): BakedModel = {
       val baked = base.bake(bakery, spriteGetter, transform, location)
       val additionalSprites: Map[ResourceLocation, TextureAtlasSprite] =
         additionalMaterials.map(res => res.texture() -> (

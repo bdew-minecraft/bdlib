@@ -34,13 +34,13 @@ class IconPreloader {
 
   def registerIcons(reg: TextureAtlas): Unit = {}
 
-  @SubscribeEvent
-  def preTextureStitch(ev: TextureStitchEvent.Pre): Unit = {
-    if (ev.getAtlas.location() == Client.blocksAtlas) {
-      icons.foreach(icon => ev.addSprite(icon.resource))
-    }
-    registerIcons(ev.getAtlas)
-  }
+//  @SubscribeEvent
+//  def preTextureStitch(ev: TextureStitchEvent.Pre): Unit = {
+//    if (ev.getAtlas.location() == Client.blocksAtlas) {
+//      icons.foreach(icon => ev.addSprite(icon.resource))
+//    }
+//    registerIcons(ev.getAtlas)
+//  }
 
   @SubscribeEvent
   def postTextureStitch(ev: TextureStitchEvent.Post): Unit = {

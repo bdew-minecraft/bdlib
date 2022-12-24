@@ -1,5 +1,6 @@
 package net.bdew.lib.misc
 
+import net.minecraft.core.registries.{BuiltInRegistries, Registries}
 import net.minecraft.core.{Holder, Registry}
 import net.minecraft.resources.{ResourceKey, ResourceLocation}
 import net.minecraft.tags.TagKey
@@ -32,23 +33,23 @@ object Taggable {
   def apply[T: Taggable]: Taggable[T] = implicitly[Taggable[T]]
 
   implicit val TagableItem: Taggable[Item] = new Taggable[Item] {
-    override def resKey: ResourceKey[Registry[Item]] = Registry.ITEM_REGISTRY
+    override def resKey: ResourceKey[Registry[Item]] = Registries.ITEM
     override def registry: IForgeRegistry[Item] = ForgeRegistries.ITEMS
     override def ref(v: Item): Holder.Reference[Item] = v.builtInRegistryHolder()
-    override def resolve(t: TagKey[Item]): Set[Item] = Registry.ITEM.getTagOrEmpty(t).asScala.map(_.value()).toSet
+    override def resolve(t: TagKey[Item]): Set[Item] = BuiltInRegistries.ITEM.getTagOrEmpty(t).asScala.map(_.value()).toSet
   }
 
   implicit val TagableBlock: Taggable[Block] = new Taggable[Block] {
-    override def resKey: ResourceKey[Registry[Block]] = Registry.BLOCK_REGISTRY
+    override def resKey: ResourceKey[Registry[Block]] = Registries.BLOCK
     override def registry: IForgeRegistry[Block] = ForgeRegistries.BLOCKS
     override def ref(v: Block): Holder.Reference[Block] = v.builtInRegistryHolder()
-    override def resolve(t: TagKey[Block]): Set[Block] = Registry.BLOCK.getTagOrEmpty(t).asScala.map(_.value()).toSet
+    override def resolve(t: TagKey[Block]): Set[Block] = BuiltInRegistries.BLOCK.getTagOrEmpty(t).asScala.map(_.value()).toSet
   }
 
   implicit val TagableFluid: Taggable[Fluid] = new Taggable[Fluid] {
-    override def resKey: ResourceKey[Registry[Fluid]] = Registry.FLUID_REGISTRY
+    override def resKey: ResourceKey[Registry[Fluid]] = Registries.FLUID
     override def registry: IForgeRegistry[Fluid] = ForgeRegistries.FLUIDS
     override def ref(v: Fluid): Holder.Reference[Fluid] = v.builtInRegistryHolder()
-    override def resolve(t: TagKey[Fluid]): Set[Fluid] = Registry.FLUID.getTagOrEmpty(t).asScala.map(_.value()).toSet
+    override def resolve(t: TagKey[Fluid]): Set[Fluid] = BuiltInRegistries.FLUID.getTagOrEmpty(t).asScala.map(_.value()).toSet
   }
 }

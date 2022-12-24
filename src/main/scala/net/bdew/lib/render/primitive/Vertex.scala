@@ -1,7 +1,8 @@
 package net.bdew.lib.render.primitive
 
-import com.mojang.math.{Transformation, Vector4f}
+import com.mojang.math.Transformation
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import org.joml.Vector4f
 
 /**
  * Vertex coordinates
@@ -23,8 +24,7 @@ case class Vertex(x: Float, y: Float, z: Float) {
   def applyTransformation(t: Transformation): Vertex = {
     val tmp = new Vector4f(x, y, z, 1f)
     t.transformPosition(tmp)
-    if (Math.abs(tmp.w - 1f) > 1e-5) tmp.perspectiveDivide()
-    Vertex(tmp.x, tmp.y, tmp.z)
+    Vertex(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w)
   }
 
   def transform(transformation: Float => Float): Vertex = {
@@ -42,7 +42,6 @@ case class TVertex(x: Float, y: Float, z: Float, u: Float, v: Float) {
   def applyTransformation(t: Transformation): TVertex = {
     val tmp = new Vector4f(x, y, z, 1f)
     t.transformPosition(tmp)
-    if (Math.abs(tmp.w - 1f) > 1e-5) tmp.perspectiveDivide()
-    copy(x = tmp.x, y = tmp.y, z = tmp.z)
+    copy(x = tmp.x / tmp.w, y = tmp.y / tmp.w, z = tmp.z / tmp.w)
   }
 }

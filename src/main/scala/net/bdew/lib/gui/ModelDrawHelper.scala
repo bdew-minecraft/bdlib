@@ -2,7 +2,7 @@ package net.bdew.lib.gui
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.{DefaultVertexFormat, PoseStack, Tesselator, VertexFormat}
-import com.mojang.math.Vector3f
+import com.mojang.math.Axis
 import net.bdew.lib.Client
 import net.bdew.lib.render.models.ModelUtils
 import net.minecraft.client.renderer.GameRenderer
@@ -11,6 +11,7 @@ import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraftforge.client.model.data.ModelData
+import org.joml.Vector3f
 
 import scala.jdk.CollectionConverters._
 
@@ -51,22 +52,22 @@ object ModelDrawHelper {
     m.scale(rect.w, rect.h, 1)
 
     // GUI Y coordinates are top->down, while for blocks it's bottom->up, flip everything
-    m.mulPose(Vector3f.XP.rotationDegrees(180))
+    m.mulPose(Axis.XP.rotationDegrees(180))
 
     // Rotate to the face we are rendering
     face match {
       case Direction.NORTH =>
-        m.mulPose(Vector3f.YP.rotationDegrees(180))
+        m.mulPose(Axis.YP.rotationDegrees(180))
       case Direction.SOUTH =>
       // nothing
       case Direction.WEST =>
-        m.mulPose(Vector3f.YP.rotationDegrees(90))
+        m.mulPose(Axis.YP.rotationDegrees(90))
       case Direction.EAST =>
-        m.mulPose(Vector3f.YP.rotationDegrees(270))
+        m.mulPose(Axis.YP.rotationDegrees(270))
       case Direction.UP =>
-        m.mulPose(Vector3f.XP.rotationDegrees(90))
+        m.mulPose(Axis.XP.rotationDegrees(90))
       case Direction.DOWN =>
-        m.mulPose(Vector3f.XP.rotationDegrees(270))
+        m.mulPose(Axis.XP.rotationDegrees(270))
       case _ =>
     }
 

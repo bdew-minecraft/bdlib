@@ -21,7 +21,7 @@ class MachineRecipeDef[T <: BaseMachineRecipe, S <: BaseMachineRecipeSerializer[
   extends RecipeDef[NullInventory, T, S, MachineRecipeType[T]](id, serializerRef, recipeTypeRef)
 
 class RecipeManager extends RegistryManager(ForgeRegistries.RECIPE_SERIALIZERS) {
-  val recipeTypes = new VanillaRegistryManager(Registry.RECIPE_TYPE)
+  val recipeTypes = new RegistryManager(ForgeRegistries.RECIPE_TYPES)
 
   def register[C <: Container, T <: Recipe[C], S <: RecipeSerializer[T], R <: RecipeType[T]](id: String, serializerFactory: () => S, typeFactory: RegistryObject[S] => R): RecipeDef[C, T, S, R] = {
     val serializer = register(id, serializerFactory)
