@@ -3,7 +3,9 @@ package net.bdew.lib.managers
 import net.minecraft.world.item.Item
 import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
-class ItemManager() extends RegistryManager(ForgeRegistries.ITEMS) {
+class ItemManager extends RegistryManager(ForgeRegistries.ITEMS) {
+  val creativeTabs = new CreativeTabsManager
+
   def props: Item.Properties = new Item.Properties()
 
   def simple(id: String, props: Item.Properties): RegistryObject[Item] = {
@@ -12,5 +14,6 @@ class ItemManager() extends RegistryManager(ForgeRegistries.ITEMS) {
 
   override def init(): Unit = {
     super.init()
+    creativeTabs.init()
   }
 }

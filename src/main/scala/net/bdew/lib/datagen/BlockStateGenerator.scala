@@ -1,6 +1,6 @@
 package net.bdew.lib.datagen
 
-import net.minecraft.data.{DataGenerator, PackOutput}
+import net.minecraft.data.PackOutput
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.{AirItem, BlockItem}
 import net.minecraft.world.level.block.Block
@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.generators.{BlockStateProvider, Configure
 import net.minecraftforge.common.data.ExistingFileHelper
 import net.minecraftforge.registries.ForgeRegistries
 
-abstract class BlockStateGenerator(gen: PackOutput, modId: String, efh: ExistingFileHelper) extends BlockStateProvider(gen, modId, efh) {
+abstract class BlockStateGenerator(out: PackOutput, modId: String, efh: ExistingFileHelper) extends BlockStateProvider(out, modId, efh) {
   def vanillaModel(name: String): ExistingModelFile = {
     new ExistingModelFile(new ResourceLocation(name), efh)
   }
