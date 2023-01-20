@@ -8,6 +8,10 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest      
+    permissions:
+      contents: read
+      packages: write
+
     steps:
     
     - name: Checkout
@@ -27,4 +31,5 @@ jobs:
         BUILDNUM: ${{ github.run_number }}
         KEY_CURSEFORGE: ${{ secrets.KEY_CURSEFORGE }}
         KEY_MODRINTH: ${{ secrets.KEY_MODRINTH }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
