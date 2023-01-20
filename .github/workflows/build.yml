@@ -33,4 +33,6 @@ jobs:
         KEY_CURSEFORGE: ${{ secrets.KEY_CURSEFORGE }}
         KEY_MODRINTH: ${{ secrets.KEY_MODRINTH }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MAVEN_USER: ${{ secrets.MAVEN_USER }}
+        MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
         
