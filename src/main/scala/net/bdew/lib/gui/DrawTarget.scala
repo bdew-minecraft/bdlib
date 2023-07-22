@@ -61,7 +61,6 @@ trait SimpleDrawTarget extends DrawTarget {
   }
 
   override def drawText(graphics: GuiGraphics, text: Component, p: Point, color: Color, shadow: Boolean): Unit = {
-    color.activate()
     graphics.drawString(getFontRenderer, text, p.x.toInt, p.y.toInt, color.asARGB, shadow)
   }
 

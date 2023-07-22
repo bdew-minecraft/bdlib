@@ -46,6 +46,7 @@ abstract class BaseScreen[T <: AbstractContainerMenu](container: T, playerInv: I
     widgets.draw(graphics, mouse, pf)
     val tip = ArrayBuffer.empty[Component]
     widgets.handleTooltip(mouse, tip)
+    Color.white.activate()
     if (tip.nonEmpty) {
       import scala.jdk.CollectionConverters._
       graphics.renderTooltip(getFontRenderer, tip.asJava, Optional.empty[TooltipComponent], mouseX, mouseY)

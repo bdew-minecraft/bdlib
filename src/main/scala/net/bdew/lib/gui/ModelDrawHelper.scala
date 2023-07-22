@@ -37,7 +37,7 @@ object ModelDrawHelper {
     val pose = graphics.pose()
 
     // Setup shader stuff
-    RenderSystem.setShader(() => GameRenderer.getPositionTexShader) // FIXME
+    RenderSystem.setShader(() => GameRenderer.getPositionColorTexShader)
 
     // Make sure that block atlas is selected
     RenderSystem.setShaderTexture(0, Client.blocksAtlas)
