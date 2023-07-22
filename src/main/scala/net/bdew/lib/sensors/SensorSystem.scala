@@ -1,8 +1,8 @@
 package net.bdew.lib.sensors
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui._
 import net.bdew.lib.{BdLib, Misc}
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.item.ItemStack
@@ -25,7 +25,7 @@ abstract class SensorSystem[T, R](defaultResult: R) {
   def localizationPrefix: String
 
   @OnlyIn(Dist.CLIENT)
-  def drawResult(m: PoseStack, result: R, rect: Rect, target: DrawTarget): Unit
+  def drawResult(graphics: GuiGraphics, result: R, rect: Rect, target: DrawTarget): Unit
 
   @OnlyIn(Dist.CLIENT)
   def getResultText(result: R): Component

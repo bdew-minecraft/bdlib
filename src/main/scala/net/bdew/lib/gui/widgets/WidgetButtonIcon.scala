@@ -1,8 +1,8 @@
 package net.bdew.lib.gui.widgets
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Client
 import net.bdew.lib.gui.{Point, Rect, Texture}
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundEvents
@@ -16,16 +16,16 @@ class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Tex
   def icon: Texture = null
   def hover: Component = null
 
-  override def drawBackground(m: PoseStack, mouse: Point): Unit = {
+  override def drawBackground(graphics: GuiGraphics, mouse: Point): Unit = {
     if (rect.contains(mouse))
-      parent.drawTexture(m, rect, hoverTex)
+      parent.drawTexture(graphics, rect, hoverTex)
     else
-      parent.drawTexture(m, rect, baseTex)
+      parent.drawTexture(graphics, rect, baseTex)
   }
 
-  override def draw(m: PoseStack, mouse: Point, partial: Float): Unit = {
+  override def draw(graphics: GuiGraphics, mouse: Point, partial: Float): Unit = {
     if (icon != null)
-      parent.drawTexture(m, iconRect, icon)
+      parent.drawTexture(graphics, iconRect, icon)
   }
 
   override def handleTooltip(p: Point, tip: ArrayBuffer[Component]): Unit = {

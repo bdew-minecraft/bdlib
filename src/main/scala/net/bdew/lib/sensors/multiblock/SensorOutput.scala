@@ -1,10 +1,10 @@
 package net.bdew.lib.sensors.multiblock
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui._
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 import net.bdew.lib.sensors.{GenericSensorParameter, GenericSensorType, SensorSystem}
 import net.bdew.lib.{Misc, Text}
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.ClickType
@@ -72,15 +72,15 @@ trait SensorOutput extends GenericSensorType[BlockEntity, Boolean] {
       current
 
   @OnlyIn(Dist.CLIENT)
-  override def drawParameter(m: PoseStack, rect: Rect, target: DrawTarget, obj: BlockEntity, param: GenericSensorParameter): Unit = (param, obj) match {
+  override def drawParameter(graphics: GuiGraphics, rect: Rect, target: DrawTarget, obj: BlockEntity, param: GenericSensorParameter): Unit = (param, obj) match {
     case (SensorOutputFlowParameter(output), te: CIOutputFaces) =>
       val faces = te.outputFaces.inverted
       if (faces.isDefinedAt(output)) {
         val bf = faces(output)
-        ModelDrawHelper.renderWorldBlockIntoGUI(m, te.getLevel, bf.pos, bf.face, rect)
+        ModelDrawHelper.renderWorldBlockIntoGUI(graphics, te.getLevel, bf.pos, bf.face, rect)
       }
 
-    case _ => target.drawTexture(m, rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
+    case _ => target.drawTexture(graphics, rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
   }
 
   override def getParamTooltip(obj: BlockEntity, param: GenericSensorParameter): List[Component] = (param, obj) match {

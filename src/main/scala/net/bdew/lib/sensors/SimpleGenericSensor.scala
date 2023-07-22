@@ -1,8 +1,8 @@
 package net.bdew.lib.sensors
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Misc
 import net.bdew.lib.gui._
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.item.ItemStack
@@ -42,15 +42,15 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
   def textureColor: Color = Color.white
 
   @OnlyIn(Dist.CLIENT)
-  override def drawSensor(m: PoseStack, rect: Rect, target: DrawTarget, obj: T): Unit = {
-    target.drawTexture(m, rect, texture, textureColor)
+  override def drawSensor(graphics: GuiGraphics, rect: Rect, target: DrawTarget, obj: T): Unit = {
+    target.drawTexture(graphics, rect, texture, textureColor)
   }
 
   @OnlyIn(Dist.CLIENT)
-  override def drawParameter(m: PoseStack, rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit = {
+  override def drawParameter(graphics: GuiGraphics, rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit = {
     param match {
-      case x: SimpleGenericParameter => target.drawTexture(m, rect, x.texture, x.textureColor)
-      case _ => target.drawTexture(m, rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
+      case x: SimpleGenericParameter => target.drawTexture(graphics, rect, x.texture, x.textureColor)
+      case _ => target.drawTexture(graphics, rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
     }
   }
 }

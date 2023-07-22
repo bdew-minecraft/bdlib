@@ -59,13 +59,13 @@ object CommandOreDistribution extends ModCommand {
     if (radius <= 0 || minY > maxY)
       return sendUsage(ctx)
 
-    ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.start1",
+    ctx.getSource.sendSuccess(() => Text.translate("bdlib.oredistribution.start1",
       Integer.valueOf(startX - radius), Integer.valueOf(minY), Integer.valueOf(startZ - radius),
       Integer.valueOf(startX + radius), Integer.valueOf(maxY), Integer.valueOf(startZ + radius),
       world.dimension().location().toString
     ), true)
 
-    ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.start2"), true)
+    ctx.getSource.sendSuccess(() => Text.translate("bdlib.oredistribution.start2"), true)
 
     val oreTags = Taggable[Block].tagMap.flatMap({
       case (tag, blocks) if tag.location.getPath.startsWith("ores/") => Some(tag.location.getPath.substring(5) -> blocks)
@@ -118,7 +118,7 @@ object CommandOreDistribution extends ModCommand {
           dumpWriter.write("%s - %s (%s%%)".format(id, DecFormat.round(num), DecFormat.short(100F * num / total)))
           dumpWriter.newLine()
         }
-        ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.saved", dumpFile.getCanonicalPath), true)
+        ctx.getSource.sendSuccess(() => Text.translate("bdlib.oredistribution.saved", dumpFile.getCanonicalPath), true)
       } recover {
         case e: Throwable =>
           ctx.getSource.sendFailure(Text.translate("bdlib.oredistribution.error", e.toString))
@@ -127,12 +127,12 @@ object CommandOreDistribution extends ModCommand {
     } else {
       // === OUTPUT TO CHAT ===
       for ((id, types) <- warnings.toList.sortBy(_._1)) {
-        ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.warn",
+        ctx.getSource.sendSuccess(() => Text.translate("bdlib.oredistribution.warn",
           Text.string(" !").withStyle(ChatFormatting.RED),
           Text.string(id).withStyle(ChatFormatting.RED),
         ), true)
         for ((mod, blocks) <- types)
-          ctx.getSource.sendSuccess(
+          ctx.getSource.sendSuccess(() =>
             Text.string(" - ").withStyle(ChatFormatting.RED)
               .append(Text.string(mod).withStyle(ChatFormatting.YELLOW))
               .append(
@@ -141,7 +141,7 @@ object CommandOreDistribution extends ModCommand {
               ), true)
       }
       for ((id, num) <- distribution.filter(_._2 > 0).toList.sortBy(-_._2)) {
-        ctx.getSource.sendSuccess(Text.translate("bdlib.oredistribution.entry",
+        ctx.getSource.sendSuccess(() => Text.translate("bdlib.oredistribution.entry",
           " *",
           Text.string(id).withStyle(ChatFormatting.YELLOW),
           DecFormat.round(num),

@@ -3,13 +3,12 @@ package net.bdew.lib.render.models
 import net.bdew.lib.Client
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.resources.model._
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.{ItemDisplayContext, ItemStack}
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.ChunkRenderTypeSet
@@ -50,7 +49,7 @@ abstract class ModelEnhancer {
    * @param base     Original list of quads
    * @return Modified list of quads
    */
-  def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
+  def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, ctx: ItemDisplayContext, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = base()
 
   /**
    * Implement data gathering for the model here
@@ -99,8 +98,8 @@ abstract class ModelEnhancer {
         override def getQuads(state: BlockState, side: Direction, rand: RandomSource, data: ModelData, renderType: RenderType): util.List[BakedQuad] =
           processBlockQuads(state, side, rand, renderType, data, additionalSprites, () => baked.getQuads(state, side, rand, data, renderType).asScala.toList).asJava
 
-        override def getItemQuads(stack: ItemStack, side: Direction, transform: TransformType, rand: RandomSource): util.List[BakedQuad] =
-          processItemQuads(stack, side, rand, transform, additionalSprites, () => super.getQuads(null, side, rand, null, null).asScala.toList).asJava
+        override def getItemQuads(stack: ItemStack, side: Direction, ctx: ItemDisplayContext, rand: RandomSource): util.List[BakedQuad] =
+          processItemQuads(stack, side, rand, ctx, additionalSprites, () => super.getQuads(null, side, rand, null, null).asScala.toList).asJava
 
         override def getModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, tileData: ModelData): ModelData =
           extendModelData(world, pos, state, baked.getModelData(world, pos, state, tileData))
@@ -119,8 +118,8 @@ class ComposedModelEnhancer(e1: ModelEnhancer, e2: ModelEnhancer) extends ModelE
   override def additionalTextureLocations: List[ResourceLocation] = e1.additionalTextureLocations ++ e2.additionalTextureLocations
   override def processBlockQuads(state: BlockState, side: Direction, rand: RandomSource, renderType: RenderType, data: ModelData, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
     e1.processBlockQuads(state, side, rand, renderType, data, textures, () => e2.processBlockQuads(state, side, rand, renderType, data, textures, base))
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, transform: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
-    e1.processItemQuads(stack, side, rand, transform, textures, () => e2.processItemQuads(stack, side, rand, transform, textures, base))
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, ctx: ItemDisplayContext, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] =
+    e1.processItemQuads(stack, side, rand, ctx, textures, () => e2.processItemQuads(stack, side, rand, ctx, textures, base))
   override def extendModelData(world: BlockAndTintGetter, pos: BlockPos, state: BlockState, base: ModelData): ModelData =
     e1.extendModelData(world, pos, state, e2.extendModelData(world, pos, state, base))
   override def overrideRenderTypes(state: BlockState, rand: RandomSource, data: ModelData, base: ChunkRenderTypeSet): ChunkRenderTypeSet =

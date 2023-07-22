@@ -3,7 +3,6 @@ package net.bdew.lib.managers
 import net.minecraft.world.item.{BucketItem, Items}
 import net.minecraft.world.level.block.LiquidBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.Material
 import net.minecraftforge.fluids.{FluidType, ForgeFlowingFluid}
 import net.minecraftforge.registries.ForgeRegistries.Keys
 import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
@@ -11,7 +10,7 @@ import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 class FluidManager(blocks: BlockManager, items: ItemManager) extends RegistryManager(ForgeRegistries.FLUIDS) {
   val types = new RegistryManager(Keys.FLUID_TYPES)
 
-  def props(material: Material): BlockBehaviour.Properties = BlockBehaviour.Properties.of(material)
+  def props: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
 
   case class FluidDef[T <: FluidType, S <: ForgeFlowingFluid.Source, F <: ForgeFlowingFluid.Flowing](fluidType: RegistryObject[T], source: RegistryObject[S], flowing: RegistryObject[F])
 

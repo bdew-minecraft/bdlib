@@ -1,8 +1,7 @@
 package net.bdew.lib.gui
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui.widgets.BaseWidget
-import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.{Font, GuiGraphics}
 import net.minecraft.network.chat.Component
 
 import scala.collection.mutable
@@ -43,24 +42,24 @@ trait WidgetContainer extends DrawTarget {
     false
   }
 
-  def drawBackground(matrix: PoseStack, mouse: Point): Unit = {
+  def drawBackground(graphics: GuiGraphics, mouse: Point): Unit = {
     val p = mouse - rect.origin
-    matrix.pushPose()
-    matrix.translate(rect.origin.x, rect.origin.y, 0)
+    graphics.pose().pushPose()
+    graphics.pose().translate(rect.origin.x, rect.origin.y, 0)
     for (w <- activeWidgets) {
-      w.drawBackground(matrix, p)
+      w.drawBackground(graphics, p)
     }
-    matrix.popPose()
+    graphics.pose().popPose()
   }
 
-  def draw(matrix: PoseStack, mouse: Point, partial: Float): Unit = {
+  def draw(graphics: GuiGraphics, mouse: Point, partial: Float): Unit = {
     val p = mouse - rect.origin
-    matrix.pushPose()
-    matrix.translate(rect.origin.x, rect.origin.y, 0)
+    graphics.pose().pushPose()
+    graphics.pose().translate(rect.origin.x, rect.origin.y, 0)
     for (w <- activeWidgets) {
-      w.draw(matrix, p, partial)
+      w.draw(graphics, p, partial)
     }
-    matrix.popPose()
+    graphics.pose().popPose()
   }
 
   def handleTooltip(mouse: Point, tip: mutable.ArrayBuffer[Component]): Unit = {

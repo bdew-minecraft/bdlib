@@ -6,12 +6,11 @@ import net.bdew.lib.render.QuadBakerDefault
 import net.bdew.lib.render.models._
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.{BlockPos, Direction, Vec3i}
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.{ItemDisplayContext, ItemStack}
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.ChunkRenderTypeSet
@@ -58,15 +57,15 @@ class ConnectedModelEnhancer(frame: ResourceLocation) extends ModelEnhancer {
     } else super.processBlockQuads(state, side, rand, renderType, data, textures, base)
   }
 
-  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, mode: TransformType, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
+  override def processItemQuads(stack: ItemStack, side: Direction, rand: RandomSource, ctx: ItemDisplayContext, textures: Map[ResourceLocation, TextureAtlasSprite], base: () => List[BakedQuad]): List[BakedQuad] = {
     if (stack != null && side != null) {
       val frameSprite = textures(frame)
-      super.processItemQuads(stack, side, rand, mode, textures, base) :+
+      super.processItemQuads(stack, side, rand, ctx, textures, base) :+
         QuadBakerDefault.bakeQuad(
           ConnectedModelHelper.faceQuads((ConnectedModelHelper.Corner.ALL, side))
             .withTexture(ConnectedModelHelper.faceEdges(ConnectedModelHelper.Corner.ALL).texture(frameSprite))
         )
-    } else super.processItemQuads(stack, side, rand, mode, textures, base)
+    } else super.processItemQuads(stack, side, rand, ctx, textures, base)
   }
 
   override def overrideRenderTypes(state: BlockState, rand: RandomSource, data: ModelData, base: ChunkRenderTypeSet): ChunkRenderTypeSet =

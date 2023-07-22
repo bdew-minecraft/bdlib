@@ -1,13 +1,14 @@
 package net.bdew.lib.gui
 
-import com.mojang.blaze3d.vertex.PoseStack
-import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.events.ContainerEventHandler
 import net.minecraft.client.gui.screens.inventory.{AbstractContainerScreen, MenuAccess}
+import net.minecraft.client.gui.{Font, GuiGraphics}
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.tooltip.TooltipComponent
 
+import java.util.Optional
 import scala.collection.mutable.ArrayBuffer
 
 abstract class BaseScreen[T <: AbstractContainerMenu](container: T, playerInv: Inventory, title: Component)
@@ -38,27 +39,27 @@ abstract class BaseScreen[T <: AbstractContainerMenu](container: T, playerInv: I
   override def charTyped(c: Char, i: Int): Boolean =
     widgets.keyTyped(c, i) || super.charTyped(c, i)
 
-  override def render(matrix: PoseStack, mouseX: Int, mouseY: Int, pf: Float): Unit = {
-    renderBackground(matrix)
-    super.render(matrix, mouseX, mouseY, pf)
+  override def render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, pf: Float): Unit = {
+    renderBackground(graphics)
+    super.render(graphics, mouseX, mouseY, pf)
     val mouse = Point(mouseX, mouseY)
-    widgets.draw(matrix, mouse, pf)
+    widgets.draw(graphics, mouse, pf)
     val tip = ArrayBuffer.empty[Component]
     widgets.handleTooltip(mouse, tip)
     if (tip.nonEmpty) {
       import scala.jdk.CollectionConverters._
-      renderComponentTooltip(matrix, tip.asJava, mouseX, mouseY)
+      graphics.renderTooltip(getFontRenderer, tip.asJava, Optional.empty[TooltipComponent], mouseX, mouseY)
     } else {
-      renderTooltip(matrix, mouseX, mouseY)
+      renderTooltip(graphics, mouseX, mouseY)
     }
   }
 
-  override def renderLabels(m: PoseStack, x: Int, y: Int): Unit = {
+  override def renderLabels(graphics: GuiGraphics, x: Int, y: Int): Unit = {
     // disable vanilla labels
   }
 
-  override def renderBg(matrix: PoseStack, pf: Float, mouseX: Int, mouseY: Int): Unit = {
-    widgets.drawTexture(matrix, rect, background)
-    widgets.drawBackground(matrix, Point(mouseX, mouseY))
+  override def renderBg(graphics: GuiGraphics, pf: Float, mouseX: Int, mouseY: Int): Unit = {
+    widgets.drawTexture(graphics: GuiGraphics, rect, background)
+    widgets.drawBackground(graphics: GuiGraphics, Point(mouseX, mouseY))
   }
 }

@@ -1,9 +1,8 @@
 package net.bdew.lib.gui.widgets
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui.{Point, Rect}
-import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.{Font, GuiGraphics}
 
 class WidgetTextEdit(val rect: Rect, fr: Font) extends
   EditBox(fr, rect.x.round, rect.y.round, rect.w.round, rect.h.round, null) with Widget {
@@ -18,6 +17,6 @@ class WidgetTextEdit(val rect: Rect, fr: Font) extends
   override def keyTyped(c: Char, i: Int): Boolean =
     charTyped(c, i)
 
-  override def draw(m: PoseStack, mouse: Point, partial: Float): Unit =
-    render(m, mouse.x.round, mouse.y.round, partial)
+  override def draw(graphics: GuiGraphics, mouse: Point, partial: Float): Unit =
+    render(graphics, mouse.x.round, mouse.y.round, partial)
 }

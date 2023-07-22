@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.resources.model.BakedModel
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.util.RandomSource
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.{ItemDisplayContext, ItemStack}
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.client.ChunkRenderTypeSet
@@ -35,8 +35,8 @@ class BakedModelProxy(base: BakedModel) extends BakedModel {
   override def isGui3d: Boolean = base.isGui3d
   override def getOverrides: ItemOverrides = base.getOverrides
 
-  override def applyTransform(transformType: ItemTransforms.TransformType, poseStack: PoseStack, applyLeftHandTransform: Boolean): BakedModel =
-    base.applyTransform(transformType, poseStack, applyLeftHandTransform)
+  override def applyTransform(ctx: ItemDisplayContext, poseStack: PoseStack, applyLeftHandTransform: Boolean): BakedModel =
+    base.applyTransform(ctx, poseStack, applyLeftHandTransform)
 
   override def getRenderTypes(state: BlockState, rand: RandomSource, data: ModelData): ChunkRenderTypeSet =
     base.getRenderTypes(state, rand, data)

@@ -6,7 +6,6 @@ import net.minecraft.world.item.{BlockItem, Item}
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
 import net.minecraft.world.level.block.state.{BlockBehaviour, BlockState}
-import net.minecraft.world.level.material.Material
 import net.minecraftforge.registries.{ForgeRegistries, RegistryObject}
 
 
@@ -16,7 +15,7 @@ class BlockManager(items: ItemManager) extends RegistryManager(ForgeRegistries.B
 
   def defaultItemProps: Item.Properties = items.props
 
-  def props(material: Material): BlockBehaviour.Properties = BlockBehaviour.Properties.of(material)
+  def props: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
 
   def simple(id: String, props: BlockBehaviour.Properties): RegistryObject[Block] = {
     val block = register(id, () => new Block(props))

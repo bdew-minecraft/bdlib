@@ -34,7 +34,7 @@ object ItemUtils {
       return false
     if (stack1.isDamageableItem && stack2.getDamageValue != stack1.getDamageValue)
       return false
-    ItemStack.isSame(stack1, stack2)
+    ItemStack.isSameItem(stack1, stack2)
   }
 
   def addStackToSlots(stack: ItemStack, inv: Container, slots: Iterable[Int], checkValid: Boolean): ItemStack = {

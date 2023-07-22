@@ -60,7 +60,7 @@ object CommandDumpRegistry extends ModCommand {
       dumpWriter.write("\n\n==== FLUID TAGS ====\n")
       dumpTags(dumpWriter, Taggable[Fluid])
 
-      ctx.getSource.sendSuccess(Text.translate("bdlib.dumpregistry.saved", dumpFile.getCanonicalPath), true)
+      ctx.getSource.sendSuccess(() => Text.translate("bdlib.dumpregistry.saved", dumpFile.getCanonicalPath), true)
     } recover {
       case e: Throwable =>
         ctx.getSource.sendFailure(Text.translate("bdlib.dumpregistry.error", e.toString))

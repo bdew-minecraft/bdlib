@@ -1,10 +1,10 @@
 package net.bdew.lib.multiblock.gui
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Text
 import net.bdew.lib.gui.widgets.Widget
 import net.bdew.lib.gui.{BaseRect, ModelDrawHelper, Point, Rect, Texture}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 
 import java.util.Locale
@@ -14,12 +14,12 @@ class WidgetOutputIcon(p: Point, te: CIOutputFaces, output: Int) extends Widget 
   val rect = new Rect(p, 16, 16)
   val drawRect: BaseRect[Float] = Rect(p.x + 1, p.y + 1, 14, 14)
 
-  override def draw(m: PoseStack, mouse: Point, partial: Float): Unit = {
+  override def draw(graphics: GuiGraphics, mouse: Point, partial: Float): Unit = {
     val faces = te.outputFaces.inverted
     faces.get(output).map { bf =>
-      ModelDrawHelper.renderWorldBlockIntoGUI(m, te.getLevel, bf.pos, bf.face, drawRect)
+      ModelDrawHelper.renderWorldBlockIntoGUI(graphics, te.getLevel, bf.pos, bf.face, drawRect)
     } getOrElse {
-      parent.drawTexture(m, rect, Texture(te.resources.disabled), te.resources.outputColors(output))
+      parent.drawTexture(graphics, rect, Texture(te.resources.disabled), te.resources.outputColors(output))
     }
   }
 

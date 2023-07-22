@@ -1,7 +1,7 @@
 package net.bdew.lib.gui.widgets
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.gui.{Point, Rect}
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.Button.CreateNarration
 import net.minecraft.network.chat.{Component, MutableComponent}
@@ -27,7 +27,7 @@ class WidgetButton(val rect: Rect, text: Component, clicked: WidgetButton => Uni
     } else false
   }
 
-  override def draw(m: PoseStack, mouse: Point, partial: Float): Unit = {
-    render(m, mouse.x.round, mouse.y.round, partial)
+  override def draw(graphics: GuiGraphics, mouse: Point, partial: Float): Unit = {
+    render(graphics, mouse.x.round, mouse.y.round, partial)
   }
 }

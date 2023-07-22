@@ -1,8 +1,8 @@
 package net.bdew.lib.sensors
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.bdew.lib.Text
 import net.bdew.lib.gui.{DrawTarget, Rect}
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.ClickType
@@ -30,8 +30,8 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
   def getResult(param: GenericSensorParameter, obj: T): R
 
   @OnlyIn(Dist.CLIENT)
-  def drawSensor(m: PoseStack, rect: Rect, target: DrawTarget, obj: T): Unit
+  def drawSensor(graphics: GuiGraphics, rect: Rect, target: DrawTarget, obj: T): Unit
 
   @OnlyIn(Dist.CLIENT)
-  def drawParameter(m: PoseStack, rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit
+  def drawParameter(graphics: GuiGraphics, rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit
 }

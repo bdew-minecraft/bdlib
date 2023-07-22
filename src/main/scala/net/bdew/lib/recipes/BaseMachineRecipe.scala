@@ -1,6 +1,7 @@
 package net.bdew.lib.recipes
 
 import net.bdew.lib.inventory.NullInventory
+import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.{Recipe, RecipeSerializer, RecipeType}
@@ -9,9 +10,9 @@ import net.minecraftforge.registries.RegistryObject
 
 abstract class BaseMachineRecipe(val id: ResourceLocation) extends Recipe[NullInventory] {
   override def matches(inv: NullInventory, world: Level): Boolean = true
-  override def assemble(inv: NullInventory): ItemStack = ItemStack.EMPTY
+  override def assemble(inv: NullInventory, pRegistryAccess: RegistryAccess): ItemStack = ItemStack.EMPTY
   override def canCraftInDimensions(x: Int, y: Int): Boolean = true
-  override def getResultItem: ItemStack = ItemStack.EMPTY
+  override def getResultItem(pRegistryAccess: RegistryAccess): ItemStack = ItemStack.EMPTY
   override def getId: ResourceLocation = id
   override def isSpecial: Boolean = true
 }
