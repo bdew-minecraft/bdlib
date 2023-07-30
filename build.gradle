@@ -6,19 +6,31 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
+            name = "gt"
+            url = "https://gregtech.overminddl1.com/"
         }
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        maven {
+            url = "https://jitpack.io"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.11'
     }
 }
 
-apply plugin: 'scala'
+plugins {
+    id 'scala'
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id 'com.modrinth.minotaur' version '2.2.0'
+}
+
 apply plugin: 'forge'
 
 file "build.properties" withReader {
@@ -42,6 +54,13 @@ version = simpleVersion + '-mc' + config.minecraft.version
 group = "net.bdew"
 archivesBaseName = "bdlib"
 
+repositories {
+    maven {
+        name 'Overmind forge repo mirror'
+        url 'https://gregtech.overminddl1.com/'
+    }
+}
+
 minecraft {
     version = "${config.minecraft.version}-${config.forge.version}"
     replace("BDLIB_VER", simpleVersion.toString())
@@ -58,7 +77,13 @@ sourceSets {
         resources {
             srcDir 'resources'
         }
-        output.resourcesDir = output.classesDir // Hack for IDEA
+    }
+}
+
+// this is needed for IntelliJ so we don't have to copy over the assets manually every time
+idea {
+    module {
+        inheritOutputDirs = true
     }
 }
 
@@ -110,16 +135,41 @@ publishing {
     }
 }
 
-apply plugin: 'curseforge'
-
-curse {
-    projectId = config.curseforge.id
+curseforge {
     apiKey = project.hasProperty("curseForgeApiKey") ? project.curseForgeApiKey : ""
-    releaseType = 'alpha'
+    project {
+        id = config.curseforge.id
+        releaseType = 'alpha'
 
-    artifact = jar
+        changelogType = "markdown"
+        changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
+
+        mainArtifact(jar) {
+            displayName = "BDLib ${simpleVersion} (MC ${config.minecraft.version})"
+        }
+
+        addGameVersion config.minecraft.version
+        addGameVersion "Java 8"
+        addGameVersion "Forge"
+
+        addArtifact deobfJar
+        addArtifact sourceJar
+    }
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_API_KEY") ?: ""
+    projectId = config.modrinth.id
+
     changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
+    versionNumber = simpleVersion.toString()
 
-    additionalArtifact deobfJar
-    additionalArtifact sourceJar
+    versionName = simpleVersion.toString()
+    versionType = "alpha"
+
+    uploadFile = jar
+    gameVersions = [config.minecraft.version]
+    loaders = ["forge"]
+
+    additionalFiles = [deobfJar, sourceJar]
 }
