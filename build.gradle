@@ -28,7 +28,6 @@ buildscript {
 plugins {
     id 'scala'
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id 'com.modrinth.minotaur' version '2.2.0'
 }
 
 apply plugin: 'forge'
@@ -157,19 +156,3 @@ curseforge {
     }
 }
 
-modrinth {
-    token = System.getenv("MODRINTH_API_KEY") ?: ""
-    projectId = config.modrinth.id
-
-    changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
-    versionNumber = simpleVersion.toString()
-
-    versionName = simpleVersion.toString()
-    versionType = "alpha"
-
-    uploadFile = jar
-    gameVersions = [config.minecraft.version]
-    loaders = ["forge"]
-
-    additionalFiles = [deobfJar, sourceJar]
-}

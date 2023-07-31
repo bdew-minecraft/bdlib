@@ -32,7 +32,7 @@ class SerializedMessageCodec[T <: NetChannel] extends MessageToMessageCodec[FMLP
 
   def decode(ctx: ChannelHandlerContext, msg: FMLProxyPacket, out: util.List[AnyRef]) {
     try {
-      val reader = new ObjectInputStream(new ByteBufInputStream(msg.payload()))
+      val reader = new SafeObjectInputStream(new ByteBufInputStream(msg.payload()))
       out.add(reader.readObject())
     } catch {
       case e: Throwable => BdLib.log.error("Error decoding packet", e)
